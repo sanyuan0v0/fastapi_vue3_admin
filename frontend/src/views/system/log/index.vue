@@ -157,45 +157,51 @@ const columns: TableColumnsType = [
   {
     title: '请求地址',
     dataIndex: 'request_path',
+    ellipsis: true,
     align: 'center',
-    width: 200
+    // width: 200
   },
   {
     title: '请求方法',
     dataIndex: 'request_method',
+    ellipsis: true,
     align: 'center',
-    width: 80
+    width: 120
   },
   {
     title: 'IP地址',
     dataIndex: 'request_ip',
+    ellipsis: true,
     align: 'center',
     width: 100
   },
   {
     title: '浏览器',
     dataIndex: 'request_browser',
+    ellipsis: true,
     align: 'center',
-    width: 100
+    width: 120
   },
   {
     title: '系统',
     dataIndex: 'request_os',
+    ellipsis: true,
     align: 'center',
-    width: 150
+    width: 120
   },
   {
     title: '响应码',
     dataIndex: 'response_code',
+    ellipsis: true,
     align: 'center',
-    width: 80
+    width: 120
   },
   {
     title: '描述',
     dataIndex: 'description',
     align: 'center',
     ellipsis: true,
-    // width: 500
+    width: 120
   },
   {
     title: '创建日期',

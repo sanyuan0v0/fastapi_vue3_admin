@@ -227,21 +227,25 @@ const columns: TableColumnsType = [
     title: '序号',
     dataIndex: 'index',
     align: 'center',
+    ellipsis: true,
     width: 80
   },
   {
     title: '名称',
     dataIndex: 'name',
+    ellipsis: true,
     align: 'center'
   },
   {
     title: '排序',
     dataIndex: 'order',
+    ellipsis: true,
     align: 'center'
   },
   {
     title: '状态',
     dataIndex: 'available',
+    ellipsis: true,
     align: 'center'
   },
   {
@@ -256,14 +260,14 @@ const columns: TableColumnsType = [
     dataIndex: 'created_at',
     align: 'center',
     ellipsis: true,
-    // width: 120
+    width: 200
   },
   {
     title: '更新日期',
     dataIndex: 'updated_at',
     align: 'center',
     ellipsis: true,
-    // width: 120
+    width: 200
   },
   {
     title: '操作',

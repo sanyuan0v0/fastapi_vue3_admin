@@ -6,7 +6,7 @@
   --font-weight-bold: 500;
 
   /* 布局变量 */
-  --header-height: 69px;
+  --header-height: 60px;
   --sider-width: 240px;
   --collapsed-sider-width: 80px;
   --transition-duration: 0.2s;

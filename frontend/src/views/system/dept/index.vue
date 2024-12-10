@@ -301,40 +301,48 @@ const columns = reactive<TableColumnsType>([
     title: '部门名称',
     dataIndex: 'name',
     align: 'center',
+    ellipsis: true,
     key: 'name',
-    width: 160
+    // width: 160
   },
   {
     title: '排序',
     dataIndex: 'order',
     key: 'order',
     align: 'center',
-    width: 100
+    ellipsis: true,
+    // width: 100
   },
   {
     title: '状态',
     dataIndex: 'available',
     key: 'available',
+    ellipsis: true,
     align: 'center',
-    width: 100
+    // width: 100
   },
   {
     title: '备注',
     dataIndex: 'description',
     key: 'description',
-    align: 'center'
+    ellipsis: true,
+    // align: 'center'
   },
   {
     title: '创建时间',
     dataIndex: 'created_at',
     align: 'center',
-    key: 'created_at'
+    ellipsis: true,
+    key: 'created_at',
+    width: 200
   },
   {
     title: '更新日期',
     dataIndex: 'updated_at',
     align: 'center',
-    key: 'created_at'
+    ellipsis: true,
+    key: 'created_at',
+    width: 200
   },
   {
     title: '操作',

@@ -225,47 +225,51 @@ const columns = reactive<TableColumnsType>([
     title: '序号',
     dataIndex: 'index',
     align: 'center',
+    ellipsis: true,
     width: 80
   },
   {
     title: '名称',
     dataIndex: 'name',
     align: 'center',
-    // width: 80
+    ellipsis: true,
+    // width: 120
 
   },
   {
     title: '排序',
     dataIndex: 'order',
     align: 'center',
-    width: 80
+    ellipsis: true,
+    // width: 120
   },
   {
     title: '状态',
     dataIndex: 'available',
     align: 'center',
-    // width: 80
+    ellipsis: true,
+    // width: 120
   },
   {
     title: '备注',
     dataIndex: 'description',
     align: 'center',
     ellipsis: true,
-    width: 150
+    // width: 150
   },
   {
     title: '创建日期',
     dataIndex: 'created_at',
     align: 'center',
     ellipsis: true,
-    // width: 120
+    width: 200
   },
   {
     title: '更新日期',
     dataIndex: 'updated_at',
     align: 'center',
     ellipsis: true,
-    // width: 120
+    width: 200
   },
   {
     title: '操作',

@@ -82,8 +82,7 @@
       </a-layout-sider>
 
       <!-- 主内容区 -->
-      <a-layout-content 
-        class="content"
+      <a-layout-content class="content"
         :class="{ collapsed: menuState.collapsed }"
       >
         <router-view v-slot="{ Component, route }">
@@ -258,7 +257,8 @@ onMounted(() => {
 <style lang="scss" scoped>
 .basic-layout {
   min-height: 100vh;
-  
+  font-size: 16px;
+
   :deep(.ant-layout-header) {
     background: #fff;
     padding: 0;
@@ -326,7 +326,8 @@ onMounted(() => {
 
 .main-container {
   margin-top: var(--header-height);
-  height: calc(100vh - var(--header-height));
+  // height: calc(100vh - var(--header-height));
+  height: 90px;
   display: flex;
   flex-direction: row;
   
@@ -349,7 +350,7 @@ onMounted(() => {
           color: var(--primary-color);
           font-weight: 500;
         }
-}
+      }
 }
 
 .ant-layout-header {
@@ -371,7 +372,7 @@ onMounted(() => {
   
   .content {
     flex: 1;
-    padding: 24px;
+    padding: 20px;
     background: var(--background-color);
     overflow-y: auto; /* 确保垂直滚动条在需要时出现 */
   }

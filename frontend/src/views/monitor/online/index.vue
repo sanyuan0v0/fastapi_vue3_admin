@@ -91,7 +91,7 @@ const columns = [
   { title: '登录地点', dataIndex: 'login_location', key: 'loginLocation', align: 'center', ellipsis: true },
   { title: '操作系统', dataIndex: 'os', key: 'os', align: 'center', ellipsis: true },
   { title: '浏览器', dataIndex: 'browser', key: 'browser', align: 'center', ellipsis: true },
-  { title: '登录时间', dataIndex: 'login_time', key: 'loginTime', align: 'center', width: 180 },
+  { title: '登录时间', dataIndex: 'login_time', key: 'loginTime', align: 'center', ellipsis: true, width: 180 },
   { title: '操作', dataIndex: 'operation', key: 'operation', align: 'center', width: 120 }
 ];
 

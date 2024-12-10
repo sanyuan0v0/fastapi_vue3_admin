@@ -403,6 +403,7 @@ const columns = reactive<TableColumnsType>([
     title: '序号',
     dataIndex: 'index',
     align: 'center',
+    ellipsis: true,
     width: 80
   },
   {
@@ -410,7 +411,7 @@ const columns = reactive<TableColumnsType>([
     dataIndex: 'username',
     ellipsis: true,
     align: 'center',
-    width: 80
+    width: 100
   },
   {
     title: '姓名',
@@ -423,14 +424,15 @@ const columns = reactive<TableColumnsType>([
     title: '是否超管',
     dataIndex: 'is_superuser',
     align: 'center',
-    width: 80
+    ellipsis: true,
+    width: 100
   },
   {
     title: '部门',
     dataIndex: 'dept',
     ellipsis: true,
     align: 'center',
-    width: 80
+    width: 100
   },
   {
     title: '角色',
@@ -449,26 +451,30 @@ const columns = reactive<TableColumnsType>([
   {
     title: '邮箱',
     dataIndex: 'email',
+    ellipsis: true,
     align: 'center',
-    // width: 160
+    width: 160
   },
   {
     title: '联系电话',
     dataIndex: 'mobile',
     align: 'center',
+    ellipsis: true,
     width: 120
   },
   {
     title: '性别',
     dataIndex: 'gender',
     align: 'center',
-    width: 80
+    ellipsis: true,
+    width: 100
   },
   {
     title: '状态',
     dataIndex: 'available',
     align: 'center',
-    width: 80
+    ellipsis: true,
+    width: 100
   },
   {
     title: '备注',
@@ -481,6 +487,7 @@ const columns = reactive<TableColumnsType>([
     title: '操作',
     dataIndex: 'operation',
     fixed: 'right',
+    ellipsis: true,
     align: 'center',
     width: 150
   }

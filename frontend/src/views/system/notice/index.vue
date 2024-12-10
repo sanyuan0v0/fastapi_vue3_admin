@@ -245,26 +245,31 @@ const columns: TableColumnsType = [
         title: '序号',
         dataIndex: 'index',
         align: 'center',
+        ellipsis: true,
         width: 80
     },
     {
         title: '标题',
         dataIndex: 'notice_title',
+        ellipsis: true,
         align: 'center'
     },
     {
         title: '类型',
         dataIndex: 'notice_type',
+        ellipsis: true,
         align: 'center'
     },
     {
         title: '内容',
         dataIndex: 'notice_content',
-        align: 'center'
+        align: 'center',
+        ellipsis: true,
     },
     {
         title: '状态',
         dataIndex: 'available',
+        ellipsis: true,
         align: 'center'
     },
     {
@@ -293,6 +298,7 @@ const columns: TableColumnsType = [
         dataIndex: 'operation',
         align: 'center',
         fixed: 'right',
+        ellipsis: true,
         width: 150
     }
 ];
