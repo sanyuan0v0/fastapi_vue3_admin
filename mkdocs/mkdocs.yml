@@ -1,0 +1,43 @@
+# 项目信息
+repo_name: "fastapi_vue_admin" # 源码名称
+repo_url: "https://gitee.com/tao__tao/fastapi_vue_admin.git" # 源码地址
+
+site_name: 我的文档 # 网站名称
+site_author: xxxxx@qq.com # 网站作者
+site_url: http://127.0.0.1:8888/ # 网站地址
+site_description: 这里是网站描述 # 网站描述
+copyright: 'Copyright © 2022 <a href="http://127.0.0.1:8888">Powered by xxxxx@qq.com 版权所有</a>' # 版权信息
+use_directory_urls: false # 禁止生成的 URL 使用目录形式，默认为 true
+
+# 主题配置
+theme:
+  name: material # 使用 Material 主题
+  language: zh # 配置语言为中文
+  palette:
+    scheme: default # 默认配色方案
+  font:
+    text: Roboto # 正文字体
+  features:
+    - navigation.tabs # 启用标签页
+    - navigation.tabs.sticky # 固定标签页
+    - navigation.instant # 启用即时导航
+    - search.highlight # 搜索高亮
+    - search.suggest # 启用搜索建议
+    - navigation.footer # 显示底部导航
+    # - toc.integrate # 启用集成目录
+  highlightjs: true # 启用代码高亮
+
+# 导航菜单
+nav:
+  - 项目概述: index.md
+  - 开发指南:
+    - 后端开发: doc/backend.md
+    - 前端开发: doc/frontend.md
+  - 部署指南:
+    - 本地部署: doc/build.md
+  - 文档指南:
+    - 文档开发: doc/mkdocs.md
+
+# 插件配置
+plugins:
+  - search

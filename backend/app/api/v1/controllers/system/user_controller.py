@@ -1,0 +1,181 @@
+# -*- coding: utf-8 -*-
+
+from fastapi import APIRouter, Depends, Query, UploadFile, Request
+from fastapi.responses import JSONResponse, StreamingResponse
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.common.response import StreamResponse, SuccessResponse
+from app.api.v1.services.system.user_service import UserService
+from app.core.router_class import OperationLogRoute
+from app.core.dependencies import db_getter, get_current_user, AuthPermission
+from app.core.base_params import PaginationQueryParams
+from app.api.v1.params.system.user_param import UserQueryParams
+from app.api.v1.schemas.system.auth_schema import AuthSchema
+from app.api.v1.schemas.system.user_schema import (
+    CurrentUserUpdateSchema,
+    UserCreateSchema,
+    UserForgetPasswordSchema,
+    UserRegisterSchema,
+    UserUpdateSchema,
+    UserChangePasswordSchema
+)
+from app.core.base_schema import BatchSetAvailable
+from app.core.logger import logger
+from app.common.request import PaginationService
+from app.utils.common_util import bytes2file_response
+
+router = APIRouter(route_class=OperationLogRoute)
+
+
+@router.get("/current/info", summary="查询当前用户信息", description="查询当前用户信息")
+async def get_current_user_info(
+        auth: AuthSchema = Depends(get_current_user)
+) -> JSONResponse:
+    result_dict = await UserService.get_current_user_info(auth=auth)
+    logger.info(f"{auth.user.name} 获取当前用户信息成功")
+    return SuccessResponse(data=result_dict, msg='获取当前用户信息成功')
+
+
+@router.post("/current/avatar/upload", summary="上传当前用户头像", dependencies=[Depends(get_current_user)])
+async def user_avatar_upload(
+        file: UploadFile, 
+        request: Request
+) -> JSONResponse:
+    result_str = await UserService.upload_avatar(request=request, file=file)
+    logger.info(f"上传头像成功: {result_str}")
+    return SuccessResponse(data=result_str, msg='上传头像成功')
+
+
+@router.put("/current/info/update", summary="更新当前用户基本信息", description="更新当前用户基本信息")
+async def update_current_user_info(
+        data: CurrentUserUpdateSchema,
+        auth: AuthSchema = Depends(get_current_user)
+) -> JSONResponse:
+    result_dict = await UserService.update_current_user_info(data=data, auth=auth)
+    logger.info(f"{auth.user.name} 更新当前用户基本信息成功: {result_dict}")
+    return SuccessResponse(data=result_dict, msg='更新当前用户基本信息成功')
+
+
+@router.put("/current/password/change", summary="修改当前用户密码", description="修改当前用户密码")
+async def change_current_user_password(
+        data: UserChangePasswordSchema,
+        auth: AuthSchema = Depends(get_current_user)
+) -> JSONResponse:
+    result_dict = await UserService.change_user_password(data=data, auth=auth)
+    logger.info(f"{auth.user.name} 修改密码成功: {result_dict}")
+    return SuccessResponse(data=result_dict, msg='修改密码成功')
+
+
+@router.post('/register', summary="注册用户", description="注册用户")
+async def register_user(
+        data: UserRegisterSchema, 
+        db: AsyncSession = Depends(db_getter),
+) -> JSONResponse:
+    auth = AuthSchema(db=db)
+    user_register_result = await UserService.register_user(data=data, auth=auth)
+    logger.info(f"{data.username} 注册用户成功: {user_register_result}")
+    return SuccessResponse(data=user_register_result, msg='注册用户成功')
+
+
+@router.post('/forget/password', summary="忘记密码", description="忘记密码")
+async def forget_password(
+        data: UserForgetPasswordSchema, 
+        db: AsyncSession = Depends(db_getter),
+) -> JSONResponse:
+    auth = AuthSchema(db=db)
+    user_forget_password_result = await UserService.forget_password(data=data, auth=auth)
+    logger.info(f"{data.username} 忘记密码,重置密码成功: {user_forget_password_result}")
+    return SuccessResponse(data=user_forget_password_result, msg='忘记密码,重置密码成功')
+
+
+@router.get("/list", summary="查询用户", description="查询用户")
+async def get_obj_list(
+        page: PaginationQueryParams = Depends(),
+        search: UserQueryParams = Depends(),
+        auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:query"])),
+) -> JSONResponse:
+    result_dict_list = await UserService.get_user_list(search=search, auth=auth, order_by=page.order_by)
+    result_dict = await PaginationService.get_page_obj(data_list= result_dict_list, page_no= page.page_no, page_size = page.page_size)
+    logger.info(f"{auth.user.name} 查询用户成功")
+    return SuccessResponse(data=result_dict, msg="查询用户成功")
+
+
+@router.get("/detail", summary="查询用户详情", description="查询用户详情")
+async def get_obj_detail(
+        id: int = Query(..., description="用户ID"),
+        auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:query"])),
+) -> JSONResponse:
+    result_dict = await UserService.get_detail_by_id(id=id, auth=auth)
+    logger.info(f"{auth.user.name} 获取用户详情成功 {id}")
+    return SuccessResponse(data=result_dict, msg='获取用户详情成功')
+
+
+@router.post("/create", summary="创建用户", description="创建用户")
+async def create_obj(
+        data: UserCreateSchema,
+        auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:create"])),
+) -> JSONResponse:
+    result_dict = await UserService.create_user(data=data, auth=auth)
+    logger.info(f"{auth.user.name} 创建用户成功: {result_dict}")
+    return SuccessResponse(data=result_dict, msg="创建用户成功")
+
+
+@router.put("/update", summary="修改用户", description="修改用户")
+async def update_obj(
+        data: UserUpdateSchema,
+        auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:update"])),
+) -> JSONResponse:
+    result_dict = await UserService.update_user(data=data, auth=auth)
+    logger.info(f"{auth.user.name} 修改用户成功: {result_dict}")
+    return SuccessResponse(data=result_dict, msg="修改用户成功")
+
+
+@router.delete("/delete", summary="删除用户", description="删除用户")
+async def delete_obj(
+        id: int = Query(..., description="用户ID"),
+        auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:delete"])),
+) -> JSONResponse:
+    await UserService.delete_user(id=id, auth=auth)
+    logger.info(f"{auth.user.name} 删除用户成功: {id}")
+    return SuccessResponse(msg="删除用户成功")
+
+
+@router.patch("/available/setting", summary="批量修改用户状态", description="批量修改用户状态")
+async def batch_set_available_obj(
+        data: BatchSetAvailable,
+        auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:patch"])),
+) -> JSONResponse:
+    await UserService.set_user_available(data=data, auth=auth)
+    logger.info(f"{auth.user.name} 批量修改用户状态成功: {data.ids}")
+    return SuccessResponse(msg="批量修改用户状态成功")
+
+
+@router.post('/import/template', summary="获取用户导入模板", description="获取用户导入模板", dependencies=[Depends(AuthPermission(permissions=["system:user:import"]))])
+async def export_obj_template()-> StreamingResponse:
+    user_import_template_result = await UserService.get_import_template_user()
+    logger.info('获取用户导入模板成功')
+
+    return StreamResponse(data=bytes2file_response(user_import_template_result), msg="获取用户导入模板成功")
+
+
+@router.post('/export', summary="导出用户", description="导出用户")
+async def export_obj_list(
+    search: UserQueryParams = Depends(),
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:export"])),
+) -> StreamingResponse:
+    # 获取全量数据
+    user_list = await UserService.get_user_list(auth=auth, search=search)
+    user_export_result = await UserService.export_user_list(user_list)
+    logger.info('导出用户成功')
+
+    return StreamResponse(data=bytes2file_response(user_export_result), msg="导出用户成功")
+
+
+@router.post('/import/data', summary="导入用户", description="导入用户")
+async def import_obj_list(
+    file: UploadFile,
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:import"]))
+) -> JSONResponse:
+    batch_import_result = await UserService.batch_import_user(file=file, auth=auth, update_support=True)
+    logger.info(f"{auth.user.name} 导入用户成功: {batch_import_result}")
+    return SuccessResponse(data=batch_import_result, msg="导入用户成功")

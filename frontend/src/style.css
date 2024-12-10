@@ -1,0 +1,256 @@
+:root {
+  /* 基础变量 */
+  --font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --line-height: 1.6;
+  --font-weight-normal: 400;
+  --font-weight-bold: 500;
+
+  /* 布局变量 */
+  --header-height: 69px;
+  --sider-width: 240px;
+  --collapsed-sider-width: 80px;
+  --transition-duration: 0.2s;
+  
+  /* 颜色变量 */
+  --primary-color: #1890ff;
+  --text-color: rgba(0, 0, 0, 0.85);
+  --text-color-secondary: rgba(0, 0, 0, 0.45);
+  --border-color: #f0f0f0;
+  --background-color: #f0f2f5;
+  --component-background: #fff;
+  --box-shadow-base: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --box-shadow-light: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* 基础样式重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+  min-height: 100%;
+  background: var(--background-color);
+  font-family: var(--font-family);
+  line-height: var(--line-height);
+  color: var(--text-color);
+}
+
+/* 全局滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 链接样式 */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-duration);
+}
+
+a:hover {
+  color: var(--primary-color);
+}
+
+/* 按钮基础样式 */
+button {
+  font-family: inherit;
+}
+
+/* 布局相关的全局样式 */
+.basic-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: var(--header-height);
+  background: #fff;
+  box-shadow: var(--box-shadow-light);
+}
+
+.header-content {
+  height: 100%;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.logo-btn {
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 8px !important;
+  color: var(--text-color) !important;
+}
+
+.logo-title {
+  margin: 0 0 0 12px !important;
+  color: var(--text-color) !important;
+  font-weight: 600 !important;
+  font-size: 18px !important;
+  line-height: 1.5 !important;
+}
+
+.collapse-btn {
+  padding: 0 12px !important;
+  font-size: 16px !important;
+  color: var(--text-color) !important;
+}
+
+.collapse-btn:hover {
+  color: var(--primary-color) !important;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.tool-btn {
+  padding: 0 12px !important;
+  font-size: 16px !important;
+  color: var(--text-color) !important;
+}
+
+.tool-btn:hover {
+  color: var(--primary-color) !important;
+}
+
+.user-dropdown {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+.username {
+  margin: 0 8px;
+  color: var(--text-color);
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+  color: var(--text-color-secondary);
+}
+
+.card {
+  padding: var(--card-padding);
+  background-color: var(--color-background-card);
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--card-shadow);
+}
+
+#app {
+  max-width: var(--app-max-width);
+  margin: 0 auto;
+  padding: var(--app-padding);
+  text-align: var(--app-text-align);
+}
+
+/* Ant Design Layout 样式覆盖 */
+.ant-layout-header {
+  background: #fff !important;
+  padding: 0 !important;
+  height: var(--header-height) !important;
+  line-height: var(--header-height) !important;
+}
+
+/* Ant Design 按钮样式覆盖 */
+.ant-btn-link {
+  color: var(--text-color) !important;
+  padding: 0 !important;
+}
+
+.ant-btn-link:hover {
+  color: var(--primary-color) !important;
+}
+
+/* Ant Design 下拉菜单样式 */
+.ant-dropdown-menu {
+  padding: 4px 0 !important;
+}
+
+.ant-dropdown-menu-item {
+  padding: 8px 16px !important;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  a:hover {
+    color: #747bff;
+  }
+
+  button {
+    background-color: #f9f9f9;
+    color: #213547;
+  }
+
+  .card {
+    background-color: #fff;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: 2.4em;
+  }
+
+  .card {
+    padding: 1.5em;
+  }
+
+  .left-header {
+    padding-left: 5px;
+  }
+
+  .right-header {
+    margin-right: 10px;
+  }
+
+  .logo-btn {
+    width: 200px;
+  }
+
+  .doc-button {
+    padding: 8px 20px;
+    font-size: 12px;
+  }
+}
