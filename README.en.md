@@ -173,71 +173,71 @@ git clone https://gitee.com/tao__tao/my_demo_project.git
 
 ### 登陆
 
-![登陆](./resources/images/login.png)
+![登陆](./mkdocs/docs/resources/images/login.png)
 
 ### 工作台
 
-![工作台](./resources/images/dashboard.png)
+![工作台](./mkdocs/docs/resources/images/dashboard.png)
 
 ### 分析页
 
-![分析页](./resources/images/analytics.png)
+![分析页](./mkdocs/docs/resources/images/analytics.png)
 
 ### 菜单管理
 
-![菜单管理](./resources/images/menu.png)
+![菜单管理](./mkdocs/docs/resources/images/menu.png)
 
 ### 部门管理
 
-![部门管理](./resources/images/dept.png)
+![部门管理](./mkdocs/docs/resources/images/dept.png)
 
 ### 岗位管理
 
-![岗位管理](./resources/images/position.png)
+![岗位管理](./mkdocs/docs/resources/images/position.png)
 
 ### 角色管理
 
-![角色管理](./resources/images/role.png)
+![角色管理](./mkdocs/docs/resources/images/role.png)
 
 ### 用户管理
 
-![用户管理](./resources/images/user.png)
+![用户管理](./mkdocs/docs/resources/images/user.png)
 
 ### 日志管理
 
-![日志管理](./resources/images/log.png)
+![日志管理](./mkdocs/docs/resources/images/log.png)
 
 ### 在线用户管理
 
-![在线用户管理](./resources/images/online.png)
+![在线用户管理](./mkdocs/docs/resources/images/online.png)
 
 ### 服务器监控
 
-![服务器监控](./resources/images/service.png)
+![服务器监控](./mkdocs/docs/resources/images/service.png)
 
 ### 缓存监控
 
-![缓存监控](./resources/images/cache.png)
+![缓存监控](./mkdocs/docs/resources/images/cache.png)
 
 ### 接口管理
 
-![接口管理](./resources/images/docs.png)
+![接口管理](./mkdocs/docs/resources/images/docs.png)
 
 ### 文档管理
 
-![文档管理](./resources/images/redoc.png)
+![文档管理](./mkdocs/docs/resources/images/redoc.png)
 
 ### 文件管理
 
-![文件管理](./resources/images/file.png)
+![文件管理](./mkdocs/docs/resources/images/file.png)
 
 ### 个人信息
 
-![个人信息](./resources/images/info.png)
+![个人信息](./mkdocs/docs/resources/images/info.png)
 
 ### 在线文档
 
-![在线文档](./resources/images/info.png)
+![在线文档](./mkdocs/docs/resources/images/info.png)
 
 ## ✨ 特别鸣谢
 
