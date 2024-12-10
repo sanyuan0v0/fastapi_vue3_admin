@@ -19,30 +19,30 @@ English | [Chinese](./README.md)
 **fastapi-vue-admin** is a fully open-source rapid development platform that provides free usage. It combines modern, high-performance technology stacks to help developers quickly build high-quality backend systems. The project directory structure is as follows:
 
 ```sh
-my_demo_project/fastapi_project
+fastapi_vue_admin
 ├─ backend        # Backend project
 ├─ frontend       # Frontend project
 ├─ mkdocs         # Documentation project
 ├─ build          # Deployment project
 ├─ README.en.md   # English documentation
 └─ README.md      # Chinese documentation
+```
 
+- **Backend**:
+  - **FastAPI**:A modern, high-performance asynchronous framework.
+  - **Swagger**:Automatically generates interactive API documentation.
+  - **Pydantic**:Enforces type constraints.
+  - **SQLAlchemy 2.0**:A powerful ORM library.
 
-- **Backend**：
-  - **FastAPI**：A modern, high-performance asynchronous framework.
-  - **Swagger**：Automatically generates interactive API documentation.
-  - **Pydantic**：Enforces type constraints.
-  - **SQLAlchemy 2.0**：A powerful ORM library.
+- **Frontend**:
+  - **Vue3**:A modern frontend framework.
+  - **Ant Design Vue**:An enterprise-level UI component library.
+  - **TypeScript**:Static type checking.
+  - **Vite**:A fast build tool.
 
-- **Frontend**：
-  - **Vue3**：A modern frontend framework.
-  - **Ant Design Vue**：An enterprise-level UI component library.
-  - **TypeScript**：Static type checking.
-  - **Vite**：A fast build tool.
-
-- **Authentication**：OAuth2 using hashed passwords and JWT Bearer tokens.
-- **Authorization Architecture**：Designed based on RBAC, supporting dynamic permission menus, button-level permission control, and data-level permission control.
-- **Ready-to-use**：Suitable as a starting template for new projects, also useful for learning and reference.
+- **Authentication**:OAuth2 using hashed passwords and JWT Bearer tokens.
+- **Authorization Architecture**:Designed based on RBAC, supporting dynamic permission menus, button-level permission control, and data-level permission control.
+- **Ready-to-use**:Suitable as a starting template for new projects, also useful for learning and reference.
 
 If you find the project helpful, please give it a star!
 
@@ -62,28 +62,28 @@ If you find the project helpful, please give it a star!
 ## 📌 Built-in Modules
 
 - **Dashboard**
-  - **Workbench**：Dashboard display, entry point for common features.
-  - **Analytics**：Displays various statistical information to help users understand system performance.
+  - **Workbench**:Dashboard display, entry point for common features.
+  - **Analytics**:Displays various statistical information to help users understand system performance.
 
 - **System Management**
-  - **Menu Management**：Configures system menus, operation permissions, and button permission identifiers.
-  - **Department Management**：Configures the organizational structure of the system, supports data permissions in tree structures.
-  - **Position Management**：Manages user positions.
-  - **Role Management**：Manages role menus and permission allocation, sets menu permissions for roles.
-  - **User Management**：Maintains and manages system users, including regular information maintenance and account settings.
-  - **Log Management**：Uniformly maintains commonly used and relatively fixed data in the system.
-  - **API Management**：Maintains the system's configuration information, uniformly manages website configuration management functions.
-  - **Common Management**：Maintains the release and management of system notifications and announcements.
+  - **Menu Management**:Configures system menus, operation permissions, and button permission identifiers.
+  - **Department Management**:Configures the organizational structure of the system, supports data permissions in tree structures.
+  - **Position Management**:Manages user positions.
+  - **Role Management**:Manages role menus and permission allocation, sets menu permissions for roles.
+  - **User Management**:Maintains and manages system users, including regular information maintenance and account settings.
+  - **Log Management**:Uniformly maintains commonly used and relatively fixed data in the system.
+  - **API Management**:Maintains the system's configuration information, uniformly manages website configuration management functions.
+  - **Common Management**:Maintains the release and management of system notifications and announcements.
 
 - **Monitoring Management**
-  - **Online Users**：Views currently online users in the system.
-  - **Server Monitoring**：Views the system's runtime status, including memory, CPU, disk, etc.
-  - **Cache Monitoring**：Views system cache information, such as cache hit rate and cache keys.
+  - **Online Users**:Views currently online users in the system.
+  - **Server Monitoring**:Views the system's runtime status, including memory, CPU, disk, etc.
+  - **Cache Monitoring**:Views system cache information, such as cache hit rate and cache keys.
 
 - **Common Management**
-  - **API Management**：Maintains system APIs, such as API addresses and request methods.
-  - **Documentation Management**：Maintains system API documentation, supports online API calls.
-  - **File Management**：Configures file uploads, currently supports local storage, and can obtain storage addresses based on specific configurations.
+  - **API Management**:Maintains system APIs, such as API addresses and request methods.
+  - **Documentation Management**:Maintains system API documentation, supports online API calls.
+  - **File Management**:Configures file uploads, currently supports local storage, and can obtain storage addresses based on specific configurations.
 
 
 ## 🍪  Account Information

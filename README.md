@@ -19,7 +19,7 @@
 **fastapi-vue-admin** 是一套完全开源的快速开发平台，提供免费使用。它结合了现代、高性能的技术栈，旨在帮助开发者快速搭建高质量的中后台系统。项目目录结构如下：
 
 ```sh
-my_demo_project/fastapi_project
+fastapi_vue_admin
 ├─ backend        # 后端工程
 ├─ frontend       # 前端工程
 ├─ mkdocs         # 文档工程
