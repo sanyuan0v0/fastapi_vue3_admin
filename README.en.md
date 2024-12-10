@@ -1,6 +1,6 @@
 <div align="center">
    <p align="center">
-      <img src="./resources/images/logo.png" height="150" alt="logo"/>
+      <img src="./mkdocs/docs/resources/images/logo.png" height="150" alt="logo"/>
    </p>
       <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Fastapi-Vue-Admin v1.0.0</h1>
       <h4 align="center">基于Fastapi-Vue-Admi前后端分离的快速开发框架</h4>
