@@ -12,7 +12,7 @@
    </p>
 </div>
 
-English | [简体中文](./README.md)
+English | [Chinese](./README.md)
 
 ## 📚 Project Introduction
 
