@@ -237,7 +237,7 @@ git clone https://gitee.com/tao__tao/my_demo_project.git
 
 ### 在线文档
 
-![在线文档](./mkdocs/docs/resources/images/info.png)
+![在线文档](./mkdocs/docs/resources/images/help.png)
 
 ## ✨ 特别鸣谢
 
@@ -258,7 +258,7 @@ git clone https://gitee.com/tao__tao/my_demo_project.git
 
 <table>
     <tr>
-        <td><img src="./resources/images/wechat.jpg"/></td>
-        <td><img src="./resources/images/wechatPay.jpg"/></td>
+        <td><img src="./mkdocs/docs/resources/images/wechat.jpg"/></td>
+        <td><img src="./mkdocs/docs/resources/images/wechatPay.jpg"/></td>
     </tr>
 </table>
