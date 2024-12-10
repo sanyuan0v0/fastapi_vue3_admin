@@ -23,7 +23,8 @@ my_demo_project/fastapi_project
 ├─ backend        # 后端工程
 ├─ frontend       # 前端工程
 ├─ mkdocs         # 文档工程
-└─ README.md      # 说明文档
+|─ README.en.md   # 英文文档
+└─ README.md      # 中文文档
 ```
 
 - **后端**：

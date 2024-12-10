@@ -3,7 +3,7 @@
       <img src="./mkdocs/docs/resources/images/logo.png" height="150" alt="logo"/>
    </p>
       <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Fastapi-Vue-Admin v1.0.0</h1>
-      <h4 align="center">基于Fastapi-Vue-Admi前后端分离的快速开发框架</h4>
+      <h4 align="center">A rapid development framework for front-end and back-end separation based on Fastapi-Vue-Admin</h4>
    <p align="center">
       <img src="https://img.shields.io/badge/Python-≥3.10-blue">
       <img src="https://img.shields.io/badge/NodeJS-≥20.0-blue">
@@ -14,247 +14,250 @@
 
 English | [简体中文](./README.md)
 
-## 📚 项目介绍
+## 📚 Project Introduction
 
-**fastapi-vue-admin** 是一套完全开源的快速开发平台，提供免费使用。它结合了现代、高性能的技术栈，旨在帮助开发者快速搭建高质量的中后台系统。项目目录结构如下：
+**fastapi-vue-admin** is a fully open-source rapid development platform that provides free usage. It combines modern, high-performance technology stacks to help developers quickly build high-quality backend systems. The project directory structure is as follows:
 
 ```sh
 my_demo_project/fastapi_project
-├─ backend        # 后端工程
-├─ frontend       # 前端工程
-├─ mkdocs         # 文档工程
-└─ README.md      # 说明文档
-```
+├─ backend        # Backend project
+├─ frontend       # Frontend project
+├─ mkdocs         # Documentation project
+├─ build          # Deployment project
+├─ README.en.md   # English documentation
+└─ README.md      # Chinese documentation
 
-- **后端**：
-  - **FastAPI**：现代、高性能的异步框架
-  - **Swagger**：自动生成交互式 API 文档
-  - **Pydantic**：强制类型约束
-  - **SQLAlchemy 2.0**：强大的 ORM 库
 
-- **前端**：
-  - **Vue3**：现代前端框架
-  - **Ant Design Vue**：企业级 UI 组件库
-  - **TypeScript**：静态类型检查
-  - **Vite**：快速的构建工具
+- **Backend**：
+  - **FastAPI**：A modern, high-performance asynchronous framework.
+  - **Swagger**：Automatically generates interactive API documentation.
+  - **Pydantic**：Enforces type constraints.
+  - **SQLAlchemy 2.0**：A powerful ORM library.
 
-- **权限认证**：使用哈希密码和 JWT Bearer 令牌的 OAuth2
-- **权限架构**：基于 RBAC 设计，支持动态权限菜单、按钮级别权限控制、数据级别权限控制
-- **开箱即用**：适合新项目启动模板，也可用于学习参考
+- **Frontend**：
+  - **Vue3**：A modern frontend framework.
+  - **Ant Design Vue**：An enterprise-level UI component library.
+  - **TypeScript**：Static type checking.
+  - **Vite**：A fast build tool.
 
-如果觉得项目不错，欢迎 Star 支持！
+- **Authentication**：OAuth2 using hashed passwords and JWT Bearer tokens.
+- **Authorization Architecture**：Designed based on RBAC, supporting dynamic permission menus, button-level permission control, and data-level permission control.
+- **Ready-to-use**：Suitable as a starting template for new projects, also useful for learning and reference.
 
-## 🍻 项目特点
+If you find the project helpful, please give it a star!
 
-- 模块化、松耦合
-- 模块丰富、开箱即用
-- 简洁易用、快速接入
-- 文档详尽、易于维护
-- 自顶向下、体系化设计
-- 统一框架、统一组件、降低选择成本
-- 开发规范、设计模式、代码分层模型
-- 强大便捷的开发工具链
-- 完善的本地中文化支持
-- 设计为团队及企业使用
+## 🍻 Project Features
 
-## 📌 内置模块
+- Modular and loosely coupled
+- Rich modules, ready-to-use
+- Simple and easy to integrate
+- Comprehensive documentation, easy to maintain
+- Top-down, systematic design
+- Unified framework, unified components, reducing selection costs
+- Development standards, design patterns, code layering models
+- Powerful and convenient development toolchain
+- Complete local internationalization support
+- Designed for team and enterprise use
 
-- **仪表盘**
-  - **工作台**：仪表盘展示，常用功能入口。
-  - **分析页**：展示各种数据统计信息，帮助用户了解系统运行情况。
+## 📌 Built-in Modules
 
-- **系统管理**
-  - **菜单管理**：配置系统菜单，操作权限，按钮权限标识等。
-  - **部门管理**：配置系统组织机构，树结构展现支持数据权限。
-  - **岗位管理**：主要管理用户担任岗位。
-  - **角色管理**：角色菜单管理与权限分配、设置角色所拥有的菜单权限。
-  - **用户管理**：用于维护管理系统的用户，常规信息的维护与账号设置。
-  - **日志管理**：对系统中常用的较为固定的数据进行统一维护。
-  - **接口管理**：对系统的常规配置信息进行维护，网站配置管理功能进行统一维护。
-  - **公告管理**：系统通知公告信息发布维护。
+- **Dashboard**
+  - **Workbench**：Dashboard display, entry point for common features.
+  - **Analytics**：Displays various statistical information to help users understand system performance.
 
-- **监控管理**
-  - **在线用户**：查看当前系统中在线的用户。
-  - **服务器监控**：查看系统运行状态，包括内存、CPU、磁盘等。
-  - **缓存监控**：查看系统缓存信息，如：缓存命中率、缓存键值等。
+- **System Management**
+  - **Menu Management**：Configures system menus, operation permissions, and button permission identifiers.
+  - **Department Management**：Configures the organizational structure of the system, supports data permissions in tree structures.
+  - **Position Management**：Manages user positions.
+  - **Role Management**：Manages role menus and permission allocation, sets menu permissions for roles.
+  - **User Management**：Maintains and manages system users, including regular information maintenance and account settings.
+  - **Log Management**：Uniformly maintains commonly used and relatively fixed data in the system.
+  - **API Management**：Maintains the system's configuration information, uniformly manages website configuration management functions.
+  - **Common Management**：Maintains the release and management of system notifications and announcements.
 
-- **公共管理**
-  - **接口管理**：系统接口维护，如：接口地址、请求方式等。
-  - **文档管理**：系统接口文档维护，支持在线接口调用。
-  - **文件管理**：文件上传配置，目前支持本地，可根据具体配置获取存储地址文件。
+- **Monitoring Management**
+  - **Online Users**：Views currently online users in the system.
+  - **Server Monitoring**：Views the system's runtime status, including memory, CPU, disk, etc.
+  - **Cache Monitoring**：Views system cache information, such as cache hit rate and cache keys.
 
-## 🍪  账号信息
+- **Common Management**
+  - **API Management**：Maintains system APIs, such as API addresses and request methods.
+  - **Documentation Management**：Maintains system API documentation, supports online API calls.
+  - **File Management**：Configures file uploads, currently supports local storage, and can obtain storage addresses based on specific configurations.
 
-| 账户类型   | 账号   | 密码   |
+
+## 🍪  Account Information
+
+| Account Type   | Username   | Password  |
 | :--------- | :----- | :----- |
-| **管理员账户** | admin  | 123456 |
-| **演示账户**   | demo   | 123456 |
+| **Admin Account** | admin  | 123456 |
+| **Demo Account**   | demo   | 123456 |
 
-## 👷 安装和使用
+## 👷 Installation and Usage
 
-### 版本说明
+### Version Information
 
-| 类型     | 技术栈     | 版本       |
+| Type | Technology Stack | Version  |
 |----------|------------|------------|
-| 后端     | Python     | 3.10       |
-| 后端     | FastAPI    | 0.109      |
-| 前端     | Node.js    | >= 20.0（推荐使用最新版）|
-| 前端     | npm        | 16.14      |
-| 前端     | Vue3       | 3.3        |
-| 数据库   | MySQL      | 8.0 （推荐使用最新版）|
-| 数据库   | PostgreSQL | 14（其他版本均未测试）|
-| 数据库   | MongoDB    | 8.0（推荐使用最新版）|
-| 中间件   | Redis      | 7.0 （推荐使用最新版）|
+| Backend     | Python     | 3.10       |
+| Backend     | FastAPI    | 0.109      |
+| Frontend     | Node.js    | >= 20.0（Recommended latest version）|
+| Frontend     | npm        | 16.14      |
+| Frontend     | Vue3       | 3.3        |
+| Database   | MySQL      | 8.0 Recommended latest version|
+| Database   | PostgreSQL | 14（Recommended latest version）|
+| Database   | MongoDB    | 8.0（Recommended latest version）|
+| Middleware   | Redis      | 7.0 Recommended latest version|
 
-### 获取代码
+### Get the Code
 
 ```sh
-git clone https://gitee.com/tao__tao/my_demo_project.git
+git clone https://gitee.com/tao__tao/fastapi_vue_admin.git
 ```
 
-### 后端
+### Backend
 
-1. 安装依赖
+1. Install dependencies
 
    ```shell
    cd backend
    pip3 install -r requirements.txt
    ```
 
-2. 修改项目数据库配置信息
-   在`app/core/config.py`文件中的`SQLALCHEMY_DATABASE_URI`、`MONGO_DB_URL`、`REDIS_URL`
+2. Modify project database configuration
+   In the `app/core/config.py` file, modify `SQLALCHEMY_DATABASE_URI`、`MONGO_DB_URL` and `REDIS_URL`
 
-3. 创建名为`fastapi_vue_admin`的数据库
+3. Create a database named `fastapi_vue_admin`
 
-4. 初始化数据库数据
+4. Initialize database data
 
    ```shell
-   # 进入后端根目录 backend 下运行
-   # 运行命令后会自动生成数据库内的表和数据
-   # 如已初始化数据库数据，此命令可不执行
+   # Run in the root directory of the backend project (backend)
+   # This command will automatically generate tables and data in the database
+   # If the database has already been initialized, this command can be skipped
    python3 main.py init
    ```
 
-5. 启动
+5. Start the backend
 
    ```shell
-   # 进入后端根目录 backend 下运行
+   # Run in the root directory of the backend project (backend)
    python3 main.py run
    ```
 
-### 前端
+### Frontend
 
-1. 安装依赖
+1. Install dependencies
 
    ```shell
    cd frontend
    npm install
    ```
 
-2. 运行
+2. Run the frontend
 
    ```shell
    npm run dev
    ```
 
-3. 打包
+3. Build the frontend
 
    ```shell
    npm run build
    ```
 
-### 访问项目
+### Access the Project
 
-- 前端地址：<http://127.0.0.1:5180>
-- 账号：`admin` 密码：`123456`
-- 接口地址：<http://127.0.0.1:8000/api/v1/docs>
+- Frontend URL: <http://127.0.0.1:5180>
+- Username: `admin` Password: `123456`
+- API URL: <http://127.0.0.1:8000/api/v1/docs>
 
-## 🔧 模块展示
+## 🔧 Module Showcase
 
-### 登陆
+### Login
 
-![登陆](./mkdocs/docs/resources/images/login.png)
+![Login](./mkdocs/docs/resources/images/login.png)
 
-### 工作台
+### Workbench
 
-![工作台](./mkdocs/docs/resources/images/dashboard.png)
+![Workbench](./mkdocs/docs/resources/images/dashboard.png)
 
-### 分析页
+### Analytics
 
-![分析页](./mkdocs/docs/resources/images/analytics.png)
+![Analytics](./mkdocs/docs/resources/images/analytics.png)
 
-### 菜单管理
+### Menu
 
-![菜单管理](./mkdocs/docs/resources/images/menu.png)
+![Menu](./mkdocs/docs/resources/images/menu.png)
 
-### 部门管理
+### Department
 
-![部门管理](./mkdocs/docs/resources/images/dept.png)
+![Department](./mkdocs/docs/resources/images/dept.png)
 
-### 岗位管理
+### Position
 
-![岗位管理](./mkdocs/docs/resources/images/position.png)
+![Position](./mkdocs/docs/resources/images/position.png)
 
-### 角色管理
+### Role
 
-![角色管理](./mkdocs/docs/resources/images/role.png)
+![Role](./mkdocs/docs/resources/images/role.png)
 
-### 用户管理
+### User
 
-![用户管理](./mkdocs/docs/resources/images/user.png)
+![User](./mkdocs/docs/resources/images/user.png)
 
-### 日志管理
+### Log
 
-![日志管理](./mkdocs/docs/resources/images/log.png)
+![Log](./mkdocs/docs/resources/images/log.png)
 
-### 在线用户管理
+### Online
 
-![在线用户管理](./mkdocs/docs/resources/images/online.png)
+![Online](./mkdocs/docs/resources/images/online.png)
 
-### 服务器监控
+### Server
 
-![服务器监控](./mkdocs/docs/resources/images/service.png)
+![Server](./mkdocs/docs/resources/images/service.png)
 
-### 缓存监控
+### Cache
 
-![缓存监控](./mkdocs/docs/resources/images/cache.png)
+![Cache](./mkdocs/docs/resources/images/cache.png)
 
-### 接口管理
+### API
 
-![接口管理](./mkdocs/docs/resources/images/docs.png)
+![API](./mkdocs/docs/resources/images/docs.png)
 
-### 文档管理
+### Documentation
 
-![文档管理](./mkdocs/docs/resources/images/redoc.png)
+![Documentation](./mkdocs/docs/resources/images/redoc.png)
 
-### 文件管理
+### File
 
-![文件管理](./mkdocs/docs/resources/images/file.png)
+![File](./mkdocs/docs/resources/images/file.png)
 
-### 个人信息
+### Personal
 
-![个人信息](./mkdocs/docs/resources/images/info.png)
+![Personal](./mkdocs/docs/resources/images/info.png)
 
-### 在线文档
+### Help
 
-![在线文档](./mkdocs/docs/resources/images/help.png)
+![Help](./mkdocs/docs/resources/images/help.png)
 
-## ✨ 特别鸣谢
+## ✨ Special Thanks
 
-感谢以下项目的贡献和支持，使本项目得以顺利完成：
+Thank you to the following projects for their contributions and support, which have made this project possible:
 
-- [FastAPI 项目](https://fastapi.tiangolo.com/)
-- [Vue3 项目](https://v3.cn.vuejs.org/)
-- [KInit 项目](https://gitee.com/ktianc/kinit)
-- [FastAPI-Vue-Admin 项目](https://gitee.com/senqi666/fastapi-vue-admin)
-- [Vue-FastAPI-Admin 项目](https://gitee.com/mizhexiaoxiao/vue-fastapi-admin)
-- [RuoYi-Vue3-FastAPI 项目](https://gitee.com/insistence2022/RuoYi-Vue3-FastAPI)
+- [FastAPI Project](https://fastapi.tiangolo.com/)
+- [Vue3 Project](https://v3.cn.vuejs.org/)
+- [KInit Project](https://gitee.com/ktianc/kinit)
+- [FastAPI-Vue-Admin Project](https://gitee.com/senqi666/fastapi-vue-admin)
+- [Vue-FastAPI-Admin Project](https://gitee.com/mizhexiaoxiao/vue-fastapi-admin)
+- [RuoYi-Vue3-FastAPI Project](https://gitee.com/insistence2022/RuoYi-Vue3-FastAPI)
 
-## 🎨 微信群
+## 🎨 WeChat Group
 
-在下方为个人二维码，可以用于技术交流，也可以一起讨论在项目使用过程中遇到的各种问题。真心希望大家一起优化该项目，积极讨论，让我们一起抱团取暖！
+The QR codes below are personal codes that can be used for technical discussions and to discuss various issues encountered during project usage. I sincerely hope everyone can optimize the project together and actively participate in discussions to support each other!！
 
-### 个人二维码
+### Personal QR Codes
 
 <table>
     <tr>
