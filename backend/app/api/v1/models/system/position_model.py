@@ -23,21 +23,6 @@ class PositionModel(ModelBase):
     # 状态字段
     available = Column(Boolean, default=True, nullable=False, comment="是否启用(True:启用 False:禁用)")
 
-    # 关联关系
-    dept_id = Column(
-        Integer, 
-        ForeignKey("system_dept.id", ondelete="SET NULL", onupdate="CASCADE"), 
-        nullable=True, 
-        index=True, 
-        comment="所属部门ID"
-    )
-    dept = relationship(
-        'DeptModel', 
-        primaryjoin="PositionModel.dept_id == DeptModel.id", 
-        lazy="joined",
-        post_update=True,
-        uselist=False
-    )
     users = relationship(
         "UserModel", 
         secondary=UserPositionsModel.__tablename__, 

@@ -252,44 +252,44 @@ const columns: TableColumnsType = [
         title: '标题',
         dataIndex: 'notice_title',
         ellipsis: true,
-        align: 'center'
+        // align: 'center'
     },
     {
         title: '类型',
         dataIndex: 'notice_type',
         ellipsis: true,
-        align: 'center'
+        // align: 'center'
     },
     {
         title: '内容',
         dataIndex: 'notice_content',
-        align: 'center',
+        // align: 'center',
         ellipsis: true,
     },
     {
         title: '状态',
         dataIndex: 'available',
-        ellipsis: true,
+        // ellipsis: true,
         align: 'center'
     },
     {
         title: '备注',
         dataIndex: 'description',
-        align: 'center',
+        // align: 'center',
         ellipsis: true,
         // width: 500
     },
     {
         title: '创建日期',
         dataIndex: 'created_at',
-        align: 'center',
+        // align: 'center',
         ellipsis: true,
         // width: 120
     },
     {
         title: '更新日期',
         dataIndex: 'updated_at',
-        align: 'center',
+        // align: 'center',
         ellipsis: true,
         // width: 120
     },

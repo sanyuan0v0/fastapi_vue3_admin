@@ -15,11 +15,4 @@ export interface tableDataType {
     children?: tableDataType[];
     created_at?: string;
     updated_at?: string;
-    creator?: creatorType;
-}
-
-interface creatorType {
-    id?: number;
-    name?: string;
-    username?: string;
 }

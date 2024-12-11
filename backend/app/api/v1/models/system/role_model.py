@@ -83,6 +83,8 @@ class RoleModel(ModelBase):
         "MenuModel",
         secondary=RoleMenusModel.__tablename__,
         lazy="joined",
+        cascade="all, delete",
+        passive_deletes=True,
         post_update=True,
         uselist=True
     )
@@ -90,6 +92,8 @@ class RoleModel(ModelBase):
         "DeptModel",
         secondary=RoleDeptsModel.__tablename__,
         lazy="joined",
+        cascade="all, delete",
+        passive_deletes=True,
         post_update=True,
         uselist=True
     )

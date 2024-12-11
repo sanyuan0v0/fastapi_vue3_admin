@@ -8,7 +8,15 @@ from app.core.logger import logger
 from app.config.setting import settings
 from app.core.base_model import ModelBase
 from app.core.database import async_engine, async_session
-
+from app.api.v1.models.system import (
+    user_model,
+    dept_model,
+    role_model,
+    menu_model,
+    position_model,
+    operation_log_model,
+    notice_model
+)
 
 class InitializeData:
     """
@@ -18,6 +26,19 @@ class InitializeData:
     def __init__(self) -> None:
         self.engine = async_engine
         self.session = async_session()
+        self.prepare_init_models = [
+            dept_model.DeptModel,
+            user_model.UserModel,
+            menu_model.MenuModel,
+            position_model.PositionModel,
+            role_model.RoleModel,
+            operation_log_model.OperationLogModel,
+            notice_model.NoticeModel,
+            role_model.RoleDeptsModel,
+            role_model.RoleMenusModel,
+            user_model.UserPositionsModel,
+            user_model.UserRolesModel
+        ]
 
     # @classmethod
     # def migrate_model(cls, env: Environment = Environment.pro):
@@ -46,7 +67,8 @@ class InitializeData:
         try:
             async with self.session as session:
                 logger.info("开始初始化基础数据...")
-                for model in ModelBase.__subclasses__():
+                # for model in ModelBase.__subclasses__():
+                for model in self.prepare_init_models:
                     table_name = model.__tablename__
                     data = self.__get_data(table_name)
                     if not data:

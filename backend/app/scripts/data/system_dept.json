@@ -5,8 +5,7 @@
     "order": 1,
     "available": true,
     "parent_id": null,
-    "description": "集团总公司",
-    "creator_id": 1
+    "description": "集团总公司"
   },
   {
     "id": 2,
@@ -14,8 +13,7 @@
     "order": 1,
     "available": true,
     "parent_id": 1,
-    "description": "西安分公司",
-    "creator_id": 1
+    "description": "西安分公司"
   },
   {
     "id": 3,
@@ -23,8 +21,7 @@
     "order": 2,
     "available": true,
     "parent_id": 1,
-    "description": "深圳分公司",
-    "creator_id": 1
+    "description": "深圳分公司"
   },
   {
     "id": 4,
@@ -32,8 +29,7 @@
     "order": 1,
     "available": true,
     "parent_id": 2,
-    "description": "开发组",
-    "creator_id": 1
+    "description": "开发组"
   },
   {
     "id": 5,
@@ -41,8 +37,7 @@
     "order": 2,
     "parent_id": 2,
     "available": true,
-    "description": "测试组",
-    "creator_id": 1
+    "description": "测试组"
   },
   {
     "id": 6,
@@ -50,8 +45,7 @@
     "order": 3,
     "parent_id": 2,
     "available": true,
-    "description": "演示组",
-    "creator_id": 1
+    "description": "演示组"
   },
   {
     "id": 7,
@@ -59,8 +53,7 @@
     "order": 1,
     "available": true,
     "parent_id": 3,
-    "description": "销售部",
-    "creator_id": 1
+    "description": "销售部"
   },
   {
     "id": 8,
@@ -68,8 +61,7 @@
     "order": 2,
     "available": true,
     "parent_id": 3,
-    "description": "市场部",
-    "creator_id": 1
+    "description": "市场部"
   },
   {
     "id": 9,
@@ -77,8 +69,7 @@
     "order": 3,
     "available": true,
     "parent_id": 3,
-    "description": "财务部",
-    "creator_id": 1
+    "description": "财务部"
   },
   {
     "id": 10,
@@ -86,8 +77,7 @@
     "order": 4,
     "available": true,
     "parent_id": 3,
-    "description": "研发部",
-    "creator_id": 1
+    "description": "研发部"
   },
   {
     "id": 11,
@@ -95,7 +85,6 @@
     "order": 5,
     "available": true,
     "parent_id": 3,
-    "description": "研发部",
-    "creator_id": 1
+    "description": "研发部"
   }
 ]

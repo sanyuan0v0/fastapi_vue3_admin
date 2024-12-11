@@ -105,7 +105,7 @@ class Settings(BaseSettings):
     # ================================================= #
     # ******************* 临时文件配置 ******************* #
     # ================================================= #
-    UPLOAD_PROFILE_PATH: Path = 'static/upload'
+    UPLOAD_PROFILE_PATH: Path = Path('static/upload')
     UPLOAD_FILE_PATH: Path = STATIC_ROOT.joinpath('upload')  # 上传目录
     DOWNLOAD_FILE_PATH: Path = STATIC_ROOT.joinpath('download')  # 下载目录
     UPLOAD_MACHINE: str = 'A'  # 上传机器标识
@@ -125,7 +125,7 @@ class Settings(BaseSettings):
     # ******************** 缓存配置 ******************* #
     # ================================================= #
     CACHE_ENABLE: bool = True  # 是否启用缓存
-    CACHES_DIR: Path = 'static/caches'  # 缓存目录
+    CACHES_DIR: Path = Path('static/caches')  # 缓存目录
     CACHE_EXPIRE_SECONDS: int = 300  # 缓存过期时间(秒)
     
     # ================================================= #
@@ -265,7 +265,7 @@ class Settings(BaseSettings):
 
     # 事件列表
     EVENTS: List[Optional[str]] = [
-        # "app.core.database.mongodb_connect" if MONGO_DB_ENABLE else None,
+        "app.core.database.mongodb_connect" if MONGO_DB_ENABLE else None,
         "app.core.database.redis_connect" if REDIS_ENABLE else None,
     ]
 

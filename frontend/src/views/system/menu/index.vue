@@ -415,26 +415,26 @@ const columns = reactive<TableColumnsType>([
   {
     title: '菜单名称',
     dataIndex: 'name',
-    align: 'center',
+    // align: 'center',
     ellipsis: true,
   },
   {
     title: '图标',
     dataIndex: 'icon',
-    align: 'center',
+    // align: 'center',
     ellipsis: true,
   },
   {
     title: '显示排序',
     dataIndex: 'order',
-    align: 'center',
+    // align: 'center',
     ellipsis: true,
     width: 100
   },
   {
     title: '菜单类型',
     dataIndex: 'type',
-    align: 'center',
+    // align: 'center',
     ellipsis: true,
     width: 100
   },
@@ -442,19 +442,19 @@ const columns = reactive<TableColumnsType>([
     title: '权限标识',
     dataIndex: 'permission',
     ellipsis: true,
-    align: 'center',
+    // align: 'center',
   },
   {
     title: '状态',
     dataIndex: 'available',
     ellipsis: true,
-    align: 'center',
+    // align: 'center',
     width: 100
   },
   {
     title: '备注',
     dataIndex: 'description',
-    align: 'center',
+    // align: 'center',
     ellipsis: true,
     width: 180
   },

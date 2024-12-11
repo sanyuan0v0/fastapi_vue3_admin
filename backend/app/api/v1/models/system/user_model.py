@@ -80,28 +80,24 @@ class UserModel(ModelBase):
     
     # 组织信息
     dept_id = Column(
-        Integer, 
-        ForeignKey('system_dept.id', ondelete="SET NULL", onupdate="CASCADE"), 
-        nullable=True, 
-        index=True, 
-        comment="所属部门ID"
+        Integer,
+        ForeignKey('system_dept.id', ondelete="SET NULL", onupdate="CASCADE"),
+        nullable=True, index=True, comment="部门ID"
     )
     dept = relationship(
-        "DeptModel",
-        back_populates="users",
-        foreign_keys=[dept_id],
-        lazy="joined",
-        post_update=True
-    )
+        'DeptModel', 
+        primaryjoin="UserModel.dept_id == DeptModel.id", 
+        lazy="select", 
+        uselist=False)
     roles = relationship(
         "RoleModel", 
         secondary=UserRolesModel.__tablename__, 
-        lazy="selectin", 
+        lazy="joined", 
         uselist=True)
     positions = relationship(
         "PositionModel", 
         secondary=UserPositionsModel.__tablename__, 
-        lazy="selectin", 
+        lazy="joined", 
         uselist=True)
     
     # 审计字段
@@ -119,5 +115,6 @@ class UserModel(ModelBase):
         "UserModel",
         remote_side=[id],
         foreign_keys=[creator_id],
-        lazy="selectin"
+        lazy="selectin",
+        uselist=False
     )

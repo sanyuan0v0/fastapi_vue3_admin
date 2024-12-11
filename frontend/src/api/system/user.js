@@ -96,26 +96,30 @@ export function batchAvailableUser(body) {
   });
 }
 
-export function exportUser(body) {
+export function exportUser(query) {
   return request({
-    url: "/api/v1/system/user/export",
-    method: "post",
-    data: body,
-  });
+    url: '/api/v1/system/user/export',
+    method: 'get',
+    params: query,
+    responseType: 'blob'
+  })
 }
 
-export function importUserTemplate(body) {
+export function downloadTemplate() {
   return request({
-    url: "/api/v1/system/user/import/template",
-    method: "post",
-    data: body,
-  });
+    url: '/api/v1/system/user/import/template',
+    method: 'get',
+    responseType: 'blob'
+  })
 }
 
-export function importUserData(body) {
+export function importUser(data) {
   return request({
-    url: "/api/v1/system/user/import/data",
-    method: "post",
-    data: body,
-  });
+    url: '/api/v1/system/user/import/data',
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
 }

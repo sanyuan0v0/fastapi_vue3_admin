@@ -45,10 +45,10 @@
           <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')" style="margin-right: 10px;">
             新建
           </a-button>
-          <a-button type="primary" :icon="h(UploadOutlined)" @click="modalHandle('import')" style="margin-right: 10px;">
+          <a-button type="primary" :icon="h(UploadOutlined)" @click="handleImport" style="margin-right: 10px;">
             导入
           </a-button>
-          <a-button type="primary" :icon="h(DownOutlined)" @click="handleExport" style="margin-right: 10px;">
+          <a-button type="primary" :icon="h(DownloadOutlined)" @click="handleExport" style="margin-right: 10px;">
             导出
           </a-button>
           <a-dropdown>
@@ -119,10 +119,11 @@
 
     <!-- 弹窗区域 -->
     <div class="modal-wrapper">
+      <!-- 主模态框 -->
       <a-modal v-model:open="openModal" @ok="handleModalSumbit" :width="800" :destroyOnClose="true"
-        :confirmLoading="modalSubmitLoading" style="top: 30px">
+        :confirmLoading="modalSubmitLoading">
         <template #title>
-          <span>{{ modalTitle === 'create' ? '新建用户' : (modalTitle === 'view' ? '查看用户' : (modalTitle === 'import' ? '导入用户' : '修改用户')) }}</span>
+          <span>{{ modalTitle === 'create' ? '新建用户' : (modalTitle === 'view' ? '查看用户' : '修改用户') }}</span>
         </template>
         <div v-if="modalTitle === 'view'">
           <a-spin :spinning="detailStateLoading">
@@ -153,37 +154,6 @@
               <a-descriptions-item label="备注" :span="2">{{ detailState.description }}</a-descriptions-item>
             </a-descriptions>
           </a-spin>
-        </div>
-        <div v-else-if="modalTitle === 'import'">
-          <!-- 用户导入对话框 -->
-          <a-modal :title="upload.title" v-model:visible="upload.open" width="400px" centered>
-            <a-upload ref="uploadRef" 
-              :before-upload="beforeUpload" 
-              :multiple="false" 
-              :accept="'.xlsx, .xls'"
-              :headers="upload.headers" 
-              :action="upload.url + '?updateSupport=' + upload.updateSupport"
-              :disabled="upload.isUploading" 
-              :custom-request="customRequest" 
-              :show-upload-list="false" drag>
-              <p class="ant-upload-drag-icon">
-                <upload-outlined />
-              </p>
-              <p class="ant-upload-text">点击或拖拽文件到此区域上传</p>
-              <p class="ant-upload-hint">
-                <a-checkbox v-model:checked="upload.updateSupport" /> 是否更新已存在的用户数据
-              </p>
-              <p class="ant-upload-hint">
-                仅允许导入 xls、xlsx 格式的文件。
-                <a :href="importUserTemplate" target="_blank"
-                  style="font-size: 12px; vertical-align: baseline;">下载模板</a>
-              </p>
-            </a-upload>
-            <template #footer>
-              <a-button type="primary" @click="submitFileForm">确 定</a-button>
-              <a-button @click="upload.open = false">取 消</a-button>
-            </template>
-          </a-modal>
         </div>
         <div v-else-if="modalTitle === 'create'">
           <a-form ref="createForm" :model="createState" v-bind="{ labelCol: { span: 5 }, wrapperCol: { span: 15 } }">
@@ -313,6 +283,31 @@
           </a-form>
         </div>
       </a-modal>
+
+      <!-- 导入对话框 - 移到主模态框外部 -->
+      <a-modal v-model:visible="upload.open" 
+        title="导入用户" 
+        :width="400"
+        @ok="submitFileForm"
+        :confirmLoading="upload.isUploading">
+        <a-upload
+          ref="uploadRef"
+          :accept="'.xlsx, .xls'"
+          :showUploadList="false"
+          :beforeUpload="beforeUpload"
+          :customRequest="customRequest"
+          :maxCount="1"
+        >
+          <a-button>
+            <upload-outlined></upload-outlined>
+            选择文件
+          </a-button>
+        </a-upload>
+        <br/>
+        <a-checkbox v-model:checked="upload.updateSupport">是否更新已经存在的用户数据</a-checkbox>
+        <br/>
+        <a-button type="link" @click="handleDownloadTemplate">下载模板</a-button>
+      </a-modal>
     </div>
 
     <!-- 选择器弹窗 -->
@@ -324,11 +319,11 @@
 import { ref, reactive, computed, unref, onMounted, h } from 'vue';
 import { Table, message, Modal } from 'ant-design-vue';
 import type { TableColumnsType, MenuProps } from 'ant-design-vue';
-import { PlusOutlined, DownOutlined, UploadOutlined, CheckOutlined, StopOutlined, SearchOutlined } from '@ant-design/icons-vue';
+import { PlusOutlined, DownOutlined, UploadOutlined, DownloadOutlined, CheckOutlined, StopOutlined, SearchOutlined } from '@ant-design/icons-vue';
 import { isEmpty, listToTree } from '@/utils/util';
 import PageHeader from '@/components/PageHeader.vue';
 import { getDeptList } from '@/api/system/dept'
-import { getUserList, createUser, updateUser, deleteUser, batchAvailableUser, exportUser, importUserTemplate, importUserData } from '@/api/system/user'
+import { getUserList, createUser, updateUser, deleteUser, batchAvailableUser, exportUser, downloadTemplate, importUser } from '@/api/system/user'
 import SelectorModal from './SelectorModal.vue'
 import type { searchDataType, tableDataType, deptTreeType, roleSelectorType, positionSelectorType } from './types'
 import XLSX from 'xlsx';
@@ -637,8 +632,6 @@ const modalHandle = (modalType: string, index?: number) => {
     if (selected['positions']) {
       updateState.position_ids = selected.positions.map(position => position.id);
     }
-  }else if (modalType === 'import' && index !== undefined) {
-    
   }
 }
 
@@ -726,8 +719,6 @@ const handleModalSumbit = () => {
       modalSubmitLoading.value = false;
       console.error(error)
     })
-  } else if (modalTitle.value === 'import') {
-
   }
 }
 
@@ -769,51 +760,25 @@ const handleSelectorModalEvent = (
 // 上传头像配置
 const token = storage.get('Access-Token');
 
+// 导入相关方法
+const uploadRef = ref();
+
 // 用户导入参数
 const upload = reactive({
-  title: '用户导入',
   open: false,
   headers: token ? { Authorization: 'Bearer ' + token } : {},
-  url: importUserData, // 假设这是上传接口地址
-  // url: import.meta.env.VITE_APP_BASE_API + "/system/user/import/data",
   isUploading: false,
   updateSupport: false,
 });
 
-
-// 导出按钮操作
-const handleExport = () => {
-  // 构建查询参数
-  const params = {
-    ...queryState,
-    page_no: 1,
-    page_size: pagination.total // 导出所有数据
-  };
-
-  // 调用 exportLog 接口
-  exportUser(params).then(response => {
-    const blob = new Blob([response.data], { type: 'application/vnd.ms-excel' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `user_${new Date().getTime()}.xlsx`; // 设置下载文件名
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-    message.success('导出成功');
-  }).catch(error => {
-    console.error('导出失败:', error);
-    message.error('导出失败');
-  });
+// 打开导入对话框
+const handleImport = () => {
+  upload.open = true;
+  upload.isUploading = false;
+  upload.updateSupport = false;
 };
 
-// 下载模板
-const downloadTemplate = () => {
-  window.location.href = importUserTemplate; // 假设这是模板下载地址
-};
-
-// 导入
+// 文件上传前校验
 const beforeUpload = (file: File) => {
   const isExcel = file.type === 'application/vnd.ms-excel' || file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
   if (!isExcel) {
@@ -821,12 +786,15 @@ const beforeUpload = (file: File) => {
   }
   return isExcel;
 };
+
+// 自定义上传
 const customRequest = ({ file, onSuccess, onError }: any) => {
   upload.isUploading = true;
   const formData = new FormData();
   formData.append('file', file);
   formData.append('updateSupport', upload.updateSupport.toString());
-  importUserData(formData)
+  
+  importUser(formData)
     .then((response) => {
       upload.isUploading = false;
       upload.open = false;
@@ -840,9 +808,67 @@ const customRequest = ({ file, onSuccess, onError }: any) => {
       message.error('用户导入失败');
     });
 };
-/** 提交上传文件 */
+
+// 提交上传
 const submitFileForm = () => {
-  uploadRef.value.upload();
+  uploadRef.value?.upload?.();
+};
+
+// 导出按钮操作
+const handleExport = () => {
+  Modal.confirm({
+    title: '警告',
+    content: '是否确认导出所有用户数据?',
+    onOk() {
+      const params = {
+        ...queryState,
+        page_no: 1,
+        page_size: pagination.total
+      };
+      return exportUser(params).then(response => {
+        const blob = new Blob([response], { type: 'application/vnd.ms-excel' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `用户数据_${new Date().getTime()}.xlsx`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+        message.success('导出成功');
+      }).catch(() => {
+        message.error('导出失败');
+      });
+    }
+  });
+};
+
+// 下载模板
+const handleDownloadTemplate = () => {
+  downloadTemplate().then(response => {
+    const blob = new Blob([response], { type: 'application/vnd.ms-excel' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = '用户导入模板.xlsx';
+    link.click();
+    window.URL.revokeObjectURL(url);
+    message.success('下载成功');
+  }).catch(() => {
+    message.error('下载失败');
+  });
+};
+
+// 文件下载方法
+const downloadFile = (response, fileName) => {
+  const blob = new Blob([response], {
+    type: 'application/vnd.ms-excel'
+  });
+  const link = document.createElement('a');
+  link.href = window.URL.createObjectURL(blob);
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  window.URL.revokeObjectURL(link.href);
 };
 </script>
 

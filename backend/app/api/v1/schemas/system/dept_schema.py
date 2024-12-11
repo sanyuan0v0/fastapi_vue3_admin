@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from app.core.base_schema import BaseSchema
-
+from app.core.validator import DateTimeStr
 
 class DeptCreateSchema(BaseModel):
     """部门创建模型"""
@@ -28,8 +28,11 @@ class DeptUpdateSchema(DeptCreateSchema):
     id: int = Field(..., gt=0, description="部门ID")
 
 
-class DeptOutSchema(DeptCreateSchema, BaseSchema):
+class DeptOutSchema(DeptCreateSchema):
     """部门响应模型"""
     model_config = ConfigDict(from_attributes=True)
 
     parent_name: Optional[str] = Field(default=None, max_length=40, description="父部门名称")
+    id: int = Field(description="主键ID")
+    created_at: DateTimeStr = Field(description="创建时间")
+    updated_at: DateTimeStr = Field(description="更新时间")

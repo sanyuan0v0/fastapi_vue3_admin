@@ -47,10 +47,8 @@ class MenuModel(ModelBase):
     )
     parent = relationship(
         "MenuModel", 
-        remote_side=[id], 
-        backref="children", 
-        lazy="joined",
-        post_update=True,
+        cascade='all, delete-orphan',
+        primaryjoin="MenuModel.parent_id == MenuModel.id",
         uselist=False
     )
     

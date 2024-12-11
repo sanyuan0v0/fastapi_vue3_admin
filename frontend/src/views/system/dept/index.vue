@@ -122,7 +122,6 @@
               {{ detailState.available ? '启用' : '禁用' }}
             </a-descriptions-item>
             <a-descriptions-item label="上级部门" :span="2">{{ detailState.parent_name }}</a-descriptions-item>
-            <a-descriptions-item label="创建人">{{ detailState.creator ? detailState.creator.name : '-' }}</a-descriptions-item>
             <a-descriptions-item label="创建时间">{{ detailState.created_at }}</a-descriptions-item>
             <a-descriptions-item label="修改时间">{{ detailState.updated_at }}</a-descriptions-item>
             <a-descriptions-item label="备注" :span="2">{{ detailState.description }}</a-descriptions-item>
@@ -300,7 +299,7 @@ const columns = reactive<TableColumnsType>([
   {
     title: '部门名称',
     dataIndex: 'name',
-    align: 'center',
+    // align: 'center',
     ellipsis: true,
     key: 'name',
     // width: 160
@@ -309,7 +308,7 @@ const columns = reactive<TableColumnsType>([
     title: '排序',
     dataIndex: 'order',
     key: 'order',
-    align: 'center',
+    // align: 'center',
     ellipsis: true,
     // width: 100
   },
@@ -318,7 +317,7 @@ const columns = reactive<TableColumnsType>([
     dataIndex: 'available',
     key: 'available',
     ellipsis: true,
-    align: 'center',
+    // align: 'center',
     // width: 100
   },
   {
@@ -331,7 +330,7 @@ const columns = reactive<TableColumnsType>([
   {
     title: '创建时间',
     dataIndex: 'created_at',
-    align: 'center',
+    // align: 'center',
     ellipsis: true,
     key: 'created_at',
     width: 200
@@ -339,7 +338,7 @@ const columns = reactive<TableColumnsType>([
   {
     title: '更新日期',
     dataIndex: 'updated_at',
-    align: 'center',
+    // align: 'center',
     ellipsis: true,
     key: 'created_at',
     width: 200
