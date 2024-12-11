@@ -24,7 +24,7 @@ class CurrentUserUpdateSchema(BaseModel):
         return mobile_validator(value)
 
 
-class UserRegisterSchema(CurrentUserUpdateSchema):
+class UserRegisterSchema(BaseModel):
     """注册"""
     name: str = Field(default=None, max_length=15, description="名称")
     mobile: Optional[str] = Field(default=None, description="手机号")
@@ -32,6 +32,11 @@ class UserRegisterSchema(CurrentUserUpdateSchema):
     gender: Optional[int] = Field(default=1, description="性别")  # 1:男 2:女
     username: str = Field(default=None, max_length=15, description="用户名")
     password: str = Field(default=None, max_length=128, description="密码哈希值")
+    dept_id: Optional[int] = Field(default=1, description='部门ID')
+    role_ids: Optional[List[int]] = Field(default=[2], description='角色ID')
+    position_ids: Optional[List[int]] = Field(default=[1], description='岗位ID')
+    creator_id: Optional[int] = Field(default=1, description='创建人ID')
+    description: Optional[str] = Field(default=f'注册用户{username}', max_length=255, description="备注")
 
 
 class UserForgetPasswordSchema(BaseModel):

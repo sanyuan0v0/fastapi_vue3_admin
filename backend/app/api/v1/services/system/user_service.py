@@ -149,7 +149,10 @@ class UserService:
             raise CustomException(msg="用户不存在")
         if user.is_superuser:
             raise CustomException(msg="超级管理员不能删除")
-            
+        if user.available:
+            raise CustomException(msg="用户已启用,不能删除")
+        if auth.user.id == id:
+            raise CustomException(msg="不能删除当前登陆用户")
         # 删除用户角色关联数据
         await UserCRUD(auth).set_user_roles(user_ids=[id], role_ids=[])
         
@@ -246,7 +249,12 @@ class UserService:
 
         data.password = PwdUtil.set_password_hash(password=data.password)
         dict_data = data.model_dump(exclude_unset=True)
+        dict_data['creator_id'] = data.creator_id
+        dict_data['dept_id'] = data.dept_id
+        dict_data['description'] = data.description
         result = await UserCRUD(auth).create(data=dict_data)
+        await UserCRUD(auth).set_user_roles(user_ids=[result.id], role_ids=data.role_ids)
+        await UserCRUD(auth).set_user_positions(user_ids=[result.id], position_ids=data.position_ids)
         return UserOutSchema.model_validate(result).model_dump()
 
     @classmethod
