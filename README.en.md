@@ -122,6 +122,9 @@ git clone https://gitee.com/tao__tao/fastapi_vue_admin.git
    ```shell
    cd backend
    pip3 install -r requirements.txt
+
+   When running pip install, I encountered the following error: UnicodeDecodeError: 'gbk' codec can't decode byte 0xad in position.
+   Solution Link：https://www.cnblogs.com/RexTooru/p/17303318.html
    ```
 
 2. Modify project database configuration

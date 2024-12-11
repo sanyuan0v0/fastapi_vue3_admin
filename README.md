@@ -120,6 +120,9 @@ git clone https://gitee.com/tao__tao/my_demo_project.git
    ```shell
    cd backend
    pip3 install -r requirements.txt
+
+   pip install 遇到UnicodeDecodeError: 'gbk' codec can't decode byte 0xad in position
+   解决方案：https://www.cnblogs.com/RexTooru/p/17303318.html
    ```
 
 2. 修改项目数据库配置信息
