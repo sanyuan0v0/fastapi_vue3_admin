@@ -265,7 +265,7 @@ class Settings(BaseSettings):
 
     # 事件列表
     EVENTS: List[Optional[str]] = [
-        "app.core.database.mongodb_connect" if MONGO_DB_ENABLE else None,
+        # "app.core.database.mongodb_connect" if MONGO_DB_ENABLE else None,
         "app.core.database.redis_connect" if REDIS_ENABLE else None,
     ]
 
