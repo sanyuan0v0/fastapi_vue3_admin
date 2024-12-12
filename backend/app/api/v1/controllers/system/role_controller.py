@@ -2,6 +2,7 @@
 
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import JSONResponse, StreamingResponse
+import urllib.parse
 
 from app.common.response import StreamResponse, SuccessResponse
 from app.core.router_class import OperationLogRoute
@@ -106,4 +107,11 @@ async def export_obj_list(
     role_export_result = await RoleService.export_role_list(role_list=role_query_result)
     logger.info('导出角色成功')
 
-    return StreamResponse(data=bytes2file_response(role_export_result), msg='导出角色成功')
+    return StreamResponse(
+        data=bytes2file_response(role_export_result),
+        media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers = {
+            'Content-Disposition': f'attachment; filename={urllib.parse.quote("导出角色.xlsx")}',
+            'Access-Control-Expose-Headers': 'Content-Disposition'
+        }
+    )

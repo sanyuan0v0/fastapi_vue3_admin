@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Optional
+from typing import Any, Mapping, Optional
 from fastapi import status
 from fastapi.responses import JSONResponse, StreamingResponse
-from app.common.constant import RET
+from starlette.background import BackgroundTask
 from pydantic import Field, BaseModel
+
+from app.common.constant import RET
 
 class ResponseSchema(BaseModel):
     """响应模型"""
@@ -72,10 +74,11 @@ class StreamResponse(StreamingResponse):
 
     def __init__(
             self,
-            data: Optional[Any] = None,
-            msg: Optional[str] = RET.OK.msg,
-            code: int = RET.OK.code,
+            data: Any = None,
             status_code: int = status.HTTP_200_OK,
+            headers: Mapping[str, str] | None = None,
+            media_type: str | None = None,
+            background: BackgroundTask | None = None
     ) -> None:
         """
         初始化流式响应类
@@ -85,10 +88,10 @@ class StreamResponse(StreamingResponse):
         :param code: 业务状态码
         :param status_code: HTTP状态码
         """
-        content = ResponseSchema(
-            code=code,
-            msg=msg,
-            data=data,
-            status_code=status_code
-        ).model_dump()
-        super().__init__(content=content, status_code=status_code)
+        super().__init__(
+            content=data, 
+            status_code=status_code, 
+            media_type=media_type, # 文件类型
+            headers=headers, # 文件名
+            background=background # 文件大小
+        )

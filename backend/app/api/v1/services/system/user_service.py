@@ -28,7 +28,7 @@ from app.api.v1.schemas.system.user_schema import (
     UserForgetPasswordSchema
 )
 from app.api.v1.params.system.user_param import UserQueryParams
-
+from app.core.logger import logger
 
 class UserService:
     """用户模块服务层"""
@@ -50,7 +50,7 @@ class UserService:
         return UserOutSchema.model_validate(user).model_dump()
 
     @classmethod
-    async def get_user_list(cls, search: UserQueryParams, order_by: List[Dict], auth: AuthSchema) -> List[Dict]:
+    async def get_user_list(cls, auth: AuthSchema, search: UserQueryParams, order_by: List[Dict]= None) -> List[Dict]:
         user_list = await UserCRUD(auth).get_user_list(search=search.__dict__, order_by=order_by)
         user_dict_list = []
         for user in user_list:
@@ -272,9 +272,9 @@ class UserService:
         return UserOutSchema.model_validate(new_user).model_dump()
 
     @classmethod
-    async def batch_import_user(cls, auth: AuthSchema, file: UploadFile, update_support: bool = False) -> Dict:
+    async def batch_import_user(cls, auth: AuthSchema, file: UploadFile, update_support: bool = False) -> str:
         """批量导入用户"""
-
+        
         header_dict = {
             '部门编号': 'dept_id',
             '用户名': 'username',
@@ -291,6 +291,14 @@ class UserService:
             df = pd.read_excel(io.BytesIO(contents))
             await file.close()
             
+            if df.empty:
+                raise CustomException(msg="导入文件为空")
+            
+            # 检查表头是否完整
+            missing_headers = [header for header in header_dict.keys() if header not in df.columns]
+            if missing_headers:
+                raise CustomException(msg=f"导入文件缺少必要的列: {', '.join(missing_headers)}")
+            
             # 重命名列名
             df.rename(columns=header_dict, inplace=True)
             
@@ -298,7 +306,8 @@ class UserService:
             required_fields = ['username', 'name', 'dept_id']
             for field in required_fields:
                 if df[field].isnull().any():
-                    raise CustomException(msg=f"{header_dict[field]}不能为空")
+                    missing_rows = df[df[field].isnull()].index.tolist()
+                    raise CustomException(msg=f"{[k for k,v in header_dict.items() if v == field][0]}不能为空，第{[i+1 for i in missing_rows]}行")
             
             error_msgs = []
             success_count = 0
@@ -306,35 +315,43 @@ class UserService:
             # 处理每一行数据
             for index, row in df.iterrows():
                 try:
-                    # 数据转换
-                    row['gender'] = 1 if row['gender'] == '男' else (2 if row['gender'] == '女' else 1)
-                    row['available'] = True if row['available'] == '正常' else False
+                    # 数据转换前的类型检查
+                    try:
+                        dept_id = int(row['dept_id'])
+                    except ValueError:
+                        error_msgs.append(f"第{index+1}行: 部门编号必须是数字")
+                        continue
                     
                     # 检查部门是否存在
-                    dept = await DeptCRUD(auth).get_dept_by_id(id=int(row['dept_id']))
+                    dept = await DeptCRUD(auth).get_dept_by_id(id=dept_id)
                     if not dept:
-                        raise CustomException(msg=f"部门ID {row['dept_id']} 不存在")
+                        error_msgs.append(f"第{index+1}行: 部门ID {dept_id} 不存在")
+                        continue
+                    
+                    # 数据转换
+                    gender = 1 if row['gender'] == '男' else (2 if row['gender'] == '女' else 1)
+                    available = True if row['available'] == '正常' else False
                     
                     # 构建用户数据
-                    user_data = UserCreateSchema(
-                        username=str(row['username']).strip(),
-                        name=str(row['name']).strip(),
-                        email=str(row['email']).strip() if not pd.isna(row['email']) else None,
-                        mobile=str(row['mobile']).strip() if not pd.isna(row['mobile']) else None,
-                        gender=row['gender'],
-                        available=row['available'],
-                        dept_id=int(row['dept_id']),
-                        password="123456" # 设置默认密码
-                    )
+                    user_data = {
+                        "username": str(row['username']).strip(),
+                        "name": str(row['name']).strip(),
+                        "email": str(row['email']).strip() if not pd.isna(row['email']) else None,
+                        "mobile": str(row['mobile']).strip() if not pd.isna(row['mobile']) else None,
+                        "gender": gender,
+                        "available": available,
+                        "dept_id": dept_id,
+                        "password": PwdUtil.set_password_hash(password="123456")  # 设置默认密码
+                    }
 
                     # 处理用户导入
-                    exists_user = await UserCRUD(auth).get_user_by_username(username=user_data.username)
+                    exists_user = await UserCRUD(auth).get_user_by_username(username=user_data["username"])
                     if exists_user:
                         if update_support:
                             await UserCRUD(auth).update(id=exists_user.id, data=user_data)
                             success_count += 1
                         else:
-                            error_msgs.append(f"第{index+1}行: 用户 {user_data.username} 已存在")
+                            error_msgs.append(f"第{index+1}行: 用户 {user_data['username']} 已存在")
                     else:
                         await UserCRUD(auth).create(data=user_data)
                         success_count += 1
@@ -343,12 +360,14 @@ class UserService:
                     error_msgs.append(f"第{index+1}行: {str(e)}")
                     continue
 
-            return {
-                "success": True,
-                "message": f"成功导入 {success_count} 条数据" + ("\n" + "\n".join(error_msgs) if error_msgs else "")
-            }
+            # 返回详细的导入结果
+            result = f"成功导入 {success_count} 条数据"
+            if error_msgs:
+                result += "\n错误信息:\n" + "\n".join(error_msgs)
+            return result
             
         except Exception as e:
+            logger.error(f"批量导入用户失败: {str(e)}")
             raise CustomException(msg=f"导入失败: {str(e)}")
 
     @classmethod
@@ -379,11 +398,11 @@ class UserService:
             'mobile': '手机号码',
             'gender': '性别',
             'available': '状态',
+            'description': '备注',
+            'created_at': '创建时间',
+            'updated_at': '更新时间',
+            'creator_id': '创建者ID',
             'creator': '创建者',
-            'create_datetime': '创建时间',
-            'modifier': '更新者', 
-            'update_datetime': '更新时间',
-            'description': '备注'
         }
 
         # 复制数据并转换

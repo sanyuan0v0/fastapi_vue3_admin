@@ -55,15 +55,15 @@ class PositionService:
     async def export_post_list(cls, post_list: List[Dict[str, Any]]) -> bytes:
         """导出岗位列表"""
         mapping_dict = {
-            'id': '岗位编号',
+            'id': '编号',
             'name': '岗位名称', 
             'order': '显示顺序',
             'available': '状态',
-            'creator': '创建者',
-            'create_datetime': '创建时间',
-            'modifier': '更新者',
-            'update_datetime': '更新时间',
             'description': '备注',
+            'created_at': '创建时间',
+            'updated_at': '更新时间',
+            'creator_id': '创建者ID',
+            'creator': '创建者',
         }
 
         # 复制数据并转换状态

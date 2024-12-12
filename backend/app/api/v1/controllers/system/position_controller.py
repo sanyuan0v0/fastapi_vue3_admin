@@ -2,6 +2,7 @@
 
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import JSONResponse, StreamingResponse
+import urllib.parse
 
 from app.common.response import StreamResponse, SuccessResponse
 from app.core.base_params import PaginationQueryParams
@@ -95,4 +96,11 @@ async def export_obj_list(
     position_export_result = await PositionService.export_post_list(post_list=position_query_result)
     logger.info('导出岗位成功')
 
-    return StreamResponse(data=bytes2file_response(position_export_result), msg='导出岗位成功')
+    return StreamResponse(
+        data=bytes2file_response(position_export_result),
+        media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers = {
+            'Content-Disposition': f'attachment; filename={urllib.parse.quote("导出岗位.xlsx")}',
+            'Access-Control-Expose-Headers': 'Content-Disposition'
+        }
+    )

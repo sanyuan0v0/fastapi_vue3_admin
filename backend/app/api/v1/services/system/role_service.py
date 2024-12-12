@@ -80,11 +80,11 @@ class RoleService:
             'order': '显示顺序', 
             'data_scope': '数据权限',
             'available': '状态',
+            'description': '备注',
+            'created_at': '创建时间',
+            'updated_at': '更新时间',
+            'creator_id': '创建者ID',
             'creator': '创建者',
-            'create_datetime': '创建时间',
-            'modifier': '更新者',
-            'update_datetime': '更新时间',
-            'description': '备注'
         }
 
         # 数据权限映射

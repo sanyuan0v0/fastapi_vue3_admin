@@ -58,19 +58,20 @@ class OperationLogService:
         """
         # 操作日志字段映射
         mapping_dict = {
-            'id': '日志编号',
-            'description': '系统模块',
-            'request_method': '请求方式',
+            'id': '编号',
             'request_path': '请求URL',
-            'request_ip': '操作地址',
-            'request_location': '操作地点',
+            'request_method': '请求方式',
             'request_payload': '请求参数',
+            'request_ip': '操作地址',
+            'request_os': '操作系统',
+            'request_browser': '浏览器',
             'response_json': '返回参数',
             'response_code': '操作状态',
-            'created_at': '操作日期',
-            'const_time': '消耗时间',
-            'request_os': '操作系统',
-            'request_browser': '浏览器'
+            'description': '备注',
+            'created_at': '创建时间',
+            'updated_at': '更新时间',
+            'creator_id': '创建者ID',
+            'creator': '创建者',
         }
 
         # 处理数据

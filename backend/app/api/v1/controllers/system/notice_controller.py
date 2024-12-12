@@ -2,6 +2,7 @@
 
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import JSONResponse, StreamingResponse
+import urllib.parse
 
 from app.common.response import StreamResponse, SuccessResponse
 from app.core.base_params import PaginationQueryParams
@@ -88,4 +89,11 @@ async def export_obj_list(
     export_result = await NoticeService.export_notice_services(notice_list=result_dict_list)
     logger.info('导出公告成功')
 
-    return StreamResponse(data=bytes2file_response(export_result), msg='导出公告成功')
+    return StreamResponse(
+        data=bytes2file_response(export_result),
+        media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers = {
+            'Content-Disposition': f'attachment; filename={urllib.parse.quote("导出公告通知.xlsx")}',
+            'Access-Control-Expose-Headers': 'Content-Disposition'
+        }
+    )

@@ -3,6 +3,7 @@
 from fastapi import APIRouter, Depends, Query, UploadFile, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
+import urllib.parse
 
 from app.common.response import StreamResponse, SuccessResponse
 from app.api.v1.services.system.user_service import UserService
@@ -155,20 +156,35 @@ async def export_obj_template()-> StreamingResponse:
     user_import_template_result = await UserService.get_import_template_user()
     logger.info('获取用户导入模板成功')
 
-    return StreamResponse(data=bytes2file_response(user_import_template_result), msg="获取用户导入模板成功")
+    return StreamResponse(
+        data=bytes2file_response(user_import_template_result),
+        media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers = {
+            'Content-Disposition': f'attachment; filename={urllib.parse.quote("用户导入模板.xlsx")}',
+            'Access-Control-Expose-Headers': 'Content-Disposition'
+        }
+    )
 
 
 @router.post('/export', summary="导出用户", description="导出用户")
 async def export_obj_list(
+    page: PaginationQueryParams = Depends(),
     search: UserQueryParams = Depends(),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:export"])),
 ) -> StreamingResponse:
     # 获取全量数据
-    user_list = await UserService.get_user_list(auth=auth, search=search)
+    user_list = await UserService.get_user_list(auth=auth, search=search, order_by=page.order_by)
     user_export_result = await UserService.export_user_list(user_list)
     logger.info('导出用户成功')
 
-    return StreamResponse(data=bytes2file_response(user_export_result), msg="导出用户成功")
+    return StreamResponse(
+        data=bytes2file_response(user_export_result),
+        media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers = {
+            'Content-Disposition': f'attachment; filename={urllib.parse.quote("导出用户.xlsx")}',
+            'Access-Control-Expose-Headers': 'Content-Disposition'
+        }
+    )
 
 
 @router.post('/import/data', summary="导入用户", description="导入用户")

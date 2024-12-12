@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from fastapi import APIRouter, Depends, Query
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
+import urllib.parse
+from urllib.parse import quote
 
 from app.common.request import PaginationService
-from app.common.response import SuccessResponse, StreamingResponse
+from app.common.response import SuccessResponse, StreamResponse
 from app.core.router_class import OperationLogRoute
 from app.core.dependencies import AuthPermission
 from app.core.base_params import PaginationQueryParams
@@ -62,5 +64,11 @@ async def export_obj_list(
     operation_log_export_result = await OperationLogService.export_log_list(operation_log_list=operation_log_list)
     logger.info('导出日志成功')
 
-    return StreamingResponse(data=bytes2file_response(operation_log_export_result), msg="导出日志成功")
-
+    return StreamResponse(
+        data=bytes2file_response(operation_log_export_result),
+        media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers = {
+            'Content-Disposition': f'attachment; filename={urllib.parse.quote("操作日志.xlsx")}',
+            'Access-Control-Expose-Headers': 'Content-Disposition'
+        }
+    )

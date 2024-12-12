@@ -47,7 +47,7 @@ class NoticeService:
     async def export_notice_services(cls, notice_list: List[Dict[str, Any]]) -> bytes:
         """导出公告列表"""
         mapping_dict = {
-            'id': '公告编号',
+            'id': '编号',
             'notice_title': '公告标题', 
             'notice_type': '公告类型（1通知 2公告）',
             'notice_content': '公告内容',
@@ -62,7 +62,10 @@ class NoticeService:
         # 复制数据并转换状态
         data = notice_list.copy()
         for item in data:
+            # 处理状态
             item['available'] = '正常' if item.get('available') else '停用'
+            # 处理公告类型
+            item['notice_type'] = '通知' if item.get('notice_type') == 1 else '公告'
 
         # 转换为中文键
         new_data = [
