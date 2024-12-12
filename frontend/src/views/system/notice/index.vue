@@ -10,7 +10,8 @@
                     <a-row>
                         <a-col flex="0 1 450px">
                             <a-form-item name="name" label="名称" style="max-width: 300px;">
-                                <a-input v-model:value="queryState.notice_title" placeholder="请输入标题" allowClear></a-input>
+                                <a-input v-model:value="queryState.notice_title" placeholder="请输入标题"
+                                    allowClear></a-input>
                             </a-form-item>
                         </a-col>
                         <a-col flex="0 1 450px">
@@ -37,13 +38,9 @@
             <a-card title="公告通知列表" :bordered="false" :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
                 :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 400px)' }">
                 <template #extra>
-                    <a-button type="primary" 
-                        :icon="h(PlusOutlined)" 
-                        @click="modalHandle('create')"
+                    <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')"
                         style="margin-right: 10px;">新建</a-button>
-                    <a-button type="primary" 
-                        :icon="h(DownOutlined)" 
-                        @click="handleExport"
+                    <a-button type="primary" :icon="h(DownOutlined)" @click="handleExport"
                         style="margin-right: 10px;">导出
                     </a-button>
                     <a-dropdown>
@@ -61,7 +58,7 @@
                             <DownOutlined />
                         </a-button>
                     </a-dropdown>
-                    
+
                 </template>
                 <a-table :rowKey="record => record.id" :columns="columns" :data-source="dataSource"
                     :row-selection="rowSelection" :loading="tableLoading" @change="handleTableChange"
@@ -105,7 +102,8 @@
             <a-modal v-model:open="openModal" @ok="handleModalSumbit" :width="800" :destroyOnClose="true"
                 :confirmLoading="modalSubmitLoading" style="top: 30px">
                 <template #title>
-                    <span>{{ modalTitle === 'create' ? '新建公告通知' : (modalTitle === 'view' ? '查看公告通知' : '修改公告通知') }}</span>
+                    <span>{{ modalTitle === 'create' ? '新建公告通知' : (modalTitle === 'view' ? '查看公告通知' : '修改公告通知')
+                        }}</span>
                 </template>
                 <div v-if="modalTitle === 'view'">
                     <a-spin :spinning="detailStateLoading">
@@ -115,15 +113,18 @@
                                 detailState.index + 1 }}</a-descriptions-item>
                             <a-descriptions-item label="标题">{{ detailState.notice_title }}</a-descriptions-item>
                             <a-descriptions-item label="类型">
-                                <a-tag :color="detailState.notice_type === 1 ? '#108ee9' : '#f8e231'">{{ detailState.notice_type === 1 ? '通知' : '公告' }}</a-tag>
+                                <a-tag :color="detailState.notice_type === 1 ? '#108ee9' : '#f8e231'">{{
+                                    detailState.notice_type
+                                    === 1 ? '通知' : '公告' }}</a-tag>
                             </a-descriptions-item>
                             <a-descriptions-item label="内容">{{ detailState.notice_content }}</a-descriptions-item>
                             <a-descriptions-item label="状态">
                                 <a-badge :color="detailState.available ? 'green' : 'red'" />{{ detailState.available ?
-                                '启用' :
-                                '禁用' }}
+                                    '启用' :
+                                    '禁用' }}
                             </a-descriptions-item>
-                            <a-descriptions-item label="创建人">{{ detailState.creator ? detailState.creator.name : '-' }}</a-descriptions-item>
+                            <a-descriptions-item label="创建人">{{ detailState.creator ? detailState.creator.name : '-'
+                                }}</a-descriptions-item>
                             <a-descriptions-item label="创建时间">{{ detailState.created_at }}</a-descriptions-item>
                             <a-descriptions-item label="修改时间">{{ detailState.updated_at }}</a-descriptions-item>
                             <a-descriptions-item label="备注" :span="2">{{ detailState.description
@@ -144,7 +145,8 @@
                             </a-radio-group>
                         </a-form-item>
                         <a-form-item name="notice_content" label="内容" :rules="[{ required: true, message: '请输入内容' }]">
-                            <a-input v-model:value="createState.notice_content" placeholder="请输入内容" allowClear></a-input>
+                            <a-input v-model:value="createState.notice_content" placeholder="请输入内容"
+                                allowClear></a-input>
                         </a-form-item>
                         <a-form-item name="available" label="状态" :rules="[{ required: true, message: '请选择状态' }]">
                             <a-radio-group v-model:value="createState.available">
@@ -171,7 +173,8 @@
                             </a-radio-group>
                         </a-form-item>
                         <a-form-item name="notice_content" label="内容" :rules="[{ required: true, message: '请输入内容' }]">
-                            <a-input v-model:value="updateState.notice_content" placeholder="请输入内容" allowClear></a-input>
+                            <a-input v-model:value="updateState.notice_content" placeholder="请输入内容"
+                                allowClear></a-input>
                         </a-form-item>
                         <a-form-item name="available" label="状态" :rules="[{ required: true, message: '请选择状态' }]">
                             <a-radio-group v-model:value="updateState.available">
@@ -197,7 +200,7 @@ import type { TableColumnsType, MenuProps } from 'ant-design-vue';
 import { PlusOutlined, DownOutlined, CheckOutlined, StopOutlined } from '@ant-design/icons-vue';
 import { cloneDeep, isEmpty } from '@/utils/util';
 import PageHeader from '@/components/PageHeader.vue';
-import { getNoticeList, createNotice, updateNotice, deleteNotice, batchAvailableNotice, exportNotice} from '@/api/system/notice'
+import { getNoticeList, createNotice, updateNotice, deleteNotice, batchAvailableNotice, exportNotice } from '@/api/system/notice'
 import type { searchDataType, tableDataType } from './types'
 import XLSX from 'xlsx';
 
@@ -478,30 +481,50 @@ const handleModalSumbit = () => {
         })
     }
 }
+
 // 导出按钮操作
 const handleExport = () => {
-    // 构建查询参数
-    const params = {
-        ...queryState,
-        page_no: 1,
-        page_size: pagination.total // 导出所有数据
-    };
+    Modal.confirm({
+        title: '警告',
+        content: '是否确认导出所有公告通知数据?',
+        onOk() {
+            const body = {
+                ...queryState,
+                page_no: 1,
+                page_size: pagination.total
+            };
+            message.loading('正在导出数据，请稍候...', 0);
 
-    // 调用 exportLog 接口
-    exportNotice(params).then(response => {
-        const blob = new Blob([response.data], { type: 'application/vnd.ms-excel' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `notice_${new Date().getTime()}.xlsx`; // 设置下载文件名
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-        message.success('导出成功');
-    }).catch(error => {
-        console.error('导出失败:', error);
-        message.error('导出失败');
+            return exportNotice(body).then(response => {
+                const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                console.log("blob", blob);
+                // 从响应头获取文件名
+                const contentDisposition = response.headers['content-disposition'];
+                let fileName = '公告通知.xlsx';
+                if (contentDisposition) {
+                    const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
+                    if (fileNameMatch) {
+                        fileName = decodeURIComponent(fileNameMatch[1]);
+                    }
+                }
+                console.log(fileName);
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                message.destroy();
+                message.success('导出成功');
+            }).catch((error) => {
+                message.destroy();
+                console.error('导出错误:', error);
+                message.error('文件处理失败');
+            });
+        },
+        onCancel() {
+            message.info('已取消导出');
+        }
     });
 };
 

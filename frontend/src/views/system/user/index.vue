@@ -820,23 +820,42 @@ const handleExport = () => {
     title: '警告',
     content: '是否确认导出所有用户数据?',
     onOk() {
-      const params = {
+      const body = {
         ...queryState,
         page_no: 1,
         page_size: pagination.total
       };
-      return exportUser(params).then(response => {
-        const blob = new Blob([response], { type: 'application/vnd.ms-excel' });
+      message.loading('正在导出数据，请稍候...', 0);
+
+      return exportUser(body).then(response => {
+        const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        console.log("blob", blob);
+        // 从响应头获取文件名
+        const contentDisposition = response.headers['content-disposition'];
+        let fileName = '用户.xlsx';
+        if (contentDisposition) {
+          const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
+          if (fileNameMatch) {
+            fileName = decodeURIComponent(fileNameMatch[1]);
+          }
+        }
+        console.log(fileName);
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `用户数据_${new Date().getTime()}.xlsx`;
+        link.download = fileName;
+        document.body.appendChild(link);
         link.click();
-        window.URL.revokeObjectURL(url);
+        message.destroy();
         message.success('导出成功');
-      }).catch(() => {
-        message.error('导出失败');
+      }).catch((error) => {
+        message.destroy();
+        console.error('导出错误:', error);
+        message.error('文件处理失败');
       });
+    },
+    onCancel() {
+      message.info('已取消导出');
     }
   });
 };

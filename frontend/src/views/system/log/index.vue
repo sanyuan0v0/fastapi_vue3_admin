@@ -123,8 +123,8 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, h } from 'vue';
 import type { TableColumnsType } from 'ant-design-vue';
-import { SearchOutlined, DownOutlined} from '@ant-design/icons-vue';
-import { message } from 'ant-design-vue';
+import { SearchOutlined, DownOutlined, DownloadOutlined } from '@ant-design/icons-vue';
+import { message, Modal } from 'ant-design-vue';
 import type { searchDataType, tableDataType, creatorType } from './types'
 import PageHeader from '@/components/PageHeader.vue';
 import { getLogList, deleteLog, exportLog } from '@/api/system/log'
@@ -336,28 +336,47 @@ const handleSelectorModalEvent = (selectedSelectorRowKeys?: creatorType['id'][],
 
 /** 导出按钮操作 */
 const handleExport = () => {
-  // 构建查询参数
-  const params = {
-    ...queryState,
-    page_no: 1,
-    page_size: pagination.total // 导出所有数据
-  };
+  Modal.confirm({
+    title: '警告',
+    content: '是否确认导出所有日志数据?',
+    onOk() {
+      const body = {
+        ...queryState,
+        page_no: 1,
+        page_size: pagination.total
+      };
+      message.loading('正在导出数据，请稍候...', 0);
 
-  // 调用 exportLog 接口
-  exportLog(params).then(response => {
-    const blob = new Blob([response.data], { type: 'application/vnd.ms-excel' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `log_${new Date().getTime()}.xlsx`; // 设置下载文件名
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-    message.success('导出成功');
-  }).catch(error => {
-    console.error('导出失败:', error);
-    message.error('导出失败');
+      return exportLog(body).then(response => {
+        const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        console.log("blob", blob);
+        // 从响应头获取文件名
+        const contentDisposition = response.headers['content-disposition'];
+        let fileName = '系统日志.xlsx';
+        if (contentDisposition) {
+          const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
+          if (fileNameMatch) {
+            fileName = decodeURIComponent(fileNameMatch[1]);
+          }
+        }
+        console.log(fileName);
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        message.destroy();
+        message.success('导出成功');
+      }).catch((error) => {
+        message.destroy();
+        console.error('导出错误:', error);
+        message.error('文件处理失败');
+      });
+    },
+    onCancel() {
+      message.info('已取消导出');
+    }
   });
 };
 

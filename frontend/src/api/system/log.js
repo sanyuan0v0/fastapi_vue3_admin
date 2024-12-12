@@ -24,10 +24,15 @@ export function deleteLog(query) {
   });
 }
 
-export function exportLog(body) {
+export function exportLog(query) {
   return request({
-    url: "/api/v1/system/log/export",
-    method: "post",
-    data: body,
-  });
+    url: '/api/v1/system/log/export',
+    method: 'post',
+    data: query,
+    responseType: 'blob',
+    // headers: {
+    //   'Content-Type': 'application/json',
+    //   'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    // }
+  })
 }

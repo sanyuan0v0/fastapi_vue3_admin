@@ -68,7 +68,6 @@ async def export_obj_list(
         data=bytes2file_response(operation_log_export_result),
         media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         headers = {
-            'Content-Disposition': f'attachment; filename={urllib.parse.quote("操作日志.xlsx")}',
-            'Access-Control-Expose-Headers': 'Content-Disposition'
+            'Content-Disposition': 'attachment; filename=data.xlsx'
         }
     )
