@@ -53,5 +53,6 @@ export function exportPosition(body) {
     url: "/api/v1/system/position/export",
     method: "post",
     data: body,
+    responseType: 'blob'
   });
 }

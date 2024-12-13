@@ -99,7 +99,7 @@ export function batchAvailableUser(body) {
 export function exportUser(query) {
   return request({
     url: '/api/v1/system/user/export',
-    method: 'get',
+    method: 'post',
     params: query,
     responseType: 'blob'
   })
@@ -108,7 +108,7 @@ export function exportUser(query) {
 export function downloadTemplate() {
   return request({
     url: '/api/v1/system/user/import/template',
-    method: 'get',
+    method: 'post',
     responseType: 'blob'
   })
 }

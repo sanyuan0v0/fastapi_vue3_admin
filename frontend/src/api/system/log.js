@@ -30,9 +30,5 @@ export function exportLog(query) {
     method: 'post',
     data: query,
     responseType: 'blob',
-    // headers: {
-    //   'Content-Type': 'application/json',
-    //   'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    // }
   })
 }

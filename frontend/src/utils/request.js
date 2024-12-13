@@ -99,12 +99,15 @@ request.interceptors.request.use((config) => {
 request.interceptors.response.use((response) => {
   // 打印全局响应
   console.log(response);
+  // 如果是文件下载类型的响应，直接返回
+  if (response.config.responseType === 'blob') {
+    return response;
+  }
   if (response.data.status_code !== 200) {
     notification.error({
       message: "错误",
       description: response.data.msg,
     });
-    // 对请求错误做些什么
     return Promise.reject(response);
   }
   return response;

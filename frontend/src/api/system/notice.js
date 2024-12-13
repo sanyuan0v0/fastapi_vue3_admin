@@ -53,5 +53,6 @@ export function exportNotice(body) {
     url: "/api/v1/system/notice/export",
     method: "post",
     data: body,
+    responseType: 'blob'
   });
 }

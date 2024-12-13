@@ -284,29 +284,65 @@
         </div>
       </a-modal>
 
-      <!-- 导入对话框 - 移到主模态框外部 -->
+      <!-- 导入对话框 -->
       <a-modal v-model:visible="upload.open" 
         title="导入用户" 
-        :width="400"
+        :width="500"
         @ok="submitFileForm"
         :confirmLoading="upload.isUploading">
-        <a-upload
-          ref="uploadRef"
-          :accept="'.xlsx, .xls'"
-          :showUploadList="false"
-          :beforeUpload="beforeUpload"
-          :customRequest="customRequest"
-          :maxCount="1"
-        >
-          <a-button>
-            <upload-outlined></upload-outlined>
-            选择文件
-          </a-button>
-        </a-upload>
-        <br/>
-        <a-checkbox v-model:checked="upload.updateSupport">是否更新已经存在的用户数据</a-checkbox>
-        <br/>
-        <a-button type="link" @click="handleDownloadTemplate">下载模板</a-button>
+        <div class="import-container">
+          <a-alert
+            message="请先下载模板，按照模板格式填写数据后再导入"
+            type="info"
+            show-icon
+            style="margin-bottom: 16px"
+          />
+          <a-upload
+            ref="uploadRef"
+            :accept="'.xlsx, .xls'"
+            :showUploadList="true"
+            :beforeUpload="beforeUpload"
+            :customRequest="customRequest"
+            :maxCount="1"
+            :fileList="upload.fileList"
+            @remove="handleRemove"
+          >
+            <a-button type="primary">
+              <upload-outlined></upload-outlined>
+              选择文件
+            </a-button>
+            <template #itemRender="{ file }">
+              <a-space>
+                <a-typography-text>
+                  {{ file.name }}
+                </a-typography-text>
+                <a-progress
+                  v-if="file.status === 'uploading'"
+                  :percent="file.percent"
+                  size="small"
+                  style="width: 100px"
+                />
+              </a-space>
+            </template>
+          </a-upload>
+          <div class="import-options" style="margin-top: 16px">
+            <a-checkbox v-model:checked="upload.updateSupport">是否更新已经存在的用户数据</a-checkbox>
+          </div>
+          <div class="template-download" style="margin-top: 16px">
+            <a-button type="link" @click="handleDownloadTemplate">
+              <download-outlined /> 下载导入模板
+            </a-button>
+          </div>
+          <div class="import-tips" style="margin-top: 16px">
+            <h4>注意事项：</h4>
+            <ul>
+              <li>仅支持 xls、xlsx 格式文件</li>
+              <li>文件大小不能超过 5MB</li>
+              <li>必填项：用户名、姓名、性别</li>
+              <li>选填项：邮箱、手机号、部门、角色、岗位等</li>
+            </ul>
+          </div>
+        </div>
       </a-modal>
     </div>
 
@@ -757,7 +793,7 @@ const handleSelectorModalEvent = (
   }
 }
 
-// 上传头像配置
+// 上传配置
 const token = storage.get('Access-Token');
 
 // 导入相关方法
@@ -769,6 +805,7 @@ const upload = reactive({
   headers: token ? { Authorization: 'Bearer ' + token } : {},
   isUploading: false,
   updateSupport: false,
+  fileList: [],
 });
 
 // 打开导入对话框
@@ -776,26 +813,50 @@ const handleImport = () => {
   upload.open = true;
   upload.isUploading = false;
   upload.updateSupport = false;
+  upload.fileList = [];
 };
 
 // 文件上传前校验
 const beforeUpload = (file: File) => {
   const isExcel = file.type === 'application/vnd.ms-excel' || file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+  const isLt5M = file.size / 1024 / 1024 < 5;
+
   if (!isExcel) {
     message.error('只能上传 Excel 文件!');
+    return false;
   }
-  return isExcel;
+  if (!isLt5M) {
+    message.error('文件大小不能超过 5MB!');
+    return false;
+  }
+  return true;
+};
+
+// 移除文件
+const handleRemove = () => {
+  upload.fileList = [];
 };
 
 // 自定义上传
-const customRequest = ({ file, onSuccess, onError }: any) => {
+const customRequest = ({ file, onSuccess, onError, onProgress }: any) => {
   upload.isUploading = true;
   const formData = new FormData();
   formData.append('file', file);
   formData.append('updateSupport', upload.updateSupport.toString());
   
+  // 更新文件状态
+  const fileItem = {
+    uid: file.uid,
+    name: file.name,
+    status: 'uploading',
+    percent: 0
+  };
+  upload.fileList = [fileItem];
+  
   importUser(formData)
     .then((response) => {
+      fileItem.status = 'success';
+      fileItem.percent = 100;
       upload.isUploading = false;
       upload.open = false;
       message.success('用户导入成功');
@@ -803,14 +864,19 @@ const customRequest = ({ file, onSuccess, onError }: any) => {
       loadingData(); // 刷新数据
     })
     .catch((error) => {
+      fileItem.status = 'error';
       upload.isUploading = false;
       onError(error);
-      message.error('用户导入失败');
+      message.error(error.response?.data?.detail || '用户导入失败');
     });
 };
 
 // 提交上传
 const submitFileForm = () => {
+  if (upload.fileList.length === 0) {
+    message.warning('请先选择要上传的文件');
+    return;
+  }
   uploadRef.value?.upload?.();
 };
 
@@ -829,7 +895,6 @@ const handleExport = () => {
 
       return exportUser(body).then(response => {
         const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        console.log("blob", blob);
         // 从响应头获取文件名
         const contentDisposition = response.headers['content-disposition'];
         let fileName = '用户.xlsx';
@@ -839,7 +904,6 @@ const handleExport = () => {
             fileName = decodeURIComponent(fileNameMatch[1]);
           }
         }
-        console.log(fileName);
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -863,32 +927,31 @@ const handleExport = () => {
 // 下载模板
 const handleDownloadTemplate = () => {
   downloadTemplate().then(response => {
-    const blob = new Blob([response], { type: 'application/vnd.ms-excel' });
+    const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    // 从响应头获取文件名
+    const contentDisposition = response.headers['content-disposition'];
+    let fileName = '用户.xlsx';
+    if (contentDisposition) {
+      const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
+      if (fileNameMatch) {
+        fileName = decodeURIComponent(fileNameMatch[1]);
+      }
+    }
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = '用户导入模板.xlsx';
+    link.download = fileName;
+    document.body.appendChild(link);
     link.click();
-    window.URL.revokeObjectURL(url);
+    message.destroy();
     message.success('下载成功');
-  }).catch(() => {
+  }).catch((error) => {
+    message.destroy();
+    console.error('下载错误:', error);
     message.error('下载失败');
   });
 };
 
-// 文件下载方法
-const downloadFile = (response, fileName) => {
-  const blob = new Blob([response], {
-    type: 'application/vnd.ms-excel'
-  });
-  const link = document.createElement('a');
-  link.href = window.URL.createObjectURL(blob);
-  link.download = fileName;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  window.URL.revokeObjectURL(link.href);
-};
 </script>
 
 <style lang="scss" scoped>

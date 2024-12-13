@@ -61,5 +61,6 @@ export function exportRole(body) {
     url: "/api/v1/system/role/export",
     method: "post",
     data: body,
+    responseType: 'blob'
   });
 }

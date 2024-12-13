@@ -470,7 +470,6 @@ const handleExport = () => {
 
             return exportPosition(body).then(response => {
                 const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                console.log("blob", blob);
                 // 从响应头获取文件名
                 const contentDisposition = response.headers['content-disposition'];
                 let fileName = '岗位.xlsx';
@@ -480,7 +479,6 @@ const handleExport = () => {
                         fileName = decodeURIComponent(fileNameMatch[1]);
                     }
                 }
-                console.log(fileName);
                 const url = window.URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
