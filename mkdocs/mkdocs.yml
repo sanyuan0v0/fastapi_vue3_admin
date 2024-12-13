@@ -2,8 +2,8 @@
 repo_name: "fastapi_vue_admin" # 源码名称
 repo_url: "https://gitee.com/tao__tao/fastapi_vue_admin.git" # 源码地址
 
-site_name: 我的文档 # 网站名称
-site_author: xxxxx@qq.com # 网站作者
+site_name: Fastapi_Vue_Admin在线文档 # 网站名称
+site_author: 948080782x@qq.com # 网站作者
 site_url: http://127.0.0.1:8888/ # 网站地址
 site_description: 这里是网站描述 # 网站描述
 copyright: 'Copyright © 2022 <a href="http://127.0.0.1:8888">Powered by xxxxx@qq.com 版权所有</a>' # 版权信息

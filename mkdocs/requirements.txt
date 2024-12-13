@@ -1,7 +1,4 @@
 mkdocs
-mkdocs-include-markdown-plugin
 mkdocs-material #  安装主题
-mkdocs-material-extensions
-mkdocs-pdf-export-plugin
 mkdocs-minify-plugin # 插件
 mkdocs-git-revision-date-localized-plugin

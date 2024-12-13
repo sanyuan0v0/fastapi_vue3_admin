@@ -2,45 +2,83 @@ version: "3.10.11"
 
 # 应用服务
 services:
-  # 应用服务
-  fastapi_getway:
-    # 容器名称
-    container_name: fastapi
-    # 镜像名称
-    image: fastapi
-    env_file: .env
+  # 前端服务
+  frontend:
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
     networks:
-      - db_network
-      - web_network
+      - app-network
+
+  # 后端服务
+  backend:
+    # 容器名称
+    container_name: backend
     # 构建镜像
     build:
-      context: ./
-      dockerfile: Dockerfile
-    #build: .
-    # 将容器运行在特权模式下，意味着容器内的进程将具
-    # 有访问宿主机的权限，包括文件系统、设备和系统功能等
-    privileged: true
-    # 指定容器中运行的用户
-    user: root
-    # 启动策略为始终重启
-    restart: always
-    # 设置网络模式为host模式
-    network_mode: host
+      context: .
+      dockerfile: build/Dockerfile
     # 端口映射
     ports:
-      - 8020:8020
-    # 文件挂载
+      - "8000:8000"
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=123456
+      - MYSQL_DATABASE=fastapi_admin
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - MONGODB_URL=mongodb://mongodb:27017/
+    depends_on:
+      - mysql
+      - redis
+      - mongodb
+    networks:
+      - app-network
+    restart: always
+
+  # 数据库服务
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=fastapi_admin
+    ports:
+      - "3306:3306"
     volumes:
-      - ./:/data/apps
-      - ./uploads:/data/apps/uploads
-    # 执行命令
-    command: python app.py runserver 0.0.0.0:8020 --noreload
-    # 日志配置
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "500m"
-        max-file: "10"
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+
+  # redis服务
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+
+  # mongodb服务
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app-network
+
   # nginx服务
   nginx:
     container_name: nginx
@@ -55,17 +93,17 @@ services:
     depends_on:
       - flask_api
 
-  # 中间件服务
-  mysql:
-    container_name: mysql
-    image: mysql:latest
-    restart: always
-    ports:
-      - "3306:3306"
-        # 数据卷挂载
-        
+# 网络
 networks:
   db_network:
     driver: bridge
   web_network:
     driver: bridge
+  app-network:
+    driver: bridge
+
+# 文件挂载
+volumes:
+  mysql_data:
+  redis_data:
+  mongodb_data:

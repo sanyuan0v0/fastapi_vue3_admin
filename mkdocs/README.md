@@ -17,7 +17,7 @@ pip install mkdocs-material
 ### 创建项目
 
 ```sh
-mkdocs new my_docs
+mkdocs new 项目名称
 ```
 
 ### 编辑构建文档
@@ -51,12 +51,3 @@ mkdocs -h
 pip freeze > requirements.txt
 ```
 
-```requirements.txt
-mkdocs
-mkdocs-include-markdown-plugin
-mkdocs-material #  安装主题
-mkdocs-material-extensions
-mkdocs-pdf-export-plugin
-mkdocs-minify-plugin # 插件
-mkdocs-git-revision-date-localized-plugin 
-```

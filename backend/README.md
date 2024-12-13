@@ -36,37 +36,31 @@ alembic revision --autogenerate -m "initial migration"
 alembic upgrade head
 
 ```sh
-my_demo_project/fastapi_project/backend
+fastapi_project/backend
 ├─ app                     # 项目核心代码 
 │  ├─ api                  # 接口模块  
-│  │  ├─ common            # 公共模块
-│  │  ├─ utils             # 工具模块
 │  │  └─ v1                # 接口版本模块
 │  │     ├─ controllers    # 控制器模块
-│  │     ├─ models         # 模型模块
-│  │     ├─ schemas        # 数据模型模块
-│  │     └─ services       # 业务模块
+│  │     ├─ crud           # 数据库操作模块
+│  │     ├─ models         # orm模型模块
+│  │     ├─ params         # 参数模块
+│  │     ├─ schemas        # pydantic模型模块
+│  │     ├─ services       # 业务模块
+│  │     └─ urls           # 路由模块
+│  ├─ common               # 公共模块
 │  ├─ config               # 项目配置文件
 │  ├─ core                 # 项目核心模块
 │  ├─ plugin               # 项目插件模块
-│  └─ scripts              # 项目脚本模块
-├─ main.py                 # 项目启动文件
-├─ gunicorn.py             # gunicorn配置文件
+│  ├─ scripts              # 项目初始化模块
+│  └─ utils                # 工具模块
 ├─ logs                    # 项目日志文件
-├─ data                    # 项目数据文件
-├─ upload                  # 项目上传文件
 ├─ static                  # 项目静态文件
 ├─ templates               # 项目模板文件
+├─ main.py                 # 项目启动文件
+├─ gunicorn.py             # gunicorn配置文件
 ├─ requirements.txt        # 项目依赖文件
-├─ nginx.conf              # nginx配置文件
 ├─ dev_sql.db              # 项目数据库文件
-├─ init_db.sql             # 项目初始化数据库文件
-├─ start.sh                # 项目启动脚本
-├─ stop.sh                 # 项目停止脚本
-├─ docker-compose.yaml     # docker-compose配置文件
-├─ Dockerfile              # docker镜像构建文件
-├─ README.en.md            # 项目英文文档 
-└─ README.md               # 项目中文文档
+└─ README.md               # 项目说明文档
 
 ```
 
@@ -102,49 +96,4 @@ python main.py run    # 启动服务
 uvicorn main:create_app --host 0.0.0.0 --port 8000 --factory --workers 4
 # 方式三：
 gunicorn -c gunicorn.py main:create_app
-```
-
-## 相关技术
-
-```sh
-一 Nginx配置文件简介
-Nginx的配置文件是一个文本文件，通常位于/conf/nginx.conf。它使用一种简洁而灵活的语法来定义Nginx服务器的行为和功能。配置文件中的指令按照特定的顺序进行解析和执行，从而实现对服务器行为的精确控制。
-
-二 Nginx配置文件的结构、指令、用法和解析
-Nginx的默认配置文件是nginx.conf。下面是nginx默认配置文件内容的解析和配置文件的用法的说明：
-配置文件的结构：
-
-全局块：配置全局的指令，对整个Nginx服务器起作用。
-events块：配置与连接相关的指令，如工作进程数和连接超时时间等。
-http块：配置HTTP服务器的指令，如监听端口、虚拟主机和HTTP模块等。
-server块：配置虚拟主机的指令，可以配置多个server块来支持多个域名或IP地址。
-location块：配置URL路径的指令，可以在server块或http块中使用。
-配置文件的指令：
-
-listen：指定Nginx服务器监听的端口
-server_name：指定虚拟主机的域名或IP地址
-root：指定网站的根目录
-index：指定默认的首页文件
-location：指定URL路径的匹配规则和处理方式
-proxy_pass：配置反向代理服务器的目标地址
-rewrite：配置URL重写规则
-user：指定Nginx worker进程运行的用户
-worker_processes：指定Nginx启动的worker进程数
-error_log：指定错误日志的路径
-pid：指定进程ID文件的路径
-events：配置事件模块，如worker连接数
-http：配置HTTP模块
-include：包含其他配置文件
-server：定义一个虚拟主机。
-配置文件的用法：
-
-修改监听端口：在http块或server块中使用listen指令来指定监听的端口。
-配置虚拟主机：在http块中使用server块来配置虚拟主机，可以使用server_name指令来指定域名或IP地址。
-配置反向代理：在location块中使用proxy_pass指令来配置反向代理服务器的目标地址。
-配置URL重写：在location块中使用rewrite指令来配置URL重写规则。
-配置文件的解析：
-
-Nginx按照配置文件的结构从上到下依次解析，先解析全局块，再解析events块，最后解析http块。
-在http块中可以配置多个server块，Nginx会根据请求的域名或IP地址来匹配对应的server块。
-在server块中可以配置多个location块，Nginx会根据请求的URL路径来匹配对应的location块。
 ```
