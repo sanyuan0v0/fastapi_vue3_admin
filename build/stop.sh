@@ -1,39 +1,33 @@
 #!/bin/bash
 
-# 检查是否已经处于虚拟环境中
-if [[ ":$VIRTUAL_ENV:" != *":/opt/model-ai/backend/venv:"* ]]; then
-    # 进入后端目录
-    cd /opt/ || { echo "进入项目工程目录失败"; exit 1; }
-    
+# 设置颜色输出
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+echo -e "${GREEN}开始停止服务...${NC}"
+
+# 检查docker-compose是否安装
+if ! command -v docker-compose &> /dev/null; then
+    echo -e "${RED}错误: docker-compose 未安装${NC}"
+    exit 1
 fi
 
-# 查找并停止使用 nohup 启动的应用
-process_id=$(pgrep -f "python main.py run")
+# 进入构建目录
+cd "$(dirname "$0")" || exit 1
 
-if [ -n "$process_id" ]; then
-    echo "找到进程 ID: $process_id"
-    
-    # 发送 SIGINT 信号停止进程
-    echo "向进程 $process_id 发送 SIGINT 信号"
-    kill -INT $process_id
-    
-    # 等待进程结束，最多等待 10 秒
-    echo "等待进程停止（最多 10 秒）"
-    for i in $(seq 1 10); do
-        if ! pgrep -f "python main.py run" > /dev/null; then
-            break
-        fi
-        sleep 1
-    done
-    
-    # 检查进程是否已经停止
-    if pgrep -f "python main.py run" > /dev/null; then
-        echo "进程 $process_id 在 10 秒内未停止，正在强制退出"
-        kill -KILL $process_id
-    else
-        echo "进程 $process_id 已成功停止"
-    fi
-    
-else
-    echo "没有找到运行中的 python main.py run 进程"
+# 停止所有服务
+echo -e "${GREEN}停止所有 Docker 服务...${NC}"
+docker-compose down
+
+# 清理未使用的镜像和卷（可选）
+read -p "是否清理未使用的 Docker 镜像和卷？(y/n) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo -e "${GREEN}清理未使用的 Docker 镜像...${NC}"
+    docker image prune -f
+    echo -e "${GREEN}清理未使用的 Docker 卷...${NC}"
+    docker volume prune -f
 fi
+
+echo -e "\n${GREEN}所有服务已停止！${NC}"
