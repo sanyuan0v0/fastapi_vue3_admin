@@ -663,7 +663,7 @@ setTimeout(() => {
 }
 
 .pie-chart {
-  width: 725px;
+  width: 100%;
   height: 350px;
 }
 </style>
