@@ -152,7 +152,7 @@
           <div v-if="barTypeKey == 'sales'">
             <a-row :gutter="24">
               <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
-                <v-chart :option="barOption" autoresize style="width: 1060px; height: 300px;" />
+                <v-chart :option="barOption" autoresize style="width: 100%; height: 300px;" />
               </a-col>
               <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
                 <div class="rank">
@@ -172,7 +172,7 @@
           <div v-else>
             <a-row :gutter="24">
               <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
-                <v-chart :option="barOption" autoresize style="width: 1060px; height: 300px;" />
+                <v-chart :option="barOption" autoresize style="width: 100%; height: 300px;" />
               </a-col>
               <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
                 <div class="rank">

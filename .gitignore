@@ -18,3 +18,5 @@ frontend/__pycache__
 mkdocs/venv
 mkdocs/__pycache__
 mkdocs/site
+
+.history
