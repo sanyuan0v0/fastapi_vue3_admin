@@ -23,7 +23,7 @@ const errorHandler = async (error) => {
   // 从 localstorage 获取 access_token
   const access_token = storage.get("Access-Token");
   // || data.msg === "用户未登录或登录已过期"
-  if (data.status_code === 403) {
+  if (data.status_code === 403 || data.msg.includes("请重新登录")) {
     storage.remove("Access-Token");
     storage.remove("Refresh-Token");
 

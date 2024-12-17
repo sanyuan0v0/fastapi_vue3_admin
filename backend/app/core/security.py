@@ -88,7 +88,7 @@ def create_access_token(payload: JWTPayloadSchema) -> str:
 def decode_access_token(token: str) -> JWTPayloadSchema:
     """解析JWT访问令牌"""
     if not token:
-        raise CustomException(msg="认证不存在,请登录后再试")
+        raise CustomException(msg="认证不存在,请重新登录")
 
     try:
         payload = jwt.decode(
@@ -99,7 +99,7 @@ def decode_access_token(token: str) -> JWTPayloadSchema:
 
         username = payload.get("sub")
         if not username:
-            raise CustomException(msg="无效认证,请登录后再试")
+            raise CustomException(msg="无效认证,请重新登录")
 
         return JWTPayloadSchema(**payload)
 

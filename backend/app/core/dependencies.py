@@ -57,14 +57,14 @@ async def get_current_user(
     # 解析token
     payload = decode_access_token(token)
     if not payload or not hasattr(payload, 'is_refresh') or payload.is_refresh:
-        raise CustomException(msg="非法凭证")
+        raise CustomException(msg="非法凭证", status_code=401)
         
     username = payload.sub
     
     # 从Redis获取token并验证
-    redis_token = await Cache(request).get(f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}')
-    if not redis_token or redis_token != token:
-        raise CustomException(msg="用户未登录或登录已过期")
+    # redis_token = await Cache(request).get(f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}')
+    # if not redis_token or redis_token != token:
+    #     raise CustomException(msg="用户未登录或登录已过期")
         
     auth = AuthSchema(db=db)
     
@@ -147,11 +147,11 @@ class AuthPermission:
             # 严格模式:要求所有权限都满足
             if not all(perm in user_permissions for perm in self.permissions):
                 logger.error(f"用户 {auth.user.name} 缺少所需的权限: {self.permissions}")
-                raise CustomException(msg="无权限操作")
+                raise CustomException(msg="无权限操作", status_code=403)
         else:
             # 非严格模式:满足任一权限即可
             if not any(perm in user_permissions for perm in self.permissions):
                 logger.error(f"用户 {auth.user.name} 缺少任何所需的权限: {self.permissions}")
-                raise CustomException(msg="无权限操作")
+                raise CustomException(msg="无权限操作", status_code=403)
 
         return auth
