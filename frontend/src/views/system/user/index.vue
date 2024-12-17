@@ -289,7 +289,8 @@
         title="导入用户" 
         :width="500"
         @ok="submitFileForm"
-        :confirmLoading="upload.isUploading">
+        :confirmLoading="upload.isUploading"
+        :bodyStyle="{ padding: '24px' }">
         <div class="import-container">
           <a-alert
             message="请先下载模板，按照模板格式填写数据后再导入"

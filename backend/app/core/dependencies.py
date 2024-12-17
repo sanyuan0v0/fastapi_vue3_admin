@@ -60,11 +60,6 @@ async def get_current_user(
         raise CustomException(msg="非法凭证", status_code=401)
         
     username = payload.sub
-    
-    # 从Redis获取token并验证
-    # redis_token = await Cache(request).get(f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}')
-    # if not redis_token or redis_token != token:
-    #     raise CustomException(msg="用户未登录或登录已过期")
         
     auth = AuthSchema(db=db)
     

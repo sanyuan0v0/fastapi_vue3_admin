@@ -475,17 +475,9 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-:root {
-  --primary-color: #1890ff;
-  --border-radius: 8px;
-  --card-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
-  --transition-duration: 0.3s;
-  --hover-bg-color: rgba(0, 0, 0, 0.85);
-}
-
 .profile-container {
-  min-height: 100vh;
-  background-color: #f0f2f5;
+  min-height: 90vh;
+  background-color: #e5e9ee;
   
   .profile-content {
     padding: 24px;
