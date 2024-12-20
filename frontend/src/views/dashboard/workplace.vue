@@ -8,10 +8,10 @@
         </a-col>
         <a-col class="content" style="margin-left: 20px;">
           <div class="content-title"
-            style="font-size: 20px; font-weight: 500; color: rgba(0, 0, 0, 0.88); margin-bottom: 12px;">
+            style="font-size: 20px; font-weight: 500; margin-bottom: 12px;">
             {{ timefix }}，{{ userInfo.name }}<span class="welcome-text">，{{ welcome }}</span>
           </div>
-          <div style="color: rgba(0, 0, 0, 0.65);">{{userInfo.positions[0].name}} | {{userInfo.dept_name}}</div>
+          <div>{{userInfo.positions[0].name}} | {{userInfo.dept_name}}</div>
         </a-col>
       </a-row>
       <a-row class="extra-content" justify="space-around">
@@ -38,14 +38,14 @@
                 <a-card-meta>
                   <template #title>
                     <a-avatar :size="30" :src="item.avatar" />
-                    <a class="a-hover" style="margin-left: 10px; color: rgba(0, 0, 0, 0.88);">{{ item.title }}</a>
+                    <a class="a-hover" style="margin-left: 10px; ">{{ item.title }}</a>
                   </template>
                   <template #description>
                     <div style="min-height: 45px;">{{ item.description }}</div>
                   </template>
                 </a-card-meta>
                 <div class="project-item">
-                  <a class="a-hover" style="color: rgba(0, 0, 0, 0.65)">{{ item.author }}</a>
+                  <a class="a-hover" >{{ item.author }}</a>
                   <span class="item-datetime">{{ item.datetime }}</span>
                 </div>
               </a-skeleton>
@@ -252,7 +252,6 @@ setTimeout(() => {
   right: 0;
   width: 1px;
   height: 45px;
-  background-color: rgba(5, 5, 5, 0.06);
   content: '';
 }
 
@@ -269,7 +268,6 @@ setTimeout(() => {
 
 .item-datetime {
   float: right;
-  color: rgba(0, 0, 0, 0.25);
 }
 
 .a-hover:hover {
@@ -278,7 +276,6 @@ setTimeout(() => {
 
 :deep(.ant-list-item-meta-content) {
   h4 {
-    color: rgba(0, 0, 0, 0.88);
     font-size: 14px;
     font-weight: normal;
   }
@@ -298,7 +295,6 @@ setTimeout(() => {
 
     .member {
       font-size: 14px;
-      color: rgba(0, 0, 0, 0.88);
       line-height: 24px;
       max-width: 100px;
       vertical-align: top;

@@ -1,90 +1,98 @@
 <template>
   <a-layout class="basic-layout">
-    <!-- 顶部导航栏 -->
-    <a-layout-header class="header">
-      <div class="header-content">
-        <!-- 左侧 Logo -->
-        <div class="header-left">
-          <a-button type="link" class="logo-btn">
-            <a-image src="/logo.png" :preview="false" :width="28" :height="28" />
-            <h1 class="logo-title">fastapi-vue-admin</h1>
-          </a-button>
-          <a-button 
-            type="link" 
-            class="collapse-btn"
-            @click="toggleCollapsed"
-          >
-            <MenuFoldOutlined v-if="menuState.collapsed" />
-            <MenuUnfoldOutlined v-else />
-          </a-button>
-        </div>
-
-        <!-- 右侧工具栏 -->
-        <div class="header-right">
-          <!-- 文档按钮 -->
-          <a-tooltip title="说明文档" placement="bottom">
-            <a-button type="link" @click="openDocumentation" class="tool-btn">
-              <QuestionCircleOutlined />
-            </a-button>
-          </a-tooltip>
-
-          <!-- 通知按钮 -->
-          <a-badge :count="unreadCount" :dot="unreadCount > 99">
-            <a-button type="link" @click="openNotification" class="tool-btn">
-              <BellOutlined />
-            </a-button>
-          </a-badge>
-
-          <!-- 用户信息下拉菜单 -->
-          <a-dropdown>
-            <div class="user-dropdown">
-              <a-avatar :src="userAvatar" :size="32" />
-              <span class="username">{{ username }}</span>
-              <DownOutlined />
-            </div>
-            <template #overlay>
-              <a-menu @click="handleUserMenuClick">
-                <a-menu-item key="profile">
-                  <template #icon><UserOutlined /></template>
-                  个人中心
-                </a-menu-item>
-                <a-menu-divider />
-                <a-menu-item key="logout">
-                  <template #icon><LogoutOutlined /></template>
-                  退出登录
-                </a-menu-item>
-              </a-menu>
-            </template>
-          </a-dropdown>
-        </div>
+    <!-- 左侧导航 -->
+    <a-layout-sider class="layout-sider"
+      :collapsed="menuState.collapsed"
+      theme="light"
+      :trigger="null"
+      collapsible
+      :width="240"
+      :collapsedWidth="80"
+    >
+      <!-- Logo 区域 -->
+      <div class="logo-container">
+        <a-image src="/logo.png" :preview="false" :width="28" :height="28" />
+        <h1 class="logo-title" v-show="!menuState.collapsed">fastapi-vue-admin</h1>
       </div>
-    </a-layout-header>
-    
-    <a-layout class="main-container">
-      <!-- 侧边栏 -->
-      <a-layout-sider 
-        class="sider"
-        :collapsed="menuState.collapsed"
-        :trigger="null"
-        collapsible
-        :width="240"
-        :collapsedWidth="80"
-      >
-        <a-menu
-          class="side-menu"
-          mode="inline"
-          theme="light"
-          v-model:openKeys="menuState.openKeys"
-          v-model:selectedKeys="menuState.selectedKeys"
-          :items="menuState.menus"
-          @click="handleMenuClick"
-        />
-      </a-layout-sider>
+      
+      <a-menu
+        class="side-menu"
+        mode="inline"
+        theme="light"
+        v-model:openKeys="menuState.openKeys"
+        v-model:selectedKeys="menuState.selectedKeys"
+        :items="menuState.menus"
+        @click="handleMenuClick"
+      />
+    </a-layout-sider>
 
+    <!-- 右侧布局 -->
+    <a-layout class="layout-main" :class="{ collapsed: menuState.collapsed }">
+      <!-- 顶部导航栏 -->
+      <a-layout-header class="layout-header" >
+          
+          <div class="header-left" >
+            <!-- 左侧折叠按钮 -->
+            <a-button 
+              type="link" 
+              class="collapse-btn"
+              @click="toggleCollapsed"
+            >
+              <MenuFoldOutlined v-if="menuState.collapsed" />
+              <MenuUnfoldOutlined v-else />
+            </a-button>
+            
+          </div>
+
+          <!-- 右侧工具栏 -->
+          <div class="header-right">
+            <!-- 主题切换按钮 -->
+            <a-tooltip :title="isDarkMode ? '切换亮色主题' : '切换暗色主题'" placement="bottom">
+              <a-button type="link" @click="handleThemeChange" class="tool-btn">
+                <component :is="isDarkMode ? BulbFilled : BulbOutlined" />
+              </a-button>
+            </a-tooltip>
+            
+            <!-- 文档按钮 -->
+            <a-tooltip title="说明文档" placement="bottom">
+              <a-button type="link" @click="openDocumentation" class="tool-btn">
+                <QuestionCircleOutlined />
+              </a-button>
+            </a-tooltip>
+
+            <!-- 通知按钮 -->
+            <a-badge :count="unreadCount" :dot="unreadCount > 99">
+              <a-button type="link" @click="openNotification" class="tool-btn">
+                <BellOutlined />
+              </a-button>
+            </a-badge>
+
+            <!-- 用户信息下拉菜单 -->
+            <a-dropdown>
+              <div class="user-dropdown">
+                <a-avatar :src="userAvatar" :size="32" />
+                <span class="username">{{ username }}</span>
+                <DownOutlined />
+              </div>
+              <template #overlay>
+                <a-menu @click="handleUserMenuClick">
+                  <a-menu-item key="profile">
+                    <template #icon><UserOutlined /></template>
+                    个人中心
+                  </a-menu-item>
+                  <a-menu-divider />
+                  <a-menu-item key="logout">
+                    <template #icon><LogoutOutlined /></template>
+                    退出登录
+                  </a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown>
+          </div>
+      </a-layout-header>
+      
       <!-- 主内容区 -->
-      <a-layout-content class="content"
-        :class="{ collapsed: menuState.collapsed }"
-      >
+      <a-layout-content class="layout-content">
         <router-view v-slot="{ Component, route }">
           <transition name="fade" mode="out-in">
             <div :key="route.path">
@@ -101,7 +109,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, computed, watch, onMounted } from "vue";
+import { reactive, computed, watch, onMounted, inject, type Ref } from "vue";
 import type { MenuProps, ItemType } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 import storage from 'store';
@@ -117,7 +125,9 @@ import {
   LogoutOutlined,
   DownOutlined,
   MenuFoldOutlined,
-  MenuUnfoldOutlined
+  MenuUnfoldOutlined,
+  BulbOutlined,
+  BulbFilled
 } from '@ant-design/icons-vue';
 
 // 路由相关
@@ -249,6 +259,16 @@ const openNotification = () => {
   console.log('打开通知面板');
 };
 
+// 主题相关
+const isDarkMode = inject('isDarkMode') as Ref<boolean>
+const toggleTheme = inject('toggleTheme') as (darkMode: boolean) => void
+
+// 切换主题
+const handleThemeChange = () => {
+  toggleTheme(!isDarkMode.value)
+  localStorage.setItem('theme', isDarkMode.value ? 'dark' : 'light')
+}
+
 onMounted(() => {
   initMenu();
 });
@@ -257,41 +277,86 @@ onMounted(() => {
 <style lang="scss" scoped>
 .basic-layout {
   min-height: 100vh;
-  font-size: 16px;
-
-  :deep(.ant-layout-header) {
-    background: #fff;
-    padding: 0;
-    height: var(--header-height);
-    line-height: var(--header-height);
-  }
+  display: flex;
   
-  .header {
-
-    .header-content {
-      height: 60px;
+  .layout-sider {
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 99;
+    
+    .logo-container {
+      height: 64px;
+      padding: 16px;
       display: flex;
       align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border-color);
       
+      .logo-title {
+        margin: 0 0 0 12px;
+        color: var(--text-color);
+        font-weight: 600;
+        font-size: 18px;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+    }
+    
+    .side-menu {
+      height: calc(100vh - 64px);
+      border-right: 0;
+      padding: 16px 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      
+      :deep(.ant-menu-item) {
+        margin: 4px 8px;
+        padding: 0 16px;
+        border-radius: 4px;
+        
+        &.ant-menu-item-selected {
+          background: rgba(24, 144, 255, 0.1);
+          color: var(--primary-color);
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  .layout-main {
+    margin-left: 240px;
+    transition: all 0.3s;
+    width: calc(100% - 240px);
+    
+    &.collapsed {
+      margin-left: 80px;
+      width: calc(100% - 80px);
+    }
+
+    .layout-header {
+      background: var(--component-background);
+      padding: 16px;
+      display: flex;
+
       .header-left {
         display: flex;
         align-items: center;
-        
-        .logo-btn {
-          display: flex;
-          align-items: center;
-          padding: 0 8px;
+
+        .collapse-btn {
+          padding: 0 6px;
+          font-size: 18px;
+          cursor: pointer;
+          transition: color 0.3s;
           
-          .logo-title {
-            margin: 0 0 0 12px;
-            color: rgba(0, 0, 0, 0.85);
-            font-weight: 600;
-            font-size: 18px;
-            white-space: nowrap;
+          &:hover {
+            color: var(--primary-color);
           }
         }
       }
-      
+
       .header-right {
         display: flex;
         align-items: center;
@@ -315,77 +380,19 @@ onMounted(() => {
           
           .username {
             margin: 0 8px;
-            color: rgba(0, 0, 0, 0.85);
+            color: var(--text-color);
             white-space: nowrap;
           }
         }
       }
-    }
-  }
-}
-
-.main-container {
-  margin-top: var(--header-height);
-  // height: calc(100vh - var(--header-height));
-  height: 90px;
-  display: flex;
-  flex-direction: row;
-  
-  .sider {
-    box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
-    background: #fff;
-    
-    .side-menu {
-      height: 100%;
-      border-right: 0;
-      padding: 16px 0;
       
-      :deep(.ant-menu-item) {
-        margin: 4px 8px;
-        padding: 0 16px;
-        border-radius: 4px;
-        
-        &.ant-menu-item-selected {
-          background: rgba(24, 144, 255, 0.1);
-          color: var(--primary-color);
-          font-weight: 500;
-        }
-      }
-}
-
-.ant-layout-header {
-  padding-inline: 0;
-      }
-
-.ant-layout-header {
-  padding-inline: 0;
-}
-}
-
-.ant-layout-sider-children .ant-menu-light {
-  color: rgba(0, 0, 0, 0.65);
     }
 
-.ant-layout-sider-children .ant-menu-light {
-  color: rgba(0, 0, 0, 0.65);
-  }
-  
-  .content {
-    flex: 1;
-    padding: 20px;
-    background: var(--background-color);
-    overflow-y: auto; /* 确保垂直滚动条在需要时出现 */
+    .layout-content {
+      padding: 24px;
+      min-height: calc(100vh - var(--header-height));
+    }
   }
 }
 
-// 过渡动画
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
 </style>

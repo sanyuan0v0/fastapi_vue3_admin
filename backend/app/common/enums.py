@@ -1,6 +1,12 @@
 from enum import Enum, unique
 from typing import Dict
 
+@unique
+class Environment(str, Enum):
+    DEV = "dev"
+    TEST = "test"
+    PROD = "prod"
+
 
 @unique
 class BusinessType(Enum):

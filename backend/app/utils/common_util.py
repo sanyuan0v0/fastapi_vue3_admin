@@ -24,8 +24,10 @@ def import_module(module: str, desc: str) -> Any:
         return getattr(module, module_class)
     except ModuleNotFoundError:
         logger.error(f"导入{desc}失败,未找到模块:{module}")
+        raise ModuleNotFoundError(f"导入{desc}失败,未找到模块:{module}")
     except AttributeError:
         logger.error(f"导入{desc}失败,未找到模块方法:{module}")
+        raise AttributeError(f"导入{desc}失败,未找到模块方法:{module}")
 
 async def import_modules_async(modules: list, desc: str, **kwargs):
     """
@@ -44,8 +46,10 @@ async def import_modules_async(modules: list, desc: str, **kwargs):
             await getattr(module_obj, module_name)(**kwargs)
         except ModuleNotFoundError:
             logger.error(f"导入{desc}失败,未找到模块:{module}")
+            raise ModuleNotFoundError(f"导入{desc}失败,未找到模块:{module}")
         except AttributeError:
             logger.error(f"导入{desc}失败,未找到模块方法:{module}")
+            raise AttributeError(f"导入{desc}失败,未找到模块方法:{module}")
 
 def get_random_character() -> str:
     """生成随机字符串"""
@@ -130,15 +134,3 @@ def bytes2file_response(bytes_info: bytes):
     """生成文件响应"""
     yield bytes_info
 
-def get_filepath_from_url(url: str) -> str:
-    """
-    从URL参数中解析文件路径
-    :param url: 包含文件信息的URL
-    :return: 完整的文件路径
-    """
-    params = dict(param.split('=') for param in url.split('?')[1].split('&'))
-    return settings.CACHES_DIR.joinpath(
-        params['task_path'],
-        params['task_id'],
-        params['file_name']
-    )

@@ -68,18 +68,13 @@
           :style="{ minHeight: '500px' }"
         >
           <template #bodyCell="{ column, record }">
-            <template v-if="column.dataIndex === 'name'">
-              <span :style="{ color: !record.available ? 'rgb(255, 77, 79)' : 'rgba(0, 0, 0, .88)' }">
-                {{ record.name }}
-              </span>
-            </template>
             
-            <template v-else-if="column.dataIndex === 'available'">
+            <template v-if="column.dataIndex === 'available'">
               <a-badge :status="record.available ? 'success' : 'error'" />
               {{ record.available ? '启用' : '停用' }}
             </template>
 
-            <template v-else-if="column.dataIndex === 'action'">
+            <template v-if="column.dataIndex === 'action'">
               <a-space size="middle">
                 <a @click="modalHandle('view', record)">查看</a>
                 <a @click="modalHandle('update', record)">修改</a>

@@ -15,7 +15,7 @@ from app.core.exceptions import CustomException
 
 # 创建数据库引擎
 async_engine = create_async_engine(
-    url=settings.SQLALCHEMY_DATABASE_URI,
+    url=settings.get_database_uri,
     echo=settings.DATABASE_ECHO,
     echo_pool=settings.ECHO_POOL,
     pool_pre_ping=settings.POOL_PRE_PING,
@@ -51,7 +51,7 @@ async def redis_connect(app: FastAPI, status: bool) -> aioredis.Redis:
     if status:
         try:
             rd = await aioredis.from_url(
-                url=settings.REDIS_URL.unicode_string(),
+                url=settings.get_redis_uri,
                 encoding='utf-8',
                 decode_responses=True,
                 health_check_interval=20,
@@ -85,7 +85,7 @@ async def mongodb_connect(app: FastAPI, status: bool) -> AsyncIOMotorClient:
     if status:
         try:
             client = AsyncIOMotorClient(
-                settings.MONGO_DB_URL.unicode_string(),
+                settings.get_mongodb_uri,
                 maxPoolSize=settings.POOL_SIZE,
                 minPoolSize=settings.MAX_OVERFLOW,
                 serverSelectionTimeoutMS=settings.POOL_TIMEOUT * 1000

@@ -68,11 +68,6 @@
                         <template v-if="column.dataIndex === 'index'">
                             <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
                         </template>
-                        <template v-if="column.dataIndex === 'notice_title'">
-                            <span :style="{ color: !record.available ? 'rgb(255, 77, 79)' : 'rgba(0, 0, 0, .88)' }">
-                                {{ record.notice_title }}
-                            </span>
-                        </template>
                         <template v-if="column.dataIndex === 'notice_type'">
                             <span :style="{ color: record.notice_type === 1 ? '#108ee9' : '#f8e231' }">
                                 {{ record.notice_type === 1 ? '通知' : '公告' }}

@@ -5,7 +5,7 @@
         <a-card :bodyStyle="{ padding: '20px 24px 8px' }">
           <a-skeleton :loading="loading">
             <div>
-              <span style="color: rgba(0, 0, 0, 0.65)">总销售额</span>
+              <span>总销售额</span>
               <div style="float: right;">
                 <a-tooltip title="指标说明" placement="top">
                   <InfoCircleOutlined />
@@ -48,7 +48,7 @@
         <a-card :bodyStyle="{ padding: '20px 24px 8px' }">
           <a-skeleton :loading="loading">
             <div>
-              <span style="color: rgba(0, 0, 0, 0.65)">访问量</span>
+              <span>访问量</span>
               <div style="float: right;">
                 <a-tooltip title="指标说明" placement="top">
                   <InfoCircleOutlined />
@@ -74,7 +74,7 @@
         <a-card :bodyStyle="{ padding: '20px 24px 8px' }">
           <a-skeleton :loading="loading">
             <div>
-              <span style="color: rgba(0, 0, 0, 0.65)">支付笔数</span>
+              <span>支付笔数</span>
               <div style="float: right;">
                 <a-tooltip title="指标说明" placement="top">
                   <InfoCircleOutlined />
@@ -100,7 +100,7 @@
         <a-card :bodyStyle="{ padding: '20px 24px 8px' }">
           <a-skeleton :loading="loading">
             <div>
-              <span style="color: rgba(0, 0, 0, 0.65)">运营活动效果</span>
+              <span>运营活动效果</span>
               <div style="float: right;">
                 <a-tooltip title="指标说明" placement="top">
                   <InfoCircleOutlined />
@@ -210,7 +210,7 @@
 
             <a-row :gutter="68">
               <a-col :sm="12" :xs="24">
-                <div style="color: rgba(0, 0, 0, 0.65);">
+                <div>
                   <span>搜索用户数</span>
                   <span style="margin-left: 8px;">
                     <a-tooltip title="指标说明" placement="top">
@@ -223,7 +223,7 @@
                 </div>
               </a-col>
               <a-col :sm="12" :xs="24">
-                <div style="color: rgba(0, 0, 0, 0.65);">
+                <div>
                   <span>人均搜索次数</span>
                   <span style="margin-left: 8px;">
                     <a-tooltip title="指标说明" placement="top">
@@ -595,7 +595,6 @@ setTimeout(() => {
 .value {
   height: 38px;
   padding-top: 4px;
-  color: rgba(0, 0, 0, 0.88);
   font-size: 30px;
   line-height: 38px;
   word-break: break-all;
@@ -616,7 +615,6 @@ setTimeout(() => {
 
   a {
     margin-right: 25px;
-    color: rgba(0, 0, 0, 0.88);
   }
 
   a:hover {
@@ -628,7 +626,6 @@ setTimeout(() => {
   padding: 0 32px 32px 72px;
 
   h4 {
-    color: rgba(0, 0, 0, 0.88);
     font-size: 14px;
     font-weight: normal;
   }
@@ -639,7 +636,7 @@ setTimeout(() => {
 
   ul li span {
     &:first-child {
-      background-color: #f5f5f5;
+      background-color: var(--background-color);
       border-radius: 20px;
       display: inline-block;
       font-size: 12px;
@@ -649,6 +646,7 @@ setTimeout(() => {
       line-height: 20px;
       width: 20px;
       text-align: center;
+      color: var( --text-color);
     }
 
     &:last-child {
@@ -656,8 +654,8 @@ setTimeout(() => {
     }
 
     &.active {
-      background-color: #314659;
-      color: #fff;
+      background-color: var(--background-color);
+      color: var(--text-colorr);
     }
   }
 }

@@ -53,7 +53,7 @@ class Cache:
         """设置缓存"""
         try:
             if expire is None:
-                expire = settings.CACHE_EXPIRE_SECONDS
+                expire = 300
                 
             # 根据数据类型选择序列化方式
             if isinstance(value, (int, float, str)):

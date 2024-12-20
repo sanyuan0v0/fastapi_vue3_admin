@@ -67,11 +67,6 @@
           :style="{ minHeight: '500px' }"
         >
           <template #bodyCell="{ column, record }">
-            <template v-if="column.dataIndex === 'name'">
-              <span :style="{ color: !record.available ? 'rgb(255, 77, 79)' : 'rgba(0, 0, 0, .88)' }">
-                {{ record.name }}
-              </span>
-            </template>
             <template v-if="column.dataIndex === 'type'">
               <a-tag :color="record.type === 1 ? 'blue' : (record.type === 2 ? 'green' : 'orange')">
                 {{ record.type === 1 ? '目录' : (record.type === 2 ? '功能' : '权限') }}

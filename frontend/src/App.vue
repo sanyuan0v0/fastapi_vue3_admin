@@ -2,8 +2,9 @@
   <ConfigProvider
     :locale="zhCN"
     :theme="{
-      algorithm: theme.defaultAlgorithm,
-    }">
+      algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
+    }"
+  >
     <div id="app">
       <router-view />
     </div>
@@ -15,9 +16,33 @@ import { ConfigProvider, theme } from 'ant-design-vue'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
+import { ref, provide } from 'vue'
 import { useRouter } from 'vue-router'
 
 dayjs.locale('zh-cn')
+
+// 主题状态
+const isDarkMode = ref(localStorage.getItem('theme') === 'dark')
+
+// 提供主题状态和切换方法给所有子组件
+provide('isDarkMode', isDarkMode)
+
+// 全局切换主题方法
+const toggleTheme = (darkMode: boolean) => {
+  isDarkMode.value = darkMode
+  if (darkMode) {
+    document.documentElement.classList.add('dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+  }
+}
+
+provide('toggleTheme', toggleTheme)
+
+// 初始化主题
+if (isDarkMode.value) {
+  document.documentElement.classList.add('dark')
+}
 
 // 禁用Promise reject输出控制台
 window.addEventListener('unhandledrejection', function browserRejectionHandler(event) {

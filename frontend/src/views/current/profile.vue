@@ -477,7 +477,6 @@ onMounted(() => {
 <style lang="scss" scoped>
 .profile-container {
   min-height: 90vh;
-  background-color: #e5e9ee;
   
   .profile-content {
     padding: 24px;
@@ -515,7 +514,6 @@ onMounted(() => {
           left: 0;
           right: 0;
           bottom: 0;
-          background: rgba(0, 0, 0, 0.3);
           opacity: 0;
           transition: opacity var(--transition-duration);
         }
@@ -573,7 +571,6 @@ onMounted(() => {
       }
 
       .user-role {
-        color: rgba(0, 0, 0, 0.45);
         font-size: 14px;
       }
     }
@@ -585,7 +582,6 @@ onMounted(() => {
         .detail-label {
           display: inline-flex;
           align-items: center;
-          color: rgba(0, 0, 0, 0.65);
           white-space: nowrap;
           
           .anticon {
@@ -596,7 +592,6 @@ onMounted(() => {
 
         .ant-descriptions-item-content {
           display: inline-block;
-          color: rgba(0, 0, 0, 0.88);
         }
 
         .ant-descriptions-item-colon {

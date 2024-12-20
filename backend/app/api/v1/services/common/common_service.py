@@ -17,7 +17,7 @@ class CommonService:
     @classmethod
     async def get_file_list_services(cls, request: Request) -> List[Dict]:
         """获取文件列表service"""
-        file_list_tree = UploadUtil.get_file_tree(settings.STATIC_ROOT)
+        file_list_tree = UploadUtil.get_file_tree(settings.PROFILES_ROOT)
         file_list = []
         for item in file_list_tree:
             file_list.append(FileListResponseSchema(

@@ -74,11 +74,6 @@
             <template v-if="column.dataIndex === 'index'">
               <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
             </template>
-            <template v-if="column.dataIndex === 'name'">
-              <span :style="{ color: !record.available ? 'rgb(255, 77, 79)' : 'rgba(0, 0, 0, .88)' }">
-                {{ record.name }}
-              </span>
-            </template>
             <template v-if="column.dataIndex === 'dept'">
               <span>{{ record.dept_name }}</span>
             </template>
