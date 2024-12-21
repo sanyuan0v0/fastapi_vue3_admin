@@ -21,8 +21,8 @@
             <a-col flex="0 1 450px">
               <a-form-item name="available" label="状态" style="max-width: 300px;">
                 <a-select v-model:value="queryState['available']" placeholder="全部" allowClear>
-                  <a-select-option value="true">启用</a-select-option>
-                  <a-select-option value="false">停用</a-select-option>
+                  <a-select-option value="1">启用</a-select-option>
+                  <a-select-option value="0">停用</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -280,7 +280,7 @@
       </a-modal>
 
       <!-- 导入对话框 -->
-      <a-modal v-model:visible="upload.open" 
+      <a-modal v-model:open="upload.open" 
         title="导入用户" 
         :width="500"
         @ok="submitFileForm"

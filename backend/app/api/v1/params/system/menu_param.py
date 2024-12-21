@@ -15,17 +15,15 @@ class MenuQueryParams:
             type: Optional[Literal['M', 'C', 'F']] = Query(None, description="菜单类型(M目录 C菜单 F按钮)"),
             permission: Optional[str] = Query(None, description="权限标识", min_length=1, max_length=100),
             available: Optional[bool] = Query(None, description="菜单状态(True正常 False停用)"),
-            creator: Optional[str] = Query(None, description="创建者"),
     ) -> None:
         super().__init__()
         
         # 模糊查询字段
-        self.name = ("like", f"%{name}%") if name else None
-        self.route_path = ("like", f"%{route_path}%") if route_path else None
-        self.component_path = ("like", f"%{component_path}%") if component_path else None
-        self.permission = ("like", f"%{permission}%") if permission else None
-        self.creator = ("like", f"%{creator}%") if creator else None
+        self.name = ("like", name)
+        self.route_path = ("like", route_path)
+        self.component_path = ("like", component_path)
+        self.permission = ("like", permission)
 
         # 精确查询字段
-        self.type = ("eq", type) if type else None
-        self.available = ("eq", available) if available is not None else None
+        self.type = type
+        self.available = available

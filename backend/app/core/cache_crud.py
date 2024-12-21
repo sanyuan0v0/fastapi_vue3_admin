@@ -16,8 +16,15 @@ class Cache:
         """初始化"""
         self.redis: Redis = request.app.state.redis
         
-    async def mget(self, keys: list)-> list:
-        """批量获取缓存"""
+    async def mget(self, *keys: list)-> list:
+        """批量获取缓存
+        
+        Args:
+            *keys: 可变参数,接收多个键名
+            
+        Returns:
+            list: 返回缓存值列表
+        """
         try:
             data = await self.redis.mget(keys)
             return data

@@ -151,17 +151,16 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, h, resolveComponent } from 'vue';
 import { message, Modal } from 'ant-design-vue';
-import type { TableColumnsType } from 'ant-design-vue';
 import {
     UploadOutlined,
     FolderAddOutlined,
     DeleteOutlined,
     DownloadOutlined,
+    ReloadOutlined,
     EditOutlined,
     InboxOutlined,
     FileOutlined,
     FolderOutlined,
-    ReloadOutlined,
     EyeOutlined
 } from '@ant-design/icons-vue';
 import PageHeader from '@/components/PageHeader.vue';
@@ -182,9 +181,8 @@ const columns = [
         ellipsis: true,
         width: 200,
         customRender: ({ text, record }: { text: string, record: tableDataType }) => {
-            const icon = record.type === 'directory' ? 'folder' : 'file';
             return h('span', {}, [
-                h(resolveComponent(icon === 'folder' ? 'FolderOutlined' : 'FileOutlined'), { style: 'margin-right: 8px' }),
+                h(record.type === 'directory' ? FolderOutlined : FileOutlined, { style: 'margin-right: 8px' }),
                 text
             ]);
         }
@@ -367,7 +365,7 @@ const isPreviewable = (record: tableDataType) => {
 
 const handlePreview = (record: tableDataType) => {
     previewModalVisible.value = true;
-    previewUrl.value = record.url;
+    // previewUrl.value = record.url;
     const ext = record.name.split('.').pop()?.toLowerCase();
     isImage.value = ['jpg', 'jpeg', 'png', 'gif'].includes(ext || '');
     isVideo.value = ['mp4', 'webm'].includes(ext || '');

@@ -23,5 +23,8 @@ asyncmy==0.2.9 # mysql 异步操作数据库：基于 mysqlclient：asyncmy 是 
 # motor==3.6.0 # mongodb 驱动
 # aiomysql==0.2.0 # mysql 异步操作数据库基于 pymysql：aiomysql 是 pymysql 的异步版本，pymysql 是一个纯 Python 实现的 MySQL 客户端。成熟度：aiomysql 相对较为成熟，社区支持较好，文档也比较完善。
 # alembic==1.14.0 # 数据库版本控制
-# kubernetes==30.1.0 # 预留（后面开发会使用）
-# docker==7.1.0 # 预留（后面开发会使用）
+
+# 后期业务开发会用到的库
+# kubernetes==30.1.0 # k8s 客户端预留（后面开发会使用）
+# docker==7.1.0 # docker 客户端预留（后面开发会使用）
+# minio==8.0.10 # minio 对象存储 预留（后面开发会使用）

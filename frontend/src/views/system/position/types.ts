@@ -1,6 +1,6 @@
 export interface searchDataType {
     name?: string
-    available?: string
+    available?: boolean
 }
 
 export interface tableDataType {

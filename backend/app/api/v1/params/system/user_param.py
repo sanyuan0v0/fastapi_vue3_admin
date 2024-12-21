@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
 from typing import Optional
 from fastapi import Query
 
@@ -15,19 +16,24 @@ class UserQueryParams:
             mobile: Optional[str] = Query(None, description="手机号", pattern=r'^1[3-9]\d{9}$'),
             email: Optional[str] = Query(None, description="邮箱", pattern=r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'), 
             available: Optional[bool] = Query(None, description="是否可用"),
-            start_time: Optional[str] = Query(None, description="开始时间", example="2023-01-01 00:00:00"),
-            end_time: Optional[str] = Query(None, description="结束时间", example="2023-12-31 23:59:59"),
+            start_time: Optional[str] = Query(None, description="开始时间"),
+            end_time: Optional[str] = Query(None, description="结束时间"),
+            creator: Optional[int] = Query(None, description="创建人"),
     ) -> None:
         super().__init__()
         
         # 模糊查询字段
-        self.username = ("like", f"%{username}%") if username else None
-        self.name = ("like", f"%{name}%") if name else None
-        self.mobile = ("like", f"%{mobile}%") if mobile else None
-        self.email = ("like", f"%{email}%") if email else None
+        self.username = ("like", username)
+        self.name = ("like", name)
+        self.mobile = ("like", mobile)
+        self.email = ("like", email)
 
         # 精确查询字段
-        self.available = ("eq", available) if available is not None else None
+        self.creator_id = creator
+        self.available = available
         
         # 时间范围查询
-        self.created_at = ("between", [start_time, end_time]) if start_time and end_time else None
+        if start_time and end_time:
+            start_datetime = datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S')
+            end_datetime = datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S')
+            self.created_at = ("between", (start_datetime, end_datetime))

@@ -10,12 +10,14 @@ class NoticeQueryParams:
             self,
             notice_title: Optional[str] = Query(None, description="公告标题", min_length=2, max_length=20),
             available: Optional[bool] = Query(None, description="是否可用"),
+            creator: Optional[int] = Query(None, description="创建人"),
     ) -> None:
         super().__init__()
         
         # 模糊查询字段
-        self.notice_title = ("like", f"%{notice_title}%") if notice_title else None
+        self.notice_title = ("like", notice_title)
 
         # 精确查询字段
-        self.available = ("eq", available) if available is not None else None
+        self.creator_id = creator
+        self.available = available
 

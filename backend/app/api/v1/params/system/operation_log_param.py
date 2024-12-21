@@ -23,12 +23,12 @@ class OperationLogQueryParams:
         
         # 模糊查询字段
         self.request_path = ("like", f"%{request_path}%") if request_path else None
-        self.creator_id = creator
         
         # 精确查询字段
-        self.request_method = ("eq", request_method) if request_method else None
-        self.request_ip = ("eq", request_ip) if request_ip else None
-        self.response_code = ("eq", response_code) if response_code else None
+        self.creator_id = creator
+        self.request_method = request_method
+        self.request_ip = request_ip
+        self.response_code = response_code
         
         # 时间范围查询
         if start_time and end_time:

@@ -17,8 +17,8 @@
                         <a-col flex="0 1 450px">
                             <a-form-item name="available" label="状态" style="max-width: 300px;">
                                 <a-select v-model:value="queryState.available" placeholder="全部" allowClear>
-                                    <a-select-option value="true">启用</a-select-option>
-                                    <a-select-option value="false">停用</a-select-option>
+                                    <a-select-option value="1">启用</a-select-option>
+                                    <a-select-option value="0">停用</a-select-option>
                                 </a-select>
                             </a-form-item>
                         </a-col>
@@ -69,9 +69,9 @@
                             <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
                         </template>
                         <template v-if="column.dataIndex === 'notice_type'">
-                            <span :style="{ color: record.notice_type === 1 ? '#108ee9' : '#f8e231' }">
+                            <a-tag :color="record.notice_type === 1 ? 'blue' : 'orange' ">
                                 {{ record.notice_type === 1 ? '通知' : '公告' }}
-                            </span>
+                            </a-tag>
                         </template>
                         <template v-if="column.dataIndex === 'available'">
                             <span><a-badge :color="record.available ? 'green' : 'red'" /> {{ record.available ? '启用' :
@@ -108,7 +108,7 @@
                                 detailState.index + 1 }}</a-descriptions-item>
                             <a-descriptions-item label="标题">{{ detailState.notice_title }}</a-descriptions-item>
                             <a-descriptions-item label="类型">
-                                <a-tag :color="detailState.notice_type === 1 ? '#108ee9' : '#f8e231'">{{
+                                <a-tag :color="detailState.notice_type === 1 ? 'blue' : 'orange'">{{
                                     detailState.notice_type
                                     === 1 ? '通知' : '公告' }}</a-tag>
                             </a-descriptions-item>
@@ -197,7 +197,6 @@ import { cloneDeep, isEmpty } from '@/utils/util';
 import PageHeader from '@/components/PageHeader.vue';
 import { getNoticeList, createNotice, updateNotice, deleteNotice, batchAvailableNotice, exportNotice } from '@/api/system/notice'
 import type { searchDataType, tableDataType } from './types'
-import XLSX from 'xlsx';
 
 const createForm = ref();
 const updateForm = ref();

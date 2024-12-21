@@ -61,11 +61,45 @@
             </a-tooltip>
 
             <!-- 通知按钮 -->
-            <a-badge :count="unreadCount" :dot="unreadCount > 99">
-              <a-button type="link" @click="openNotification" class="tool-btn">
-                <BellOutlined />
-              </a-button>
-            </a-badge>
+            <a-popover
+              placement="bottom"
+              trigger="hover"
+              :autoAdjustOverflow="true"
+            >
+              <template #content>
+                <div class="notice-popover">
+                  <a-list :data-source="noticeState.notices" size="small">
+                    <template #renderItem="{ item }">
+                      <a-list-item>
+                        <a-list-item-meta>
+                          <template #title>
+                            <span>
+                              <a-tag :color="item.notice_type === 1 ? 'blue' : 'orange'">
+                                {{ item.notice_type === 1 ? '通知' : '公告' }}
+                              </a-tag>
+                              {{ item.notice_title }}
+                            </span>
+                          </template>
+                          <template #description>
+                            <div class="notice-content">{{ item.notice_content }}</div>
+                          </template>
+                        </a-list-item-meta>
+                      </a-list-item>
+                    </template>
+                    <template #header>
+                      <div class="notice-header">
+                        <icons.WarningOutlined style="color: #faad14"/> 公告通知
+                      </div>
+                    </template>
+                  </a-list>
+                </div>
+              </template>
+              <a-badge :count="unreadCount" :dot="unreadCount > 99">
+                <a-button type="link" class="tool-btn">
+                  <BellOutlined />
+                </a-button>
+              </a-badge>
+            </a-popover>
 
             <!-- 用户信息下拉菜单 -->
             <a-dropdown>
@@ -117,7 +151,6 @@ import store from '@/store';
 import * as icons from '@ant-design/icons-vue';
 import { h } from 'vue';
 import { listToTree } from '@/utils/util';
-import { logout } from '@/api/system/auth';
 import { 
   QuestionCircleOutlined, 
   BellOutlined,
@@ -129,6 +162,28 @@ import {
   BulbOutlined,
   BulbFilled
 } from '@ant-design/icons-vue';
+import { logout } from '@/api/system/auth';
+import { getNoticeList } from '@/api/system/notice'
+
+// 通知公告获取
+const dataSource = reactive({
+  dataList: [],
+  total: 0,
+})
+
+const handleNoticeList = async () => {
+  try {
+    noticeState.loading = true;
+    const response = await getNoticeList({ available: true });
+    // 只获取最新的5条通知
+    noticeState.notices = response.data.data.items;
+    dataSource.total = response.data.data.total;
+  } catch (error) {
+    console.error('获取通知列表失败:', error);
+  } finally {
+    noticeState.loading = false;
+  }
+};
 
 // 路由相关
 const router = useRouter();
@@ -137,7 +192,7 @@ const route = useRoute();
 // 计算属性
 const username = computed(() => store.state.user.basicInfo.username);
 const userAvatar = computed(() => store.state.user.basicInfo.avatar);
-const unreadCount = computed(() => 5); // 这里可以替换为实际的未读消息数量
+const unreadCount = computed(() => dataSource.total); // 通知条数
 
 // 菜单状态
 const menuState = reactive({
@@ -254,11 +309,6 @@ const openDocumentation = () => {
   window.open('/site/index.html', '_blank');
 };
 
-// 打开通知面板
-const openNotification = () => {
-  console.log('打开通知面板');
-};
-
 // 主题相关
 const isDarkMode = inject('isDarkMode') as Ref<boolean>
 const toggleTheme = inject('toggleTheme') as (darkMode: boolean) => void
@@ -269,9 +319,20 @@ const handleThemeChange = () => {
   localStorage.setItem('theme', isDarkMode.value ? 'dark' : 'light')
 }
 
+// 通知状态管理
+const noticeState = reactive({
+  notices: [], // 所有通知
+  loading: false
+});
+
+
+// 在页面加载时获取通知列表
 onMounted(() => {
   initMenu();
+  handleNoticeList();
 });
+
+
 </script>
 
 <style lang="scss" scoped>
@@ -338,7 +399,7 @@ onMounted(() => {
 
     .layout-header {
       background: var(--component-background);
-      padding: 16px;
+      padding: 6px;
       display: flex;
 
       .header-left {
@@ -395,4 +456,56 @@ onMounted(() => {
   }
 }
 
+.notice-content {
+  max-height: 100px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+// 添加通知图标的hover效果
+.tool-btn {
+  &:hover {
+    .anticon {
+      color: var(--primary-color);
+    }
+  }
+}
+
+:deep(.ant-list-item-meta-title) {
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+:deep(.ant-badge-status-dot) {
+  margin-right: 8px;
+}
+
+// 添加通知弹出框样式
+.notice-popover {
+  width: 240px;
+  max-height: 400px;
+  
+  .notice-header {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 4px 0;
+  }
+  
+  .notice-content {
+    margin-top: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  :deep(.ant-list-item) {
+    padding: 8px 0;
+  }
+  
+  :deep(.ant-list-item-meta-title) {
+    margin-bottom: 0;
+  }
+}
 </style>

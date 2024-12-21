@@ -5,7 +5,7 @@ from typing import TypeVar, Sequence, Generic, Dict, Any, List, Union, Optional
 from sqlalchemy.sql.elements import ColumnElement
 from sqlalchemy.orm import selectinload, DeclarativeBase
 from sqlalchemy.engine import Result
-from sqlalchemy import asc, func, select, delete, Select, desc, update
+from sqlalchemy import asc, func, select, delete, Select, desc, update, or_
 
 from app.api.v1.schemas.system.auth_schema import AuthSchema
 from app.api.v1.models.system.dept_model import DeptModel
@@ -202,33 +202,60 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     async def __filter_permissions(self, sql: Select[Any]) -> Select[Any]:
         """过滤数据权限"""
+        # 1. 如果模型没有creator字段,则不需要过滤
         if not hasattr(self.model, "creator"):
             return sql
         
         sql = sql.options(selectinload(self.model.creator))
         
+        # 2. 超级管理员可以查看所有数据
         if not self.current_user or self.current_user.is_superuser:
             return sql
-        
+            
+        # 3. 如果用户没有部门或角色,则只能查看自己的数据
         if not self.current_user.dept_id or not self.current_user.roles:
             return sql.where(self.model.creator_id == self.current_user.id)
         
-        data_scopes = {role.data_scope for role in self.current_user.roles}
-        dept_ids = {dept.id for role in self.current_user.roles for dept in role.depts}
+        # 4. 获取用户所有角色的权限范围
+        data_scopes = set()
+        dept_ids = set()
         
+        for role in self.current_user.roles:
+            # 如果有全部数据权限,直接返回所有数据
+            if role.data_scope == 4:
+                return sql
+                
+            data_scopes.add(role.data_scope)
+            # 如果是自定义权限,添加自定义部门
+            if role.data_scope == 5:
+                dept_ids.update({dept.id for dept in role.depts})
+        
+        conditions = []
+        
+        # 5. 处理各种数据权限范围
         if 1 in data_scopes:
-            return sql.where(self.model.creator_id == self.current_user.id)
-        if 4 in data_scopes:
-            return sql
+            # 仅本人数据
+            conditions.append(self.model.creator_id == self.current_user.id)
+        
         if 2 in data_scopes:
+            # 本部门数据
             dept_ids.add(self.current_user.dept_id)
+            
         if 3 in data_scopes:
+            # 本部门及以下数据
             dept_objs = await CRUDBase(DeptModel, self.auth).list()
             id_map = get_child_id_map(dept_objs)
             dept_child_ids = get_child_recursion(id=self.current_user.dept_id, id_map=id_map)
             dept_ids.update(dept_child_ids)
-
-        return sql.where(self.model.creator.has(UserModel.dept_id.in_(list(dept_ids))))
+        
+        if dept_ids:
+            conditions.append(self.model.creator.has(UserModel.dept_id.in_(list(dept_ids))))
+        
+        # 6. 组合所有条件
+        if conditions:
+            return sql.where(or_(*conditions))
+            
+        return sql.where(self.model.creator_id == self.current_user.id)
 
     def __order_by(self, order_by: List[Dict[str, str]]) -> List[ColumnElement]:
         """
