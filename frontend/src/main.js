@@ -5,6 +5,7 @@ import Antd from "ant-design-vue";
 import "ant-design-vue/dist/reset.css";
 import VChart from "vue-echarts";
 import "echarts";
+import './style.css'
 
 const app = createApp(App);
 app.use(router);
