@@ -45,7 +45,8 @@
               <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
             </template>
             <template v-if="column.dataIndex === 'available'">
-              <span><a-badge :color="record.available ? 'green' : 'red'" /> {{ record.available ? '启用' : '禁用' }}
+              <span>
+                <a-badge :status="record.available ? 'processing': 'error'" :text="record.available ? '启用' : '停用'" />
               </span>
             </template>
           </template>

@@ -4,7 +4,10 @@
     <div class="page-header-content" style="display: flex; justify-content: space-between; padding-bottom: 20px;">
       <a-row align="middle">
         <a-col class="avatar">
-          <a-avatar :size="75" :src="userInfo.avatar" />
+          <a-avatar v-if="userInfo.avatar" :src="userInfo.avatar" :size="75" />
+          <a-avatar v-else :size="75">
+            <template #icon><UserOutlined /></template>
+          </a-avatar>
         </a-col>
         <a-col class="content" style="margin-left: 20px;">
           <div class="content-title"

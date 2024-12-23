@@ -8,7 +8,10 @@
           <a-card class="info-card" :bordered="false">
             <div class="user-info-header">
               <div class="avatar-wrapper">
-                <a-avatar :src="infoFormState.avatar" :size="120" />
+                <a-avatar v-if="infoFormState.avatar" :src="infoFormState.avatar" :size="120" />
+                <a-avatar v-else :size="120">
+                  <template #icon><UserOutlined /></template>
+                </a-avatar>
                 <div class="avatar-upload-overlay">
                   <a-upload
                     name="file"

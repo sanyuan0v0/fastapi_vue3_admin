@@ -18,7 +18,6 @@
       <a-menu
         class="side-menu"
         mode="inline"
-        theme="light"
         v-model:openKeys="menuState.openKeys"
         v-model:selectedKeys="menuState.selectedKeys"
         :items="menuState.menus"
@@ -104,8 +103,11 @@
             <!-- 用户信息下拉菜单 -->
             <a-dropdown>
               <div class="user-dropdown">
-                <a-avatar :src="userAvatar" :size="32" />
-                <span class="username">{{ username }}</span>
+                <a-avatar v-if="userInfo.avatar" :src="userInfo.avatar" :size="32"/>
+                <a-avatar v-else :size="32">
+                  <template #icon><UserOutlined /></template>
+                </a-avatar>
+                <span class="username">{{ userInfo.username }}</span>
                 <DownOutlined />
               </div>
               <template #overlay>
@@ -190,8 +192,7 @@ const router = useRouter();
 const route = useRoute();
 
 // 计算属性
-const username = computed(() => store.state.user.basicInfo.username);
-const userAvatar = computed(() => store.state.user.basicInfo.avatar);
+const userInfo = computed(() => store.state.user.basicInfo);
 const unreadCount = computed(() => dataSource.total); // 通知条数
 
 // 菜单状态
@@ -354,11 +355,9 @@ onMounted(() => {
       display: flex;
       align-items: center;
       justify-content: center;
-      border-bottom: 1px solid var(--border-color);
-      
+
       .logo-title {
         margin: 0 0 0 12px;
-        color: var(--text-color);
         font-weight: 600;
         font-size: 18px;
         white-space: nowrap;
@@ -380,7 +379,6 @@ onMounted(() => {
         
         &.ant-menu-item-selected {
           background: rgba(24, 144, 255, 0.1);
-          color: var(--primary-color);
           font-weight: 500;
         }
       }

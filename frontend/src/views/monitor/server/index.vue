@@ -16,7 +16,9 @@
             <div class="border rounded-lg p-4">
               <div class="text-center mb-4">
                 <div class="text-lg font-bold">CPU核心数</div>
-                <AProgress type="circle" :percent="100" :format="() => server.cpu?.cpu_num || 0" status="normal" />
+                <a-tooltip title="CPU核心数">
+                  <a-progress type="circle" :percent="100" :format="() => server.cpu?.cpu_num || 0" status="normal"/>
+                </a-tooltip>
               </div>
               <div class="space-y-2">
                 <div class="flex justify-between">
@@ -36,7 +38,9 @@
             <div class="border rounded-lg p-4">
               <div class="text-center mb-4">
                 <div class="text-lg font-bold">CPU使用率</div>
-                <AProgress type="circle" :percent="server.cpu?.used || 0" :status="server.cpu?.used > 80 ? 'exception' : 'normal'" />
+                <a-tooltip title="CPU使用率">
+                  <a-progress type="circle" :percent="server.cpu?.used || 0" :status="server.cpu?.used > 80 ? 'exception' : 'normal'"/>
+                </a-tooltip>
               </div>
               <div class="space-y-2">
                 <div class="flex justify-between">
@@ -72,7 +76,9 @@
             <div class="border rounded-lg p-4">
               <div class="text-center mb-4">
                 <div class="text-lg font-bold">系统内存</div>
-                <AProgress type="circle" :percent="server.mem?.usage || 0" :status="server.mem?.usage > 80 ? 'exception' : 'normal'" />
+                <a-tooltip title="系统内存">
+                  <a-progress type="circle" :percent="server.mem?.usage || 0" :status="server.mem?.usage > 80 ? 'exception' : 'normal'"/>
+                </a-tooltip>
               </div>
               <div class="space-y-2">
                 <div class="flex justify-between">
@@ -93,7 +99,9 @@
             <div class="border rounded-lg p-4">
               <div class="text-center mb-4">
                 <div class="text-lg font-bold">Python内存</div>
-                <AProgress type="circle" :percent="server.py?.memory_usage || 0" :status="server.py?.memory_usage > 80 ? 'exception' : 'normal'" />
+                <a-tooltip title="Python内存">
+                  <a-progress type="circle" :percent="server.py?.memory_usage || 0" :status="server.py?.memory_usage > 80 ? 'exception' : 'normal'" />
+                </a-tooltip>
               </div>
               <div class="space-y-2">
                 <div class="flex justify-between">

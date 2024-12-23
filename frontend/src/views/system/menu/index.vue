@@ -73,7 +73,8 @@
               </a-tag>
             </template>
             <template v-if="column.dataIndex === 'available'">
-              <span><a-badge :color="record.available ? 'green' : 'red'" /> {{ record.available ? '启用' : '禁用' }}
+              <span>
+                <a-badge :status="record.available ? 'processing': 'error'" :text="record.available ? '启用' : '停用'" />
               </span>
             </template>
             <template v-if="column.dataIndex === 'operation'">
@@ -132,7 +133,7 @@
               <a-descriptions-item v-if="detailState.type !== 3" label="是否隐藏">{{ detailState.hidden ? '是' : '否'
                 }}</a-descriptions-item>
               <a-descriptions-item label="状态">
-                <a-badge :color="detailState.available ? 'green' : 'red'" />{{ detailState.available ? '启用' : '禁用' }}
+                <a-badge :status="detailState.available ? 'processing': 'error'" :text="detailState.available ? '启用' : '停用'" />
               </a-descriptions-item>
               <a-descriptions-item label="创建人">{{ detailState.creator ? detailState.creator.name : '-' }}</a-descriptions-item>
               <a-descriptions-item label="创建时间">{{ detailState.created_at }}</a-descriptions-item>
@@ -159,9 +160,14 @@
             </a-form-item>
             <a-form-item name="parent_id" label="父级菜单">
               <a-tree-select v-model:value="createState.parent_id"
-                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }" :tree-data="menuSelectorTreeData"
-                :field-names="{ children: 'children', label: 'name', value: 'id' }" tree-node-filter-prop="name"
-                style="width: 100%" show-search allow-clear placeholder="请选择父级菜单"></a-tree-select>
+                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }" 
+                :tree-data="menuSelectorTreeData"
+                :field-names="{ children: 'children', label: 'name', value: 'id' }" 
+                tree-node-filter-prop="name"
+                style="width: 100%" 
+                show-search 
+                allow-clear 
+                placeholder="请选择父级菜单"></a-tree-select>
             </a-form-item>
             <a-form-item name="icon" label="图标">
               <a-popover placement="right" trigger="click">
@@ -247,9 +253,14 @@
             </a-form-item>
             <a-form-item name="parent_id" label="父级菜单">
               <a-tree-select v-model:value="updateState.parent_id"
-                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }" :tree-data="menuSelectorTreeData"
-                :field-names="{ children: 'children', label: 'name', value: 'id' }" tree-node-filter-prop="name"
-                style="width: 100%" show-search allow-clear placeholder="请选择父级菜单"></a-tree-select>
+                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }" 
+                :tree-data="menuSelectorTreeData"
+                :field-names="{ children: 'children', label: 'name', value: 'id' }" 
+                tree-node-filter-prop="name"
+                style="width: 100%" 
+                show-search 
+                allow-clear 
+                placeholder="请选择父级菜单"></a-tree-select>
             </a-form-item>
             <a-form-item name="icon" label="图标">
               <a-popover placement="right" trigger="click">

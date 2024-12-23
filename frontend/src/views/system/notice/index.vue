@@ -74,8 +74,8 @@
                             </a-tag>
                         </template>
                         <template v-if="column.dataIndex === 'available'">
-                            <span><a-badge :color="record.available ? 'green' : 'red'" /> {{ record.available ? '启用' :
-                                '禁用' }}
+                            <span>
+                                <a-badge :status="record.available ? 'processing': 'error'" :text="record.available ? '启用' : '停用'" />
                             </span>
                         </template>
                         <template v-if="column.dataIndex === 'operation'">
@@ -114,9 +114,7 @@
                             </a-descriptions-item>
                             <a-descriptions-item label="内容">{{ detailState.notice_content }}</a-descriptions-item>
                             <a-descriptions-item label="状态">
-                                <a-badge :color="detailState.available ? 'green' : 'red'" />{{ detailState.available ?
-                                    '启用' :
-                                    '禁用' }}
+                                <a-badge :status="detailState.available ? 'processing': 'error'" :text="detailState.available ? '启用' : '停用'" />
                             </a-descriptions-item>
                             <a-descriptions-item label="创建人">{{ detailState.creator ? detailState.creator.name : '-'
                                 }}</a-descriptions-item>

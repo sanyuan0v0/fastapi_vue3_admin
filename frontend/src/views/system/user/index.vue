@@ -88,14 +88,12 @@
             </template>
             <template v-if="column.dataIndex === 'available'">
               <span>
-                <a-badge :color="record.available ? 'green' : 'red'" />
-                {{ record.available ? '启用' : '禁用' }}
+                <a-badge :status="record.available ? 'processing': 'error'" :text="record.available ? '启用' : '停用'" />
               </span>
             </template>
             <template v-if="column.dataIndex === 'is_superuser'">
               <span>
-                <a-badge :color="record.is_superuser ? 'green' : 'red'" />
-                {{ record.is_superuser ? '是' : '否' }}
+                <a-badge :status="record.is_superuser ? 'processing': 'error'" :text="record.is_superuser ? '是' : '否'" />
               </span>
             </template>
             <template v-if="column.dataIndex === 'operation'">
@@ -135,11 +133,10 @@
               <a-descriptions-item label="邮箱">{{ detailState.email }}</a-descriptions-item>
               <a-descriptions-item label="联系电话">{{ detailState.mobile }}</a-descriptions-item>
               <a-descriptions-item label="是否超管">
-                <a-badge :color="detailState.is_superuser ? 'green' : 'red'" />{{ detailState.is_superuser ? '是' : '否'
-                }}
+                <a-badge :status="detailState.is_superuser ? 'processing': 'error'" :text="detailState.is_superuser ? '是' : '否'" />
               </a-descriptions-item>
               <a-descriptions-item label="状态">
-                <a-badge :color="detailState.available ? 'green' : 'red'" />{{ detailState.available ? '启用' : '禁用' }}
+                <a-badge :status="detailState.available ? 'processing': 'error'" :text="detailState.available ? '启用' : '停用'" />
               </a-descriptions-item>
               <a-descriptions-item label="上次登录时间">{{ detailState.last_login }}</a-descriptions-item>
               <a-descriptions-item label="创建人">{{ detailState.creator ? detailState.creator.name : '-'

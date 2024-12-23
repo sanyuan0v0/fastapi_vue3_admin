@@ -70,8 +70,7 @@
           <template #bodyCell="{ column, record }">
             
             <template v-if="column.dataIndex === 'available'">
-              <a-badge :status="record.available ? 'success' : 'error'" />
-              {{ record.available ? '启用' : '停用' }}
+              <a-badge :status="record.available ? 'processing': 'error'" :text="record.available ? '启用' : '停用'" />
             </template>
 
             <template v-if="column.dataIndex === 'action'">
@@ -113,8 +112,7 @@
             <a-descriptions-item label="名称">{{ detailState.name }}</a-descriptions-item>
             <a-descriptions-item label="排序">{{ detailState.order }}</a-descriptions-item>
             <a-descriptions-item label="状态">
-              <a-badge :color="detailState.available ? 'green' : 'red'" />
-              {{ detailState.available ? '启用' : '禁用' }}
+              <a-badge :status="detailState.available ? 'processing': 'error'" :text="detailState.available ? '启用' : '停用'" />
             </a-descriptions-item>
             <a-descriptions-item label="上级部门" :span="2">{{ detailState.parent_name }}</a-descriptions-item>
             <a-descriptions-item label="创建时间">{{ detailState.created_at }}</a-descriptions-item>
