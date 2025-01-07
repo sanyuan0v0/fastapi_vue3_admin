@@ -33,14 +33,12 @@
                 <template #extra>
                     <a-space>
                         <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')">新建</a-button>
+                        <a-button type="primary" @click="openSystemConfigModal">系统配置</a-button>
                     </a-space>
                 </template>
 
-                <a-table :rowKey="record => record.id" :columns="columns" 
-                    :data-source="dataSource"
-                    :loading="tableLoading" 
-                    :scroll="{ x: 500, y: 'calc(100vh - 500px)' }" 
-                    :row-selection="rowSelection"
+                <a-table :rowKey="record => record.id" :columns="columns" :data-source="dataSource"
+                    :loading="tableLoading" :scroll="{ x: 500, y: 'calc(100vh - 500px)' }" :row-selection="rowSelection"
                     :pagination="false" :style="{ minHeight: '500px' }">
                     <template #bodyCell="{ column, record }">
 
@@ -59,99 +57,51 @@
             </a-card>
         </div>
 
-        <!-- 弹窗区域 -->
-        <div class="modal-wrapper">
-            <a-modal v-model:open="openModal" @ok="handleModalSumbit" :width="800" :destroyOnClose="true"
-                :confirmLoading="modalSubmitLoading" style="top: 30px">
-                <template #title>
-                    <span>{{ modalTitle === 'create' ? '新建配置' : (modalTitle === 'view' ? '查看配置' : '修改配置') }}</span>
-                </template>
+        <!-- 系统配置弹窗 -->
+        <a-modal v-model:open="systemConfigModalVisible" title="系统配置" :width="800" :destroyOnClose="true"
+            :confirmLoading="systemConfigModalLoading" @ok="handleSystemConfigSubmit">
+            <!-- 基础配置部分 -->
+            <a-card title="基础配置" :bordered="false" style="margin-bottom: 16px;">
+                <a-form ref="systemConfigForm" :model="systemConfigState" :label-col="{ span: 5 }"
+                    :wrapper-col="{ span: 15 }">
+                    <!-- 基础配置的顶级配置项 -->
+                    <a-form-item v-for="config in systemConfigState.filter(item => item.fied_key === 'base')"
+                        :key="config.id" :name="config.id" :label="config.name"
+                        :rules="[{ required: true, message: `请输入${config.name}` }]">
+                        <a-input v-model:value="config.fied_value" :placeholder="`请输入${config.name}`" allowClear />
+                    </a-form-item>
 
-                <!-- 查看表单 -->
-                <template v-if="modalTitle === 'view'">
-                    <a-spin :spinning="detailStateLoading">
-                        <a-descriptions :column="{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 1, xs: 1 }" :labelStyle="{ width: '140px' }" bordered>
-                            <a-descriptions-item label="名称">{{ detailState.name }}</a-descriptions-item>
-                            <a-descriptions-item label="排序">{{ detailState.order }}</a-descriptions-item>
-                            <a-descriptions-item label="上级配置" :span="2">{{ detailState.parent_id}}</a-descriptions-item>
-                            <a-descriptions-item label="键">{{ detailState.fied_key }}</a-descriptions-item>
-                            <a-descriptions-item label="值">{{ detailState.fied_value }}</a-descriptions-item>
-                        </a-descriptions>
-                    </a-spin>
-                </template>
+                    <!-- 基础配置的子配置项 -->
+                    <a-form-item v-for="config in systemConfigState.filter(item => item.parent_id === 1)"
+                        :key="config.id" :name="config.id" :label="config.name"
+                        :rules="[{ required: true, message: `请输入${config.name}` }]">
+                        <a-input v-model:value="config.fied_value" :placeholder="`请输入${config.name}`" allowClear />
+                    </a-form-item>
+                </a-form>
+            </a-card>
 
-                <!-- 新建表单 -->
-                <template v-else-if="modalTitle === 'create'">
-                    <a-form ref="createForm" :model="createState" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
-                        <a-form-item name="name" label="名称" :rules="[{ required: true, message: '请输入名称' }]">
-                            <a-input v-model:value="createState.name" placeholder="请输入名称" allowClear />
-                        </a-form-item>
+            <!-- 登录页配置部分 -->
+            <a-card title="登录页配置" :bordered="false">
+                <a-form ref="systemConfigForm" :model="systemConfigState" :label-col="{ span: 5 }"
+                    :wrapper-col="{ span: 15 }">
+                    <!-- 登录页配置的顶级配置项 -->
+                    <a-form-item v-for="config in systemConfigState.filter(item => item.fied_key === 'login')"
+                        :key="config.id" :name="config.id" :label="config.name"
+                        :rules="[{ required: true, message: `请输入${config.name}` }]">
+                        <a-input v-model:value="config.fied_value" :placeholder="`请输入${config.name}`" allowClear />
+                    </a-form-item>
 
-                        <a-form-item name="order" label="排序" :rules="[{ required: true, message: '请输入排序' }]">
-                            <a-input-number v-model:value="createState.order" :min="1" />
-                        </a-form-item>
-
-                        <a-form-item name="parent_id" label="上级配置">
-                            <a-tree-select
-                                v-model:value="createState.parent_id"
-                                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-                                :tree-data="dataSource"
-                                :field-names="{ children: 'children', label: 'name', value: 'id' }"
-                                tree-node-filter-prop="name"
-                                style="width: 100%"
-                                show-search
-                                allow-clear
-                                placeholder="请选择上级配置"
-                                />
-                        </a-form-item>
-
-                        <a-form-item name="fied_key" label="键" :rules="[{ required: true, message: '请输入键' }]">
-                            <a-input v-model:value="createState.fied_key" placeholder="请输入键" allowClear />
-                        </a-form-item>
-
-                        <a-form-item name="fied_value" label="值">
-                            <a-textarea v-model:value="createState.fied_value" placeholder="请输入值" :rows="4"allowClear />
-                        </a-form-item>
-                    </a-form>
-                </template>
-
-                <!-- 修改表单 -->
-                <template v-else>
-                    <a-form ref="updateForm" :model="updateState" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
-                        <a-form-item name="name" label="名称" :rules="[{ required: true, message: '请输入名称' }]">
-                            <a-input v-model:value="updateState.name" placeholder="请输入名称" allowClear />
-                        </a-form-item>
-
-                        <a-form-item name="order" label="排序" :rules="[{ required: true, message: '请输入排序' }]">
-                            <a-input-number v-model:value="updateState.order" :min="1" />
-                        </a-form-item>
-
-                        <a-form-item name="parent_id" label="上级配置">
-                            <a-tree-select
-                                v-model:value="updateState.parent_id"
-                                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-                                :tree-data="dataSource"
-                                :field-names="{ children: 'children', label: 'name', value: 'id' }"
-                                tree-node-filter-prop="name"
-                                style="width: 100%"
-                                show-search
-                                allow-clear
-                                placeholder="请选择上级配置"
-                                />
-                        </a-form-item>
-
-                        <a-form-item name="fied_key" label="键" :rules="[{ required: true, message: '请输入键' }]">
-                            <a-input v-model:value="updateState.fied_key" placeholder="请输入键" allowClear />
-                        </a-form-item>
-
-                        <a-form-item name="fied_value" label="值">
-                            <a-textarea v-model:value="updateState.fied_value" placeholder="请输入值" :rows="4"allowClear />
-                        </a-form-item>
-                    </a-form>
-                </template>
-            </a-modal>
-        </div>
+                    <!-- 登录页配置的子配置项 -->
+                    <a-form-item v-for="config in systemConfigState.filter(item => item.parent_id === 4)"
+                        :key="config.id" :name="config.id" :label="config.name"
+                        :rules="[{ required: true, message: `请输入${config.name}` }]">
+                        <a-input v-model:value="config.fied_value" :placeholder="`请输入${config.name}`" allowClear />
+                    </a-form-item>
+                </a-form>
+            </a-card>
+        </a-modal>
     </div>
+
 </template>
 
 <script lang="ts" setup>
@@ -371,6 +321,43 @@ const handleModalSumbit = () => {
             modalSubmitLoading.value = false;
             console.error(error)
         })
+    }
+};
+
+// 系统配置弹窗状态
+const systemConfigModalVisible = ref(false);
+const systemConfigModalLoading = ref(false);
+const systemConfigState = ref<tableDataType[]>([]);
+
+// 打开系统配置弹窗
+const openSystemConfigModal = async () => {
+    systemConfigModalVisible.value = true;
+    systemConfigModalLoading.value = true;
+    try {
+        const response = await getConfigList({});
+        systemConfigState.value = listToTree(response.data.items);
+    } catch (error) {
+        console.error(error);
+    } finally {
+        systemConfigModalLoading.value = false;
+    }
+};
+
+// 提交系统配置
+const handleSystemConfigSubmit = async () => {
+    systemConfigModalLoading.value = true;
+    try {
+        const updatePromises = systemConfigState.value.map(config =>
+            updateConfig(config)
+        );
+        await Promise.all(updatePromises);
+        message.success('系统配置更新成功');
+        systemConfigModalVisible.value = false;
+        loadingData(); // 重新加载数据
+    } catch (error) {
+        console.error(error);
+    } finally {
+        systemConfigModalLoading.value = false;
     }
 };
 
