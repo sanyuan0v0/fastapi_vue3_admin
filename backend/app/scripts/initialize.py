@@ -15,7 +15,8 @@ from app.api.v1.models.system import (
     menu_model,
     position_model,
     operation_log_model,
-    notice_model
+    notice_model,
+    config_model
 )
 
 class InitializeData:
@@ -37,7 +38,8 @@ class InitializeData:
             role_model.RoleDeptsModel,
             role_model.RoleMenusModel,
             user_model.UserPositionsModel,
-            user_model.UserRolesModel
+            user_model.UserRolesModel,
+            config_model.ConfigModel
         ]
 
     async def __init_model(self) -> None:

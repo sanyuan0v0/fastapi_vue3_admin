@@ -51,9 +51,11 @@ def run(env: Environment = typer.Option(Environment.DEV, "--env", help="运行�
     )
 
 @shell_app.command()
-def init():
+def init(env: Environment = typer.Option(Environment.DEV, "--env", help="运行环境 (dev, test, prod)")):
     import asyncio
     from app.scripts.initialize import InitializeData
+    # 设置环境变量
+    os.environ["ENVIRONMENT"] = env.value
     # 初始化数据
     data = InitializeData()
     # 使用asyncio.run来运行异步函数

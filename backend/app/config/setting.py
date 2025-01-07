@@ -15,6 +15,7 @@ from app.common.enums import Environment
 class Settings(BaseSettings):
     """系统配置类"""
     model_config = SettingsConfigDict(
+        env_file='.env', 
         env_file_encoding="utf-8",
         case_sensitive=True,
     )

@@ -22,6 +22,12 @@
   --box-shadow-light: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
+.dark{
+  --component-background: #141414;
+  --text-color: rgba(255, 255, 255, 0.85);
+}
+
+
 /* 基础样式重置 */
 * {
   margin: 0;

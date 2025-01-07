@@ -54,8 +54,8 @@ class PwdUtil:
         Returns:
             str: 如果密码强度不够返回提示信息,否则返回None
         """
-        if len(password) < 8:
-            return "密码长度至少8位"
+        if len(password) < 6:
+            return "密码长度至少6位"
         if not any(c.isupper() for c in password):
             return "密码需要包含大写字母"
         if not any(c.islower() for c in password):

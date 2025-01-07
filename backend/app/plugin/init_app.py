@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from typing import Any, AsyncGenerator
-from starlette.staticfiles import StaticFiles
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.concurrency import asynccontextmanager
 from fastapi.openapi.docs import (
     get_redoc_html,

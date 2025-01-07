@@ -10,6 +10,7 @@ from app.api.v1.controllers.system.user_controller import router as UserRouter
 from app.api.v1.controllers.system.operation_log_controller import router as LogRouter
 from app.api.v1.controllers.system.position_controller import router as PositionRouter
 from app.api.v1.controllers.system.notice_controller import router as NoticeRouter
+from app.api.v1.controllers.system.config_controller import router as ConfigRouter
 
 SystemApiRouter = APIRouter(prefix="/system")
 
@@ -20,4 +21,5 @@ SystemApiRouter.include_router(router=RoleRouter, prefix="/role", tags=["角色�
 SystemApiRouter.include_router(router=UserRouter, prefix="/user", tags=["用户模块"])
 SystemApiRouter.include_router(router=LogRouter,  prefix="/log",  tags=["日志模块"])
 SystemApiRouter.include_router(router=PositionRouter, prefix="/position", tags=["岗位模块"])
-SystemApiRouter.include_router(router=NoticeRouter, prefix="/notice", tags=["公告通知模块"])
+SystemApiRouter.include_router(router=NoticeRouter, prefix="/notice", tags=["通知模块"])
+SystemApiRouter.include_router(router=ConfigRouter, prefix="/config", tags=["配置模块"])
