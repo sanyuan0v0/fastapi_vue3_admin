@@ -186,13 +186,7 @@ class Settings(BaseSettings):
     # ================================================= #
     # ***************** 动态文件配置 ***************** #
     # ================================================= #
-    PROFILES_ENABLE: bool = True      # 是否启用模板
-    PROFILES_URL: str = "/profiles"  # 访问路由
-    PROFILES_DIR: str = "profiles"   # 目录名
-    PROFILES_ROOT: Path = BASE_DIR.joinpath(PROFILES_DIR)  # 绝对路径
-    UPLOAD_PROFILE_PATH: Path = Path('profiles/upload')
-    UPLOAD_FILE_PATH: Path = PROFILES_ROOT.joinpath('upload')      # 上传目录
-    DOWNLOAD_FILE_PATH: Path = PROFILES_ROOT.joinpath('download')  # 下载目录
+    UPLOAD_FILE_PATH: Path = 'static/upload'     # 上传目录
     UPLOAD_MACHINE: str = 'A'  # 上传机器标识
     ALLOWED_EXTENSIONS: list[str] = [  # 允许的文件类型
         # 图片

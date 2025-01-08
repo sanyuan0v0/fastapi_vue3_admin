@@ -12,7 +12,6 @@ from fastapi.openapi.docs import (
 
 from app.config.setting import settings
 from app.api.v1.urls.system_url import SystemApiRouter
-from app.api.v1.urls.common_url import CommonApiRouter
 from app.api.v1.urls.monitor_url import MonitorApiRouter
 from app.core.logger import logger
 from app.utils.common_util import import_module, import_modules_async
@@ -77,7 +76,6 @@ def register_routers(app: FastAPI) -> None:
     """
     app.include_router(router=SystemApiRouter)
     app.include_router(router=MonitorApiRouter)
-    app.include_router(router=CommonApiRouter)
 
 def register_files(app: FastAPI) -> None:
     """
@@ -88,11 +86,6 @@ def register_files(app: FastAPI) -> None:
         # 确保日志目录存在
         settings.STATIC_ROOT.mkdir(parents=True, exist_ok=True)
         app.mount(path=settings.STATIC_URL, app=StaticFiles(directory=settings.STATIC_ROOT), name=settings.STATIC_DIR)
-    # 挂载模版文件目录
-    if settings.PROFILES_ENABLE:
-        # 确保日志目录存在
-        settings.PROFILES_ROOT.mkdir(parents=True, exist_ok=True)
-        app.mount(path=settings.PROFILES_URL, app=StaticFiles(directory=settings.PROFILES_ROOT), name=settings.PROFILES_DIR)
 
 def reset_api_docs(app: FastAPI) -> None:
     """

@@ -30,3 +30,16 @@ class BatchSetAvailable(BaseModel):
     """批量设置可用状态的请求模型"""
     ids: List[int] = Field(default_factory=list, description="ID列表")
     available: bool = Field(default=True, description="是否可用")
+
+
+class UploadResponseSchema(BaseModel):
+    """
+    上传响应模型
+    """
+
+    model_config = ConfigDict(from_attributes=True)
+
+    file_path: Optional[str] = Field(default=None, description='新文件映射路径')
+    file_name: Optional[str] = Field(default=None, description='新文件名称') 
+    origin_name: Optional[str] = Field(default=None, description='原文件名称')
+    file_url: Optional[str] = Field(default=None, description='新文件访问地址')

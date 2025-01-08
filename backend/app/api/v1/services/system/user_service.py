@@ -9,8 +9,7 @@ from app.core.exceptions import CustomException
 from app.core.hash_bcrpy import PwdUtil
 from app.api.v1.cruds.system.position_crud import PositionCRUD
 from app.api.v1.cruds.system.role_crud import RoleCRUD
-from app.api.v1.schemas.common.common_schema import UploadResponseSchema
-from app.core.base_schema import BatchSetAvailable
+from app.core.base_schema import BatchSetAvailable, UploadResponseSchema
 from app.utils.excel_util import ExcelUtil
 from app.utils.upload_util import UploadUtil
 from app.api.v1.cruds.system.user_crud import UserCRUD

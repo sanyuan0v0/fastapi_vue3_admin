@@ -19,7 +19,7 @@ const routes = [
 const rootRouter = {
   path: "/",
   name: "Index",
-  redirect: "/dashboard/workplace",
+  redirect: "/dashboard",
   component: BasicLayout,
   children: [
     {

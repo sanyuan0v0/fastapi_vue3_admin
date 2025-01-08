@@ -114,7 +114,7 @@ class UploadUtil:
             
             # 生成文件名并保存
             filename = cls.generate_file_name(file.filename)
-            filepath = dir_path.joinpath(filename)
+            filepath = dir_path / filename
 
             # 分块写入文件
             chunk_size = 8 * 1024 * 1024  # 8MB chunks
@@ -123,8 +123,7 @@ class UploadUtil:
                     await f.write(chunk)
 
             # 返回相对路径
-            return_filepath = settings.UPLOAD_PROFILE_PATH.joinpath(relative_path, filename)
-            return filename, return_filepath
+            return filename, filepath
             
         except Exception as e:
             logger.error(f"文件上传失败: {e}")
