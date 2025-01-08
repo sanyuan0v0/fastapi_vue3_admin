@@ -60,7 +60,7 @@
                         :data-source="menuTreeData"
                         :row-selection="menuRowSelection"
                         :loading="tableLoading"
-                        :scroll="{ x: 500, y: 'calc(100vh - 270px)' }"
+                        :scroll="{ x: 500 }"
                         :pagination="false"
                         :style="{ minHeight: '700px' }"
                         :expandAll="true">

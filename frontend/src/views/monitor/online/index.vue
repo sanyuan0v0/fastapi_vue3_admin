@@ -43,7 +43,7 @@
         :columns="columns" 
         :data-source="tableData" 
         :loading="loading"
-        :scroll="{ x: 500, y: 'calc(100vh - 500px)' }" 
+        :scroll="{ x: 500 }" 
         :style="{ minHeight: '500px' }" 
         :pagination="pagination">
         <template #bodyCell="{ column, record, index }">

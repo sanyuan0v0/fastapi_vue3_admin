@@ -179,7 +179,7 @@
             :dataSource="server.disks" 
             :pagination="false" 
             :bordered="true" 
-            :scroll="{ x: 'max-content' }"
+            :scroll="{ x: 500 }"
             :rowKey="(record) => record.dir_name"
           >
             <a-table-column 

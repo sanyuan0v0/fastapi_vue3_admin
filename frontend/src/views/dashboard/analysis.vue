@@ -237,7 +237,10 @@
               </a-col>
             </a-row>
             <div style="margin-top: 10px;">
-              <a-table row-key="index" size="small" :columns="searchColumns" :data-source="searchData"
+              <a-table row-key="index" 
+                size="small" 
+                :columns="searchColumns" 
+                :data-source="searchData"
                 :pagination="{ pageSize: 5 }">
                 <template v-slot:bodyCell="{ column, record }">
                   <template v-if="column.dataIndex === 'keyword'">

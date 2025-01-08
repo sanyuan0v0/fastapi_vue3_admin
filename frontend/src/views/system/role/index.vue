@@ -69,7 +69,7 @@
           :row-selection="rowSelection" 
           :loading="tableLoading" 
           @change="handleTableChange"
-          :scroll="{ x: 500, y: 'calc(100vh - 500px)' }" 
+          :scroll="{ x: 500 }" 
           :pagination="pagination" 
           :style="{ minHeight: '500px' }">
           <template #bodyCell="{ column, record, index }">

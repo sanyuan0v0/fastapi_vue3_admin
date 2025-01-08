@@ -67,9 +67,15 @@
             </a-button>
           </a-dropdown>
         </template>
-        <a-table :rowKey="record => record.id" :columns="columns" :data-source="dataSource"
-          :row-selection="rowSelection" :loading="tableLoading" @change="handleTableChange"
-          :scroll="{ x: 500, y: 'calc(100vh - 500px)' }" :pagination="pagination" :style="{ minHeight: '500px' }">
+        <a-table :rowKey="record => record.id" 
+          :columns="columns" 
+          :data-source="dataSource"
+          :row-selection="rowSelection" 
+          :loading="tableLoading" 
+          @change="handleTableChange"
+          :scroll="{ x: 500 }" 
+          :pagination="pagination" 
+          :style="{ minHeight: '500px' }">
           <template #bodyCell="{ column, record, index }">
             <template v-if="column.dataIndex === 'index'">
               <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>

@@ -57,12 +57,13 @@
             </a-button>
           </a-dropdown>
         </template>
-        <a-table :rowKey="record => record.id" 
+        <a-table 
+          :rowKey="record => record.id" 
           :columns="columns" 
           :data-source="dataSource"
-          :row-selection="rowSelection" 
           :loading="tableLoading" 
           :scroll="{ x: 500, y: 'calc(100vh - 500px)' }"
+          :row-selection="rowSelection" 
           :pagination="false" 
           :style="{ minHeight: '500px' }"
         >

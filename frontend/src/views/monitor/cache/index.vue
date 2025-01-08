@@ -73,7 +73,6 @@
               <a-table
                 :loading="loading"
                 :dataSource="cacheNames"
-                :scroll="{ y: tableHeight }"
                 :pagination="false"
                 rowKey="cache_name"
               >
@@ -109,7 +108,6 @@
               <a-table
                 :loading="subLoading"
                 :dataSource="cacheKeys.map(key => ({ cacheKey: key }))"
-                :scroll="{ y: tableHeight }"
                 :pagination="false"
                 rowKey="cacheKey"
               >
@@ -182,7 +180,6 @@ const cacheForm = ref<CacheForm>({
 const loading = ref(true);
 const subLoading = ref(false);
 const nowCacheName = ref('');
-const tableHeight = ref(window.innerHeight - 350);
 const cache = ref<CacheMonitor>({
   info: {} as RedisInfo,
   command_stats: [],
@@ -424,22 +421,13 @@ const initCharts = () => {
   usedmemoryInstance.setOption(usedMemoryOption);
 };
 
-// 窗口大小变化处理
-const handleResize = () => {
-  tableHeight.value = window.innerHeight - 800;
-  commandstatsInstance?.resize();
-  usedmemoryInstance?.resize();
-};
-
 // 生命周期钩子
 onMounted(() => {
   getCacheNameList();
   getInfo();
-  window.addEventListener('resize', handleResize);
 });
 
 onUnmounted(() => {
-  window.removeEventListener('resize', handleResize);
   commandstatsInstance?.dispose();
   usedmemoryInstance?.dispose();
 });

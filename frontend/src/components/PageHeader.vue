@@ -44,12 +44,12 @@ onMounted(() => getBreadcrumb());
 
 <style lang="scss" scoped>
 .page-header {
-  padding: 6px 0;
+  padding: 0px 0;
 }
 
 .page-header-title {
   font-size: 20px;
   font-weight: 600;
-  padding: 10px 0;
+  padding: 6px 0;
 }
 </style>

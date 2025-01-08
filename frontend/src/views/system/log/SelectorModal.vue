@@ -38,7 +38,8 @@
       <a-card title="用户列表" :bordered="true" :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
         :bodyStyle="{ padding: '0 24px' }">
         <a-table :rowKey="record => record.id" :columns="columns" :data-source="dataSource" :loading="tableLoading"
-          :row-selection="rowSelection" @change="handleTableChange" :scroll="{ x: 500, y: 'calc(100vh - 500px)' }"
+          :row-selection="rowSelection" @change="handleTableChange" 
+          :scroll="{ x: 500 }"
           :pagination="pagination">
           <template v-slot:bodyCell="{ column, record, index }">
             <template v-if="column.dataIndex === 'index'">
@@ -60,7 +61,7 @@
 import { ref, reactive, computed, unref } from 'vue';
 import type { TableColumnsType } from 'ant-design-vue';
 import { getUserList } from '@/api/system/user'
-import type { searchCreatorDataType, creatorTableDataType } from './types'
+import type { searchCreatorDataType, creatorType } from './types'
 
 
 const openModal = ref<boolean>(false);
@@ -97,7 +98,7 @@ const columns: TableColumnsType = [
     width: 500
   }
 ]
-const dataSource = ref<creatorTableDataType[]>([]);
+const dataSource = ref<creatorType[]>([]);
 
 const loadingData = () => {
   tableLoading.value = true;
@@ -154,10 +155,10 @@ const handleTableChange = (values: any) => {
   loadingData();
 }
 
-const selectedRowKeys = ref<creatorTableDataType['id'][]>([]);
-const selectedRowName = ref<creatorTableDataType['name']>('');
+const selectedRowKeys = ref<creatorType['id'][]>([]);
+const selectedRowName = ref<creatorType['name']>('');
 
-const onSelectChange = (selectingRowKeys: creatorTableDataType['id'][], selectingRows: creatorTableDataType[]) => {
+const onSelectChange = (selectingRowKeys: creatorType['id'][], selectingRows: creatorType[]) => {
   selectedRowKeys.value = selectingRowKeys;
   selectedRowName.value = selectingRows[0].name;
 }

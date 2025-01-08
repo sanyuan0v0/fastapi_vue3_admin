@@ -34,8 +34,14 @@
     </div>
 
     <div>
-      <a-table :rowKey="record => record.id" :columns="columns" :data-source="dataSource" :row-selection="rowSelection"
-        :loading="tableLoading" @change="handleTableChange" :scroll="{ x: 500, y: 330 }" :pagination="pagination"
+      <a-table :rowKey="record => record.id" 
+        :columns="columns" 
+        :data-source="dataSource" 
+        :row-selection="rowSelection"
+        :loading="tableLoading" 
+        @change="handleTableChange" 
+        :scroll="{ x: 500 }" 
+        :pagination="pagination"
         :style="{ minHeight: '330px' }">
         <template v-slot:bodyCell="{ column, record, index }">
           <template v-if="column.dataIndex === 'index'">

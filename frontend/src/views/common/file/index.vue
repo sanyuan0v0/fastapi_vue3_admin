@@ -50,8 +50,10 @@
                 </a-breadcrumb>
 
                 <!-- 文件列表 -->
-                <a-table :columns="columns" :data-source="fileList"
-                    :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" :loading="loading"
+                <a-table :columns="columns" 
+                    :data-source="fileList"
+                    :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" 
+                    :loading="loading"
                     :pagination="{
                         current: 1,
                         pageSize: 10,
@@ -59,7 +61,8 @@
                         showQuickJumper: true,
                         total: fileList.length,
                         showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条 / 总共 ${total} 条`
-                    }" :style="{ minHeight: '550px' }">
+                    }" 
+                    :style="{ minHeight: '550px' }">
                     <!-- 文件名列 -->
                     <template #bodyCell="{ column, record }">
                         <template v-if="column.key === 'fileName'">
