@@ -11,8 +11,8 @@
     >
       <!-- Logo 区域 -->
       <div class="logo-container">
-        <a-image src="/logo.png" :preview="false" :width="28" :height="28" />
-        <h1 class="logo-title" v-show="!menuState.collapsed">fastapi-vue-admin</h1>
+        <a-image :src="initConfigState.web_favicon" :preview="false" :width="28" :height="28" />
+        <h1 class="logo-title" v-show="!menuState.collapsed">{{ initConfigState.web_title }}</h1>
       </div>
       
       <a-menu
@@ -147,6 +147,7 @@
 <script lang="ts" setup>
 import { reactive, computed, watch, onMounted, inject, type Ref } from "vue";
 import type { MenuProps, ItemType } from "ant-design-vue";
+import { message } from 'ant-design-vue';
 import { useRouter, useRoute } from "vue-router";
 import storage from 'store';
 import store from '@/store';
@@ -166,6 +167,7 @@ import {
 } from '@ant-design/icons-vue';
 import { logout } from '@/api/system/auth';
 import { getNoticeList } from '@/api/system/notice'
+import { getInitConfig } from "@/api/system/config"
 
 // 通知公告获取
 const dataSource = reactive({
@@ -327,13 +329,38 @@ const noticeState = reactive({
 });
 
 
+const initConfigState = reactive({
+  web_title:  '',
+  web_favicon:  '',
+});
+
+const initConfig = () => {
+  getInitConfig()
+    .then(response => {
+      const { status_code, data } = response.data;
+      if (status_code === 200) {
+        const configData = JSON.parse(data);
+        configData.forEach(item => {
+          if (item.fied_key === 'web_title') {
+            initConfigState.web_title = item.fied_value;
+          } else if (item.fied_key === 'web_favicon') {
+            initConfigState.web_favicon = item.fied_value;
+          } 
+        });
+      }
+    })
+    .catch(error => {
+      message.error('获取系统配置失败');
+      console.error(error); // 打印错误信息以便调试
+    });
+};
+
 // 在页面加载时获取通知列表
 onMounted(() => {
   initMenu();
   handleNoticeList();
+  initConfig();
 });
-
-
 </script>
 
 <style lang="scss" scoped>

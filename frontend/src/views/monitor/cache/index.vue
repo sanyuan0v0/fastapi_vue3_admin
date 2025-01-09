@@ -74,6 +74,7 @@
                 :loading="loading"
                 :dataSource="cacheNames"
                 :pagination="false"
+                :scroll="{ y: 600 }"
                 rowKey="cache_name"
               >
                 <a-table-column key="cache_name" title="缓存名称" align="center" :ellipsis="true">
@@ -109,6 +110,7 @@
                 :loading="subLoading"
                 :dataSource="cacheKeys.map(key => ({ cacheKey: key }))"
                 :pagination="false"
+                :scroll="{ y: 600 }"
                 rowKey="cacheKey"
               >
                 <a-table-column key="cacheKey" title="缓存键名" align="center" :ellipsis="true">
@@ -147,7 +149,7 @@
                 <a-form-item label="缓存内容:" name="cache_value">
                   <a-textarea
                     v-model:value="cacheForm.cache_value"
-                    :rows="8"
+                    :rows="19"
                     readonly
                   />
                 </a-form-item>

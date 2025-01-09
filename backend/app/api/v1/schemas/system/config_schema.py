@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
@@ -29,6 +29,4 @@ class ConfigUpdateSchema(ConfigCreateSchema):
 class ConfigOutSchema(ConfigCreateSchema):
     """配置响应模型"""
     model_config = ConfigDict(from_attributes=True)
-
-    parent_name: Optional[str] = Field(default=None, max_length=40, description="父配置名称")
     id: int = Field(description="主键ID")

@@ -3,18 +3,16 @@
 import pickle
 from typing import Any, Optional
 from aioredis import Redis
-from fastapi import Request
 
-from app.config.setting import settings
 from app.core.logger import logger
 
 
 class Cache:
     """缓存工具类"""
 
-    def __init__(self, request: Request):
+    def __init__(self, redis: Redis):
         """初始化"""
-        self.redis: Redis = request.app.state.redis
+        self.redis = redis
         
     async def mget(self, *keys: list)-> list:
         """批量获取缓存
@@ -73,7 +71,7 @@ class Cache:
                     return False
                     
             await self.redis.set(
-                name = f"{key}",
+                name = key,
                 value = data,
                 ex=expire
             )

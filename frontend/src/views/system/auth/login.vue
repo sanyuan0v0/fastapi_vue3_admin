@@ -1,15 +1,15 @@
 <template>
   <a-layout>
     <!-- 页面主体 -->
-    <div class="container">
+    <div class="container" :style="{ backgroundImage: `url(${initConfigState.login_background})` }">
       <a-layout-content :style="contentStyle">
         <div class="header">
           <div class="logo">
-            <a-image src="/logo.png" :preview="false" />
+            <a-image :src="initConfigState.login_logo" :preview="false" />
           </div>
-          <div class="title">FastAPI Vue Admin</div>
+          <div class="title">{{ initConfigState.login_title }}</div>
         </div>
-        <div class="desc">FastAPI Vue Admin 是完全开源的权限管理系统</div>
+        <div class="desc">{{ initConfigState.login_description }}</div>
 
         <div class="login-main" style="width: 330px; margin: 0 auto;">
           <a-tabs centered>
@@ -62,13 +62,28 @@
 
       <!-- 页面底部 -->
       <a-layout-footer :style="footerStyle">
-        <div class="footer-copyright">
-          <a-button type="link" href="https://gitee.com/tao__tao/fastapi_vue_admin.git">
-            <icon-font type="icon-copyright" :style="{ fontSize: '16px' }" />
-            Copyright © 2024 insistence.tech All Rights Reserved. 皖ICP备2023021369号-1
-          </a-button>
+        <div class="footer-content">
+          <div class="footer-links">
+            <a-button type="link" :href="initConfigState.code_url">
+              <icon-font type="icon-copyright" :style="{ fontSize: '16px' }" />
+              {{ initConfigState.copyright }} |
+            </a-button>
+            <a-button type="link" :href="initConfigState.help_url">
+              {{ initConfigState.help_name }} |
+            </a-button>
+            <a-button type="link" :href="initConfigState.privacy_url">
+              {{ initConfigState.privacy_name }} |
+            </a-button>
+            <a-button type="link" :href="initConfigState.clause_url">
+              {{ initConfigState.clause_name }}
+            </a-button>
+          </div>
+          <div class="footer-record">
+            {{ initConfigState.keep_record }}
+          </div>
         </div>
       </a-layout-footer>
+    
     </div>
 
     <!-- 弹窗区域 -->
@@ -146,6 +161,7 @@ import { save_token } from "@/utils/util"
 import { message } from 'ant-design-vue';
 import { login, getCaptcha } from "@/api/system/auth"
 import { registerUser, forgetPassword } from "@/api/system/user"
+import { getInitConfig } from "@/api/system/config"
 import type { LoginForm, CaptchaState, ForgetPasswordForm, RegisterForm } from './types'
 
 const router = useRouter();
@@ -271,7 +287,70 @@ const requestCaptcha = () => {
     .catch(() => captchaState.enable = false);
 };
 
-onMounted(requestCaptcha);
+const initConfigState = reactive({
+  login_title:  '',
+  login_description:  '/logo.png',
+  login_logo:  '',
+  login_background:  '/background.png',
+  copyright:  '',
+  copyright_name:  '',
+  keep_record:  '',
+  keep_record_name:  '',
+  help_url:  '',
+  help_name:  '',
+  privacy_url:  '',
+  privacy_name:  '',
+  clause_url:  '',
+  clause_name:  '',
+  code_url:  '',
+});
+
+const initConfig = () => {
+  getInitConfig()
+    .then(response => {
+      const { status_code, data } = response.data;
+      if (status_code === 200) {
+        const configData = JSON.parse(data);
+        configData.forEach(item => {
+          if (item.fied_key === 'login_title') {
+            initConfigState.login_title = item.fied_value;
+          } else if (item.fied_key === 'login_description') {
+            initConfigState.login_description = item.fied_value;
+          } else if (item.fied_key === 'login_logo') {
+            initConfigState.login_logo = item.fied_value;
+          } else if (item.fied_key === 'login_background') {
+            initConfigState.login_background = item.fied_value;
+          } else if (item.fied_key === 'copyright') {
+            initConfigState.copyright = item.fied_value;
+            initConfigState.copyright_name = item.name;
+          } else if (item.fied_key === 'keep_record') {
+            initConfigState.keep_record = item.fied_value;
+            initConfigState.keep_record_name = item.name;
+          } else if (item.fied_key === 'help_url') {
+            initConfigState.help_url = item.fied_value;
+            initConfigState.help_name = item.name;
+          } else if (item.fied_key === 'privacy_url') {
+            initConfigState.privacy_url = item.fied_value;
+            initConfigState.privacy_name = item.name;
+          } else if (item.fied_key === 'clause_url') {
+            initConfigState.clause_url = item.fied_value;
+            initConfigState.clause_name = item.name;
+          }  else if (item.fied_key === 'code_url') {
+            initConfigState.code_url = item.fied_value;
+          }
+        });
+      }
+    })
+    .catch(error => {
+      message.error('获取系统配置失败');
+      console.error(error); // 打印错误信息以便调试
+    });
+};
+
+onMounted(() => {
+  requestCaptcha();
+  initConfig();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -282,7 +361,6 @@ onMounted(requestCaptcha);
 }
 
 .container {
-  background-image: url("/background.png");
   background-size: 100% 100%;
 
   .desc {

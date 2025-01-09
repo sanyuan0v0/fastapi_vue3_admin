@@ -85,7 +85,7 @@ class LoginService:
         user_agent = parse(request.headers.get("user-agent"))
         
         # 缓存中构建在线用户信息
-        await Cache(request).set(
+        await Cache(request.app.state.redis).set(
             key=f"{RedisInitKeyConfig.ONLINE_USER.key}:{user.username}",
             value=OnlineOutSchema(
                 session_id=token.access_token,
@@ -130,17 +130,17 @@ class LoginService:
         ))
 
         # 清除该用户之前的token
-        await Cache(request).delete(key=f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}')
-        await Cache(request).delete(key=f'{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}')
+        await Cache(request.app.state.redis).delete(key=f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}')
+        await Cache(request.app.state.redis).delete(key=f'{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}')
         
         # 设置新的token
-        await Cache(request).set(
+        await Cache(request.app.state.redis).set(
             key=f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}',
             value=access_token,
             expire=int(access_expires.total_seconds())
         )
 
-        await Cache(request).set(
+        await Cache(request.app.state.redis).set(
             key=f'{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}',
             value=refresh_token,
             expire=int(refresh_expires.total_seconds())
@@ -189,8 +189,8 @@ class LoginService:
         username: str = payload.sub
         
         # 删除Redis中的token
-        await Cache(request).clear()
-        
+        # await Cache(request.app.state.redis).clear()
+
         logger.info(f"用户退出登录成功,会话编号:{username}")
         return True
 
@@ -221,7 +221,7 @@ class CaptchaService:
 
         # 保存到Redis并设置过期时间
         redis_key = f"{RedisInitKeyConfig.CAPTCHA_CODES.key}:{captcha_key}"
-        await Cache(request).set(
+        await Cache(request.app.state.redis).set(
             key=redis_key,
             value=captcha_value,
             expire=settings.CAPTCHA_EXPIRE_SECONDS
@@ -257,7 +257,7 @@ class CaptchaService:
         # 获取Redis中存储的验证码
         redis_key = f'{RedisInitKeyConfig.CAPTCHA_CODES.key}:{key}'
         
-        captcha_value = await Cache(request).get(redis_key)
+        captcha_value = await Cache(request.app.state.redis).get(redis_key)
         if not captcha_value:
             logger.warning('验证码已过期或不存在')
             raise CustomException(msg="验证码已过期")
@@ -268,6 +268,6 @@ class CaptchaService:
             raise CustomException(msg="验证码错误")
 
         # 验证成功后删除验证码,避免重复使用
-        await Cache(request).delete(key=redis_key)
+        await Cache(request.app.state.redis).delete(key=redis_key)
         logger.info(f'验证码校验成功,key:{key}')
         return True

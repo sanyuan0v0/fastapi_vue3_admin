@@ -12,7 +12,7 @@
     "parent_id": 1,
     "name": "网页标题",
     "fied_key": "web_title",
-    "fied_value": "fastapi-vue-admin",
+    "fied_value": "FastAPI Vue Admin",
     "order": 1
   },
   {
@@ -20,7 +20,7 @@
     "parent_id": 1,
     "name": "网站小图标",
     "fied_key": "web_favicon",
-    "fied_value": null,
+    "fied_value": "http://localhost:8000/api/v1/static/upload/image/png/2025/01/09/logo_20250109090456A114.png",
     "order": 2
   },
   {
@@ -36,7 +36,7 @@
     "parent_id": 4,
     "name": "登陆标题",
     "fied_key": "login_title",
-    "fied_value": "fastapi-vue-admin",
+    "fied_value": "FastAPI Vue Admin",
     "order": 1
   },
   {
@@ -44,7 +44,7 @@
     "parent_id": 4,
     "name": "登陆描述",
     "fied_key": "login_description",
-    "fied_value": "企业级后台管理系统",
+    "fied_value": "FastAPI Vue Admin 是完全开源的权限管理系统",
     "order": 2
   },
   {
@@ -52,7 +52,7 @@
     "parent_id": 4,
     "name": "登录logo",
     "fied_key": "login_logo",
-    "fied_value": null,
+    "fied_value": "http://localhost:8000/api/v1/static/upload/image/png/2025/01/09/logo_20250109090448A263.png",
     "order": 3
   },
   {
@@ -60,7 +60,7 @@
     "parent_id": 4,
     "name": "登录背景",
     "fied_key": "login_background",
-    "fied_value": null,
+    "fied_value": "http://localhost:8000/api/v1/static/upload/image/png/2025/01/09/background_20250109090435A357.png",
     "order": 4
   },
   {
@@ -68,7 +68,7 @@
     "parent_id": 4,
     "name": "版权信息",
     "fied_key": "copyright",
-    "fied_value": "2021-2025 fastapi-vue-admin.com 版权所有",
+    "fied_value": "Copyright © 2021-2025 fastapi-vue-admin.com 版权所有",
     "order": 5
   },
   {
@@ -82,7 +82,7 @@
   {
     "id": 11,
     "parent_id": 4,
-    "name": "帮助链接",
+    "name": "帮助",
     "fied_key": "help_url",
     "fied_value": "https://django-vue-admin.com",
     "order": 7
@@ -90,7 +90,7 @@
   {
     "id": 12,
     "parent_id": 4,
-    "name": "隐私链接",
+    "name": "隐私",
     "fied_key": "privacy_url",
     "fied_value": "/api/system/clause/privacy.html",
     "order": 8
@@ -98,9 +98,17 @@
   {
     "id": 13,
     "parent_id": 4,
-    "name": "条款链接",
+    "name": "条款",
     "fied_key": "clause_url",
     "fied_value": "/api/system/clause/terms_service.html",
     "order": 9
+  },
+  {
+    "id": 14,
+    "parent_id": 4,
+    "name": "源码",
+    "fied_key": "code_url",
+    "fied_value": "https://gitee.com/tao__tao/fastapi_vue_admin.git",
+    "order": 10
   }
 ]

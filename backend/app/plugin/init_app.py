@@ -31,6 +31,8 @@ from app.core.exceptions import (
     ResponseValidationHandle,
     ResponseValidationError
 )
+from app.api.v1.services.system.config_service import ConfigService
+from app.core.database import async_session
 
 
 @asynccontextmanager
@@ -40,6 +42,10 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     """
     logger.info(settings.BANNER + '\n' + f'{settings.TITLE} 服务开始启动...')
     await import_modules_async(modules=settings.get_events, desc="全局事件", app=app, status=True)
+    async with async_session() as session:
+        await ConfigService().init_config(redis=app.state.redis, db=session)
+        logger.info('初始化系统配置完成...')
+
     logger.info(f'{settings.TITLE} 服务成功启动...')
 
     yield

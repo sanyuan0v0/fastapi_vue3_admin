@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from fastapi import APIRouter, Depends, Query, Path
+from typing import List
+from fastapi import APIRouter, Depends, Request, UploadFile
 from fastapi.responses import JSONResponse
 
 from app.common.response import SuccessResponse
@@ -10,7 +11,7 @@ from app.core.dependencies import AuthPermission
 from app.core.router_class import OperationLogRoute
 from app.core.logger import logger
 from app.api.v1.schemas.system.auth_schema import AuthSchema
-from app.api.v1.schemas.system.config_schema import ConfigCreateSchema, ConfigUpdateSchema
+from app.api.v1.schemas.system.config_schema import ConfigUpdateSchema
 from app.api.v1.params.system.config_param import ConfigQueryParams
 from app.api.v1.services.system.config_service import ConfigService
 
@@ -29,42 +30,29 @@ async def get_obj_list(
     logger.info(f"{auth.user.name} 查询配置列表成功")
     return SuccessResponse(data=result_dict, msg="查询配置列表成功")
 
-
-@router.post("/create", summary="创建配置", description="创建配置")
-async def create_obj(
-        data: ConfigCreateSchema,
-        auth: AuthSchema = Depends(AuthPermission(permissions=["system:config:create"])),
-) -> JSONResponse:
-    result_dict = await ConfigService.create_services(auth=auth, data=data)
-    logger.info(f"{auth.user.name} 创建配置成功: {result_dict}")
-    return SuccessResponse(data=result_dict, msg="创建配置成功")
-
-
-@router.put("/update", summary="修改配置", description="修改配置")
-async def update_obj(
-        data: ConfigUpdateSchema,
+@router.put("/batch", summary="批量修改配置", description="批量修改配置")
+async def batch_objs(
+        request: Request,
+        data: List[ConfigUpdateSchema],
         auth: AuthSchema = Depends(AuthPermission(permissions=["system:config:update"])),
 ) -> JSONResponse:
-    result_dict = await ConfigService.update_services(auth=auth, id=data.id, data=data)
-    logger.info(f"{auth.user.name} 修改配置成功: {result_dict}")
-    return SuccessResponse(data=result_dict, msg="修改配置成功")
+    result_list_dict = await ConfigService.batch_services(auth=auth, request=request, data=data)
+    logger.info(f"{auth.user.name} 批量更新配置成功 {result_list_dict}")
+    return SuccessResponse(data=result_list_dict, msg="批量更新配置成功")
 
-
-@router.delete("/delete", summary="删除配置", description="删除配置")
-async def delete_obj(
-        id: int = Query(..., description="配置ID"),
-        auth: AuthSchema = Depends(AuthPermission(permissions=["system:config:delete"])),
+@router.post("/upload", summary="上传文件", dependencies=[Depends(AuthPermission(permissions=["system:config:upload"]))])
+async def upload_file(
+        file: UploadFile, 
+        request: Request
 ) -> JSONResponse:
-    await ConfigService.delete_services(auth=auth, id=id)
-    logger.info(f"{auth.user.name} 删除配置成功: {id}")
-    return SuccessResponse(msg="删除配置成功")
+    result_str = await ConfigService.upload_services(request=request, file=file)
+    logger.info(f"上传文件: {result_str}")
+    return SuccessResponse(data=result_str, msg='上传文件成功')
 
-
-@router.get("/detail", summary="获取配置详情", description="获取配置详情")
-async def get_obj_detail(
-        id: int = Query(..., description="配置ID"),
-        auth: AuthSchema = Depends(AuthPermission(permissions=["system:config:query"])),
+@router.get("/init", summary="获取初始化配置", description="获取初始化配置")
+async def get_init_config(
+        request: Request,
 ) -> JSONResponse:
-    result_dict = await ConfigService.detail_services(id=id, auth=auth)
-    logger.info(f"{auth.user.name} 获取配置详情成功 {id}")
-    return SuccessResponse(data=result_dict, msg="获取配置详情成功")
+    result_dict = await ConfigService.get_init_config(request=request)
+    logger.info(f"获取初始化配置成功 {result_dict}")
+    return SuccessResponse(data=result_dict, msg="获取初始化配置成功")

@@ -970,5 +970,41 @@
     "redirect": null,
     "description": "初始化数据",
     "creator_id": 1
+  },
+  {
+    "id": 55,
+    "name": "批量更新配置",
+    "type": 3,
+    "icon": null,
+    "order": 4,
+    "permission": "system:config:update",
+    "route_name": null,
+    "route_path": null,
+    "component_path": null,
+    "parent_id": 51,
+    "available": true,
+    "cache": true,
+    "hidden": false,
+    "redirect": null,
+    "description": "初始化数据",
+    "creator_id": 1
+  },
+  {
+    "id": 56,
+    "name": "文件上传",
+    "type": 3,
+    "icon": null,
+    "order": 5,
+    "permission": "system:config:upload",
+    "route_name": null,
+    "route_path": null,
+    "component_path": null,
+    "parent_id": 51,
+    "available": true,
+    "cache": true,
+    "hidden": false,
+    "redirect": null,
+    "description": "初始化数据",
+    "creator_id": 1
   }
 ]

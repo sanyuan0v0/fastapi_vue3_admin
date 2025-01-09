@@ -17,12 +17,12 @@ class OnlineService:
     async def get_online_list(cls, request: Request, search: OnlineQueryParams) -> List[Dict]:
         """获取在线用户列表信息"""
         # 获取所有在线用户信息
-        token_keys = await Cache(request).get_keys(f'{RedisInitKeyConfig.ONLINE_USER.key}*')
+        token_keys = await Cache(request.app.state.redis).get_keys(f'{RedisInitKeyConfig.ONLINE_USER.key}*')
         if not token_keys:
             return []
             
         # 批量获取在线用户信息
-        online_values = await Cache(request).mget(*token_keys)
+        online_values = await Cache(request.app.state.redis).mget(*token_keys)
         online_list = []
         
         for online_value in online_values:
@@ -53,8 +53,8 @@ class OnlineService:
         # 批量删除token
         token_ids = ids.split(',')
         for token_id in token_ids:
-            await Cache(request).delete(f"{RedisInitKeyConfig.ONLINE_USER.key}:{token_id}")
-            await Cache(request).delete(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:{token_id}")
+            await Cache(request.app.state.redis).delete(f"{RedisInitKeyConfig.ONLINE_USER.key}:{token_id}")
+            await Cache(request.app.state.redis).delete(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:{token_id}")
         return True
     
     @staticmethod

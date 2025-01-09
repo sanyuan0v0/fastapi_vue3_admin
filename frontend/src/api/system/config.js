@@ -24,19 +24,26 @@ export function createConfig(body) {
   });
 }
 
-export function updateConfig(body) {
+export function batchConfig(body) {
   return request({
-    url: "/api/v1/system/config/update",
+    url: "/api/v1/system/config/batch",
     method: "put",
     data: body,
   });
 }
 
-export function deleteConfig(params) {
+export function uploadFile(body) {
   return request({
-    url: "/api/v1/system/config/delete",
-    method: "delete",
-    params: params,
+    url: "/api/v1/system/config/upload",
+    method: "post",
+    data: body,
+    headers: { "Content-Type": "multipart/form-data" },
   });
 }
 
+export function getInitConfig() {
+  return request({
+    url: "/api/v1/system/config/init",
+    method: "get",
+  });
+}
