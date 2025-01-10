@@ -3,6 +3,8 @@
 from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from app.core.base_schema import BaseSchema
+
 
 class ConfigCreateSchema(BaseModel):
     """配置创建模型"""
@@ -25,7 +27,7 @@ class ConfigUpdateSchema(ConfigCreateSchema):
     id: int = Field(description="主键ID")
 
 
-class ConfigOutSchema(ConfigCreateSchema):
+class ConfigOutSchema(ConfigCreateSchema, BaseSchema):
     """配置响应模型"""
     model_config = ConfigDict(from_attributes=True)
     id: int = Field(description="主键ID")

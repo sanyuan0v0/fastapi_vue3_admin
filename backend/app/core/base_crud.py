@@ -5,7 +5,7 @@ from typing import TypeVar, Sequence, Generic, Dict, Any, List, Union, Optional
 from sqlalchemy.sql.elements import ColumnElement
 from sqlalchemy.orm import selectinload, DeclarativeBase
 from sqlalchemy.engine import Result
-from sqlalchemy import asc, func, select, delete, Select, desc, update, or_
+from sqlalchemy import asc, func, select, delete, Select, desc, update, or_, and_
 
 from app.api.v1.schemas.system.auth_schema import AuthSchema
 from app.api.v1.models.system.dept_model import DeptModel
@@ -220,6 +220,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         data_scopes = set()
         dept_ids = set()
         
+        # data_scope 数据权限范围说明:
+        # 1: 仅本人数据权限
+        # 2: 本部门数据权限  
+        # 3: 本部门及以下数据权限
+        # 4: 全部数据权限
+        # 5: 自定义数据权限
+        # 5. 处理各种数据权限范围
         for role in self.current_user.roles:
             # 如果有全部数据权限,直接返回所有数据
             if role.data_scope == 4:
@@ -234,15 +241,15 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         
         # 5. 处理各种数据权限范围
         if 1 in data_scopes:
-            # 仅本人数据
+            # 1、仅本人数据
             conditions.append(self.model.creator_id == self.current_user.id)
         
         if 2 in data_scopes:
-            # 本部门数据
+            # 2、本部门数据
             dept_ids.add(self.current_user.dept_id)
             
         if 3 in data_scopes:
-            # 本部门及以下数据
+            # 3、本部门及以下数据
             dept_objs = await CRUDBase(DeptModel, self.auth).list()
             id_map = get_child_id_map(dept_objs)
             dept_child_ids = get_child_recursion(id=self.current_user.dept_id, id_map=id_map)
@@ -253,7 +260,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         
         # 6. 组合所有条件
         if conditions:
-            return sql.where(or_(*conditions))
+            return sql.where(and_(*conditions))
             
         return sql.where(self.model.creator_id == self.current_user.id)
 
