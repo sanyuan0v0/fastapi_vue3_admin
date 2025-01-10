@@ -1,12 +1,13 @@
 export interface QueryState {
     ipaddr?: string;
-    user_name?: string;
+    name?: string;
     login_location?: string;
 }
 
 export interface OnlineUser {
     session_id: string;
     user_id: number;
+    name: string;
     user_name: string;
     ipaddr: string;
     login_location: string;

@@ -90,7 +90,8 @@ class LoginService:
             value=OnlineOutSchema(
                 session_id=token.access_token,
                 user_id=user.id, 
-                user_name=user.name,
+                name=user.name,
+                user_name=user.username,
                 ipaddr=request.client.host,
                 login_location=IpLocalUtil.get_ip_location(request.client.host),
                 os=user_agent.os.family,
@@ -188,10 +189,12 @@ class LoginService:
         payload: JWTPayloadSchema = decode_access_token(token.token)
         username: str = payload.sub
         
-        # 删除Redis中的token
-        # await Cache(request.app.state.redis).clear()
+        # 删除Redis中的在线用户、访问令牌、刷新令牌
+        await Cache(request.app.state.redis).delete(f"{RedisInitKeyConfig.ONLINE_USER.key}:{username}")
+        await Cache(request.app.state.redis).delete(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}")
+        await Cache(request.app.state.redis).delete(f"{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}")
 
-        logger.info(f"用户退出登录成功,会话编号:{username}")
+        logger.info(f"用户退出登录成功,会话账号:{username}")
         return True
 
 

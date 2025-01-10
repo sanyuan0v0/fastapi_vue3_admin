@@ -34,6 +34,7 @@
                     :rowKey="record => record.id"
                     :tree-data="deptTreeData"
                     :defaultExpandAll="true"
+                    :scroll="{ y: 1000 }"
                     :field-names="{ children: 'children', title: 'name', key: 'id' }"
                     @check="deptTreeCheck" checkable checkStrictly style="margin-top: 15px;" />
             </div>
@@ -60,7 +61,7 @@
                         :data-source="menuTreeData"
                         :row-selection="menuRowSelection"
                         :loading="tableLoading"
-                        :scroll="{ x: 500 }"
+                        :scroll="{ y: 1000 }"
                         :pagination="false"
                         :style="{ minHeight: '700px' }"
                         :expandAll="true">

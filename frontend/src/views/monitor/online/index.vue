@@ -81,12 +81,13 @@ const pageSize = ref(10);
 
 const queryState = ref<QueryState>({
   ipaddr: undefined,
-  user_name: undefined
+  name: undefined
 });
 
 const columns = [
   { title: '会话编号', dataIndex: 'session_id', key: 'sessionId', ellipsis: true },
-  { title: '登录名称', dataIndex: 'user_name', key: 'userName', align: 'center', ellipsis: true },
+  { title: '登录名称', dataIndex: 'name', key: 'name', align: 'center', ellipsis: true },
+  { title: '用户账号', dataIndex: 'user_name', key: 'userName', align: 'center', ellipsis: true },
   { title: '主机', dataIndex: 'ipaddr', key: 'ipaddr', align: 'center', ellipsis: true },
   { title: '登录地点', dataIndex: 'login_location', key: 'loginLocation', align: 'center', ellipsis: true },
   { title: '操作系统', dataIndex: 'os', key: 'os', align: 'center', ellipsis: true },
@@ -146,7 +147,7 @@ const handleForceLogout = (row: OnlineUser) => {
     content: `是否确认强退名称为"${row.user_name}"的用户?`,
     async onOk() {
       try {
-        await deleteOnline(row.session_id);
+        await deleteOnline(row.user_name);
         await getList();
         message.success('强退成功');
       } catch (error) {

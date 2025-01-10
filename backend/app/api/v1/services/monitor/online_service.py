@@ -31,6 +31,7 @@ class OnlineService:
             online_info = OnlineOutSchema(
                 session_id=online_data['session_id'],
                 user_id=online_data['user_id'],
+                name=online_data['name'], 
                 user_name=online_data['user_name'], 
                 ipaddr=online_data['ipaddr'],
                 login_location=online_data['login_location'],
@@ -45,25 +46,25 @@ class OnlineService:
         return online_list
 
     @classmethod
-    async def delete_online(cls, request: Request, ids: str) -> bool:
+    async def delete_online(cls, request: Request, username: str) -> bool:
         """强制下线在线用户"""
-        if not ids:
-            raise CustomException(msg='传入ids不能为空')
+        if not username:
+            raise CustomException(msg='传入username不能为空')
             
         # 批量删除token
-        token_ids = ids.split(',')
-        for token_id in token_ids:
-            await Cache(request.app.state.redis).delete(f"{RedisInitKeyConfig.ONLINE_USER.key}:{token_id}")
-            await Cache(request.app.state.redis).delete(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:{token_id}")
+
+        await Cache(request.app.state.redis).delete(f"{RedisInitKeyConfig.ONLINE_USER.key}:{username}")
+        await Cache(request.app.state.redis).delete(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}")
+        await Cache(request.app.state.redis).delete(f"{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}")
         return True
     
     @staticmethod
     def _match_search_conditions(online_info: Dict, search: OnlineQueryParams) -> bool:
         """检查是否匹配搜索条件"""
         # 根据params中的定义,需要进行模糊匹配
-        if search.user_name:
-            search_name = search.user_name[1].strip('%')  # 去掉like和%
-            if search_name not in online_info['user_name']:
+        if search.name:
+            search_name = search.name[1].strip('%')  # 去掉like和%
+            if search_name not in online_info['name']:
                 return False
                 
         if search.login_location:

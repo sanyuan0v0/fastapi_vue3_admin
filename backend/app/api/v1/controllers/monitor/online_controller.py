@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Body, Depends, Request, Query
 from fastapi.responses import JSONResponse
 
 from app.core.dependencies import AuthPermission
 from app.core.logger import logger
 from app.common.request import PaginationService
-from app.common.response import SuccessResponse
+from app.common.response import SuccessResponse,ErrorResponse
 from app.api.v1.params.monitor.online_param import OnlineQueryParams
 from app.api.v1.services.monitor.online_service import OnlineService
 from app.core.base_params import PaginationQueryParams
@@ -43,9 +43,12 @@ async def get_online_list(
 )
 async def delete__online(
     request: Request, 
-    token_ids: str,
+    username: str = Body(..., description="用户"),
 )->JSONResponse:
-    delete_online_result = await OnlineService.delete_online(request=request, ids=token_ids)
-    logger.info(delete_online_result.message)
-
-    return SuccessResponse(msg="'强制下线成功'")
+    delete_online_result = await OnlineService.delete_online(request=request, username=username)
+    if delete_online_result:
+        logger.info("强制下线成功")
+        return SuccessResponse(msg="强制下线成功")
+    else:
+        logger.info("强制下线失败")
+        return ErrorResponse(msg="强制下线失败")

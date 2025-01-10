@@ -13,6 +13,7 @@ class OnlineOutSchema(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+    name: Optional[str] = Field(default=None, description='用户名称')
     session_id: Optional[str] = Field(default=None, description='会话编号')
     user_id: Optional[int] = Field(default=None, description='用户ID')
     user_name: Optional[str] = Field(default=None, description='用户名')
