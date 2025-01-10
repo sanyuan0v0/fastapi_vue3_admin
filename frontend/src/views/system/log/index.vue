@@ -57,7 +57,8 @@
           @change="handleTableChange" 
           :scroll="{ x: 500 }" 
           :pagination="pagination"
-          :style="{ minHeight: '500px' }">
+          :style="{ minHeight: '300px'}"
+          >
           <template #bodyCell="{ column, record, index }">
             <template v-if="column.dataIndex === 'index'">
               <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>

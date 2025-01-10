@@ -39,8 +39,10 @@
 
     <!-- 表格区域 -->
     <div class="table-wrapper">
-      <a-card title="用户列表" :bordered="false" :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-        :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 400px)' }">
+      <a-card title="用户管理" 
+        :bordered="false"
+        :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
+        :bodyStyle="{ padding: '10px 24px', minHeight: 'calc(100vh - 400px)' }">
         <template #extra>
           <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')" style="margin-right: 10px;">
             新建
@@ -67,52 +69,75 @@
             </a-button>
           </a-dropdown>
         </template>
-        <a-table :rowKey="record => record.id" 
-          :columns="columns" 
-          :data-source="dataSource"
-          :row-selection="rowSelection" 
-          :loading="tableLoading" 
-          @change="handleTableChange"
-          :scroll="{ x: 500 }" 
-          :pagination="pagination" 
-          :style="{ minHeight: '500px' }">
-          <template #bodyCell="{ column, record, index }">
-            <template v-if="column.dataIndex === 'index'">
-              <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
-            </template>
-            <template v-if="column.dataIndex === 'dept'">
-              <span>{{ record.dept_name }}</span>
-            </template>
-            <template v-if="column.dataIndex === 'roles'">
-              <span>{{ record.roleNames }}</span>
-            </template>
-            <template v-if="column.dataIndex === 'positions'">
-              <span>{{ record.positionNames }}</span>
-            </template>
-            <template v-if="column.dataIndex === 'gender'">
-              <a-tag :color="record.gender === 1 ? 'blue' : 'pink'">{{ record.gender === 1 ? '男' : '女' }}</a-tag>
-            </template>
-            <template v-if="column.dataIndex === 'available'">
-              <span>
-                <a-badge :status="record.available ? 'processing': 'error'" :text="record.available ? '启用' : '停用'" />
-              </span>
-            </template>
-            <template v-if="column.dataIndex === 'is_superuser'">
-              <span>
-                <a-badge :status="record.is_superuser ? 'processing': 'error'" :text="record.is_superuser ? '是' : '否'" />
-              </span>
-            </template>
-            <template v-if="column.dataIndex === 'operation'">
-              <a-space size="middle">
-                <a v-on:click="modalHandle('view', index)">查看</a>
-                <a v-on:click="modalHandle('update', index)">修改</a>
-                <a-popconfirm title="确定删除吗？" ok-text="确定" cancel-text="取消" @confirm="deleteRow(record)">
-                  <a style="color: red;">删除</a>
-                </a-popconfirm>
-              </a-space>
-            </template>
-          </template>
-        </a-table>
+
+        <!-- 使用 a-row 和 a-col 划分左右布局 -->
+        <a-row :gutter="16">
+          <!-- 左侧部门树 -->
+          <a-col :span="4">
+            <a-tree ref="deptTree" v-if="deptTreeData.length"
+              :tree-data="deptTreeData" 
+              :show-line="true"
+              :defaultExpandAll="true"
+              :field-names="{ children: 'children', title: 'name', key: 'id' }"
+              :selected-keys="selectedKeys"
+              @select="onSelectDept">
+            </a-tree>
+          </a-col>
+
+          <!-- 右侧用户列表 -->
+          <a-col :span="20">
+            <a-card title="用户列表" >
+              <a-table :rowKey="record => record.id" 
+                :columns="columns" 
+                :data-source="dataSource"
+                :row-selection="rowSelection" 
+                :loading="tableLoading" 
+                @change="handleTableChange" 
+                :scroll="{ x: 300 }"
+                :pagination="pagination" 
+                :style="{ minHeight: '310px' }">
+                <template #bodyCell="{ column, record, index }">
+                  <template v-if="column.dataIndex === 'index'">
+                    <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
+                  </template>
+                  <template v-if="column.dataIndex === 'dept'">
+                    <span>{{ record.dept_name }}</span>
+                  </template>
+                  <template v-if="column.dataIndex === 'roles'">
+                    <span>{{ record.roleNames }}</span>
+                  </template>
+                  <template v-if="column.dataIndex === 'positions'">
+                    <span>{{ record.positionNames }}</span>
+                  </template>
+                  <template v-if="column.dataIndex === 'gender'">
+                    <a-tag :color="record.gender === 1 ? 'blue' : 'pink'">{{ record.gender === 1 ? '男' : '女' }}</a-tag>
+                  </template>
+                  <template v-if="column.dataIndex === 'available'">
+                    <span>
+                      <a-badge :status="record.available ? 'processing' : 'error'"
+                        :text="record.available ? '启用' : '停用'" />
+                    </span>
+                  </template>
+                  <template v-if="column.dataIndex === 'is_superuser'">
+                    <span>
+                      <a-badge :status="record.is_superuser ? 'processing' : 'error'"
+                        :text="record.is_superuser ? '是' : '否'" />
+                    </span>
+                  </template>
+                  <template v-if="column.dataIndex === 'operation'">
+                    <a-space size="middle">
+                      <a v-on:click="modalHandle('view', index)">查看</a>
+                      <a v-on:click="modalHandle('update', index)">修改</a>
+                      <a-popconfirm title="确定删除吗？" ok-text="确定" cancel-text="取消" @confirm="deleteRow(record)">
+                        <a style="color: red;">删除</a>
+                      </a-popconfirm>
+                    </a-space>
+                  </template>
+                </template>
+              </a-table>
+            </a-card>
+          </a-col>
+        </a-row>
       </a-card>
     </div>
 
@@ -139,10 +164,12 @@
               <a-descriptions-item label="邮箱">{{ detailState.email }}</a-descriptions-item>
               <a-descriptions-item label="联系电话">{{ detailState.mobile }}</a-descriptions-item>
               <a-descriptions-item label="是否超管">
-                <a-badge :status="detailState.is_superuser ? 'processing': 'error'" :text="detailState.is_superuser ? '是' : '否'" />
+                <a-badge :status="detailState.is_superuser ? 'processing': 'error'"
+                  :text="detailState.is_superuser ? '是' : '否'" />
               </a-descriptions-item>
               <a-descriptions-item label="状态">
-                <a-badge :status="detailState.available ? 'processing': 'error'" :text="detailState.available ? '启用' : '停用'" />
+                <a-badge :status="detailState.available ? 'processing': 'error'"
+                  :text="detailState.available ? '启用' : '停用'" />
               </a-descriptions-item>
               <a-descriptions-item label="上次登录时间">{{ detailState.last_login }}</a-descriptions-item>
               <a-descriptions-item label="创建人">{{ detailState.creator ? detailState.creator.name : '-'
@@ -283,29 +310,12 @@
       </a-modal>
 
       <!-- 导入对话框 -->
-      <a-modal v-model:open="upload.open" 
-        title="导入用户" 
-        :width="500"
-        @ok="submitFileForm"
-        :confirmLoading="upload.isUploading"
-        :bodyStyle="{ padding: '24px' }">
+      <a-modal v-model:open="upload.open" title="导入用户" :width="500" @ok="submitFileForm"
+        :confirmLoading="upload.isUploading" :bodyStyle="{ padding: '24px' }">
         <div class="import-container">
-          <a-alert
-            message="请先下载模板，按照模板格式填写数据后再导入"
-            type="info"
-            show-icon
-            style="margin-bottom: 16px"
-          />
-          <a-upload
-            ref="uploadRef"
-            :accept="'.xlsx, .xls'"
-            :showUploadList="true"
-            :beforeUpload="beforeUpload"
-            :customRequest="customRequest"
-            :maxCount="1"
-            :fileList="upload.fileList"
-            @remove="handleRemove"
-          >
+          <a-alert message="请先下载模板，按照模板格式填写数据后再导入" type="info" show-icon style="margin-bottom: 16px" />
+          <a-upload ref="uploadRef" :accept="'.xlsx, .xls'" :showUploadList="true" :beforeUpload="beforeUpload"
+            :customRequest="customRequest" :maxCount="1" :fileList="upload.fileList" @remove="handleRemove">
             <a-button type="primary">
               <upload-outlined></upload-outlined>
               选择文件
@@ -315,12 +325,8 @@
                 <a-typography-text>
                   {{ file.name }}
                 </a-typography-text>
-                <a-progress
-                  v-if="file.status === 'uploading'"
-                  :percent="file.percent"
-                  size="small"
-                  style="width: 100px"
-                />
+                <a-progress v-if="file.status === 'uploading'" :percent="file.percent" size="small"
+                  style="width: 100px" />
               </a-space>
             </template>
           </a-upload>
@@ -354,7 +360,7 @@
 import { ref, reactive, computed, unref, onMounted, h } from 'vue';
 import { Table, message, Modal } from 'ant-design-vue';
 import type { TableColumnsType, MenuProps } from 'ant-design-vue';
-import { PlusOutlined, DownOutlined, UploadOutlined, DownloadOutlined, CheckOutlined, StopOutlined, SearchOutlined } from '@ant-design/icons-vue';
+import { CarryOutOutlined, SmileTwoTone, PlusOutlined, DownOutlined, UploadOutlined, DownloadOutlined, CheckOutlined, StopOutlined, SearchOutlined } from '@ant-design/icons-vue';
 import { isEmpty, listToTree } from '@/utils/util';
 import PageHeader from '@/components/PageHeader.vue';
 import { getDeptList } from '@/api/system/dept'
@@ -363,6 +369,7 @@ import SelectorModal from './SelectorModal.vue'
 import type { searchDataType, tableDataType, deptTreeType, roleSelectorType, positionSelectorType } from './types'
 import storage from 'store';
 
+const deptTree = ref(null);
 const tableLoading = ref(false);
 const openModal = ref(false);
 const modalTitle = ref('');
@@ -477,20 +484,6 @@ const columns = reactive<TableColumnsType>([
     width: 100
   },
   {
-    title: '邮箱',
-    dataIndex: 'email',
-    ellipsis: true,
-    align: 'center',
-    width: 160
-  },
-  {
-    title: '联系电话',
-    dataIndex: 'mobile',
-    align: 'center',
-    ellipsis: true,
-    width: 120
-  },
-  {
     title: '性别',
     dataIndex: 'gender',
     align: 'center',
@@ -503,13 +496,6 @@ const columns = reactive<TableColumnsType>([
     align: 'center',
     ellipsis: true,
     width: 100
-  },
-  {
-    title: '备注',
-    dataIndex: 'description',
-    ellipsis: true,
-    align: 'center',
-    // width: 200
   },
   {
     title: '操作',
@@ -536,6 +522,8 @@ const rowSelection = computed(() => {
   }
 });
 
+const selectedKeys = ref<string[]>([]);
+
 // 生命周期钩子
 onMounted(() => loadingData());
 
@@ -559,6 +547,13 @@ const loadingData = () => {
   if (queryState.available) {
     params['available'] = queryState.available == "true" ? true : false;
   }
+  if (queryState.dept_id) {
+    params['dept_id'] = queryState.dept_id; // 添加 dept_id 参数
+    selectedKeys.value = [queryState.dept_id]; // 选中对应的部门节点
+  } else {
+    selectedKeys.value = []; // 清除选中状态
+  }
+  
   params['page_no'] = pagination.current
   params['page_size'] = pagination.pageSize
 
@@ -590,7 +585,11 @@ const resetFields = () => {
     delete queryState[key];
   });
   pagination.current = 1;
-  queryState.available = null
+  queryState.available = null;
+  queryState.dept_id = null;
+
+  selectedKeys.value = [];
+
   loadingData();
 }
 
@@ -789,6 +788,16 @@ const handleSelectorModalEvent = (
     updateState[names_key] = selectedSelectorRowNames.join(', ');
   }
 }
+
+// 部门选择器事件
+const onSelectDept = (selectedKeys: string[], info: any) => {
+  if (selectedKeys.length > 0) {
+    queryState.dept_id = selectedKeys[0]; // 获取选中的部门 ID
+  } else {
+    queryState.dept_id = null; // 如果没有选中部门，则删除 dept_id 参数
+  }
+  loadingData(); // 重新加载用户列表
+};
 
 // 上传配置
 const token = storage.get('Access-Token');

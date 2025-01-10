@@ -57,15 +57,16 @@
             </a-button>
           </a-dropdown>
         </template>
-        <a-table 
+        <a-table v-if="dataSource.length"
+          :defaultExpandAllRows="true" 
           :rowKey="record => record.id" 
           :columns="columns" 
           :data-source="dataSource"
           :loading="tableLoading" 
-          :scroll="{ x: 500, y: 'calc(100vh - 500px)' }"
+          :scroll="{ x: 500, y: 'calc(100vh - 300px)' }"
           :row-selection="rowSelection" 
           :pagination="false" 
-          :style="{ minHeight: '500px' }"
+          :style="{ minHeight: '300px' }"
         >
           <template #bodyCell="{ column, record }">
             <template v-if="column.dataIndex === 'type'">

@@ -2,6 +2,7 @@ export interface searchDataType {
     username?: string
     name?: string
     available?: string
+    dept_id?: number;
 }
 
 export interface searchSelectDataType {

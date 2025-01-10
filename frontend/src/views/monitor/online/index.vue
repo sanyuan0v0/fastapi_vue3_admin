@@ -44,7 +44,6 @@
         :data-source="tableData" 
         :loading="loading"
         :scroll="{ x: 500 }" 
-        :style="{ minHeight: '500px' }" 
         :pagination="pagination">
         <template #bodyCell="{ column, record, index }">
           <template v-if="column.dataIndex === 'index'">
