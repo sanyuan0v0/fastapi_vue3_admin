@@ -316,7 +316,12 @@ onMounted(() => {
 }
 
 .container {
-  background-size: 100% 100%;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   .desc {
     text-align: center;

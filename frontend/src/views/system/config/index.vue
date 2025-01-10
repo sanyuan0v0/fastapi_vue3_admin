@@ -206,6 +206,7 @@ const handleSave = async () => {
     // 调用更新配置接口
     await updateConfig(configData);
     message.success('配置保存成功');
+    window.location.reload();
   } catch (error) {
     console.error('保存配置失败:', error);
     message.error('配置保存失败');

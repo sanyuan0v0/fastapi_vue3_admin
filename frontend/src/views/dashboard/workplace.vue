@@ -132,7 +132,6 @@ let timefix = timeFix();
 
 const userInfo = userStore.basicInfo;
 
-console.log("store.state.user.basicInfo",userStore.basicInfo)
 const welcome = '祝你开心每一天！';
 
 const projectItems = [

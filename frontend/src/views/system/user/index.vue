@@ -361,8 +361,6 @@ import { getDeptList } from '@/api/system/dept'
 import { getUserList, createUser, updateUser, deleteUser, batchAvailableUser, exportUser, downloadTemplate, importUser } from '@/api/system/user'
 import SelectorModal from './SelectorModal.vue'
 import type { searchDataType, tableDataType, deptTreeType, roleSelectorType, positionSelectorType } from './types'
-import XLSX from 'xlsx';
-import store from '@/store';
 import storage from 'store';
 
 const tableLoading = ref(false);

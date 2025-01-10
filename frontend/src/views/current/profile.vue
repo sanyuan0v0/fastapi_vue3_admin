@@ -284,7 +284,7 @@
 import PageHeader from '@/components/PageHeader.vue';
 import { ref, reactive, onMounted, h, watch } from 'vue';
 import { message } from 'ant-design-vue';
-import type { MenuProps, UploadChangeParam } from "ant-design-vue";
+import type { UploadChangeParam } from "ant-design-vue";
 import { 
   UserOutlined, 
   LockOutlined,
@@ -293,19 +293,16 @@ import {
   IdcardOutlined,
   TeamOutlined,
   ApartmentOutlined,
-  SafetyCertificateOutlined,
   UploadOutlined,
   KeyOutlined,
   CheckOutlined,
   SaveOutlined,
-  QuestionCircleOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
   ClockCircleOutlined
 } from '@ant-design/icons-vue';
-import store from '@/store';
+import { useUserStore } from "@/store/index";
 import storage from 'store';
-import request from "@/utils/request";
 import { updateCurrentUserInfo, changeCurrentUserPassword, avatarHandleChange } from '@/api/system/user';
 import type { InfoFormState, PasswordFormState } from './types';
 
@@ -313,7 +310,6 @@ import type { InfoFormState, PasswordFormState } from './types';
 const passwordChanging = ref(false);
 const infoSubmitting = ref(false);
 const selectedKeys = ref<string[]>(['1']);
-const avatarFileList = ref([]);
 
 // 表单状态
 const infoFormState = reactive<InfoFormState>({
@@ -348,10 +344,7 @@ watch(selectedKeys, (newVal) => {
   }
 });
 
-// 菜单点击事件
-const menuClick = ({ key }: { key: string }) => {
-  selectedKeys.value = [key];
-};
+const userStore = useUserStore();
 
 // 基本信息表单提交
 const onInfoFormFinish = async (values: any) => {
@@ -363,7 +356,8 @@ const onInfoFormFinish = async (values: any) => {
       content: response.data.msg,
       icon: h(CheckCircleOutlined, { style: "color: #52c41a" })
     });
-    await store.dispatch('getUserInfo');
+    
+    await userStore.getUserInfo;
   } catch (error) {
     console.error('更新基本信息失败:', error);
     message.error({
@@ -430,7 +424,7 @@ const avatarHandleChange = (info: UploadChangeParam) => {
 
 // 初始化表单
 const initInfoForm = () => {
-  const basicInfo = store.state.user.basicInfo;
+  const basicInfo = userStore.basicInfo;
   console.log("basicInfo", basicInfo);
   Object.assign(infoFormState, {
     name: basicInfo.name,

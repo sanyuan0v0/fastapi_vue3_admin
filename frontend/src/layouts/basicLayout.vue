@@ -93,7 +93,7 @@
                   </a-list>
                 </div>
               </template>
-              <a-badge :count="unreadCount" :dot="unreadCount > 99">
+              <a-badge :count="noticeState.total" :dot="noticeState.total > 99">
                 <a-button type="link" class="tool-btn">
                   <BellOutlined />
                 </a-button>
@@ -147,10 +147,8 @@
 <script lang="ts" setup>
 import { reactive, computed, watch, onMounted, inject, type Ref } from "vue";
 import type { MenuProps, ItemType } from "ant-design-vue";
-import { message } from 'ant-design-vue';
 import { useRouter, useRoute } from "vue-router";
 import storage from 'store';
-import { useUserStore } from "@/store/index";
 import * as icons from '@ant-design/icons-vue';
 import { h } from 'vue';
 import { listToTree } from '@/utils/util';
@@ -165,32 +163,11 @@ import {
   BulbOutlined,
   BulbFilled
 } from '@ant-design/icons-vue';
+import { useUserStore } from "@/store/index";
 import { logout } from '@/api/system/auth';
-import { getNoticeList } from '@/api/system/notice'
-import { getInitConfig } from "@/api/system/config"
-import { useConfigStore } from "@/store/index";
+import { useConfigStore, useNoticeStore } from "@/store/index";
 
 const userStore = useUserStore();
-
-// 通知公告获取
-const dataSource = reactive({
-  dataList: [],
-  total: 0,
-})
-
-const handleNoticeList = async () => {
-  try {
-    noticeState.loading = true;
-    const response = await getNoticeList({ available: true });
-    // 只获取最新的5条通知
-    noticeState.notices = response.data.data.items;
-    dataSource.total = response.data.data.total;
-  } catch (error) {
-    console.error('获取通知列表失败:', error);
-  } finally {
-    noticeState.loading = false;
-  }
-};
 
 // 路由相关
 const router = useRouter();
@@ -198,7 +175,6 @@ const route = useRoute();
 
 // 计算属性
 const userInfo = computed(() => userStore.basicInfo);
-const unreadCount = computed(() => dataSource.total); // 通知条数
 
 // 菜单状态
 const menuState = reactive({
@@ -325,31 +301,33 @@ const handleThemeChange = () => {
   localStorage.setItem('theme', isDarkMode.value ? 'dark' : 'light')
 }
 
+const noticeStore = useNoticeStore();
 // 通知状态管理
 const noticeState = reactive({
-  notices: [], // 所有通知
+  notices: computed(() => noticeStore.noticeList),
+  total: computed(() => noticeStore.total),
   loading: false
 });
 
 const configStore = useConfigStore();
 
 const initConfigState = reactive({
-  web_title:  configStore.getConfigValue("title"),
-  web_favicon:  configStore.getConfigValue("logo"),
+  web_title: computed(() => configStore.getConfigValue("title")),
+  web_favicon:  computed(() => configStore.getConfigValue("logo")),
 });
-
 
 // 在页面加载时获取通知列表
 onMounted(() => {
   initMenu();
-  handleNoticeList();
+  noticeStore.getNotice();
 });
 </script>
 
 <style lang="scss" scoped>
 .basic-layout {
+  // height: 100vh;
+  // background-size: cover;
   min-height: 100vh;
-  display: flex;
   
   .layout-sider {
     height: 100vh;

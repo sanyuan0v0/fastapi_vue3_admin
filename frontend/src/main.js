@@ -16,7 +16,7 @@ app.use(pinia);
 
 const initConfig = async () => {
   const configStore = useConfigStore();
-  await configStore.fetchConfig();
+  await configStore.getConfig();
 
   const loginTitle = configStore.getConfigValue("title");
   const loginLogo = configStore.getConfigValue("favicon");

@@ -34,7 +34,19 @@ class ConfigService:
         new_obj = await ConfigCRUD(auth).update_curd(id=data.id, data=data)
         new_obj_dict = ConfigOutSchema.model_validate(new_obj).model_dump()
         
-        cls.init_config(redis=request.app.state.redis, db=auth.db)
+        # 保存到Redis并设置过期时间
+        redis_key = f"{RedisInitKeyConfig.System_Config.key}:{'init_system_config'}"
+        try:
+            value = json.dumps(new_obj_dict, ensure_ascii=False)
+            await Cache(request.app.state.redis).set(
+                    key=redis_key,
+                    value=value,
+                    expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
+                )
+            logger.info(f"初始化系统配置成功: {new_obj_dict}")
+        except Exception as e:
+            logger.error(f"初始化系统配置失败: {e}")
+            raise CustomException(msg="初始化系统配置失败")
         return new_obj_dict
 
     @classmethod
