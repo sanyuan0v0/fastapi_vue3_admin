@@ -16,10 +16,10 @@ class ConfigCRUD(CRUDBase[ConfigModel, ConfigCreateSchema, ConfigUpdateSchema]):
         self.auth = auth
         super().__init__(model=ConfigModel, auth=auth)
     
-    async def list_curd(self, search: Dict = None, order_by: List[Dict[str, str]] = None) -> Sequence[ConfigModel]:
-        """获取配置列表"""
-        return await self.list(search=search, order_by=order_by)
-    
+    async def get_curd(self, id: int) -> Optional[ConfigModel]:
+        """获取配置"""
+        return await self.get(id=id)
+
     async def update_curd(self, id: int, data: ConfigUpdateSchema) -> Optional[ConfigModel]:
         """更新配置"""
         return await self.update(id=id, data=data)

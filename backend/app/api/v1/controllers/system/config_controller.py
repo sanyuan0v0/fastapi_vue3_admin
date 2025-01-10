@@ -19,26 +19,23 @@ from app.api.v1.services.system.config_service import ConfigService
 router = APIRouter(route_class=OperationLogRoute)
 
 
-@router.get("/list", summary="查询配置", description="查询配置")
+@router.get("/info", summary="获取配置", description="获取配置")
 async def get_obj_list(
-        page: PaginationQueryParams = Depends(),
-        search: ConfigQueryParams = Depends(),
         auth: AuthSchema = Depends(AuthPermission(permissions=["system:config:query"])),
 ) -> JSONResponse:
-    result_dict_list = await ConfigService.list_services(auth=auth, search=search, order_by=page.order_by)
-    result_dict = await PaginationService.get_page_obj(data_list=result_dict_list, page_no=page.page_no, page_size=page.page_size)
-    logger.info(f"{auth.user.name} 查询配置列表成功")
+    result_dict = await ConfigService.get_services(auth=auth, id=1)
+    logger.info(f"{auth.user.name} 获取配置成功")
     return SuccessResponse(data=result_dict, msg="查询配置列表成功")
 
-@router.put("/batch", summary="批量修改配置", description="批量修改配置")
-async def batch_objs(
+@router.put("/update", summary="修改配置", description="修改配置")
+async def update_objs(
         request: Request,
-        data: List[ConfigUpdateSchema],
+        data: ConfigUpdateSchema,
         auth: AuthSchema = Depends(AuthPermission(permissions=["system:config:update"])),
 ) -> JSONResponse:
-    result_list_dict = await ConfigService.batch_services(auth=auth, request=request, data=data)
-    logger.info(f"{auth.user.name} 批量更新配置成功 {result_list_dict}")
-    return SuccessResponse(data=result_list_dict, msg="批量更新配置成功")
+    result_dict = await ConfigService.update_services(auth=auth, request=request, data=data)
+    logger.info(f"{auth.user.name} 更新配置成功 {result_dict}")
+    return SuccessResponse(data=result_dict, msg="更新配置成功")
 
 @router.post("/upload", summary="上传文件", dependencies=[Depends(AuthPermission(permissions=["system:config:upload"]))])
 async def upload_file(

@@ -122,15 +122,17 @@ import { ref, reactive } from 'vue';
 import PageHeader from '@/components/PageHeader.vue'
 import { timeFix } from '@/utils/util';
 import { PlusOutlined, UserOutlined } from '@ant-design/icons-vue';
-import store from '@/store';
+import { useUserStore } from "@/store/index";
+
+const userStore = useUserStore();
 
 const loading = ref(true);
 
 let timefix = timeFix();
 
-const userInfo = store.state.user.basicInfo;
+const userInfo = userStore.basicInfo;
 
-console.log("store.state.user.basicInfo",store.state.user.basicInfo)
+console.log("store.state.user.basicInfo",userStore.basicInfo)
 const welcome = '祝你开心每一天！';
 
 const projectItems = [

@@ -1,114 +1,16 @@
 [
   {
     "id": 1,
-    "parent_id": null,
-    "name": "基础配置",
-    "fied_key": "base",
-    "fied_value": null,
-    "order": 1
-  },
-  {
-    "id": 2,
-    "parent_id": 1,
-    "name": "网页标题",
-    "fied_key": "web_title",
-    "fied_value": "FastAPI Vue Admin",
-    "order": 1
-  },
-  {
-    "id": 3,
-    "parent_id": 1,
-    "name": "网站小图标",
-    "fied_key": "web_favicon",
-    "fied_value": "http://localhost:8000/api/v1/static/upload/image/png/2025/01/09/logo_20250109090456A114.png",
-    "order": 2
-  },
-  {
-    "id": 4,
-    "parent_id": null,
-    "name": "登录页配置",
-    "fied_key": "login",
-    "fied_value": null,
-    "order": 2
-  },
-  {
-    "id": 5,
-    "parent_id": 4,
-    "name": "登陆标题",
-    "fied_key": "login_title",
-    "fied_value": "FastAPI Vue Admin",
-    "order": 1
-  },
-  {
-    "id": 6,
-    "parent_id": 4,
-    "name": "登陆描述",
-    "fied_key": "login_description",
-    "fied_value": "FastAPI Vue Admin 是完全开源的权限管理系统",
-    "order": 2
-  },
-  {
-    "id": 7,
-    "parent_id": 4,
-    "name": "登录logo",
-    "fied_key": "login_logo",
-    "fied_value": "http://localhost:8000/api/v1/static/upload/image/png/2025/01/09/logo_20250109090448A263.png",
-    "order": 3
-  },
-  {
-    "id": 8,
-    "parent_id": 4,
-    "name": "登录背景",
-    "fied_key": "login_background",
-    "fied_value": "http://localhost:8000/api/v1/static/upload/image/png/2025/01/09/background_20250109090435A357.png",
-    "order": 4
-  },
-  {
-    "id": 9,
-    "parent_id": 4,
-    "name": "版权信息",
-    "fied_key": "copyright",
-    "fied_value": "Copyright © 2021-2025 fastapi-vue-admin.com 版权所有",
-    "order": 5
-  },
-  {
-    "id": 10,
-    "parent_id": 4,
-    "name": "备案信息",
-    "fied_key": "keep_record",
-    "fied_value": "晋ICP备18005113号-3",
-    "order": 6
-  },
-  {
-    "id": 11,
-    "parent_id": 4,
-    "name": "帮助",
-    "fied_key": "help_url",
-    "fied_value": "https://django-vue-admin.com",
-    "order": 7
-  },
-  {
-    "id": 12,
-    "parent_id": 4,
-    "name": "隐私",
-    "fied_key": "privacy_url",
-    "fied_value": "/api/system/clause/privacy.html",
-    "order": 8
-  },
-  {
-    "id": 13,
-    "parent_id": 4,
-    "name": "条款",
-    "fied_key": "clause_url",
-    "fied_value": "/api/system/clause/terms_service.html",
-    "order": 9
-  },
-  {
-    "id": 14,
-    "parent_id": 4,
-    "name": "源码",
-    "fied_key": "code_url",
-    "fied_value": "https://gitee.com/tao__tao/fastapi_vue_admin.git",
-    "order": 10
+    "title": "FastAPI Vue Admin",
+    "favicon": "http://localhost:8000/api/v1/static/upload/image/png/2025/01/09/logo_20250109090456A114.png",
+    "logo": "http://localhost:8000/api/v1/static/upload/image/png/2025/01/09/logo_20250109090448A263.png",
+    "background": "http://localhost:8000/api/v1/static/upload/image/png/2025/01/09/background_20250109090435A357.png",
+    "description": "FastAPI Vue Admin 是完全开源的权限管理系统",
+    "copyright": "Copyright © 2021-2025 fastapi-vue-admin.com 版权所有",
+    "keep_record": "晋ICP备18005113号-3",
+    "help_url": "https://django-vue-admin.com",
+    "privacy_url": "/api/system/clause/privacy.html",
+    "clause_url": "/api/system/clause/terms_service.html",
+    "code_url": "https://gitee.com/tao__tao/fastapi_vue_admin.git"
   }
 ]

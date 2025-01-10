@@ -1,10 +1,37 @@
 import { createRouter, createWebHistory } from "vue-router";
+import storage from "store";
+
 import BasicLayout from "@/layouts/basicLayout.vue";
 import Login from "@/views/system/auth/login.vue";
-import storage from "store";
-import store from "@/store";
-import { generator } from "./generateRouter";
 import { listToTree } from "@/utils/util";
+import { useUserStore } from "@/store/index";
+
+const modules = import.meta.glob("../views/**/**.vue");
+
+export const generator = (routers) => {
+  return routers.map((item) => {
+    const currentRouter = {
+      path: item.route_path,
+      name: item.route_name,
+      component: item.component_path
+        ? modules[`../views/${item.component_path}.vue`]
+        : null,
+      redirect: item.redirect,
+      meta: {
+        title: item.name,
+        icon: item.icon || undefined,
+        keepAlive: item.cache,
+        hidden: item.hidden,
+        order: item.order,
+      },
+    };
+    if (item.children && item.children.length > 0) {
+      currentRouter.children = generator(item.children);
+    }
+    return currentRouter;
+  });
+};
+
 
 const routes = [
   { path: "/login", name: "Login", component: Login },
@@ -39,21 +66,21 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
   const token = storage.get("Access-Token");
+  const userStore = useUserStore();
 
   if (!token && to.name !== "Login") {
     return { name: "Login" };
   } else if (token && to.name === "Login") {
     return { name: "Index" };
-  } else if (token && !store.state.user.hasGetRoute) {
-    return store.dispatch("getUserInfo").then(() => {
-      const routersTree = listToTree(store.state.user.routeList);
-      const routerMap = generator(routersTree);
-      rootRouter.children = [...rootRouter.children, ...routerMap];
-      router.addRoute(rootRouter);
-      return to.fullPath;
-    });
+  } else if (token && !userStore.hasGetRoute) {
+    await userStore.getUserInfo();
+    const routersTree = listToTree(userStore.routeList);
+    const routerMap = generator(routersTree);
+    rootRouter.children = [...rootRouter.children, ...routerMap];
+    router.addRoute(rootRouter);
+    return to.fullPath;
   }
 });
 export default router;

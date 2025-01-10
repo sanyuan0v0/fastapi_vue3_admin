@@ -1,32 +1,16 @@
 import request from "@/utils/request";
 
-export function getConfigList(params) {
+export function getConfigInfo() {
   return request({
-    url: "/api/v1/system/config/list",
+    url: "/api/v1/system/config/info",
     method: "get",
-    params: params,
   });
 }
 
-export function getConfigDetail(params) {
-  return request({
-    url: "/api/v1/system/config/detail",
-    method: "get",
-    params: params,
-  });
-}
 
-export function createConfig(body) {
+export function updateConfig(body) {
   return request({
-    url: "/api/v1/system/config/create",
-    method: "post",
-    data: body,
-  });
-}
-
-export function batchConfig(body) {
-  return request({
-    url: "/api/v1/system/config/batch",
+    url: "/api/v1/system/config/update",
     method: "put",
     data: body,
   });

@@ -150,7 +150,7 @@ import type { MenuProps, ItemType } from "ant-design-vue";
 import { message } from 'ant-design-vue';
 import { useRouter, useRoute } from "vue-router";
 import storage from 'store';
-import store from '@/store';
+import { useUserStore } from "@/store/index";
 import * as icons from '@ant-design/icons-vue';
 import { h } from 'vue';
 import { listToTree } from '@/utils/util';
@@ -168,6 +168,9 @@ import {
 import { logout } from '@/api/system/auth';
 import { getNoticeList } from '@/api/system/notice'
 import { getInitConfig } from "@/api/system/config"
+import { useConfigStore } from "@/store/index";
+
+const userStore = useUserStore();
 
 // 通知公告获取
 const dataSource = reactive({
@@ -194,7 +197,7 @@ const router = useRouter();
 const route = useRoute();
 
 // 计算属性
-const userInfo = computed(() => store.state.user.basicInfo);
+const userInfo = computed(() => userStore.basicInfo);
 const unreadCount = computed(() => dataSource.total); // 通知条数
 
 // 菜单状态
@@ -229,7 +232,7 @@ const handleLogout = async () => {
     await logout({ token: storage.get('Access-Token') });
     storage.remove('Access-Token');
     storage.remove('Refresh-Token');
-    await store.dispatch('clearUserInfo');
+    await userStore.clearUserInfo;
     router.push('/login');
   } catch (error) {
     console.error('退出登录失败:', error);
@@ -244,7 +247,7 @@ const handleMenuClick: MenuProps['onClick'] = (menuInfo) => {
 
 // 监听路由变化
 watch(() => route.path, (newPath) => {
-  const routePath = store.state.user.routeList.map(item => item.route_path);
+  const routePath = userStore.routeList.map(item => item.route_path);
   if (!routePath.includes(newPath)) {
     menuState.openKeys = [];
     menuState.selectedKeys = [];
@@ -274,11 +277,11 @@ const generateMenuItem = (item: any): ItemType => {
 // 初始化菜单
 const initMenu = () => {
   // 确保路由列表存在
-  if (!store.state.user.routeList?.length) {
+  if (!userStore.routeList?.length) {
     return;
   }
 
-  const menuTree = listToTree(store.state.user.routeList);
+  const menuTree = listToTree(userStore.routeList);
   menuState.menus = menuTree
     .filter(item => !item.hidden)
     .map(generateMenuItem)
@@ -328,38 +331,18 @@ const noticeState = reactive({
   loading: false
 });
 
+const configStore = useConfigStore();
 
 const initConfigState = reactive({
-  web_title:  '',
-  web_favicon:  '',
+  web_title:  configStore.getConfigValue("title"),
+  web_favicon:  configStore.getConfigValue("logo"),
 });
 
-const initConfig = () => {
-  getInitConfig()
-    .then(response => {
-      const { status_code, data } = response.data;
-      if (status_code === 200) {
-        const configData = JSON.parse(data);
-        configData.forEach(item => {
-          if (item.fied_key === 'web_title') {
-            initConfigState.web_title = item.fied_value;
-          } else if (item.fied_key === 'web_favicon') {
-            initConfigState.web_favicon = item.fied_value;
-          } 
-        });
-      }
-    })
-    .catch(error => {
-      message.error('获取系统配置失败');
-      console.error(error); // 打印错误信息以便调试
-    });
-};
 
 // 在页面加载时获取通知列表
 onMounted(() => {
   initMenu();
   handleNoticeList();
-  initConfig();
 });
 </script>
 

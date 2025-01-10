@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import json
-from typing import List, Dict
+from typing import Dict
 
-from fastapi import Depends, Request, UploadFile
+from fastapi import Request, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from aioredis import Redis
 
 from app.api.v1.schemas.system.auth_schema import AuthSchema
 from app.api.v1.schemas.system.config_schema import ConfigOutSchema, ConfigUpdateSchema
-from app.api.v1.params.system.config_param import ConfigQueryParams
 from app.api.v1.cruds.system.config_crud import ConfigCRUD
 from app.common.enums import RedisInitKeyConfig
 from app.core.cache_crud import Cache
-from app.core.dependencies import db_getter
 from app.utils.upload_util import UploadUtil
 from app.core.base_schema import UploadResponseSchema
 from app.core.exceptions import CustomException
@@ -27,20 +25,17 @@ class ConfigService:
     """
     
     @classmethod
-    async def list_services(cls, auth: AuthSchema, search: ConfigQueryParams = None, order_by: List[Dict[str, str]] = None) -> List[Dict]:
-        config_obj_list = await ConfigCRUD(auth).list_curd(search=search.__dict__, order_by=order_by)
-        return [ConfigOutSchema.model_validate(config_obj).model_dump() for config_obj in config_obj_list]
+    async def get_services(cls, auth: AuthSchema, id: int) -> Dict:
+        config_obj = await ConfigCRUD(auth).get_curd(id=id)
+        return ConfigOutSchema.model_validate(config_obj).model_dump()
 
     @classmethod
-    async def batch_services(cls, auth: AuthSchema, request: Request, data: List[ConfigUpdateSchema]) -> List[Dict]:
-        result = []
-        for obj in data:
-            new_obj = await ConfigCRUD(auth).update_curd(id=obj.id, data=obj)
-            new_obj_dict = ConfigOutSchema.model_validate(new_obj).model_dump()
-            result.append(new_obj_dict)
+    async def update_services(cls, auth: AuthSchema, request: Request, data: ConfigUpdateSchema) -> Dict:
+        new_obj = await ConfigCRUD(auth).update_curd(id=data.id, data=data)
+        new_obj_dict = ConfigOutSchema.model_validate(new_obj).model_dump()
         
         cls.init_config(redis=request.app.state.redis, db=auth.db)
-        return result
+        return new_obj_dict
 
     @classmethod
     async def upload_services(cls, request: Request, file: UploadFile) -> Dict:
@@ -59,19 +54,19 @@ class ConfigService:
     @classmethod
     async def init_config(cls, redis: Redis, db: AsyncSession):
         auth = AuthSchema(db=db)
-        config_obj_list = await ConfigCRUD(auth).list_curd()
-        config_obj_list_dict = [ConfigOutSchema.model_validate(config_obj).model_dump() for config_obj in config_obj_list]
+        config_obj = await ConfigCRUD(auth).get_curd(id=1)
+        config_obj_dict = ConfigOutSchema.model_validate(config_obj).model_dump()
 
         # 保存到Redis并设置过期时间
         redis_key = f"{RedisInitKeyConfig.System_Config.key}:{'init_system_config'}"
         try:
-            value = json.dumps(config_obj_list_dict, ensure_ascii=False)
+            value = json.dumps(config_obj_dict, ensure_ascii=False)
             await Cache(redis).set(
                     key=redis_key,
                     value=value,
                     expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
                 )
-            logger.info(f"初始化系统配置成功: {config_obj_list_dict}")
+            logger.info(f"初始化系统配置成功: {config_obj_dict}")
         except Exception as e:
             logger.error(f"初始化系统配置失败: {e}")
             raise CustomException(msg="初始化系统配置失败")

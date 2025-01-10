@@ -9,11 +9,11 @@ class ConfigQueryParams:
 
     def __init__(
             self,
-            name: Optional[str] = Query(None, description="配置名称", min_length=2, max_length=50),
+            title: Optional[str] = Query(None, description="网站标题", min_length=2, max_length=50),
     ) -> None:
         super().__init__()
         
         # 模糊查询字段
-        self.name = ("like", name)
+        self.title = ("like", title)
 
 

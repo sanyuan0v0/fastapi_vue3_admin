@@ -7,35 +7,94 @@
     <div class="config-edit-wrapper">
       <a-card title="系统配置" :bordered="false">
         <!-- 动态生成配置项 -->
-        <template v-for="group in updateState" :key="group.id">
-          <a-card :title="group.name" :bordered="false" style="margin-bottom: 24px;">
-            <a-row :gutter="16">
-              <template v-for="config in group.children" :key="config.id">
-                <a-col :span="12">
-                  <!-- 图片上传类型 -->
-                  <a-form-item v-if="config.fied_key === 'web_favicon' || config.fied_key === 'login_logo' || config.fied_key === 'login_background'" :label="config.name">
-                    <a-upload
-                      v-model:file-list="config.fileList"
-                      list-type="picture-card"
-                      :before-upload="beforeUpload"
-                      :custom-request="(options) => handleUpload(options, config)"
-                    >
-                      <div v-if="!config.fileList || config.fileList.length === 0">
-                        <plus-outlined />
-                        <div style="margin-top: 8px">上传图片</div>
-                      </div>
-                    </a-upload>
-                  </a-form-item>
+        <a-row :gutter="16">
+          <a-col :span="12">
+            <!-- 网站标题 -->
+            <a-form-item label="网站标题">
+              <a-input v-model:value="configData.title" placeholder="请输入网站标题" allowClear />
+            </a-form-item>
 
-                  <!-- 输入框类型 -->
-                  <a-form-item v-else :label="config.name">
-                    <a-input v-model:value="config.fied_value" :placeholder="`请输入${config.name}`" allowClear />
-                  </a-form-item>
-                </a-col>
-              </template>
-            </a-row>
-          </a-card>
-        </template>
+            <!-- 网站图标 -->
+            <a-form-item label="网站图标">
+              <a-upload
+                v-model:file-list="faviconFileList"
+                list-type="picture-card"
+                :before-upload="beforeUpload"
+                :custom-request="(options) => handleUpload(options, 'favicon')"
+              >
+                <div v-if="!faviconFileList || faviconFileList.length === 0">
+                  <plus-outlined />
+                  <div style="margin-top: 8px">上传图标</div>
+                </div>
+              </a-upload>
+            </a-form-item>
+
+            <!-- 登录页Logo -->
+            <a-form-item label="登录页Logo">
+              <a-upload
+                v-model:file-list="logoFileList"
+                list-type="picture-card"
+                :before-upload="beforeUpload"
+                :custom-request="(options) => handleUpload(options, 'logo')"
+              >
+                <div v-if="!logoFileList || logoFileList.length === 0">
+                  <plus-outlined />
+                  <div style="margin-top: 8px">上传Logo</div>
+                </div>
+              </a-upload>
+            </a-form-item>
+
+            <!-- 登录页背景图 -->
+            <a-form-item label="登录页背景图">
+              <a-upload
+                v-model:file-list="backgroundFileList"
+                list-type="picture-card"
+                :before-upload="beforeUpload"
+                :custom-request="(options) => handleUpload(options, 'background')"
+              >
+                <div v-if="!backgroundFileList || backgroundFileList.length === 0">
+                  <plus-outlined />
+                  <div style="margin-top: 8px">上传背景图</div>
+                </div>
+              </a-upload>
+            </a-form-item>
+
+            <!-- 版权信息 -->
+            <a-form-item label="网站描述">
+              <a-input v-model:value="configData.description" placeholder="请输入版权信息" allowClear />
+            </a-form-item>
+
+            <!-- 版权信息 -->
+            <a-form-item label="版权信息">
+              <a-input v-model:value="configData.copyright" placeholder="请输入版权信息" allowClear />
+            </a-form-item>
+
+            <!-- 备案号 -->
+            <a-form-item label="备案号">
+              <a-input v-model:value="configData.keep_record" placeholder="请输入备案号" allowClear />
+            </a-form-item>
+
+            <!-- 帮助链接 -->
+            <a-form-item label="帮助链接">
+              <a-input v-model:value="configData.help_url" placeholder="请输入帮助链接" allowClear />
+            </a-form-item>
+
+            <!-- 隐私条款链接 -->
+            <a-form-item label="隐私条款链接">
+              <a-input v-model:value="configData.privacy_url" placeholder="请输入隐私条款链接" allowClear />
+            </a-form-item>
+
+            <!-- 服务条款链接 -->
+            <a-form-item label="服务条款链接">
+              <a-input v-model:value="configData.clause_url" placeholder="请输入服务条款链接" allowClear />
+            </a-form-item>
+
+            <!-- 代码仓库链接 -->
+            <a-form-item label="代码仓库链接">
+              <a-input v-model:value="configData.code_url" placeholder="请输入代码仓库链接" allowClear />
+            </a-form-item>
+          </a-col>
+        </a-row>
 
         <!-- 保存按钮 -->
         <div style="text-align: right; margin-top: 24px;">
@@ -47,46 +106,53 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, onMounted } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
 import { message } from 'ant-design-vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
-import { getConfigList, batchConfig, uploadFile } from '@/api/system/config';
+import { getConfigInfo, updateConfig, uploadFile } from '@/api/system/config';
 import PageHeader from '@/components/PageHeader.vue';
-import type { tableDataType } from './types'
+import type { tableDataType } from './types';
 
-interface ConfigGroup extends tableDataType {
-  children: tableDataType[];
-  fileList?: any[];
-}
+// 配置数据
+const configData = reactive<tableDataType>({
+    id: 1,
+    title: 'FastAPI Vue Admin',
+    favicon: 'http://example.com/favicon.png',
+    logo: 'http://example.com/logo.png',
+    background: 'http://example.com/background.png',
+    description: 'FastAPI Vue Admin 是完全开源的权限管理系统',
+    copyright: 'Copyright © 2021-2025 fastapi-vue-admin.com',
+    keep_record: '晋ICP备18005113号-3',
+    help_url: 'https://django-vue-admin.com',
+    privacy_url: '/api/system/clause/privacy.html',
+    clause_url: '/api/system/clause/terms_service.html',
+    code_url: 'https://gitee.com/tao__tao/fastapi_vue_admin.git',
+});
 
-const updateState = reactive<ConfigGroup[]>([]);
+// 文件上传列表
+const faviconFileList = ref<any[]>([]);
+const logoFileList = ref<any[]>([]);
+const backgroundFileList = ref<any[]>([]);
 
 // 加载配置数据
 const loadConfigData = async () => {
   try {
-    const response = await getConfigList({});
-    const items = response.data.data.items;
+    const response = await getConfigInfo({});
+    const data = response.data.data;
 
-    // 将配置项按父级分组
-    const groups = items
-      .filter(item => item.parent_id === null) // 获取顶级配置项
-      .map(group => ({
-        ...group,
-        children: items.filter(item => item.parent_id === group.id) // 获取子配置项
-      }));
+    // 填充配置数据
+    Object.assign(configData, data);
 
-    // 初始化图片上传列表
-    groups.forEach(group => {
-      group.children.forEach(config => {
-        if (config.fied_key === 'web_favicon' || config.fied_key === 'login_logo' || config.fied_key === 'login_background') {
-          config.fileList = config.fied_value ? [{ url: config.fied_value }] : [];
-        }
-      });
-    });
-
-    // 避免直接修改 reactive 对象，使用重新赋值的方式
-    updateState.length = 0; // 清空数组
-    updateState.push(...groups); // 添加新数据
+    // 初始化文件上传列表
+    if (data.favicon) {
+      faviconFileList.value = [{ url: data.favicon }];
+    }
+    if (data.logo) {
+      logoFileList.value = [{ url: data.logo }];
+    }
+    if (data.background) {
+      backgroundFileList.value = [{ url: data.background }];
+    }
   } catch (error) {
     console.error('加载配置数据失败:', error);
     message.error('加载配置数据失败');
@@ -103,7 +169,7 @@ const beforeUpload = (file: File) => {
 };
 
 // 自定义上传逻辑
-const handleUpload = async (options: any, config: any) => {
+const handleUpload = async (options: any, type: string) => {
   const { file, onSuccess, onError } = options;
 
   try {
@@ -111,11 +177,19 @@ const handleUpload = async (options: any, config: any) => {
     formData.append('file', file);
 
     const response = await uploadFile(formData);
-    const fileUrl = response.data.data.file_url; // 使用 file_url 更新配置项的值
+    const fileUrl = response.data.data.file_url;
 
-    // 更新配置项的值
-    config.fied_value = fileUrl;
-    config.fileList = [{ url: fileUrl }]; // 更新文件列表显示
+    // 更新配置数据
+    if (type === 'favicon') {
+      configData.favicon = fileUrl;
+      faviconFileList.value = [{ url: fileUrl }];
+    } else if (type === 'logo') {
+      configData.logo = fileUrl;
+      logoFileList.value = [{ url: fileUrl }];
+    } else if (type === 'background') {
+      configData.background = fileUrl;
+      backgroundFileList.value = [{ url: fileUrl }];
+    }
 
     onSuccess(response, file);
     message.success('上传成功');
@@ -129,28 +203,8 @@ const handleUpload = async (options: any, config: any) => {
 // 保存配置
 const handleSave = async () => {
   try {
-    // 提取所有配置项（包括父级和子级）
-    const configs = updateState.flatMap(group => [
-      {
-        id: group.id,
-        name: group.name,
-        order: group.order,
-        fied_key: group.fied_key,
-        fied_value: group.fied_value,
-        parent_id: group.parent_id,
-      },
-      ...group.children.map(config => ({
-        id: config.id,
-        name: config.name,
-        order: config.order,
-        fied_key: config.fied_key,
-        fied_value: config.fied_value,
-        parent_id: config.parent_id,
-      })),
-    ]);
-
-    // 调用批量保存接口，直接发送数组
-    await batchConfig(configs); // 修改为直接发送数组
+    // 调用更新配置接口
+    await updateConfig(configData);
     message.success('配置保存成功');
   } catch (error) {
     console.error('保存配置失败:', error);
