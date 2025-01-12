@@ -33,7 +33,7 @@
                     :checkedKeys="permissionState.dept_ids"
                     :rowKey="record => record.id"
                     :tree-data="deptTreeData"
-                    defaultExpandAll=true
+                    defaultExpandAll="true"
                     :scroll="{ y: 1000 }"
                     :field-names="{ children: 'children', title: 'name', key: 'id' }"
                     @check="deptTreeCheck" checkable checkStrictly style="margin-top: 15px;" />
@@ -56,7 +56,7 @@
                 </div>
 
                 <div style="margin-top: 15px;">
-                    <a-table v-if="menuTreeData.length"
+                    <a-table v-if="menuTreeData"
                         :rowKey="record => record.id"
                         :defaultExpandAllRows="true"
                         :columns="menuColumns"

@@ -14,7 +14,7 @@
           </a-col>
           <a-col flex="0 1 450px">
             <a-form-item name="user_name" label="用户名" style="max-width: 300px;">
-              <a-input v-model:value="queryState.user_name" placeholder="请输入登陆用户名称" allowClear></a-input>
+              <a-input v-model:value="queryState.name" placeholder="请输入登陆用户名称" allowClear></a-input>
             </a-form-item>
           </a-col>
           <a-col flex="0 1 450px">
@@ -43,8 +43,9 @@
         :columns="columns" 
         :data-source="tableData" 
         :loading="loading"
-        :scroll="{ x: 500 }" 
-        :pagination="pagination">
+        :scroll="{ x: 400 }" 
+        :pagination="pagination"
+        :style="{ minHeight: '420px' }">
         <template #bodyCell="{ column, record, index }">
           <template v-if="column.dataIndex === 'index'">
             <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>

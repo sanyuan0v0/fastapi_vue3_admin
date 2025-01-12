@@ -40,9 +40,9 @@
     <!-- 表格区域 -->
     <div class="table-wrapper">
       <a-card title="用户管理" 
-        :bordered="false"
+        :bordered="false" 
         :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-        :bodyStyle="{ padding: '10px 24px', minHeight: 'calc(100vh - 400px)' }">
+        :bodyStyle="{ padding: '0px 24px', minHeight: 'calc(100vh - 400px)' }">
         <template #extra>
           <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')" style="margin-right: 10px;">
             新建
@@ -74,28 +74,27 @@
         <a-row :gutter="16">
           <!-- 左侧部门树 -->
           <a-col :span="4">
-            <a-tree ref="deptTree" v-if="deptTreeData.length"
-              :tree-data="deptTreeData" 
-              :show-line="true"
-              :defaultExpandAll="true"
-              :field-names="{ children: 'children', title: 'name', key: 'id' }"
-              :selected-keys="selectedKeys"
-              @select="onSelectDept">
-            </a-tree>
+              <a-tree ref="deptTree" v-if="deptTreeData.length" 
+                :tree-data="deptTreeData" 
+                :show-line="true"
+                :defaultExpandAll="true" 
+                :field-names="{ children: 'children', title: 'name', key: 'id' }"
+                :selected-keys="selectedKeys" 
+                @select="onSelectDept">
+              </a-tree>
           </a-col>
 
           <!-- 右侧用户列表 -->
           <a-col :span="20">
-            <a-card title="用户列表" >
               <a-table :rowKey="record => record.id" 
                 :columns="columns" 
                 :data-source="dataSource"
                 :row-selection="rowSelection" 
                 :loading="tableLoading" 
                 @change="handleTableChange" 
-                :scroll="{ x: 300 }"
+                :scroll="{ x: 400 }"
                 :pagination="pagination" 
-                :style="{ minHeight: '310px' }">
+                :style="{ minHeight: '420px' }">
                 <template #bodyCell="{ column, record, index }">
                   <template v-if="column.dataIndex === 'index'">
                     <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
@@ -135,7 +134,6 @@
                   </template>
                 </template>
               </a-table>
-            </a-card>
           </a-col>
         </a-row>
       </a-card>
@@ -522,7 +520,7 @@ const rowSelection = computed(() => {
   }
 });
 
-const selectedKeys = ref<string[]>([]);
+const selectedKeys = ref<number[]>([]);
 
 // 生命周期钩子
 onMounted(() => loadingData());
@@ -790,7 +788,7 @@ const handleSelectorModalEvent = (
 }
 
 // 部门选择器事件
-const onSelectDept = (selectedKeys: string[], info: any) => {
+const onSelectDept = (selectedKeys: number[], info: any) => {
   if (selectedKeys.length > 0) {
     queryState.dept_id = selectedKeys[0]; // 获取选中的部门 ID
   } else {

@@ -35,7 +35,9 @@
 
         <!-- 表格区域 -->
         <div class="table-wrapper">
-            <a-card title="公告通知列表" :bordered="false" :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
+            <a-card title="公告通知列表" 
+                :bordered="false" 
+                :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
                 :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 400px)' }">
                 <template #extra>
                     <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')"
@@ -66,9 +68,9 @@
                     :row-selection="rowSelection" 
                     :loading="tableLoading" 
                     @change="handleTableChange"
-                    :scroll="{ x: 500 }" 
+                    :scroll="{ x: 400 }" 
                     :pagination="pagination"
-                    :style="{ minHeight: '300px' }"
+                    :style="{ minHeight: '420px' }"
                     >
                     <template #bodyCell="{ column, record, index }">
                         <template v-if="column.dataIndex === 'index'">

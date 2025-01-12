@@ -57,7 +57,7 @@
           </a-space>
         </template>
 
-        <a-table v-if="dataSource.length"
+        <a-table v-if="dataSource"
           :defaultExpandAllRows="true" 
           :rowKey="record => record.id"
           :columns="columns"
@@ -66,7 +66,7 @@
           :scroll="{ x: 500, y: 'calc(100vh - 300px)' }"
           :row-selection="rowSelection"
           :pagination="false"
-          :style="{ minHeight: '300px' }"
+          :style="{ minHeight: '420px' }"
         >
           <template #bodyCell="{ column, record }">
             
@@ -116,6 +116,7 @@
               <a-badge :status="detailState.available ? 'processing': 'error'" :text="detailState.available ? '启用' : '停用'" />
             </a-descriptions-item>
             <a-descriptions-item label="上级部门" :span="2">{{ detailState.parent_name }}</a-descriptions-item>
+            <a-descriptions-item label="创建人">{{ detailState.creator ? detailState.creator.name : '-' }}</a-descriptions-item>
             <a-descriptions-item label="创建时间">{{ detailState.created_at }}</a-descriptions-item>
             <a-descriptions-item label="修改时间">{{ detailState.updated_at }}</a-descriptions-item>
             <a-descriptions-item label="备注" :span="2">{{ detailState.description }}</a-descriptions-item>

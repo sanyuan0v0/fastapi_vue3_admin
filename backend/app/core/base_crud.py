@@ -5,6 +5,7 @@ from typing import TypeVar, Sequence, Generic, Dict, Any, List, Union, Optional
 from sqlalchemy.sql.elements import ColumnElement
 from sqlalchemy.orm import selectinload, DeclarativeBase
 from sqlalchemy.engine import Result
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import asc, func, select, delete, Select, desc, update, or_, and_
 
 from app.api.v1.schemas.system.auth_schema import AuthSchema
@@ -31,7 +32,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """
         self.model = model
         self.auth = auth
-        self.db = auth.db
+        self.db: AsyncSession = auth.db
         self.current_user = auth.user
     async def get(self, **kwargs) -> Optional[ModelType]:
         """
@@ -51,7 +52,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             sql = (select(self.model)
                   .where(*conditions)
                   .distinct())
-            sql = await self.__filter_permissions(sql)
+            if hasattr(self.model, "creator"):
+                sql = sql.options(selectinload(self.model.creator))
+            
             result: Result = await self.db.execute(sql)
             obj = result.scalars().unique().first()
             return obj

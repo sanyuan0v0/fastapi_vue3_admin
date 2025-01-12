@@ -7,14 +7,23 @@
     <div class="config-edit-wrapper">
       <a-card title="系统配置" :bordered="false">
         <!-- 动态生成配置项 -->
-        <a-row :gutter="16">
+        <a-row :gutter="[16, 24]">
+          <!-- 网站标题 -->
           <a-col :span="12">
-            <!-- 网站标题 -->
             <a-form-item label="网站标题">
               <a-input v-model:value="configData.title" placeholder="请输入网站标题" allowClear />
             </a-form-item>
+          </a-col>
 
-            <!-- 网站图标 -->
+          <!-- 网站描述 -->
+          <a-col :span="12">
+            <a-form-item label="网站描述">
+              <a-input v-model:value="configData.description" placeholder="请输入网站描述" allowClear />
+            </a-form-item>
+          </a-col>
+
+          <!-- 网站图标 -->
+          <a-col :span="8">
             <a-form-item label="网站图标">
               <a-upload
                 v-model:file-list="faviconFileList"
@@ -28,8 +37,10 @@
                 </div>
               </a-upload>
             </a-form-item>
+          </a-col>
 
-            <!-- 登录页Logo -->
+          <!-- 登录页Logo -->
+          <a-col :span="8">
             <a-form-item label="登录页Logo">
               <a-upload
                 v-model:file-list="logoFileList"
@@ -43,8 +54,10 @@
                 </div>
               </a-upload>
             </a-form-item>
+          </a-col>
 
-            <!-- 登录页背景图 -->
+          <!-- 登录页背景图 -->
+          <a-col :span="8">
             <a-form-item label="登录页背景图">
               <a-upload
                 v-model:file-list="backgroundFileList"
@@ -58,38 +71,45 @@
                 </div>
               </a-upload>
             </a-form-item>
+          </a-col>
 
-            <!-- 版权信息 -->
-            <a-form-item label="网站描述">
-              <a-input v-model:value="configData.description" placeholder="请输入版权信息" allowClear />
-            </a-form-item>
-
-            <!-- 版权信息 -->
+          <!-- 版权信息 -->
+          <a-col :span="12">
             <a-form-item label="版权信息">
               <a-input v-model:value="configData.copyright" placeholder="请输入版权信息" allowClear />
             </a-form-item>
+          </a-col>
 
-            <!-- 备案号 -->
+          <!-- 备案号 -->
+          <a-col :span="12">
             <a-form-item label="备案号">
               <a-input v-model:value="configData.keep_record" placeholder="请输入备案号" allowClear />
             </a-form-item>
+          </a-col>
 
-            <!-- 帮助链接 -->
+          <!-- 帮助链接 -->
+          <a-col :span="12">
             <a-form-item label="帮助链接">
               <a-input v-model:value="configData.help_url" placeholder="请输入帮助链接" allowClear />
             </a-form-item>
+          </a-col>
 
-            <!-- 隐私条款链接 -->
+          <!-- 隐私条款链接 -->
+          <a-col :span="12">
             <a-form-item label="隐私条款链接">
               <a-input v-model:value="configData.privacy_url" placeholder="请输入隐私条款链接" allowClear />
             </a-form-item>
+          </a-col>
 
-            <!-- 服务条款链接 -->
+          <!-- 服务条款链接 -->
+          <a-col :span="12">
             <a-form-item label="服务条款链接">
               <a-input v-model:value="configData.clause_url" placeholder="请输入服务条款链接" allowClear />
             </a-form-item>
+          </a-col>
 
-            <!-- 代码仓库链接 -->
+          <!-- 代码仓库链接 -->
+          <a-col :span="12">
             <a-form-item label="代码仓库链接">
               <a-input v-model:value="configData.code_url" placeholder="请输入代码仓库链接" allowClear />
             </a-form-item>
@@ -115,18 +135,18 @@ import type { tableDataType } from './types';
 
 // 配置数据
 const configData = reactive<tableDataType>({
-    id: 1,
-    title: 'FastAPI Vue Admin',
-    favicon: 'http://example.com/favicon.png',
-    logo: 'http://example.com/logo.png',
-    background: 'http://example.com/background.png',
-    description: 'FastAPI Vue Admin 是完全开源的权限管理系统',
-    copyright: 'Copyright © 2021-2025 fastapi-vue-admin.com',
-    keep_record: '晋ICP备18005113号-3',
-    help_url: 'https://django-vue-admin.com',
-    privacy_url: '/api/system/clause/privacy.html',
-    clause_url: '/api/system/clause/terms_service.html',
-    code_url: 'https://gitee.com/tao__tao/fastapi_vue_admin.git',
+  id: 1,
+  title: '',
+  favicon: '',
+  logo: '',
+  background: '',
+  description: '',
+  copyright: '',
+  keep_record: '',
+  help_url: '',
+  privacy_url: '',
+  clause_url: '',
+  code_url: '',
 });
 
 // 文件上传列表

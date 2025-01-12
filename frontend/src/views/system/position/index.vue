@@ -71,9 +71,9 @@
           :row-selection="rowSelection" 
           :loading="tableLoading" 
           @change="handleTableChange"
-          :scroll="{ x: 500 }" 
+          :scroll="{ x: 400 }" 
           :pagination="pagination" 
-          :style="{ minHeight: '300px' }"
+          :style="{ minHeight: '420px' }"
           >
           <template #bodyCell="{ column, record, index }">
             <template v-if="column.dataIndex === 'index'">

@@ -36,6 +36,24 @@ export const generator = (routers) => {
 const routes = [
   { path: "/login", name: "Login", component: Login },
   {
+    path: "/403",
+    name: "403",
+    meta: { title: "403" },
+    component: () => import("../views/exception/403.vue"),
+  },
+  {
+    path: "/404",
+    name: "404",
+    meta: { title: "404" },
+    component: () => import("../views/exception/404.vue"),
+  },
+  {
+    path: "/500",
+    name: "500",
+    meta: { title: "500" },
+    component: () => import("../views/exception/500.vue"),
+  },
+  {
     path: "/:catchAll(.*)",
     name: "404",
     meta: { title: "404" },

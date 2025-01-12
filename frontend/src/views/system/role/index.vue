@@ -69,7 +69,7 @@
           :row-selection="rowSelection" 
           :loading="tableLoading" 
           @change="handleTableChange"
-          :scroll="{ x: 500 }" 
+          :scroll="{ x: 400 }" 
           :pagination="pagination" 
           :style="{ minHeight: '420px' }"
           >

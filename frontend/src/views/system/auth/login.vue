@@ -180,6 +180,7 @@ const contentStyle: CSSProperties = {
 const footerStyle: CSSProperties = {
   textAlign: "center",
   background: "none",
+  flex: "0 0 60px",
 };
 
 // 统一的弹窗控制

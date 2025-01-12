@@ -28,11 +28,7 @@ class DeptUpdateSchema(DeptCreateSchema):
     id: int = Field(..., gt=0, description="部门ID")
 
 
-class DeptOutSchema(DeptCreateSchema):
+class DeptOutSchema(DeptCreateSchema, BaseSchema):
     """部门响应模型"""
     model_config = ConfigDict(from_attributes=True)
-
     parent_name: Optional[str] = Field(default=None, max_length=40, description="父部门名称")
-    id: int = Field(description="主键ID")
-    created_at: DateTimeStr = Field(description="创建时间")
-    updated_at: DateTimeStr = Field(description="更新时间")
