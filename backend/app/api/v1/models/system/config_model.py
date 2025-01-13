@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey
+from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Text
 from sqlalchemy.orm import relationship
 
 from app.core.base_model import ModelBase
@@ -29,6 +29,20 @@ class ConfigModel(ModelBase):
     code_url = Column(String(100), nullable=False, default="https://gitee.com/tao__tao/fastapi_vue_admin.git", comment="源码地址")
 
     # 审计字段
-    description = Column(String(100), nullable=False, default="FastAPI Vue Admin 是完全开源的权限管理系统", comment="网站描述")
+    description = Column(Text, nullable=True, comment="备注说明")
     created_at = Column(DateTime, default=datetime.now, comment='创建时间')
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now, comment='更新时间')
+    creator_id = Column(
+        Integer, 
+        ForeignKey("system_user.id", ondelete="SET NULL", onupdate="CASCADE"), 
+        nullable=True, 
+        index=True, 
+        comment="创建人ID"
+    )
+    creator = relationship(
+        "UserModel", 
+        foreign_keys=creator_id, 
+        lazy="joined",
+        post_update=True,
+        uselist=False
+    )

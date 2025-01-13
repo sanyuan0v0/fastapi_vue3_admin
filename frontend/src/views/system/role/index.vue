@@ -77,6 +77,14 @@
             <template v-if="column.dataIndex === 'index'">
               <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
             </template>
+            <template v-if="column.dataIndex === 'data_scope'">
+              <span v-if="record.data_scope === 1">仅本人数据权限</span>
+              <span v-else-if="record.data_scope === 2">本部门数据权限</span>
+              <span v-else-if="record.data_scope === 3">本部门及以下数据权限</span>
+              <span v-else-if="record.data_scope === 4">全部数据权限</span>
+              <span v-else-if="record.data_scope === 5">自定义数据权限</span>
+              <span v-else>未知数据权限</span>
+            </template>
             <template v-if="column.dataIndex === 'available'">
               <span>
                 <a-badge :status="record.available ? 'processing': 'error'" :text="record.available ? '启用' : '停用'" />
@@ -111,13 +119,21 @@
               <a-descriptions-item label="序号">{{ (pagination.current - 1) * pagination.pageSize + detailState.index + 1 }}</a-descriptions-item>
               <a-descriptions-item label="名称">{{ detailState.name }}</a-descriptions-item>
               <a-descriptions-item label="排序">{{ detailState.order }}</a-descriptions-item>
+              <a-descriptions-item label="数据权限">
+                <template v-if="detailState.data_scope === 1">仅本人数据权限</template>
+                <template v-else-if="detailState.data_scope === 2">本部门数据权限</template>
+                <template v-else-if="detailState.data_scope === 3">本部门及以下数据权限</template>
+                <template v-else-if="detailState.data_scope === 4">全部数据权限</template>
+                <template v-else-if="detailState.data_scope === 5">自定义数据权限</template>
+                <template v-else>未知数据权限</template>
+              </a-descriptions-item>
               <a-descriptions-item label="状态">
                 <a-badge :status="detailState.available ? 'processing': 'error'" :text="detailState.available ? '启用' : '停用'" />
               </a-descriptions-item>
               <a-descriptions-item label="创建人">{{ detailState.creator ? detailState.creator.name : '-' }}</a-descriptions-item>
               <a-descriptions-item label="创建时间">{{ detailState.created_at }}</a-descriptions-item>
               <a-descriptions-item label="修改时间">{{ detailState.updated_at }}</a-descriptions-item>
-              <a-descriptions-item label="备注" :span="2">{{ detailState.description }}</a-descriptions-item>
+              <a-descriptions-item label="备注" >{{ detailState.description }}</a-descriptions-item>
             </a-descriptions>
           </a-spin>
         </div>
@@ -231,7 +247,13 @@ const columns = reactive<TableColumnsType>([
     align: 'center',
     ellipsis: true,
     // width: 120
-
+  },
+  {
+    title: '数据权限',
+    dataIndex: 'data_scope',
+    align: 'center',
+    ellipsis: true,
+    // width: 120
   },
   {
     title: '排序',

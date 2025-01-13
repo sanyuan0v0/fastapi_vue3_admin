@@ -8,7 +8,6 @@ from app.core.validator import DateTimeStr
 
 class DeptCreateSchema(BaseModel):
     """部门创建模型"""
-
     name: str = Field(..., max_length=40, description="部门名称")
     order: int = Field(default=1, ge=0, description="显示顺序")
     available: bool = Field(default=True, description="是否启用(True:启用 False:禁用)")
