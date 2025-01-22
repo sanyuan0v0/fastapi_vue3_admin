@@ -2,7 +2,7 @@
    <p align="center">
       <img src="./resources/images/logo.png" height="150" alt="logo"/>
    </p>
-      <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Fastapi-Vue-Admin v1.0.0</h1>
+      <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Fastapi-Vue3-Admin v1.0.0</h1>
       <h4 align="center">基于Fastapi-Vue-Admi前后端分离的快速开发框架</h4>
    <p align="center">
       <img src="https://img.shields.io/badge/Python-≥3.10-blue">
@@ -14,14 +14,16 @@
 
 ## 📚 项目介绍
 
-**fastapi-vue-admin** 是一套完全开源的快速开发平台，提供免费使用。它结合了现代、高性能的技术栈，旨在帮助开发者快速搭建高质量的中后台系统。项目目录结构如下：
+**Fastapi-Vue3-Admin** 是一套完全开源的快速开发平台，提供免费使用。它结合了现代、高性能的技术栈，旨在帮助开发者快速搭建高质量的中后台系统。项目目录结构如下：
 
 ```sh
 my_demo_project/fastapi_project
 ├─ backend        # 后端工程
 ├─ frontend       # 前端工程
+├─ devops         # 部署工程
 ├─ mkdocs         # 文档工程
-└─ README.md      # 说明文档
+|─ README.en.md   # 英文文档
+└─ README.md      # 中文文档
 ```
 
 - **后端**：
@@ -57,9 +59,7 @@ my_demo_project/fastapi_project
 
 ## 📌 内置模块
 
-- **仪表盘**
-  - **工作台**：仪表盘展示，常用功能入口。
-  - **分析页**：展示各种数据统计信息，帮助用户了解系统运行情况。
+- **仪表盘**：仪表盘展示，常用功能入口。
 
 - **系统管理**
   - **菜单管理**：配置系统菜单，操作权限，按钮权限标识等。
@@ -68,7 +68,7 @@ my_demo_project/fastapi_project
   - **角色管理**：角色菜单管理与权限分配、设置角色所拥有的菜单权限。
   - **用户管理**：用于维护管理系统的用户，常规信息的维护与账号设置。
   - **日志管理**：对系统中常用的较为固定的数据进行统一维护。
-  - **接口管理**：对系统的常规配置信息进行维护，网站配置管理功能进行统一维护。
+  - **配置管理**：主要是系统配置信息，如：系统名称、系统版本、系统描述等。
   - **公告管理**：系统通知公告信息发布维护。
 
 - **监控管理**
@@ -79,7 +79,6 @@ my_demo_project/fastapi_project
 - **公共管理**
   - **接口管理**：系统接口维护，如：接口地址、请求方式等。
   - **文档管理**：系统接口文档维护，支持在线接口调用。
-  - **文件管理**：文件上传配置，目前支持本地，可根据具体配置获取存储地址文件。
 
 ## 🍪  账号信息
 
@@ -173,13 +172,9 @@ git clone https://gitee.com/tao__tao/my_demo_project.git
 
 ![登陆](./resources/images/login.png)
 
-### 工作台
+### 仪表盘
 
-![工作台](./resources/images/dashboard.png)
-
-### 分析页
-
-![分析页](./resources/images/analytics.png)
+![仪表盘](./resources/images/dashboard.png)
 
 ### 菜单管理
 
@@ -205,6 +200,10 @@ git clone https://gitee.com/tao__tao/my_demo_project.git
 
 ![日志管理](./resources/images/log.png)
 
+### 配置管理
+
+![配置管理](./resources/images/config.png)
+
 ### 在线用户管理
 
 ![在线用户管理](./resources/images/online.png)
@@ -225,10 +224,6 @@ git clone https://gitee.com/tao__tao/my_demo_project.git
 
 ![文档管理](./resources/images/redoc.png)
 
-### 文件管理
-
-![文件管理](./resources/images/file.png)
-
 ### 个人信息
 
 ![个人信息](./resources/images/info.png)
@@ -244,7 +239,7 @@ git clone https://gitee.com/tao__tao/my_demo_project.git
 - [FastAPI 项目](https://fastapi.tiangolo.com/)
 - [Vue3 项目](https://v3.cn.vuejs.org/)
 - [KInit 项目](https://gitee.com/ktianc/kinit)
-- [FastAPI-Vue-Admin 项目](https://gitee.com/senqi666/fastapi-vue-admin)
+- [Fastapi-Vue3-Admin 项目](https://gitee.com/senqi666/Fastapi-Vue3-Admin)
 - [Vue-FastAPI-Admin 项目](https://gitee.com/mizhexiaoxiao/vue-fastapi-admin)
 - [RuoYi-Vue3-FastAPI 项目](https://gitee.com/insistence2022/RuoYi-Vue3-FastAPI)
 

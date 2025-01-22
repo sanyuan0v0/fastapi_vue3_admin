@@ -24,9 +24,9 @@ class ConfigModel(ModelBase):
     copyright = Column(String(100), nullable=False, default="Copyright © 2021-2025 fastapi-vue-admin.com 版权所有", comment="版权信息")
     keep_record = Column(String(100), nullable=False, default="晋ICP备18005113号-3", comment="备案信息")
     help_url = Column(String(100), nullable=False, default="https://django-vue-admin.com", comment="帮助链接")
-    privacy_url = Column(String(100), nullable=False, default="https://gitee.com/tao__tao/fastapi_vue_admin/blob/main/docs/clause/privacy.md", comment="隐私政策链接")
-    clause_url = Column(String(100), nullable=False, default="https://gitee.com/tao__tao/fastapi_vue_admin/blob/main/docs/clause/terms_service.md", comment="服务条款链接")
-    code_url = Column(String(100), nullable=False, default="https://gitee.com/tao__tao/fastapi_vue_admin.git", comment="源码地址")
+    privacy_url = Column(String(100), nullable=False, default="https://gitee.com/tao__tao/fastapi_vue3_admin/blob/main/docs/clause/privacy.md", comment="隐私政策链接")
+    clause_url = Column(String(100), nullable=False, default="https://gitee.com/tao__tao/fastapi_vue3_admin/blob/main/docs/clause/terms_service.md", comment="服务条款链接")
+    code_url = Column(String(100), nullable=False, default="https://gitee.com/tao__tao/fastapi_vue3_admin.git", comment="源码地址")
 
     # 审计字段
     description = Column(Text, nullable=True, comment="备注说明")

@@ -2,8 +2,8 @@
    <p align="center">
       <img src="./mkdocs/docs/resources/images/logo.png" height="150" alt="logo"/>
    </p>
-      <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Fastapi-Vue-Admin v1.0.0</h1>
-      <h4 align="center">A rapid development framework for front-end and back-end separation based on Fastapi-Vue-Admin</h4>
+      <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Fastapi-Vue3-Admin v1.0.0</h1>
+      <h4 align="center">A rapid development framework for front-end and back-end separation based on Fastapi-Vue3-Admin</h4>
    <p align="center">
       <img src="https://img.shields.io/badge/Python-≥3.10-blue">
       <img src="https://img.shields.io/badge/NodeJS-≥20.0-blue">
@@ -16,14 +16,14 @@ English | [Chinese](./README.md)
 
 ## 📚 Project Introduction
 
-**fastapi-vue-admin** is a fully open-source rapid development platform that provides free usage. It combines modern, high-performance technology stacks to help developers quickly build high-quality backend systems. The project directory structure is as follows:
+**Fastapi-Vue3-Admin** is a fully open-source rapid development platform that provides free usage. It combines modern, high-performance technology stacks to help developers quickly build high-quality backend systems. The project directory structure is as follows:
 
 ```sh
 fastapi_vue_admin
 ├─ backend        # Backend project
 ├─ frontend       # Frontend project
+├─ devops         # Deployment project
 ├─ mkdocs         # Documentation project
-├─ build          # Deployment project
 ├─ README.en.md   # English documentation
 └─ README.md      # Chinese documentation
 ```
@@ -61,9 +61,7 @@ If you find the project helpful, please give it a star!
 
 ## 📌 Built-in Modules
 
-- **Dashboard**
-  - **Workbench**:Dashboard display, entry point for common features.
-  - **Analytics**:Displays various statistical information to help users understand system performance.
+- **Dashboard**: Dashboard display, entry point for common features.
 
 - **System Management**
   - **Menu Management**:Configures system menus, operation permissions, and button permission identifiers.
@@ -72,8 +70,8 @@ If you find the project helpful, please give it a star!
   - **Role Management**:Manages role menus and permission allocation, sets menu permissions for roles.
   - **User Management**:Maintains and manages system users, including regular information maintenance and account settings.
   - **Log Management**:Uniformly maintains commonly used and relatively fixed data in the system.
-  - **API Management**:Maintains the system's configuration information, uniformly manages website configuration management functions.
-  - **Common Management**:Maintains the release and management of system notifications and announcements.
+  - **Config Management**:Maintains system configuration information, such as system parameters and system settings.
+  - **Notice Management**:Manages system notifications, such as system messages and system announcements.
 
 - **Monitoring Management**
   - **Online Users**:Views currently online users in the system.
@@ -83,7 +81,6 @@ If you find the project helpful, please give it a star!
 - **Common Management**
   - **API Management**:Maintains system APIs, such as API addresses and request methods.
   - **Documentation Management**:Maintains system API documentation, supports online API calls.
-  - **File Management**:Configures file uploads, currently supports local storage, and can obtain storage addresses based on specific configurations.
 
 
 ## 🍪  Account Information
@@ -112,7 +109,7 @@ If you find the project helpful, please give it a star!
 ### Get the Code
 
 ```sh
-git clone https://gitee.com/tao__tao/fastapi_vue_admin.git
+git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
 ```
 
 ### Backend
@@ -181,13 +178,9 @@ git clone https://gitee.com/tao__tao/fastapi_vue_admin.git
 
 ![Login](./mkdocs/docs/resources/images/login.png)
 
-### Workbench
+### Dashboard
 
-![Workbench](./mkdocs/docs/resources/images/dashboard.png)
-
-### Analytics
-
-![Analytics](./mkdocs/docs/resources/images/analytics.png)
+![Dashboard](./mkdocs/docs/resources/images/dashboard.png)
 
 ### Menu
 
@@ -213,6 +206,10 @@ git clone https://gitee.com/tao__tao/fastapi_vue_admin.git
 
 ![Log](./mkdocs/docs/resources/images/log.png)
 
+### Config
+
+![Config](./mkdocs/docs/resources/images/config.png)
+
 ### Online
 
 ![Online](./mkdocs/docs/resources/images/online.png)
@@ -233,10 +230,6 @@ git clone https://gitee.com/tao__tao/fastapi_vue_admin.git
 
 ![Documentation](./mkdocs/docs/resources/images/redoc.png)
 
-### File
-
-![File](./mkdocs/docs/resources/images/file.png)
-
 ### Personal
 
 ![Personal](./mkdocs/docs/resources/images/info.png)
@@ -252,7 +245,7 @@ Thank you to the following projects for their contributions and support, which h
 - [FastAPI Project](https://fastapi.tiangolo.com/)
 - [Vue3 Project](https://v3.cn.vuejs.org/)
 - [KInit Project](https://gitee.com/ktianc/kinit)
-- [FastAPI-Vue-Admin Project](https://gitee.com/senqi666/fastapi-vue-admin)
+- [Fastapi-Vue3-Admin Project](https://gitee.com/senqi666/Fastapi-Vue3-Admin)
 - [Vue-FastAPI-Admin Project](https://gitee.com/mizhexiaoxiao/vue-fastapi-admin)
 - [RuoYi-Vue3-FastAPI Project](https://gitee.com/insistence2022/RuoYi-Vue3-FastAPI)
 

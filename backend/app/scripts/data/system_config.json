@@ -11,7 +11,7 @@
     "help_url": "https://django-vue-admin.com",
     "privacy_url": "/api/system/clause/privacy.html",
     "clause_url": "/api/system/clause/terms_service.html",
-    "code_url": "https://gitee.com/tao__tao/fastapi_vue_admin.git",
+    "code_url": "https://gitee.com/tao__tao/fastapi_vue3_admin.git",
     "creator_id": 1
   }
 ]
