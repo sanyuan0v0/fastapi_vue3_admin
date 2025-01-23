@@ -63,7 +63,7 @@
           :columns="columns"
           :data-source="dataSource"
           :loading="tableLoading"
-          :scroll="{ x: 500, y: 'calc(100vh - 300px)' }"
+          :scroll="{ x: 500, y: 'calc(100vh - 450px)' }"
           :row-selection="rowSelection"
           :pagination="false"
           :style="{ minHeight: '420px' }"

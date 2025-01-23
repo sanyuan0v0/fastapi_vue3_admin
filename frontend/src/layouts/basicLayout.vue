@@ -356,20 +356,9 @@ onMounted(() => {
     .side-menu {
       height: calc(100vh - 64px);
       border-right: 0;
-      padding: 16px 0;
+      padding: 4px 0;
       overflow-y: auto;
       overflow-x: hidden;
-      
-      :deep(.ant-menu-item) {
-        margin: 4px 8px;
-        padding: 0 16px;
-        border-radius: 4px;
-        
-        &.ant-menu-item-selected {
-          background: rgba(24, 144, 255, 0.1);
-          font-weight: 500;
-        }
-      }
     }
   }
 

@@ -311,7 +311,6 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .ant-btn-link {
-  color: rgba(0, 0, 0, 0.65);
   margin-inline-end: 8px;
   padding: 0;
 }
