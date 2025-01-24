@@ -1,7 +1,9 @@
 fastapi==0.115.2
 typer==0.12.5
 uvicorn==0.30.6
+websockets==14.2
 gunicorn==23.0.0
+celery==5.4.0
 requests==2.32.3
 pandas==2.2.2
 openpyxl==3.1.5
@@ -17,6 +19,7 @@ python-multipart==0.0.9
 greenlet==3.1.1
 bcrypt==4.0.1
 aiofiles==24.1.0 # 文件操作
+redis==5.2.1  # redis 同步操作数据库(用户celery配套使用)
 aioredis==2.0.1 # redis 异步操作数据库
 aiosqlite==0.17.0 # sqlite 异步操作数据库
 asyncmy==0.2.9 # mysql 异步操作数据库：基于 mysqlclient：asyncmy 是 mysqlclient 的异步版本，mysqlclient 是一个 C 语言编写的 MySQL 客户端，性能较高。性能：asyncmy 通常在性能上优于 aiomysql，特别是在高并发和大数据量的场景下。

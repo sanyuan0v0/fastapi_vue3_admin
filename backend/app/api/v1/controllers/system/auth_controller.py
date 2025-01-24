@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import asyncio
 from typing import Union, Dict
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, Request, WebSocket
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config.setting import settings
-from app.common.response import ErrorResponse, SuccessResponse
+from app.common.response import ErrorResponse, SuccessResponse, StreamResponse
 from app.api.v1.services.system.auth_service import (
     LoginService,
     CaptchaService
@@ -24,6 +25,7 @@ from app.core.dependencies import (
 from app.core.router_class import OperationLogRoute
 from app.core.security import CustomOAuth2PasswordRequestForm
 from app.core.logger import logger
+from app.core.tasks import background_task, long_running_task
 
 
 router = APIRouter(route_class=OperationLogRoute)
@@ -76,3 +78,32 @@ async def logout(
         logger.info('退出成功')
         return SuccessResponse(msg='退出成功')
     return ErrorResponse(msg='退出失败')    
+
+# ws://127.0.0.1:8000/api/v1/system/auth/ws
+@router.websocket("/ws", name="websocket")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_text()
+        await websocket.send_text(f"Message text was: {data}")
+
+
+@router.post("/celery-task", summary="模拟celery进行后台任务")
+async def process_data(data: str):
+    # 调用 Celery 任务
+    result = long_running_task.delay(data)
+    return SuccessResponse(msg=f"任务已提交到 Celery: {result}")
+
+
+# 模拟流响应
+@router.get("/bg-stream", summary="模拟fastapi自带后台任务-模拟流式响应")
+async def stream_response(background_tasks: BackgroundTasks):
+    def log_task(message):
+        logger.info(message)
+    
+    background_tasks.add_task(log_task, "Streaming started")
+    return StreamResponse(
+        data = background_task(),
+        headers={"X-Custom-Header": "Streaming-Response"},
+        media_type="text/plain",
+    )
