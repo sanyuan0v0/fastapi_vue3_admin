@@ -106,7 +106,7 @@ my_demo_project/fastapi_project
 ### 获取代码
 
 ```sh
-git clone https://gitee.com/tao__tao/my_demo_project.git
+git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
 ```
 
 ### 后端
