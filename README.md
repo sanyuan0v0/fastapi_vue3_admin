@@ -244,7 +244,7 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
 - [FastAPI 项目](https://fastapi.tiangolo.com/)
 - [Vue3 项目](https://v3.cn.vuejs.org/)
 - [KInit 项目](https://gitee.com/ktianc/kinit)
-- [Fastapi-Vue3-Admin 项目](https://gitee.com/senqi666/Fastapi-Vue3-Admin)
+- [Fastapi-Vue3-Admin 项目](https://gitee.com/senqi666/fastapi-vue-admin)
 - [Vue-FastAPI-Admin 项目](https://gitee.com/mizhexiaoxiao/vue-fastapi-admin)
 - [RuoYi-Vue3-FastAPI 项目](https://gitee.com/insistence2022/RuoYi-Vue3-FastAPI)
 

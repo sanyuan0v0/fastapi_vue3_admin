@@ -245,7 +245,7 @@ Thank you to the following projects for their contributions and support, which h
 - [FastAPI Project](https://fastapi.tiangolo.com/)
 - [Vue3 Project](https://v3.cn.vuejs.org/)
 - [KInit Project](https://gitee.com/ktianc/kinit)
-- [Fastapi-Vue3-Admin Project](https://gitee.com/senqi666/Fastapi-Vue3-Admin)
+- [Fastapi-Vue3-Admin Project](https://gitee.com/senqi666/fastapi-vue-admin)
 - [Vue-FastAPI-Admin Project](https://gitee.com/mizhexiaoxiao/vue-fastapi-admin)
 - [RuoYi-Vue3-FastAPI Project](https://gitee.com/insistence2022/RuoYi-Vue3-FastAPI)
 
