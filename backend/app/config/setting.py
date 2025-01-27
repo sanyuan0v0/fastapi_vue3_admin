@@ -5,7 +5,7 @@ from datetime import date
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, ClassVar, Dict, List, Optional, Union, Literal
-from pydantic import MongoDsn, RedisDsn
+from pydantic import MongoDsn, PostgresDsn, RedisDsn, MySQLDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from uvicorn.config import LifespanType
 
@@ -67,37 +67,38 @@ class Settings(BaseSettings):
     # ================================================= #
     # ******************** 跨域配置 ******************** #
     # ================================================= #
-    CORS_ORIGIN_ENABLE: bool   # 是否启用跨域
-    ALLOW_ORIGINS: List[str]   # 允许的域名列表
-    ALLOW_METHODS: List[str]   # 允许的HTTP方法
-    ALLOW_HEADERS: List[str]   # 允许的请求头
-    ALLOW_CREDENTIALS: bool    # 是否允许携带cookie
+    CORS_ORIGIN_ENABLE: bool = True    # 是否启用跨域
+    ALLOW_ORIGINS: List[str] = ["*"]   # 允许的域名列表
+    ALLOW_METHODS: List[str] = ["*"]   # 允许的HTTP方法
+    ALLOW_HEADERS: List[str] = ["*"]   # 允许的请求头
+    ALLOW_CREDENTIALS: bool = True     # 是否允许携带cookie
 
     # ================================================= #
     # ******************* 登录认证配置 ****************** #
     # ================================================= #
-    SECRET_KEY: str                     # JWT密钥
-    ALGORITHM: str                      # JWT算法
-    ACCESS_TOKEN_EXPIRE_MINUTES: int    # access_token过期时间(分钟)
-    REFRESH_TOKEN_EXPIRE_MINUTES: int   #  refresh_token过期时间(分钟)
-    TOKEN_TYPE: str                     # token类型
-    JWT_REDIS_EXPIRE_MINUTES: int       # redis缓存过期时间(分钟)
+    SECRET_KEY: str = "vgb0tnl9d58+6n-6h-ea&u^1#s0ccp!794=krylxcjq75vzps$" # JWT密钥
+    ALGORITHM: str = "HS256"                    # JWT算法
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440     # access_token过期时间(分钟)
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 10080   # refresh_token过期时间(分钟)
+    TOKEN_TYPE: str = "bearer"                  # token类型
+    JWT_REDIS_EXPIRE_MINUTES: int = 30          # redis缓存过期时间(分钟)
 
     # ================================================= #
     # ******************** 数据库配置 ******************* #
     # ================================================= #
-    SQL_DB_ENABLE: bool     # 是否启用数据库
-    DATABASE_ECHO: bool     # 是否显示SQL日志
-    ECHO_POOL: bool         # 是否显示连接池日志
-    POOL_SIZE: int          # 连接池大小
-    MAX_OVERFLOW: int       # 最大溢出连接数
-    POOL_TIMEOUT: int       # 连接超时时间(秒)
-    POOL_RECYCLE: int       # 连接回收时间(秒)
-    POOL_PRE_PING: bool     # 是否开启连接预检
-    FUTURE: bool            # 是否使用SQLAlchemy 2.0特性
-    AUTOCOMMIT: bool        # 是否自动提交
-    AUTOFETCH: bool         # 是否自动获取
-    EXPIRE_ON_COMMIT: bool  # 是否在提交时过期
+    SQL_DB_ENABLE: bool = True          # 是否启用数据库
+    DATABASE_ECHO: bool = False         # 是否显示SQL日志
+    ECHO_POOL: bool = False             # 是否显示连接池日志
+    POOL_SIZE: int = 20                 # 连接池大小
+    MAX_OVERFLOW: int = 10              # 最大溢出连接数
+    POOL_TIMEOUT: int = 30              # 连接超时时间(秒)
+    POOL_RECYCLE: int = 1800            # 连接回收时间(秒)
+    POOL_PRE_PING: bool = True          # 是否开启连接预检
+    FUTURE: bool = True                 # 是否使用SQLAlchemy 2.0特性
+    AUTOCOMMIT: bool = False            # 是否自动提交
+    AUTOFETCH: bool = False             # 是否自动获取
+    EXPIRE_ON_COMMIT: bool = False      # 是否在提交时过期
+
     # SQLite数据库连接
     DB_DRIVER: str
     SQLITE_DB_NAME: str 
@@ -119,7 +120,7 @@ class Settings(BaseSettings):
     # ================================================= #
     # ******************** MongoDB配置 ******************* #
     # ================================================= #
-    MONGO_DB_ENABLE: bool  # 是否启用MongoDB
+    MONGO_DB_ENABLE: bool = True  # 是否启用MongoDB
     MONGO_DB_HOST: str
     MONGO_DB_PORT: int
     MONGO_DB_NAME: str
@@ -127,7 +128,7 @@ class Settings(BaseSettings):
     # ================================================= #
     # ******************** Redis配置 ******************* #
     # ================================================= #
-    REDIS_ENABLE: bool  # 是否启用Redis
+    REDIS_ENABLE: bool = True  # 是否启用Redis
     REDIS_HOST: str
     REDIS_PORT: int
     REDIS_DB: int
@@ -135,32 +136,32 @@ class Settings(BaseSettings):
     # ================================================= #
     # ******************** 验证码配置 ******************* #
     # ================================================= #
-    CAPTCHA_ENABLE: bool        # 是否启用验证码
-    CAPTCHA_EXPIRE_SECONDS: int # 验证码过期时间(秒)
-    CAPTCHA_FONT_SIZE: int      # 字体大小
+    CAPTCHA_ENABLE: bool = True         # 是否启用验证码
+    CAPTCHA_EXPIRE_SECONDS: int = 60    # 验证码过期时间(秒)
+    CAPTCHA_FONT_SIZE: int = 40         # 字体大小
     CAPTCHA_FONT_PATH: Path = 'static/assets/font/Arial.ttf'  # 字体路径
 
     # ================================================= #
     # ********************* 日志配置 ******************* #
     # ================================================= #
+    LOGGER_LEVEL: str                       # 日志级别
     LOGGER_NAME: str = date.today().strftime(r'%Y-%m-%d.log')       # 日志文件名
     LOGGER_FILEPATH: Path = BASE_DIR.joinpath('logs', LOGGER_NAME)  # 日志文件路径
-    BACKUPCOUNT: int                        # 日志文件备份数
-    WHEN: str                               # 日志分割时间
-    INTERVAL: int                           # 日志分割间隔
-    ENCODING: str                           # 日志编码
-    LOGGER_LEVEL: str                       # 日志级别
-    LOGGER_FORMAT: str                      # 日志格式
-    OPERATION_LOG_RECORD: bool              # 是否记录操作日志
-    OPERATION_RECORD_METHOD: List[str]      # 需要记录的请求方法
-    IGNORE_OPERATION_FUNCTION: List[str]    # 忽略记录的函数
+    BACKUPCOUNT: int = 10       # 日志文件备份数
+    WHEN: str = 'MIDNIGHT'      # 日志分割时间
+    INTERVAL: int = 1           # 日志分割间隔
+    ENCODING: str = 'utf-8'     # 日志编码
+    LOGGER_FORMAT: str = '%(asctime)s - %(levelname)s - [%(name)s:%(filename)s:%(funcName)s:%(lineno)d] %(message)s' # 日志格式
+    OPERATION_LOG_RECORD: bool = True              # 是否记录操作日志
+    OPERATION_RECORD_METHOD: List[str] = ["POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"]     # 需要记录的请求方法
+    IGNORE_OPERATION_FUNCTION: List[str] = ["get_captcha_for_login"]   # 忽略记录的函数
 
     # ================================================= #
     # ******************* Gzip压缩配置 ******************* #
     # ================================================= #
-    GZIP_ENABLE: bool         # 是否启用Gzip
-    GZIP_MIN_SIZE: int        # 最小压缩大小(字节)
-    GZIP_COMPRESS_LEVEL: int  # 压缩级别(1-9)
+    GZIP_ENABLE: bool = True        # 是否启用Gzip
+    GZIP_MIN_SIZE: int = 1000       # 最小压缩大小(字节)
+    GZIP_COMPRESS_LEVEL: int = 9    # 压缩级别(1-9)
 
     # ================================================= #
     # ***************** 演示模型配置 ***************** #
@@ -198,7 +199,7 @@ class Settings(BaseSettings):
         # 视频
         '.mp4', '.avi', '.rmvb'
     ]
-    MAX_FILE_SIZE: int  # 最大文件大小(10MB)
+    MAX_FILE_SIZE: int = 10 * 1024 * 1024 # 最大文件大小(10MB)
 
     # ================================================= #
     # ***************** Swagger配置 ***************** #
@@ -290,11 +291,14 @@ class Settings(BaseSettings):
         if self.DB_DRIVER not in supported_db_drivers:
             raise ValueError(f"数据库驱动不支持: {self.DB_DRIVER}, 请选择 {supported_db_drivers}")
         if self.DB_DRIVER == "sqlite":
-            return f"sqlite+aiosqlite:///{self.BASE_DIR.joinpath(self.SQLITE_DB_NAME)}?characterEncoding=UTF-8"
+            SQLITE_URI: str = f"sqlite+aiosqlite:///{self.BASE_DIR.joinpath(self.SQLITE_DB_NAME)}?characterEncoding=UTF-8"
+            return SQLITE_URI
         elif self.DB_DRIVER == "mysql":
-            return f"mysql+asyncmy://{self.MYSQL_USER}:{self.MYSQL_PASSWORD}@{self.MYSQL_HOST}:{self.MYSQL_PORT}/{self.MYSQL_DB_NAME}?charset=utf8mb4"
+            MYSQL_URI: MySQLDsn = f"mysql+asyncmy://{self.MYSQL_USER}:{self.MYSQL_PASSWORD}@{self.MYSQL_HOST}:{self.MYSQL_PORT}/{self.MYSQL_DB_NAME}?charset=utf8mb4"
+            return MYSQL_URI
         else:
-            return f"postgresql+asyncpg://{self.POSTGRESQL_USER}:{self.POSTGRESQL_PASSWORD}@{self.POSTGRESQL_HOST}:{self.POSTGRESQL_PORT}/{self.POSTGRESQL_DB_NAME}"
+            POSRGRES_URI: PostgresDsn = f"postgresql+asyncpg://{self.POSTGRESQL_USER}:{self.POSTGRESQL_PASSWORD}@{self.POSTGRESQL_HOST}:{self.POSTGRESQL_PORT}/{self.POSTGRESQL_DB_NAME}"
+            return POSRGRES_URI
 
     @property
     def get_redis_uri(self) -> RedisDsn:
