@@ -5,6 +5,15 @@
       <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Fastapi-Vue3-Admin v1.0.0</h1>
       <h4 align="center">A rapid development framework for front-end and back-end separation based on Fastapi-Vue3-Admin</h4>
    <p align="center">
+      <a href="https://gitee.com/tao__tao/fastapi_vue3_admin.git">
+         <img src="https://gitee.com/tao__tao/fastapi_vue3_admin/badge/star.svg?theme=dark">
+      </a>
+      <a href="https://github.com/1014TaoTao/fastapi_vue3_admin.git">
+         <img src="https://img.shields.io/github/stars/1014TaoTao/fastapi_vue3_admin?style=social">
+      </a>
+      <a href="https://gitee.com/tao__tao/fastapi_vue3_admin/blob/master/LICENSE">
+         <img src="https://img.shields.io/badge/License-MIT-orange">
+      </a>
       <img src="https://img.shields.io/badge/Python-≥3.10-blue">
       <img src="https://img.shields.io/badge/NodeJS-≥20.0-blue">
       <img src="https://img.shields.io/badge/MySQL-≥8.0-blue">
