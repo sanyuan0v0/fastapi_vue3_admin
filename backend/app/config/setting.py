@@ -132,6 +132,7 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: int
     REDIS_DB: int
+    REDIS_PASSWORD: str
 
     # ================================================= #
     # ******************** 验证码配置 ******************* #
@@ -302,7 +303,7 @@ class Settings(BaseSettings):
 
     @property
     def get_redis_uri(self) -> RedisDsn:
-        REDIS_URL: RedisDsn = f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
+        REDIS_URL: RedisDsn = f"redis://:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
         return REDIS_URL
 
     @property

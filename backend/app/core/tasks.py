@@ -1,7 +1,7 @@
 from celery import Celery
 
 # 创建 Celery 实例
-app = Celery(
+celery_app = Celery(
     "worker", 
     broker="redis://localhost:6379/0",
     backend="redis://localhost:6379/0",  # 使用 Redis 存储任务结果
@@ -9,12 +9,12 @@ app = Celery(
 )
 
 # 配置 Celery
-app.conf.update(
+celery_app.conf.update(
     result_expires=3600,  # 任务结果过期时间（秒）
     timezone="Asia/Shanghai",  # 时区
 )
 
-@app.task
+@celery_app.task
 def long_running_task(data):
     return f"Processed: {data}"
 

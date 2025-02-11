@@ -24,6 +24,7 @@ export default defineConfig(({ command, mode }) => {
           target: env.VITE_API_BASE_URL,
           secure: false, // 请求是否为https
           changeOrigin: true, // 是否跨域
+          // rewrite: (path) => path.replace(/^\/api/, '')
         },
       },
     },
