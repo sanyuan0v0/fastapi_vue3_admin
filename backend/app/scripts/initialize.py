@@ -18,11 +18,6 @@ from app.api.v1.models.system import (
     notice_model,
     config_model
 )
-from app.api.v1.models.autotest import (
-    case_model,
-    project_model,
-    task_model
-)
 
 class InitializeData:
     """
@@ -45,9 +40,6 @@ class InitializeData:
             user_model.UserPositionsModel,
             user_model.UserRolesModel,
             config_model.ConfigModel,
-            project_model.ProjectModel,
-            case_model.CaseModel,
-            task_model.TaskModel,
         ]
 
     async def __init_model(self) -> None:
