@@ -8,9 +8,12 @@ from app.core.base_schema import BaseSchema
 
 
 class ProjectCreateSchema(BaseModel):
-    """项目模型"""
-    name: str = Field(..., max_length=40, description="项目名称")
-    description: Optional[str] = Field(None, max_length=255, description="通知配置描述")
+    """项目创建模型"""
+    name: str = Field(..., description="项目名称")
+    base_url: str = Field(..., description="基础URL")
+    headers: Optional[dict] = Field(None, description="公共请求头")
+    message: Optional[dict] = Field(None, description="通知配置")
+    description: Optional[str] = Field(None, description="备注说明")
 
 
 class ProjectUpdateSchema(ProjectCreateSchema):
@@ -19,6 +22,8 @@ class ProjectUpdateSchema(ProjectCreateSchema):
 
 
 class ProjectOutSchema(ProjectCreateSchema, BaseSchema):
-    """接口响应模型"""
+    """项目响应模型"""
     model_config = ConfigDict(from_attributes=True)
 
+    cases: Optional[list] = Field(None, description="关联的用例")
+    tasks: Optional[list] = Field(None, description="关联的任务")

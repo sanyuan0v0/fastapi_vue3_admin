@@ -1,21 +1,15 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
 from typing import List, Dict
 
+from app.api.v1.cruds.autotest.project_crud import ProjectCRUD
 from app.api.v1.schemas.system.auth_schema import AuthSchema
 from app.api.v1.schemas.autotest.task_schema import TaskOutSchema, TaskCreateSchema, TaskUpdateSchema
 from app.api.v1.params.autotest.task_param import TaskQueryParams
 from app.api.v1.cruds.autotest.task_crud import TaskCRUD
-from app.api.v1.cruds.autotest.api_case_crud import APICaseCRUD
-from app.api.v1.cruds.autotest.project_crud import ProjectCRUD
-from app.api.v1.cruds.autotest.environment_crud import EnvironmentCRUD
-from app.api.v1.cruds.autotest.notification_config_crud import NotificationConfigCRUD
-from app.api.v1.cruds.autotest.global_data_crud import GlobalDataCRUD
-from app.api.v1.cruds.autotest.module_crud import ModuleCRUD
-from app.api.v1.cruds.autotest.repont_crud import ReportCRUD
-from app.utils.request_util import Requests
-
-
+from app.core.exceptions import CustomException
+from app.core.tasks import background_task, celery_app
 
 class TaskService:
     """
@@ -33,43 +27,55 @@ class TaskService:
         return [TaskOutSchema.model_validate(obj).model_dump() for obj in obj_list]
     
     @classmethod
-    async def create_services(cls, auth: AuthSchema, data: TaskCreateSchema, id: int) -> Dict:
+    @celery_app.task
+    async def create_services(cls, auth: AuthSchema, data: TaskCreateSchema) -> Dict:
+        # 1. 获取项目和环境信息
+        project = await ProjectCRUD(auth).get_obj_by_id(id=data.project_id)
+        if not project.cases:
+            raise CustomException(msg="项目未关联测试用例")
 
-        api_case = await APICaseCRUD(auth).get_obj_by_id(id=id)
-        request_data = {
-            'url': api_case.url,
-            'method': api_case.method,
-            'data': api_case.body,
-            'headers': api_case.headers,
-        }
+        # 2. 创建任务记录
+        task_data = TaskCreateSchema(
+            name=f"{data.name}-{project.name}-{datetime.now().strftime('%Y%m%d%H%M%S')}",
+            status="running",
+            start_time=datetime.now(),
+            total_count=len(project.cases),
+            project_id=data.project_id,
+            environment_id=data.environment_id,
+            message_ids=data.message_ids,
+            description=data.description
+        )
+        task = await TaskCRUD(auth).create_obj(data=task_data)
+        # 3. 执行用例
+        obj =  await background_task.delay(auth=auth, task=task)
 
-        # 发送请求并获取响应
-        response = Requests().send_request(**request_data)
-        
-        # 验证结果
-        validation_results = [
-            api_case.expected_status_code == response['code'],
-            api_case.expected_response in response['body']['msg'],
-            api_case.assertions in str(response['body'])
-        ]
-        
-        status = 'pass' if all(validation_results) else 'fail'
-        
-        data.status = status
-        data.logs = response['time_total']
-        data.actual_response = response['body']
-        data.test_case_id = id
-        data.description = api_case.description
-
-
-        obj = await TaskCRUD(auth).create_obj(data=data)
         return TaskOutSchema.model_validate(obj).model_dump()
-    
+
     @classmethod
+    @celery_app.task
     async def update_services(cls, auth: AuthSchema, data: TaskUpdateSchema) -> Dict:
-        obj = await TaskCRUD(auth).update_obj(id=data.id, data=data)
+        # 1. 获取项目和环境信息
+        project = await ProjectCRUD(auth).get_obj_by_id(id=data.project_id)
+        if not project.cases:
+            raise CustomException(msg="项目未关联测试用例")
+        # 2. 创建任务记录
+        task_data = TaskUpdateSchema(
+            id=data.id,
+            name=f"{data.name}-{project.name}-{datetime.now().strftime('%Y%m%d%H%M%S')}",
+            status="running",
+            start_time=datetime.now(),
+            total_count=len(project.cases),
+            project_id=data.project_id,
+            environment_id=data.environment_id,
+            message_ids=data.message_ids,
+            description=data.description
+        )
+        task = await TaskCRUD(auth).update_obj(id=data.id, data=task_data)
+        # 3. 执行用例
+        obj =  await background_task.delay(auth=auth, task=task)
+
         return TaskOutSchema.model_validate(obj).model_dump()
-    
+
     @classmethod
     async def delete_services(cls, auth: AuthSchema, id: int) -> None:
         await TaskCRUD(auth).delete_obj(ids=[id])

@@ -4,7 +4,7 @@ from typing import Any
 from dingtalkchatbot.chatbot import DingtalkChatbot, FeedLink
 
 # 钉钉发送消息模块
-class DingTalkPack:
+class DingTalkUtil:
 
     def __init__(self, webhook: str, secret: str, at_mobiles: list = None):
 
@@ -75,7 +75,7 @@ class DingTalkPack:
         except Exception:
             raise Exception("发送feedlink类型消息失败")
 
-    def send_dingding(self,
+    def send_dingtalk(self,
                       title,
                       environment,
                       tester,

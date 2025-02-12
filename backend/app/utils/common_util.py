@@ -7,7 +7,6 @@ from sqlalchemy.orm import DeclarativeBase
 from typing import Any, List, Dict, Sequence, Optional
 
 from app.core.logger import logger
-from app.config.setting import settings
 from app.core.exceptions import CustomException
 
 

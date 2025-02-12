@@ -1,39 +1,36 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from sqlalchemy import JSON, Column, String, Integer, DateTime, ForeignKey, Text, Table
+from sqlalchemy import JSON, Boolean, Column, String, Integer, DateTime, ForeignKey, Text
 from sqlalchemy.orm import relationship
 
 from app.core.base_model import ModelBase
 
 
-class TaskModel(ModelBase):
+class CaseModel(ModelBase):
     """
-    自动化测试任务表
+    自动化-用例表
     """
-    __tablename__ = "auto_tasks"
-    __table_args__ = ({'comment': '自动化测试任务表'})
+    __tablename__ = "auto_cases"
+    __table_args__ = ({'comment': '自动化-用例表'})
 
     # 基础字段
     id = Column(Integer, primary_key=True, autoincrement=True, index=True, unique=True, comment='主键ID')
-    name = Column(String, nullable=False, comment="任务名称")  # 新增
-    status = Column(String, nullable=False, default="pending", comment="执行状态(pending/running/completed/failed)")
-    
-    start_time = Column(DateTime, comment="开始时间")  # 新增
-    end_time = Column(DateTime, comment="结束时间")    # 新增
-    
-    summary = Column(JSON, comment="报告摘要")
 
-    total_count = Column(Integer, default=0, comment="用例总数")  # 新增
-    success_count = Column(Integer, default=0, comment="成功数")  # 新增
-    fail_count = Column(Integer, default=0, comment="失败数")    # 新增
-    skip_count = Column(Integer, default=0, comment="跳过数")
-    error_count = Column(Integer, default=0, comment="错误数")   # 新增
+    name = Column(String, nullable=False, comment="测试用例名称")
+    status = Column(Boolean, default=True, comment="是否启用")
+    url = Column(String, nullable=False, comment="接口地址")
+    method = Column(String, nullable=False, comment="请求方法")
+    headers = Column(JSON, comment="请求头")
+    params = Column(JSON, comment="Query参数")
+    body = Column(JSON, comment="请求体")
+    files = Column(JSON, comment="上传文件配置")
+    parameter_need = Column(Boolean, default=True, comment="是否需要公共参数")
     
-    logs = Column(JSON, comment="执行日志")
-    actual_response = Column(JSON, comment="实际响应（仅API测试）")
+    # 预期结果
+    expected = Column(JSON, comment="断言配置,格式:[{type:'status_code',rule:'equals',expect:200},{type:'msg',rule:'contains',expect:'success'},{type:'response',rule:'jsonpath',expect:'$.code'}]")
     
-    # 关联关系
+
     project_id = Column(Integer, ForeignKey("auto_projects.id", ondelete="CASCADE"), nullable=False, comment="所属项目ID")
     project = relationship("ProjectModel", foreign_keys=project_id, lazy="joined", uselist=False)
 
@@ -55,4 +52,3 @@ class TaskModel(ModelBase):
         post_update=True,
         uselist=False
     )
-

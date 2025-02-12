@@ -19,14 +19,8 @@ from app.api.v1.models.system import (
     config_model
 )
 from app.api.v1.models.autotest import (
-    api_case_model,
-    environment_model,
-    global_data_model,
-    module_model,
-    notification_config_model,
+    case_model,
     project_model,
-    repont_model,
-    suite_model,
     task_model
 )
 
@@ -52,14 +46,8 @@ class InitializeData:
             user_model.UserRolesModel,
             config_model.ConfigModel,
             project_model.ProjectModel,
-            environment_model.EnvironmentModel,
-            notification_config_model.NotificationConfigModel,
-            api_case_model.APICaseModel,
-            global_data_model.GlobalDataModel,
-            module_model.ModuleModel,
-            suite_model.SuiteModel,
+            case_model.CaseModel,
             task_model.TaskModel,
-            repont_model.ReportModel
         ]
 
     async def __init_model(self) -> None:

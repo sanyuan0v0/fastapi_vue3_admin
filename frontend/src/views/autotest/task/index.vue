@@ -54,6 +54,13 @@
                                 </a-popconfirm>
                             </a-space>
                         </template>
+                        <template v-if="column.dataIndex === 'status'">
+                            <a-tag :color="getStatusColor(record.status)">{{ record.status }}</a-tag>
+                        </template>
+                        <template v-if="column.dataIndex === 'summary'">
+                            <span>通过率: {{ record.summary?.pass_rate }}</span><br/>
+                            <span>耗时: {{ record.summary?.duration }}</span>
+                        </template>
                     </template>
                 </a-table>
             </a-card>
@@ -67,86 +74,94 @@
                     <span>{{ modalTitle === 'create' ? '新建任务' : (modalTitle === 'view' ? '查看任务' : '修改任务')
                         }}</span>
                 </template>
+                <!-- 详情弹窗 -->
                 <div v-if="modalTitle === 'view'">
                     <a-spin :spinning="detailStateLoading">
-                        <a-descriptions :column="{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 1, xs: 1 }"
-                            :labelStyle="{ width: '140px' }" bordered>
-                            <a-descriptions-item label="序号">{{ (pagination.current - 1) * pagination.pageSize +
-                                detailState.index + 1 }}</a-descriptions-item>
-                            <a-descriptions-item label="测试类型">{{ detailState.test_type }}</a-descriptions-item>
-                            <a-descriptions-item label="执行状态">{{ detailState.status }}</a-descriptions-item>
-                            <a-descriptions-item label="执行日志">{{ detailState.logs }}</a-descriptions-item>
-                            <a-descriptions-item label="截图路径">{{ detailState.screenshot_path }}</a-descriptions-item>
-                            <a-descriptions-item label="实际响应">{{ detailState.actual_response }}</a-descriptions-item>
-                            <a-descriptions-item label="绑定模块">{{ testCaseList.find(t => t.id === detailState.test_case_id)?.name || '-' }}</a-descriptions-item>
-                            <a-descriptions-item label="绑定项目">{{ projectList.find(p => p.id === detailState.project_id)?.name || '-' }}</a-descriptions-item>
-                            <a-descriptions-item label="创建人">{{ detailState.creator ? detailState.creator.name : '-' }}</a-descriptions-item>
+                        <a-descriptions :column="2" bordered>
+                            <a-descriptions-item label="任务名称">{{ detailState.name }}</a-descriptions-item>
+                            <a-descriptions-item label="所属项目">{{ detailState.project?.name }}</a-descriptions-item>
+                            <a-descriptions-item label="执行状态">
+                                <a-tag :color="getStatusColor(detailState.status)">{{ detailState.status }}</a-tag>
+                            </a-descriptions-item>
+                            <a-descriptions-item label="开始时间">{{ detailState.start_time }}</a-descriptions-item>
+                            <a-descriptions-item label="结束时间">{{ detailState.end_time }}</a-descriptions-item>
+                            <a-descriptions-item label="测试概要" :span="2">
+                                <div v-if="detailState.summary">
+                                    <p>用例总数: {{ detailState.total_count }}</p>
+                                    <p>成功数量: {{ detailState.success_count }}</p>
+                                    <p>失败数量: {{ detailState.fail_count }}</p>
+                                    <p>跳过数量: {{ detailState.skip_count }}</p>
+                                    <p>错误数量: {{ detailState.error_count }}</p>
+                                    <p>通过率: {{ detailState.summary.pass_rate }}</p>
+                                    <p>执行时长: {{ detailState.summary.duration }}</p>
+                                </div>
+                            </a-descriptions-item>
+                            <a-descriptions-item label="执行日志" :span="2">
+                                <a-collapse v-if="detailState.logs?.length">
+                                    <a-collapse-panel v-for="(log, index) in detailState.logs" 
+                                        :key="index" :header="`日志 ${index + 1}`">
+                                        <pre>{{ log }}</pre>
+                                    </a-collapse-panel>
+                                </a-collapse>
+                            </a-descriptions-item>
+                            <a-descriptions-item label="实际响应" :span="2">
+                                <pre>{{ detailState.actual_response }}</pre>
+                            </a-descriptions-item>
+                            <a-descriptions-item label="备注说明">{{ detailState.description }}</a-descriptions-item>
                             <a-descriptions-item label="创建时间">{{ detailState.created_at }}</a-descriptions-item>
-                            <a-descriptions-item label="修改时间">{{ detailState.updated_at }}</a-descriptions-item>
-                            <a-descriptions-item label="备注" :span="2">{{ detailState.description }}</a-descriptions-item>
+                            <a-descriptions-item label="更新时间">{{ detailState.updated_at }}</a-descriptions-item>
                         </a-descriptions>
                     </a-spin>
                 </div>
+
+                <!-- 新增弹窗 -->
                 <div v-else-if="modalTitle === 'create'">
-                    <a-form ref="createForm" :model="createState" v-bind="{ labelCol: { span: 5 }, wrapperCol: { span: 15 } }">
-                        <a-form-item name="name" label="测试类型" :rules="[{ required: true, message: '请输入测试类型' }]">
-                            <a-input v-model:value="createState.test_type" placeholder="请输入任务类型" allowClear></a-input>
+                    <a-form 
+                        ref="createForm" 
+                        :model="createState" 
+                        :label-col="{ span: 5 }" 
+                        :wrapper-col="{ span: 16 }"
+                    >
+                        <a-form-item name="name" label="任务名称" :rules="[{ required: true }]">
+                            <a-input v-model:value="createState.name" placeholder="请输入任务名称" allowClear />
                         </a-form-item>
-                        <a-form-item name="url" label="执行状态" :rules="[{ required: true, message: '请输入执行状态' }]">
-                            <a-input v-model:value="createState.status" placeholder="请输入任务地址" allowClear></a-input>
-                        </a-form-item>
-                        <a-form-item name="method" label="执行日志" :rules="[{ required: true, message: '请输入执行日志' }]">
-                            <a-input v-model:value="createState.logs" placeholder="请输入请求方法" allowClear></a-input>
-                        </a-form-item>
-                        <a-form-item name="headers" label="截图路径" :rules="[{ required: true, message: '请输入截图路径' }]">
-                            <a-input v-model:value="createState.screenshot_path" placeholder="请输入请求头" allowClear></a-input>
-                        </a-form-item>
-                        <a-form-item name="headers" label="实际响应" :rules="[{ required: true, message: '请输入实际响应' }]">
-                            <a-input v-model:value="createState.actual_response" placeholder="请输入请求头" allowClear></a-input>
-                        </a-form-item>
-                        <a-form-item name="module_id" label="绑定用例" :rules="[{ required: true, message: '请选择绑定用例' }]">
-                            <a-select v-model:value="createState.test_case_id" placeholder="请选择绑定模块">
-                                <a-select-option v-for="testCase in testCaseList" :key="testCase.id" :value="testCase.id">{{ testCase.name }}</a-select-option>
+
+                        <a-form-item name="project_id" label="所属项目" :rules="[{ required: true }]">
+                            <a-select v-model:value="createState.project_id" placeholder="请选择项目">
+                                <a-select-option v-for="project in projectList" :key="project.id" :value="project.id">
+                                    {{ project.name }}
+                                </a-select-option>
                             </a-select>
                         </a-form-item>
-                        <a-form-item name="project_id" label="绑定项目" :rules="[{ required: true, message: '请选择绑定项目' }]">
-                            <a-select v-model:value="createState.project_id" placeholder="请选择绑定项目">
-                                <a-select-option v-for="project in projectList" :key="project.id" :value="project.id">{{ project.name }}</a-select-option>
-                            </a-select>
-                        </a-form-item>
-                        <a-form-item name="description" label="备注">
+
+                        <a-form-item name="description" label="备注说明">
                             <a-textarea v-model:value="createState.description" placeholder="请输入备注" :rows="4" allowClear />
                         </a-form-item>
                     </a-form>
                 </div>
+
+                <!-- 编辑弹窗 -->
                 <div v-else>
-                    <a-form ref="updateForm" :model="updateState" v-bind="{ labelCol: { span: 5 }, wrapperCol: { span: 15 } }">
-                        <a-form-item name="name" label="测试类型" :rules="[{ required: true, message: '请输入测试类型' }]">
-                            <a-input v-model:value="updateState.test_type" placeholder="请输入任务类型" allowClear></a-input>
+                    <a-form 
+                        ref="updateForm" 
+                        :model="updateState"
+                        :label-col="{ span: 5 }" 
+                        :wrapper-col="{ span: 16 }"
+                    >
+                        <a-form-item name="name" label="任务名称" :rules="[{ required: true }]">
+                            <a-input v-model:value="updateState.name" placeholder="请输入任务名称" allowClear />
                         </a-form-item>
-                        <a-form-item name="url" label="执行状态" :rules="[{ required: true, message: '请输入执行状态' }]">
-                            <a-input v-model:value="updateState.status" placeholder="请输入任务地址" allowClear></a-input>
-                        </a-form-item>
-                        <a-form-item name="method" label="执行日志" :rules="[{ required: true, message: '请输入执行日志' }]">
-                            <a-input v-model:value="updateState.logs" placeholder="请输入请求方法" allowClear></a-input>
-                        </a-form-item>
-                        <a-form-item name="headers" label="截图路径" :rules="[{ required: true, message: '请输入截图路径' }]">
-                            <a-input v-model:value="updateState.screenshot_path" placeholder="请输入请求头" allowClear></a-input>
-                        </a-form-item>
-                        <a-form-item name="headers" label="实际响应" :rules="[{ required: true, message: '请输入实际响应' }]">
-                            <a-input v-model:value="updateState.actual_response" placeholder="请输入请求头" allowClear></a-input>
-                        </a-form-item>
-                        <a-form-item name="module_id" label="绑定用例" :rules="[{ required: true, message: '请选择绑定用例' }]">
-                            <a-select v-model:value="updateState.test_case_id" placeholder="请选择绑定模块">
-                                <a-select-option v-for="testCase in testCaseList" :key="testCase.id" :value="testCase.id">{{ testCase.name }}</a-select-option>
+
+                        <a-form-item name="project_id" label="所属项目" :rules="[{ required: true }]">
+                            <a-select v-model:value="updateState.project_id" placeholder="请选择项目">
+                                <a-select-option v-for="project in projectList" :key="project.id" :value="project.id">
+                                    {{ project.name }}
+                                </a-select-option>
                             </a-select>
                         </a-form-item>
-                        <a-form-item name="project_id" label="绑定项目" :rules="[{ required: true, message: '请选择绑定项目' }]">
-                            <a-select v-model:value="updateState.project_id" placeholder="请选择绑定项目">
-                                <a-select-option v-for="project in projectList" :key="project.id" :value="project.id">{{ project.name }}</a-select-option>
-                            </a-select>
-                        </a-form-item>
-                        <a-form-item name="description" label="备注">
+
+
+                        <a-form-item name="description" label="备注说明">
                             <a-textarea v-model:value="updateState.description" placeholder="请输入备注" :rows="4" allowClear />
                         </a-form-item>
                     </a-form>
@@ -164,60 +179,34 @@ import { PlusOutlined } from '@ant-design/icons-vue';
 import { cloneDeep, isEmpty } from '@/utils/util';
 import PageHeader from '@/components/PageHeader.vue';
 import { getProjectList } from '@/api/autotest/project'
-import { getApiCaseList } from '@/api/autotest/apicase'
 import { getTaskList, getTaskDetail, createTask, updateTask, deleteTask } from '@/api/autotest/task'
-import type { searchDataType, tableDataType, projectSeletorType, testCaseSeletorType } from './types'
+import type { searchDataType, tableDataType, projectSelectorType } from './types'
 
+// 只保留核心字段在列表中展示
 const columns: TableColumnsType = [
     {
         title: '序号',
         dataIndex: 'index',
         align: 'center',
-        ellipsis: true,
         width: 80
     },
     {
-        title: '测试类型',
-        dataIndex: 'test_type',
+        title: '任务名称',
+        dataIndex: 'name',
         ellipsis: true,
     },
     {
-        title: '执行状态',
+        title: '所属项目', 
+        dataIndex: 'project.name',
+        width: 120,
+        ellipsis: true,
+        customRender: ({ record }) => record.project?.name || '-'
+    },
+    {
+        title: '状态',
         dataIndex: 'status',
+        width: 80,
         ellipsis: true,
-    },
-    {
-        title: '执行日志',
-        dataIndex: 'logs',
-        ellipsis: true,
-    },
-    {
-        title: '截图路径',
-        dataIndex: 'screenshot_path',
-        ellipsis: true,
-    },
-    {
-        title: '实际响应',
-        dataIndex: 'actual_response',
-        ellipsis: true,
-    },
-    {
-        title: '绑定用例',
-        dataIndex: 'test_case_id',
-        ellipsis: true,
-        customRender: ({ text }) => {
-            const testCase = testCaseList.value.find(t => t.id === text);
-            return testCase ? testCase.name : '-';
-        }
-    },
-    {
-        title: '绑定项目',
-        dataIndex: 'project_id',
-        ellipsis: true,
-        customRender: ({ text }) => {
-            const project = projectList.value.find(p => p.id === text);
-            return project ? project.name : '-';
-        }
     },
     {
         title: '备注',
@@ -239,7 +228,6 @@ const columns: TableColumnsType = [
         dataIndex: 'operation',
         align: 'center',
         fixed: 'right',
-        ellipsis: true,
         width: 150
     }
 ];
@@ -280,46 +268,19 @@ const pagination = reactive({
     showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条 / 总共 ${total} 条`
 })
 const createState = reactive<tableDataType>({
-    test_type: '',
-    status: undefined,
-    logs: '',
-    screenshot_path: '',
-    actual_response: '',
-    test_case_id: undefined,
+    name: '',
     project_id: undefined,
-    description: ''
+    description: '',
 })
 const updateState = reactive<tableDataType>({
     id: undefined,
-    test_type: '',
-    status: undefined,
-    logs: '',
-    screenshot_path: '',
-    actual_response: '',
-    test_case_id: undefined,
+    name: '',
     project_id: undefined,
-    description: ''
+    description: '',
 })
 const detailState = ref<tableDataType>({})
-const projectList = ref<projectSeletorType[]>([]);
-const testCaseList = ref<testCaseSeletorType[]>([]);
+const projectList = ref<projectSelectorType[]>([]);
 
-const handProjectList = () => {
-    tableLoading.value = true;
-    let params = {};
-    getProjectList(params).then(response => {
-        const result = response.data;
-        projectList.value = result.data.items;
-        dataSource.value = result.data.items;
-        pagination.total = result.data.total;
-        pagination.current = result.data.page_no;
-        pagination.pageSize = result.data.page_size;
-    }).catch(error => {
-        console.log(error);
-    }).finally(() => {
-        tableLoading.value = false;
-    });
-}
 
 // 加载表格数据
 const loadingData = () => {
@@ -349,8 +310,29 @@ const loadingData = () => {
     });
 }
 
+const loadProjectList = () => {
+    tableLoading.value = true;
+    let params = {};
+    getProjectList(params).then(response => {
+        const result = response.data;
+        projectList.value = result.data.items;
+        dataSource.value = result.data.items;
+        pagination.total = result.data.total;
+        pagination.current = result.data.page_no;
+        pagination.pageSize = result.data.page_size;
+    }).catch(error => {
+        console.log(error);
+    }).finally(() => {
+        tableLoading.value = false;
+    });
+}
+
+
 // 生命周期钩子
-onMounted(() => loadingData());
+onMounted(() => {
+    loadingData();
+    loadProjectList()
+});
 
 // 查询
 const onFinish = () => {
@@ -393,8 +375,6 @@ const modalHandle = (modalType: string, index?: number) => {
             updateState[key] = selected[key];
         })
     }
-
-    
 }
 
 // 删除
@@ -459,6 +439,15 @@ const handleModalSumbit = () => {
     }
 }
 
+// 获取状态颜色
+const getStatusColor = (status: string) => {
+    switch (status) {
+        case 'running': return 'processing';
+        case 'completed': return 'success';
+        case 'failed': return 'error';
+        default: return 'default';
+    }
+};
 
 </script>
 

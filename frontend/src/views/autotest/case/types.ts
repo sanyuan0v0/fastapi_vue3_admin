@@ -7,31 +7,21 @@ export interface tableDataType {
     id?: number;
     index?: number;
     name?: string;
+    status?: boolean;
+    url?: string;
+    method?: string;
+    headers?: Record<string, string>;
+    params?: Record<string, string>;
+    body?: Record<string, any>;
+    files?: Record<string, string>;
+    parameter_need?:  boolean;
+    expected?: Array<{
+        type: 'status_code' | 'msg' | 'response';
+        rule: 'equals' | 'not_equals' | 'contains' | 'not_contains' | 'jsonpath' | 'regex';
+        expect: any;
+    }>;
     project_id?: projectSelectorType['id'];
     description?: string;
-
-    status?: string;
-    start_time?: string;
-    end_time?: string;
-    summary?: {
-        total: number;
-        pass_rate: string;
-        duration: string;
-        environment: string;
-        details: any[];
-    };
-    total_count?: number;
-    success_count?: number;
-    fail_count?: number;
-    skip_count?: number;
-    error_count?: number;
-    logs?: any[];
-    actual_response?: any;
-
-    project?: {
-        id?: number;
-        name?: string;
-    };
     created_at?: string;
     updated_at?: string;
     creator?: {
@@ -39,7 +29,10 @@ export interface tableDataType {
         name?: string;
         username?: string;
     };
+    
+    project?: projectSelectorType;
 }
+
 
 export interface  projectSelectorType {
     id?: number;

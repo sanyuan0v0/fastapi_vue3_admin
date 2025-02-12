@@ -32,3 +32,5 @@ motor==3.6.0 # mongodb 驱动
 # docker==7.1.0 # docker 客户端预留（后面开发会使用）
 # minio==8.0.10 # minio 对象存储 预留（后面开发会使用）
 DingtalkChatbot==1.5.7
+jsonpath==0.82.2
+jsonpath-ng==1.7.0

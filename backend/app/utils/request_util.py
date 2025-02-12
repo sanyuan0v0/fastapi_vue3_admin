@@ -1,70 +1,176 @@
 # -*- coding: utf-8 -*-
 
+import json
+import logging
+from typing import Dict, Any, Optional, List
 import requests
+from requests.adapters import HTTPAdapter
+from jsonpath import jsonpath
 
 from app.core.exceptions import CustomException
 
+logger = logging.getLogger(__name__)
 
-class Requests:
+class BaseAssertion:
+    """断言基类"""
+    
+    @staticmethod
+    def equals(actual: Any, expect: Any) -> bool:
+        return actual == expect
+    
+    @staticmethod
+    def not_equals(actual: Any, expect: Any) -> bool:
+        return actual != expect
+    
+    @staticmethod
+    def contains(actual: Any, expect: Any) -> bool:
+        return expect in str(actual)
+    
+    @staticmethod
+    def not_contains(actual: Any, expect: Any) -> bool:
+        return expect not in str(actual)
+    
+    @staticmethod
+    def greater_than(actual: Any, expect: Any) -> bool:
+        return float(actual) > float(expect)
+    
+    @staticmethod
+    def less_than(actual: Any, expect: Any) -> bool:
+        return float(actual) < float(expect)
+    
+    @staticmethod
+    def jsonpath_equals(actual: Dict, expect: str) -> bool:
+        result = jsonpath(actual, expect)
+        return bool(result)
 
-    def __init__(self):
+class RequestHandler:
+    """请求处理类"""
+    
+    def __init__(self, timeout: int = 30, max_retries: int = 2):
         """
-        单例模式保证测试过程中使用的都是一个session对象
+        :param timeout: 超时时间(秒)
+        :param max_retries: 最大重试次数
         """
         self.session = requests.Session()
+        # 设置重试机制
+        self.session.mount('http://', HTTPAdapter(max_retries=max_retries))
+        self.session.mount('https://', HTTPAdapter(max_retries=max_retries))
+        self.timeout = timeout
+        self.assertion = BaseAssertion()
 
-    def send_request(self,
-                     url: str,
-                     method: str,
-                     data_type: str,
-                     headers: dict = None,
-                     data: dict = None
-                     ):
+    def send_request(
+        self,
+        url: str,
+        method: str,
+        headers: Optional[Dict] = None,
+        params: Optional[Dict] = None,
+        body: Optional[Dict] = None,
+        files: Optional[Dict] = None,
+        timeout: Optional[int] = None,
+    ) -> Dict[str, Any]:
         """
-        :param url: 请求url
+        发送HTTP请求
+        :param url: 请求地址
         :param method: 请求方法
-        :param data_type: 入参关键字， params(查询参数类型，明文传输，一般在url?参数名=参数值), data(一般用于form表单类型参数), json(一般用于json类型请求参数)
         :param headers: 请求头
-        :param data: 参数数据，默认等于None
-        :return: 返回res对象
+        :param params: 查询参数
+        :param body: 请求体
+        :param files: 文件
+        :param timeout: 超时时间
+        :return: 响应结果
         """
-        res = None
         try:
-            if data_type == 'params':
-                res = self.session.request(
-                    method=method,
-                    url=url,
-                    params=data,
-                    headers=headers)
-            elif data_type == 'data':
-                res = self.session.request(
-                    method=method,
-                    url=url,
-                    data=data,
-                    headers=headers)
-            elif data_type == 'json':
-                res = self.session.request(
-                    method=method,
-                    url=url,
-                    json=data,
-                    headers=headers)
-            elif data_type == 'file':
-                res = self.session.request(
-                    method=method,
-                    url=url,
-                    files=data,
-                    headers=headers)
-            else:
-                raise CustomException(msg='parametric_key为params、json、data、file, 不支持其他类型')
+            # 准备请求数据
+            kwargs = {
+                'url': url,
+                'method': method.upper(),
+                'headers': headers,
+                'params': params,
+                'timeout': timeout or self.timeout
+            }
             
-            response_dicts = dict()
-            # 响应状态码
-            response_dicts['code'] = int(res.status_code)
-            # 响应body
-            response_dicts['body'] = str(res.json())
-            # 响应秒时间
-            response_dicts['time_total'] = res.elapsed.total_seconds()  # 秒为单位
+            # 处理请求体
+            if files:
+                kwargs['files'] = files
+            elif body:
+                if headers and 'application/json' in headers.get('Content-Type', ''):
+                    kwargs['json'] = body
+                else:
+                    kwargs['data'] = body
+
+            # 发送请求
+            response = self.session.request(**kwargs)
+            
+            # 处理响应
+            try:
+                response_body = response.json()
+            except json.JSONDecodeError:
+                response_body = response.text
+
+            result = {
+                'status_code': response.status_code,
+                'response_time': response.elapsed.total_seconds(),
+                'headers': dict(response.headers),
+                'body': response_body,
+                'request': {
+                    'url': url,
+                    'method': method,
+                    'headers': headers,
+                    'params': params,
+                    'body': body,
+                    'files': files
+                }
+            }
+            return result
+
+        except requests.RequestException as e:
+            error_msg = f"请求异常: {str(e)}"
+            logger.error(error_msg)
+            raise CustomException(msg=error_msg)
+
+    def assert_response(self, response: Dict[str, Any], expected: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """
+        断言响应结果
+        :param response: 响应结果
+        :param expected: 断言配置列表
+        :return: 断言结果列表
+        """
+        results = []
+        try:
+            for expect in expected:
+                actual = None
+                expect_type = expect.get('type')
+                expect_rule = expect.get('rule')
+                expect_value = expect.get('expect')
+
+                # 获取实际值
+                if expect_type == 'status_code':
+                    actual = response['status_code']
+                elif expect_type == 'response_time':
+                    actual = response['response_time']
+                elif expect_type == 'body':
+                    actual = response['body']
+                elif expect_type == 'headers':
+                    actual = response['headers']
+                
+                # 执行断言
+                assertion_method = getattr(self.assertion, expect_rule, None)
+                if assertion_method:
+                    is_pass = assertion_method(actual, expect_value)
+                    results.append({
+                        'type': expect_type,
+                        'rule': expect_rule,
+                        'expect': expect_value,
+                        'actual': actual,
+                        'result': is_pass
+                    })
+                else:
+                    raise CustomException(msg=f"不支持的断言规则: {expect_rule}")
+                    
         except Exception as e:
-            raise CustomException(msg=f"发送请求异常:{e}")
-        return response_dicts
+            error_msg = f"断言执行异常: {str(e)}"
+            logger.error(error_msg)
+            raise CustomException(msg=error_msg)
+            
+        return results
 

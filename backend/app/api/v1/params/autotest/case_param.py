@@ -6,8 +6,8 @@ from datetime import datetime
 
 from app.core.validator import DateTimeStr
 
-class ModuleQueryParams:
-    """模块查询参数"""
+class CaseQueryParams:
+    """接口用例查询参数"""
 
     def __init__(
             self,

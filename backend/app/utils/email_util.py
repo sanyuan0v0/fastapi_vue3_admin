@@ -9,7 +9,7 @@ from email.mime.text import MIMEText
 
 from app.core.exceptions import CustomException
 
-class EmailPack:
+class EmailUtil:
     # 初始化发件人，密码，收件人列表
     def __init__(self, fromaddr: str, password: str, toaddrs: list, server_host: str):
         """
