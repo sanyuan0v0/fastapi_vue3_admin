@@ -5,7 +5,7 @@ import uvicorn
 import typer
 from fastapi import FastAPI
 
-from app.common.enums import Environment
+from app.common.enums import EnvironmentEnum
 
 shell_app = typer.Typer()
 
@@ -14,15 +14,15 @@ def create_app() -> FastAPI:
     
     from app.config.setting import settings
     from app.plugin.init_app import (
-    register_middlewares,
-    register_exceptions,
-    register_routers,
-    register_files,
-    reset_api_docs,
-    lifespan
-)
+        register_middlewares,
+        register_exceptions,
+        register_routers,
+        register_files,
+        reset_api_docs,
+        lifespan
+    )
     # 创建FastAPI应用
-    app = FastAPI(**settings.get_backend_app_attributes, lifespan=lifespan)
+    app = FastAPI(**settings.FASTAPI_CONFIG, lifespan=lifespan)
 
     # 注册异常处理器
     register_exceptions(app)
@@ -39,7 +39,7 @@ def create_app() -> FastAPI:
 
 
 @shell_app.command()
-def run(env: Environment = typer.Option(Environment.DEV, "--env", help="运行环境 (dev, test, prod)")):
+def run(env: EnvironmentEnum = typer.Option(EnvironmentEnum.DEV, "--env", help="运行环境 (dev, test, prod)")):
     # 设置环境变量
     os.environ["ENVIRONMENT"] = env.value
     from app.config.setting import settings
@@ -47,11 +47,11 @@ def run(env: Environment = typer.Option(Environment.DEV, "--env", help="运行�
     # 启动uvicorn服务
     uvicorn.run(
         app='main:create_app',
-        **settings.get_uvicorn_config
+        **settings.UVICORN_CONFIG
     )
 
 @shell_app.command()
-def init(env: Environment = typer.Option(Environment.DEV, "--env", help="运行环境 (dev, test, prod)")):
+def init(env: EnvironmentEnum = typer.Option(EnvironmentEnum.DEV, "--env", help="运行环境 (dev, test, prod)")):
     import asyncio
     from app.scripts.initialize import InitializeData
     # 设置环境变量

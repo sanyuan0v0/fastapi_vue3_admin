@@ -2,7 +2,7 @@ from enum import Enum, unique
 from typing import Dict
 
 @unique
-class Environment(str, Enum):
+class EnvironmentEnum(str, Enum):
     DEV = "dev"
     TEST = "test"
     PROD = "prod"

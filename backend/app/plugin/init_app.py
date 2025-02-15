@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     自定义生命周期
     """
     logger.info(settings.BANNER + '\n' + f'{settings.TITLE} 服务开始启动...')
-    await import_modules_async(modules=settings.get_events, desc="全局事件", app=app, status=True)
+    await import_modules_async(modules=settings.EVENT_LIST, desc="全局事件", app=app, status=True)
     async with async_session() as session:
         await ConfigService().init_config(redis=app.state.redis, db=session)
         logger.info('初始化系统配置完成...')
@@ -50,14 +50,14 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
 
     yield
 
-    await import_modules_async(modules=settings.get_events, desc="全局事件", app=app, status=False)
+    await import_modules_async(modules=settings.EVENT_LIST, desc="全局事件", app=app, status=False)
     logger.info(f'{settings.TITLE} 服务关闭...')
 
 def register_middlewares(app: FastAPI) -> None:
     """
     注册中间件
     """
-    for middleware in settings.get_middlewares[::-1]:
+    for middleware in settings.MIDDLEWARE_LIST[::-1]:
         if not middleware:
             continue
         middleware = import_module(middleware, desc="中间件")

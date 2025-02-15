@@ -4,13 +4,16 @@ from typing import Dict, Any
 from celery import Celery
 from datetime import datetime
 
+from pydantic import RedisDsn
+
 from app.config.setting import settings
 
+REDIS_URL: RedisDsn = f"redis://:{settings.REDIS_PASSWORD}@{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB_NAME}"
 # 创建 Celery 实例
 celery_app = Celery(
     "worker", 
-    broker=settings.get_redis_uri,
-    backend=settings.get_redis_uri,  # 使用 Redis 存储任务结果
+    broker=REDIS_URL,
+    backend=REDIS_URL,  # 使用 Redis 存储任务结果
     include=["tasks"],  # 包含任务模块
 )
 

@@ -9,18 +9,18 @@ from pydantic import MongoDsn, PostgresDsn, RedisDsn, MySQLDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from uvicorn.config import LifespanType
 
-from app.common.enums import Environment
+from app.common.enums import EnvironmentEnum
 
 
 class Settings(BaseSettings):
     """系统配置类"""
     model_config = SettingsConfigDict(
-        env_file='.env', 
+        env_file='.env',
         env_file_encoding="utf-8",
         case_sensitive=True,
     )
-    
-    ENVIRONMENT: Literal["dev", "test", "prod"]
+
+    ENVIRONMENT: str
     
     BANNER: ClassVar[str] = f"""
      ______        _                  _ 
@@ -76,7 +76,7 @@ class Settings(BaseSettings):
     # ================================================= #
     # ******************* 登录认证配置 ****************** #
     # ================================================= #
-    SECRET_KEY: str = "vgb0tnl9d58+6n-6h-ea&u^1#s0ccp!794=krylxcjq75vzps$" # JWT密钥
+    SECRET_KEY: str = "vgb0tnl9d58+6n-6h-ea&u^1#s0ccp!794=krylxcjq75vzps$"  # JWT密钥
     ALGORITHM: str = "HS256"                    # JWT算法
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440     # access_token过期时间(分钟)
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 10080   # refresh_token过期时间(分钟)
@@ -101,15 +101,15 @@ class Settings(BaseSettings):
 
     # SQLite数据库连接
     DB_DRIVER: str
-    SQLITE_DB_NAME: str 
-    
+    SQLITE_DB_NAME: str
+
     # MySQL数据库连接
     MYSQL_USER: str
     MYSQL_PASSWORD: str
     MYSQL_HOST: str
     MYSQL_PORT: int
     MYSQL_DB_NAME: str
-    
+
     # PostgreSQL数据库连接
     POSTGRESQL_USER: str
     POSTGRESQL_PASSWORD: str
@@ -120,7 +120,9 @@ class Settings(BaseSettings):
     # ================================================= #
     # ******************** MongoDB配置 ******************* #
     # ================================================= #
-    MONGO_DB_ENABLE: bool = True  # 是否启用MongoDB
+    MONGO_DB_ENABLE: bool = False  # 是否启用MongoDB
+    MONGO_DB_USER: str
+    MONGO_DB_PASSWORD: str
     MONGO_DB_HOST: str
     MONGO_DB_PORT: int
     MONGO_DB_NAME: str
@@ -131,7 +133,7 @@ class Settings(BaseSettings):
     REDIS_ENABLE: bool = True  # 是否启用Redis
     REDIS_HOST: str
     REDIS_PORT: int
-    REDIS_DB: int
+    REDIS_DB_NAME: int
     REDIS_PASSWORD: str
 
     # ================================================= #
@@ -145,7 +147,7 @@ class Settings(BaseSettings):
     # ================================================= #
     # ********************* 日志配置 ******************* #
     # ================================================= #
-    LOGGER_LEVEL: str                       # 日志级别
+    LOGGER_LEVEL: str           # 日志级别
     LOGGER_NAME: str = date.today().strftime(r'%Y-%m-%d.log')       # 日志文件名
     LOGGER_FILEPATH: Path = BASE_DIR.joinpath('logs', LOGGER_NAME)  # 日志文件路径
     BACKUPCOUNT: int = 10       # 日志文件备份数
@@ -200,7 +202,7 @@ class Settings(BaseSettings):
         # 视频
         '.mp4', '.avi', '.rmvb'
     ]
-    MAX_FILE_SIZE: int = 10 * 1024 * 1024 # 最大文件大小(10MB)
+    MAX_FILE_SIZE: int = 10 * 1024 * 1024  # 最大文件大小(10MB)
 
     # ================================================= #
     # ***************** Swagger配置 ***************** #
@@ -209,7 +211,7 @@ class Settings(BaseSettings):
     SWAGGER_JS_URL: Path = "static/swagger/swagger-ui/swagger-ui-bundle.js"
     REDOC_JS_URL: Path = "static/swagger/redoc/bundles/redoc.standalone.js"
     FAVICON_URL: Path = "static/swagger/favicon.png"
-    
+
     # ================================================= #
     # ******************* 初始化数据 ****************** #
     # ================================================= #
@@ -219,7 +221,7 @@ class Settings(BaseSettings):
     # ******************* 其他配置 ******************* #
     # ================================================= #
     @property
-    def get_middlewares(self) -> List[Optional[str]]:
+    def MIDDLEWARE_LIST(self) -> List[Optional[str]]:
         """获取项目根目录"""
         # 中间件列表
         MIDDLEWARES: List[Optional[str]] = [
@@ -231,88 +233,17 @@ class Settings(BaseSettings):
         return MIDDLEWARES
 
     @property
-    def get_events(self) -> List[Optional[str]]:
-        
+    def EVENT_LIST(self) -> List[Optional[str]]:
+
         # 事件列表
         EVENTS: List[Optional[str]] = [
-            # "app.core.database.mongodb_connect" if MONGO_DB_ENABLE else None,
+            "app.core.database.mongodb_connect" if self.MONGO_DB_ENABLE else None,
             "app.core.database.redis_connect" if self.REDIS_ENABLE else None,
         ]
         return EVENTS
 
     @property
-    def get_uvicorn_log_config(self) -> dict[str, Any]:
-        # 日志配置字典
-        LOGGING_CONFIG= {
-            "version": 1,
-            "disable_existing_loggers": False,
-            "formatters": {
-                "default": {
-                    "()": "uvicorn.logging.DefaultFormatter",
-                    "fmt": self.LOGGER_FORMAT,
-                    "use_colors": None,
-                },
-                "access": {
-                    "()": "uvicorn.logging.AccessFormatter",
-                    "fmt": self.LOGGER_FORMAT,
-                },
-            },
-            "handlers": {
-                "console": {
-                    "formatter": "default",
-                    "class": "logging.StreamHandler",
-                    "stream": "ext://sys.stderr",
-                },
-                "access_console": {
-                    "formatter": "access",
-                    "class": "logging.StreamHandler",
-                    "stream": "ext://sys.stdout",
-                },
-                "file": {
-                    "formatter": "default",
-                    "class": "logging.handlers.TimedRotatingFileHandler",
-                    "filename": self.LOGGER_FILEPATH,
-                    "when": self.WHEN,
-                    "backupCount": self.BACKUPCOUNT,
-                    "encoding": self.ENCODING,
-                },
-            },
-                "loggers": {
-                "uvicorn": {"handlers": ["file", "console"], "level": self.LOGGER_LEVEL, "propagate": False},
-                "uvicorn.error": {"handlers": ["file", "console"], "level": self.LOGGER_LEVEL, "propagate": False},
-                "uvicorn.access": {"handlers": ["file", "access_console"], "level": self.LOGGER_LEVEL, "propagate": False},
-            },
-        }
-
-        return LOGGING_CONFIG
-    
-    @property
-    def get_database_uri(self) -> str:
-        supported_db_drivers = ("sqlite", "mysql", "postgresql")
-        if self.DB_DRIVER not in supported_db_drivers:
-            raise ValueError(f"数据库驱动不支持: {self.DB_DRIVER}, 请选择 {supported_db_drivers}")
-        if self.DB_DRIVER == "sqlite":
-            SQLITE_URI: str = f"sqlite+aiosqlite:///{self.BASE_DIR.joinpath(self.SQLITE_DB_NAME)}?characterEncoding=UTF-8"
-            return SQLITE_URI
-        elif self.DB_DRIVER == "mysql":
-            MYSQL_URI: MySQLDsn = f"mysql+asyncmy://{self.MYSQL_USER}:{self.MYSQL_PASSWORD}@{self.MYSQL_HOST}:{self.MYSQL_PORT}/{self.MYSQL_DB_NAME}?charset=utf8mb4"
-            return MYSQL_URI
-        else:
-            POSRGRES_URI: PostgresDsn = f"postgresql+asyncpg://{self.POSTGRESQL_USER}:{self.POSTGRESQL_PASSWORD}@{self.POSTGRESQL_HOST}:{self.POSTGRESQL_PORT}/{self.POSTGRESQL_DB_NAME}"
-            return POSRGRES_URI
-
-    @property
-    def get_redis_uri(self) -> RedisDsn:
-        REDIS_URL: RedisDsn = f"redis://:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
-        return REDIS_URL
-
-    @property
-    def get_mongodb_uri(self) -> MongoDsn:
-        MONGO_DB_URL: MongoDsn = f"mongodb://{self.MONGO_DB_HOST}:{self.MONGO_DB_PORT}/{self.MONGO_DB_NAME}"
-        return MONGO_DB_URL
-
-    @property
-    def get_backend_app_attributes(self) -> Dict[str, Union[str, bool, None]]:
+    def FASTAPI_CONFIG(self) -> Dict[str, Union[str, bool, None]]:
         """获取FastAPI应用属性"""
         return {
             "debug": self.DEBUG,
@@ -326,23 +257,52 @@ class Settings(BaseSettings):
         }
 
     @property
-    def get_cors_middleware_attributes(self) -> Dict[str, Union[List[str], bool]]:
-        """获取CORS中间件属性"""
-        return {
-            "allow_origins": self.ALLOW_ORIGINS,
-            "allow_methods": self.ALLOW_METHODS,
-            "allow_headers": self.ALLOW_HEADERS,
-            "allow_credentials": self.ALLOW_CREDENTIALS
-        }
-
-    @property
-    def get_uvicorn_config(self) -> Dict[str, Any]:
+    def UVICORN_CONFIG(self) -> Dict[str, Any]:
         """获取Uvicorn配置"""
         return {
             "host": self.SERVER_HOST,
             "port": self.SERVER_PORT,
             "reload": self.RELOAD,
-            "log_config": self.get_uvicorn_log_config,
+            "log_config": {
+                "version": 1,
+                "disable_existing_loggers": False,
+                "formatters": {
+                    "default": {
+                        "()": "uvicorn.logging.DefaultFormatter",
+                        "fmt": self.LOGGER_FORMAT,
+                        "use_colors": None,
+                    },
+                    "access": {
+                        "()": "uvicorn.logging.AccessFormatter",
+                        "fmt": self.LOGGER_FORMAT,
+                    },
+                },
+                "handlers": {
+                    "console": {
+                        "formatter": "default",
+                        "class": "logging.StreamHandler",
+                        "stream": "ext://sys.stderr",
+                    },
+                    "access_console": {
+                        "formatter": "access",
+                        "class": "logging.StreamHandler",
+                        "stream": "ext://sys.stdout",
+                    },
+                    "file": {
+                        "formatter": "default",
+                        "class": "logging.handlers.TimedRotatingFileHandler",
+                        "filename": self.LOGGER_FILEPATH,
+                        "when": self.WHEN,
+                        "backupCount": self.BACKUPCOUNT,
+                        "encoding": self.ENCODING,
+                    },
+                },
+                "loggers": {
+                    "uvicorn": {"handlers": ["file", "console"], "level": self.LOGGER_LEVEL, "propagate": False},
+                    "uvicorn.error": {"handlers": ["file", "console"], "level": self.LOGGER_LEVEL, "propagate": False},
+                    "uvicorn.access": {"handlers": ["file", "access_console"], "level": self.LOGGER_LEVEL, "propagate": False},
+                },
+            },
             "workers": self.WORKERS,
             "limit_concurrency": self.LIMIT_CONCURRENCY,
             "backlog": self.BACKLOG,
@@ -350,22 +310,21 @@ class Settings(BaseSettings):
             "timeout_keep_alive": self.TIMEOUT_KEEP_ALIVE,
             "lifespan": self.LIFESPAN,
             "factory": self.FACTORY,
-            }
+        }
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
     """获取配置实例"""
-    env = os.getenv('ENVIRONMENT', Environment.DEV.value)
-    if env not in [e.value for e in Environment]:
+    env = os.getenv('ENVIRONMENT', EnvironmentEnum.DEV.value)
+    if env not in [e.value for e in EnvironmentEnum]:
         raise ValueError(f"无效的环境配置: {env}")
     
     current_dir = Path(__file__).parent
     env_file = current_dir / f".env.{env}"
-    
+
     if not env_file.exists():
         raise FileNotFoundError(f"环境配置文件不存在: {env_file}")
-    
-    return Settings(_env_file=env_file) 
 
+    return Settings(_env_file=env_file)
 
 settings = get_settings()

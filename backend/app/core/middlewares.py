@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+from typing import Dict, List, Union
 from fastapi import status
 from starlette.middleware.cors import CORSMiddleware
 from starlette.types import ASGIApp
@@ -19,9 +20,15 @@ from app.core.exceptions import CustomException
 
 
 class CustomCORSMiddleware(CORSMiddleware):
-    """CORS中间件"""
+    """CORS跨域中间件"""
     def __init__(self, app: ASGIApp) -> None:
-        super().__init__(app, **settings.get_cors_middleware_attributes)
+        CORSMiddlewareConfig: Dict[str, Union[List[str], bool]] = {
+            "allow_origins": settings.ALLOW_ORIGINS,
+            "allow_methods": settings.ALLOW_METHODS,
+            "allow_headers": settings.ALLOW_HEADERS,
+            "allow_credentials": settings.ALLOW_CREDENTIALS
+        }
+        super().__init__(app, **CORSMiddlewareConfig)
 
 
 class RequestLogMiddleware(BaseHTTPMiddleware):

@@ -3,6 +3,7 @@
 import aioredis
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi import FastAPI
+from pydantic import MongoDsn, MySQLDsn, PostgresDsn, RedisDsn
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
     async_sessionmaker,
@@ -13,9 +14,24 @@ from app.core.logger import logger
 from app.config.setting import settings
 from app.core.exceptions import CustomException
 
+def get_database_uri() -> str:
+    supported_db_drivers = ("sqlite", "mysql", "postgresql")
+    if settings.DB_DRIVER not in supported_db_drivers:
+        raise ValueError(f"数据库驱动不支持: {settings.DB_DRIVER}, 请选择 {supported_db_drivers}")
+    if settings.DB_DRIVER == "sqlite":
+        SQLITE_URI: str = f"sqlite+aiosqlite:///{settings.BASE_DIR.joinpath(settings.SQLITE_DB_NAME)}?characterEncoding=UTF-8"
+        return SQLITE_URI
+    elif settings.DB_DRIVER == "mysql":
+        MYSQL_URI: MySQLDsn = f"mysql+asyncmy://{settings.MYSQL_USER}:{settings.MYSQL_PASSWORD}@{settings.MYSQL_HOST}:{settings.MYSQL_PORT}/{settings.MYSQL_DB_NAME}?charset=utf8mb4"
+        return MYSQL_URI
+    else:
+        POSRGRES_URI: PostgresDsn = f"postgresql+asyncpg://{settings.POSTGRESQL_USER}:{settings.POSTGRESQL_PASSWORD}@{settings.POSTGRESQL_HOST}:{settings.POSTGRESQL_PORT}/{settings.POSTGRESQL_DB_NAME}"
+        return POSRGRES_URI
+
+
 # 创建数据库引擎
 async_engine = create_async_engine(
-    url=settings.get_database_uri,
+    url=get_database_uri(),
     echo=settings.DATABASE_ECHO,
     echo_pool=settings.ECHO_POOL,
     pool_pre_ping=settings.POOL_PRE_PING,
@@ -50,8 +66,9 @@ async def redis_connect(app: FastAPI, status: bool) -> aioredis.Redis:
 
     if status:
         try:
+            REDIS_URL: RedisDsn = f"redis://:{settings.REDIS_PASSWORD}@{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB_NAME}"
             rd = await aioredis.from_url(
-                url=settings.get_redis_uri,
+                url=REDIS_URL,
                 encoding='utf-8',
                 decode_responses=True,
                 health_check_interval=20,
@@ -84,8 +101,9 @@ async def mongodb_connect(app: FastAPI, status: bool) -> AsyncIOMotorClient:
 
     if status:
         try:
+            MONGO_DB_URL: MongoDsn = f"mongodb://{settings.MONGO_DB_USER}:{settings.MONGO_DB_PASSWORD}@{settings.MONGO_DB_HOST}:{settings.MONGO_DB_PORT}/{settings.MONGO_DB_NAME}"
             client = AsyncIOMotorClient(
-                settings.get_mongodb_uri,
+                MONGO_DB_URL,
                 maxPoolSize=settings.POOL_SIZE,
                 minPoolSize=settings.MAX_OVERFLOW,
                 serverSelectionTimeoutMS=settings.POOL_TIMEOUT * 1000

@@ -1,36 +1,27 @@
-fastapi==0.115.2
-typer==0.12.5
-uvicorn==0.30.6
-websockets==14.2
-gunicorn==23.0.0
-celery==5.4.0
-requests==2.32.3
-pandas==2.2.2
-openpyxl==3.1.5
-SQLAlchemy==2.0.36
-pillow==11.0.0
+fastapi==0.115.2    # web 框架
+typer==0.12.5       # CLI
+uvicorn==0.30.6     # uvicorn web 框架
+websockets==14.2    # websocket 框架
+gunicorn==23.0.0    # 协程框架
+celery==5.4.0       # 任务队列
+pandas==2.2.2       # 数据处理
+openpyxl==3.1.5     # Excel
+SQLAlchemy==2.0.36  # 数据库ORM
+pillow==11.0.0      # 图片处理
 pydantic_validation_decorator==0.1.4
-passlib==1.7.4
-user-agents==2.2.0
-PyJWT==2.9.0
-pydantic-settings==2.4.0
-psutil==6.1.0
-python-multipart==0.0.9
-greenlet==3.1.1
-bcrypt==4.0.1
-aiofiles==24.1.0 # 文件操作
-redis==5.2.1  # redis 同步操作数据库(用户celery配套使用)
-aioredis==2.0.1 # redis 异步操作数据库
-aiosqlite==0.17.0 # sqlite 异步操作数据库
-asyncmy==0.2.9 # mysql 异步操作数据库：基于 mysqlclient：asyncmy 是 mysqlclient 的异步版本，mysqlclient 是一个 C 语言编写的 MySQL 客户端，性能较高。性能：asyncmy 通常在性能上优于 aiomysql，特别是在高并发和大数据量的场景下。
-motor==3.6.0 # mongodb 驱动
+passlib==1.7.4      # 密码加密
+user-agents==2.2.0  # 获取用户UA
+PyJWT==2.9.0        # OAuth2
+pydantic-settings==2.4.0    # 配置设置
+psutil==6.1.0       # 系统信息
+python-multipart==0.0.9  # request.form() 对表单进行「解析」时安装
+greenlet==3.1.1     # 协程框架
+bcrypt==4.0.1       # 密码加密解析
+aiofiles==24.1.0    # 文件操作
+redis==5.2.1        # redis 同步操作数据库(用户celery配套使用)
+aioredis==2.0.1     # redis 异步操作数据库
+aiosqlite==0.17.0   # sqlite 异步操作数据库
+asyncmy==0.2.9      # mysql 异步操作数据库：基于 mysqlclient：asyncmy 是 mysqlclient 的异步版本，mysqlclient 是一个 C 语言编写的 MySQL 客户端，性能较高。性能：asyncmy 通常在性能上优于 aiomysql，特别是在高并发和大数据量的场景下。
+motor==3.6.0        # mongodb 驱动
 # aiomysql==0.2.0 # mysql 异步操作数据库基于 pymysql：aiomysql 是 pymysql 的异步版本，pymysql 是一个纯 Python 实现的 MySQL 客户端。成熟度：aiomysql 相对较为成熟，社区支持较好，文档也比较完善。
 # alembic==1.14.0 # 数据库版本控制
-
-# 后期业务开发会用到的库
-# kubernetes==30.1.0 # k8s 客户端预留（后面开发会使用）
-# docker==7.1.0 # docker 客户端预留（后面开发会使用）
-# minio==8.0.10 # minio 对象存储 预留（后面开发会使用）
-DingtalkChatbot==1.5.7
-jsonpath==0.82.2
-jsonpath-ng==1.7.0
