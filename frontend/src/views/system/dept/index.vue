@@ -116,7 +116,6 @@
               <a-badge :status="detailState.available ? 'processing': 'error'" :text="detailState.available ? '启用' : '停用'" />
             </a-descriptions-item>
             <a-descriptions-item label="上级部门" :span="2">{{ detailState.parent_name }}</a-descriptions-item>
-            <a-descriptions-item label="创建人">{{ detailState.creator ? detailState.creator.name : '-' }}</a-descriptions-item>
             <a-descriptions-item label="创建时间">{{ detailState.created_at }}</a-descriptions-item>
             <a-descriptions-item label="修改时间">{{ detailState.updated_at }}</a-descriptions-item>
             <a-descriptions-item label="备注" :span="2">{{ detailState.description }}</a-descriptions-item>

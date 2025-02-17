@@ -104,7 +104,7 @@ class RoleModel(ModelBase):
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now, comment='更新时间')
     creator_id = Column(
         Integer, 
-        ForeignKey("system_user.id", ondelete="SET NULL", onupdate="CASCADE"), 
+        ForeignKey("system_users.id", ondelete="SET NULL", onupdate="CASCADE"), 
         nullable=True, 
         index=True, 
         comment="创建人ID"

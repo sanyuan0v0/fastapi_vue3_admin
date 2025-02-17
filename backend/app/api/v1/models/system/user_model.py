@@ -17,7 +17,7 @@ class UserRolesModel(ModelBase):
 
     user_id = Column(
         Integer, 
-        ForeignKey("system_user.id", ondelete="CASCADE", onupdate="CASCADE"), 
+        ForeignKey("system_users.id", ondelete="CASCADE", onupdate="CASCADE"), 
         primary_key=True, 
         comment="用户ID", 
         index=True
@@ -39,7 +39,7 @@ class UserPositionsModel(ModelBase):
 
     user_id = Column(
         Integer, 
-        ForeignKey("system_user.id", ondelete="CASCADE", onupdate="CASCADE"), 
+        ForeignKey("system_users.id", ondelete="CASCADE", onupdate="CASCADE"), 
         primary_key=True, 
         comment="用户ID", 
         index=True
@@ -56,7 +56,7 @@ class UserModel(ModelBase):
     """
     用户表 - 存储系统用户基本信息
     """
-    __tablename__ = "system_user"
+    __tablename__ = "system_users"
     __table_args__ = ({'comment': '用户表'})
     
     # 基础字段
@@ -106,7 +106,7 @@ class UserModel(ModelBase):
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now, comment='更新时间')
     creator_id = Column(
         Integer, 
-        ForeignKey("system_user.id", ondelete="SET NULL", onupdate="CASCADE"), 
+        ForeignKey("system_users.id", ondelete="SET NULL", onupdate="CASCADE"), 
         nullable=True, 
         index=True, 
         comment="创建人ID"

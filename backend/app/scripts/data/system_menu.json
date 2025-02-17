@@ -14,8 +14,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 2,
@@ -32,8 +31,7 @@
     "cache": true,
     "hidden": false,
     "redirect": "/system/menu",
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 3,
@@ -50,8 +48,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 4,
@@ -68,8 +65,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 5,
@@ -86,8 +82,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 6,
@@ -104,8 +99,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 7,
@@ -122,8 +116,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 8,
@@ -140,8 +133,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 9,
@@ -158,8 +150,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 10,
@@ -176,8 +167,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 11,
@@ -194,8 +184,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 12,
@@ -212,8 +201,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 13,
@@ -230,8 +218,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 14,
@@ -248,8 +235,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 15,
@@ -266,8 +252,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 16,
@@ -284,8 +269,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 17,
@@ -302,8 +286,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 18,
@@ -320,8 +303,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 19,
@@ -338,8 +320,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 20,
@@ -356,8 +337,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 21,
@@ -374,8 +354,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 22,
@@ -392,8 +371,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 23,
@@ -410,8 +388,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 24,
@@ -428,8 +405,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 25,
@@ -446,8 +422,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 26,
@@ -464,8 +439,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 27,
@@ -482,8 +456,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 28,
@@ -500,8 +473,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 29,
@@ -518,8 +490,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 30,
@@ -536,8 +507,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 31,
@@ -554,8 +524,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 32,
@@ -572,8 +541,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 33,
@@ -590,8 +558,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 34,
@@ -608,8 +575,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 35,
@@ -626,8 +592,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 36,
@@ -644,8 +609,7 @@
     "cache": true,
     "hidden": false,
     "redirect": "/monitor/online",
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 37,
@@ -662,8 +626,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 38,
@@ -680,8 +643,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 39,
@@ -698,8 +660,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 40,
@@ -716,8 +677,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 41,
@@ -734,8 +694,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 42,
@@ -752,8 +711,7 @@
     "cache": true,
     "hidden": false,
     "redirect": "/common/docs",
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 43,
@@ -770,8 +728,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 44,
@@ -788,8 +745,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 45,
@@ -806,8 +762,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 46,
@@ -824,8 +779,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 47,
@@ -842,8 +796,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 48,
@@ -860,8 +813,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 49,
@@ -878,8 +830,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 50,
@@ -896,8 +847,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 51,
@@ -914,8 +864,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 52,
@@ -932,8 +881,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 53,
@@ -950,8 +898,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 54,
@@ -968,8 +915,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 55,
@@ -986,8 +932,7 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   },
   {
     "id": 56,
@@ -1004,7 +949,6 @@
     "cache": true,
     "hidden": false,
     "redirect": null,
-    "description": "初始化数据",
-    "creator_id": 1
+    "description": "初始化数据"
   }
 ]

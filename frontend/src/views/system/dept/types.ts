@@ -12,14 +12,7 @@ export interface tableDataType {
     parent_name?: string;
     available?: boolean;
     description?: string;
-    children?: tableDataType[];
     created_at?: string;
     updated_at?: string;
-    creator?: creatorType;
-}
-
-interface creatorType {
-    id?: number;
-    name?: string;
-    username?: string;
+    children?: tableDataType[];
 }

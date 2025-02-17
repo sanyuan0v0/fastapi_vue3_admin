@@ -29,17 +29,17 @@ class InitializeData:
         self.session = async_session()
         self.prepare_init_models = [
             dept_model.DeptModel,
-            user_model.UserModel,
             menu_model.MenuModel,
+            user_model.UserModel,
             position_model.PositionModel,
+            user_model.UserPositionsModel,
             role_model.RoleModel,
-            operation_log_model.OperationLogModel,
-            notice_model.NoticeModel,
+            user_model.UserRolesModel,
             role_model.RoleDeptsModel,
             role_model.RoleMenusModel,
-            user_model.UserPositionsModel,
-            user_model.UserRolesModel,
+            notice_model.NoticeModel,
             config_model.ConfigModel,
+            operation_log_model.OperationLogModel,
         ]
 
     async def __init_model(self) -> None:
