@@ -152,6 +152,9 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
    ```shell
    # Run in the root directory of the backend project (backend)
    python3 main.py run
+   # If using Celery to manage tasks, you need to start Celery separately.
+   To start a regular task worker: celery -A celery_app.celery_app worker --loglevel=info
+   To start a periodic task scheduler (beat): celery -A celery_app.celery_app beat --loglevel=info
    ```
 
 ### Frontend
@@ -230,6 +233,10 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
 ### Cache
 
 ![Cache](./mkdocs/docs/resources/images/cache.png)
+
+### Task
+
+![Task](./mkdocs/docs/resources/images/task.jpeg)
 
 ### API
 

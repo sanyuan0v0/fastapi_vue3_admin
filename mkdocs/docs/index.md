@@ -146,6 +146,9 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
    ```shell
    # 进入后端根目录 backend 下运行
    python3 main.py run
+   # 如果使用celery管理任务，需要另外启动celery
+   启动普通任务work: celery -A celery_app.celery_app worker --loglevel=info
+   启动定时任务work: celery -A celery_app.celery_app beat --loglevel=info
    ```
 
 ### 前端
@@ -224,6 +227,10 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
 ### 缓存监控
 
 ![缓存监控](./resources/images/cache.png)
+
+### 任务管理
+
+![任务管理](./resources/images/task.jpeg)
 
 ### 接口管理
 
