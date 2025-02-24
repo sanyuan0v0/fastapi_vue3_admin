@@ -134,7 +134,7 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
    ```
 
 2. Modify project database configuration
-   In the `app/core/config.py` file, modify `SQLALCHEMY_DATABASE_URI`、`MONGO_DB_URL` and `REDIS_URL`
+   The `DB_DRIVER` database driver type and the corresponding database configuration information are located in the `app/config/.env.dev (.env.test, .env.prod)` files.
 
 3. Create a database named `fastapi_vue_admin`
 

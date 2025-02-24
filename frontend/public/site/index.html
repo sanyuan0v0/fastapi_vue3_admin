@@ -1409,7 +1409,7 @@
 <ol>
 <li>
 <p>修改项目数据库配置信息
-   在<code>app/core/config.py</code>文件中的<code>SQLALCHEMY_DATABASE_URI</code>、<code>MONGO_DB_URL</code>、<code>REDIS_URL</code></p>
+   在<code>app/config/.env.dev(.env.test、.env.prod)</code>文件中的<code>DB_DRIVER</code>数据库驱动类型，以及对应的数据库的配置信息</p>
 </li>
 <li>
 <p>创建名为<code>fastapi_vue_admin</code>的数据库</p>

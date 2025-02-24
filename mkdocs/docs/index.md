@@ -128,7 +128,7 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
    ```
 
 2. 修改项目数据库配置信息
-   在`app/core/config.py`文件中的`SQLALCHEMY_DATABASE_URI`、`MONGO_DB_URL`、`REDIS_URL`
+   在`app/config/.env.dev(.env.test、.env.prod)`文件中的`DB_DRIVER`数据库驱动类型，以及对应的数据库的配置信息
 
 3. 创建名为`fastapi_vue_admin`的数据库
 
