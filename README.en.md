@@ -186,73 +186,42 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
 
 ## 🔧 Module Showcase
 
-### Login
-
-![Login](./mkdocs/docs/resources/images/login.png)
-
-### Dashboard
-
-![Dashboard](./mkdocs/docs/resources/images/dashboard.png)
-
-### Menu
-
-![Menu](./mkdocs/docs/resources/images/menu.png)
-
-### Department
-
-![Department](./mkdocs/docs/resources/images/dept.png)
-
-### Position
-
-![Position](./mkdocs/docs/resources/images/position.png)
-
-### Role
-
-![Role](./mkdocs/docs/resources/images/role.png)
-
-### User
-
-![User](./mkdocs/docs/resources/images/user.png)
-
-### Log
-
-![Log](./mkdocs/docs/resources/images/log.png)
-
-### Config
-
-![Config](./mkdocs/docs/resources/images/config.png)
-
-### Online
-
-![Online](./mkdocs/docs/resources/images/online.png)
-
-### Server
-
-![Server](./mkdocs/docs/resources/images/service.png)
-
-### Cache
-
-![Cache](./mkdocs/docs/resources/images/cache.png)
-
-### Task
-
-![Task](./mkdocs/docs/resources/images/task.jpeg)
-
-### API
-
-![API](./mkdocs/docs/resources/images/docs.png)
-
-### Documentation
-
-![Documentation](./mkdocs/docs/resources/images/redoc.png)
-
-### Personal
-
-![Personal](./mkdocs/docs/resources/images/info.png)
-
-### Help
-
-![Help](./mkdocs/docs/resources/images/help.png)
+<table>
+    <tr>
+        <td><img src="./mkdocs/docs/resources/images/login.png"/>Login</td>
+        <td><img src="./mkdocs/docs/resources/images/dashboard.png"/>Dashboard</td>
+   </tr>
+   <tr>
+        <td><img src="./mkdocs/docs/resources/images/menu.png"/>Menu</td>
+        <td><img src="./mkdocs/docs/resources/images/dept.png"/>Department</td>
+   </tr>
+   <tr>
+        <td><img src="./mkdocs/docs/resources/images/position.png"/>Position</td>
+        <td><img src="./mkdocs/docs/resources/images/role.png"/>Role</td>
+   </tr>
+   <tr>
+        <td><img src="./mkdocs/docs/resources/images/user.png"/>User</td>
+        <td><img src="./mkdocs/docs/resources/images/log.png"/>Log</td>
+   </tr>
+   <tr>
+        <td><img src="./mkdocs/docs/resources/images/config.png"/>Config</td>
+        <td><img src="./mkdocs/docs/resources/images/online.png"/>Online</td>
+   </tr>
+   <tr>
+        <td><img src="./mkdocs/docs/resources/images/service.png"/>Server</td>
+        <td><img src="./mkdocs/docs/resources/images/cache.png"/>Cache</td>
+   </tr>
+   <tr>
+        <td><img src="./mkdocs/docs/resources/images/task.jpeg"/>Task</td>
+        <td><img src="./mkdocs/docs/resources/images/docs.png"/>API</td>
+   </tr>
+        <td><img src="./mkdocs/docs/resources/images/redoc.png"/>Documentation</td>
+        <td><img src="./mkdocs/docs/resources/images/info.png"/>Personal</td>
+   </tr>
+   </tr>
+        <td><img src="./mkdocs/docs/resources/images/help.png"/>Help</td>
+   </tr>
+</table>
 
 ## ✨ Special Thanks
 

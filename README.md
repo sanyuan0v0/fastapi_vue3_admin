@@ -185,73 +185,42 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
 
 ## 🔧 模块展示
 
-### 登陆
-
-![登陆](./mkdocs/docs/resources/images/login.png)
-
-### 仪表盘
-
-![仪表盘](./mkdocs/docs/resources/images/dashboard.png)
-
-### 菜单管理
-
-![菜单管理](./mkdocs/docs/resources/images/menu.png)
-
-### 部门管理
-
-![部门管理](./mkdocs/docs/resources/images/dept.png)
-
-### 岗位管理
-
-![岗位管理](./mkdocs/docs/resources/images/position.png)
-
-### 角色管理
-
-![角色管理](./mkdocs/docs/resources/images/role.png)
-
-### 用户管理
-
-![用户管理](./mkdocs/docs/resources/images/user.png)
-
-### 日志管理
-
-![日志管理](./mkdocs/docs/resources/images/log.png)
-
-### 配置管理
-
-![配置管理](./mkdocs/docs/resources/images/config.png)
-
-### 在线用户管理
-
-![在线用户管理](./mkdocs/docs/resources/images/online.png)
-
-### 服务器监控
-
-![服务器监控](./mkdocs/docs/resources/images/service.png)
-
-### 缓存监控
-
-![缓存监控](./mkdocs/docs/resources/images/cache.png)
-
-### 任务管理
-
-![任务管理](./mkdocs/docs/resources/images/task.jpeg)
-
-### 接口管理
-
-![接口管理](./mkdocs/docs/resources/images/docs.png)
-
-### 文档管理
-
-![文档管理](./mkdocs/docs/resources/images/redoc.png)
-
-### 个人信息
-
-![个人信息](./mkdocs/docs/resources/images/info.png)
-
-### 在线文档
-
-![在线文档](./mkdocs/docs/resources/images/help.png)
+<table>
+    <tr>
+        <td><img src="./mkdocs/docs/resources/images/login.png"/>登陆</td>
+        <td><img src="./mkdocs/docs/resources/images/dashboard.png"/>仪表盘</td>
+   </tr>
+   <tr>
+        <td><img src="./mkdocs/docs/resources/images/menu.png"/>菜单管理</td>
+        <td><img src="./mkdocs/docs/resources/images/dept.png"/>部门管理</td>
+   </tr>
+   <tr>
+        <td><img src="./mkdocs/docs/resources/images/position.png"/>岗位管理</td>
+        <td><img src="./mkdocs/docs/resources/images/role.png"/>角色管理</td>
+   </tr>
+   <tr>
+        <td><img src="./mkdocs/docs/resources/images/user.png"/>用户管理</td>
+        <td><img src="./mkdocs/docs/resources/images/log.png"/>日志管理</td>
+   </tr>
+   <tr>
+        <td><img src="./mkdocs/docs/resources/images/config.png"/>配置管理</td>
+        <td><img src="./mkdocs/docs/resources/images/online.png"/>在线用户管理</td>
+   </tr>
+   <tr>
+        <td><img src="./mkdocs/docs/resources/images/service.png"/>服务器监控</td>
+        <td><img src="./mkdocs/docs/resources/images/cache.png"/>缓存监控</td>
+   </tr>
+   <tr>
+        <td><img src="./mkdocs/docs/resources/images/task.jpeg"/>任务管理</td>
+        <td><img src="./mkdocs/docs/resources/images/docs.png"/>接口管理</td>
+   </tr>
+        <td><img src="./mkdocs/docs/resources/images/redoc.png"/>文档管理</td>
+        <td><img src="./mkdocs/docs/resources/images/info.png"/>个人信息</td>
+   </tr>
+   </tr>
+        <td><img src="./mkdocs/docs/resources/images/help.png"/>在线文档</td>
+   </tr>
+</table>
 
 ## ✨ 特别鸣谢
 
