@@ -267,6 +267,7 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
 
 <table>
     <tr>
+        <td><img src="./resources/images/微信.jpg"/></td>
         <td><img src="./resources/images/wechat.png"/></td>
         <td><img src="./resources/images/wechatPay.jpg"/></td>
     </tr>
