@@ -550,6 +550,42 @@ const modalHandle = (modalType: string, record?: tableDataType) => {
   modalTitle.value = modalType;
   openModal.value = true;
 
+  // 重新创建 createState 和 updateState 以重置为初始状态
+  Object.assign(createState, {
+    name: '',
+    type: 1,
+    icon: '',
+    order: 1,
+    permission: '',
+    route_name: '',
+    route_path: '',
+    component_path: '',
+    redirect: '',
+    parent_id: undefined,
+    cache: true,
+    hidden: false,
+    available: true,
+    description: ''
+  });
+
+  Object.assign(updateState, {
+    id: undefined,
+    name: '',
+    type: 1,
+    icon: '',
+    order: 1,
+    permission: '',
+    route_name: '',
+    route_path: '',
+    component_path: '',
+    redirect: '',
+    parent_id: undefined,
+    cache: true,
+    hidden: false,
+    available: true,
+    description: ''
+  });
+
   if (modalType === 'view' && record !== undefined) {
     detailStateLoading.value = true;
     detailState.value = record;

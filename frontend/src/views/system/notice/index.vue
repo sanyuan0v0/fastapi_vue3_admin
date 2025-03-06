@@ -380,6 +380,24 @@ const modalHandle = (modalType: string, index?: number) => {
     modalTitle.value = modalType;
     openModal.value = true;
 
+    // 重新创建 createState 和 updateState 以重置为初始状态
+    Object.assign(createState, {
+        notice_title: '',
+        notice_type: 1,
+        notice_content: '',
+        available: true,
+        description: ''
+    });
+
+    Object.assign(updateState, {
+        id: undefined,
+        notice_title: '',
+        notice_type: 1,
+        notice_content: '',
+        available: true,
+        description: ''
+    });
+
     if (modalType === 'view' && index !== undefined) {
         detailStateLoading.value = true;
 

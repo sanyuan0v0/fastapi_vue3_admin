@@ -639,6 +639,44 @@ const modalHandle = (modalType: string, index?: number) => {
   modalTitle.value = modalType;
   openModal.value = true;
 
+  // 重新创建 createState 和 updateState 以重置为初始状态
+  Object.assign(createState, {
+    username: '',
+    name: '',
+    dept_id: undefined,
+    dept_name: '',
+    role_ids: undefined,
+    roleNames: undefined,
+    position_ids: undefined,
+    positionNames: undefined,
+    password: '',
+    gender: undefined,
+    email: '',
+    mobile: '',
+    is_superuser: false,
+    available: true,
+    description: ''
+  });
+
+  Object.assign(updateState, {
+    id: undefined,
+    username: '',
+    name: '',
+    dept_id: undefined,
+    dept_name: '',
+    role_ids: [],
+    roleNames: undefined,
+    position_ids: [],
+    positionNames: undefined,
+    password: '',
+    gender: undefined,
+    email: '',
+    mobile: '',
+    is_superuser: false,
+    available: true,
+    description: '',
+  });
+
   if (modalType === 'view' && index !== undefined) {
     detailStateLoading.value = true;
 

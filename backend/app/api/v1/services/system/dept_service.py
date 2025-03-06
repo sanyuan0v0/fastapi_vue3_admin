@@ -10,6 +10,7 @@ from app.api.v1.schemas.system.dept_schema import (
     DeptOutSchema
 )
 from app.core.base_schema import BatchSetAvailable
+from app.core.exceptions import CustomException
 from app.utils.common_util import (
     get_parent_id_map,
     get_parent_recursion,
@@ -59,6 +60,9 @@ class DeptService:
         :param data: 部门创建对象
         :return: 新创建的部门对象
         """
+        dept = await DeptCRUD(auth).get(name=data.name)
+        if dept:
+            raise CustomException(msg='创建失败，该部门已存在')
         dept = await DeptCRUD(auth).create(data=data)
         return DeptOutSchema.model_validate(dept).model_dump()
 
@@ -71,6 +75,12 @@ class DeptService:
         :param data: 部门更新对象
         :return: 更新后的部门对象
         """
+        dept = await DeptCRUD(auth).get_dept_by_id(id=data.id)
+        if not dept:
+            raise CustomException(msg='更新失败，该部门不存在')
+        exist_dept = await DeptCRUD(auth).get(name=data.name)
+        if exist_dept and exist_dept.id != data.id:
+            raise CustomException(msg='更新失败，部门名称重复')
         dept = await DeptCRUD(auth).update(id=data.id, data=data)
         if data.available:
             await cls.batch_set_available_services(auth=auth, data=BatchSetAvailable(ids=[data.id], available=True))
@@ -86,6 +96,9 @@ class DeptService:
         :param auth: 认证对象
         :param id: 部门ID
         """
+        dept = await DeptCRUD(auth).get_dept_by_id(id=id)
+        if not dept:
+            raise CustomException(msg='删除失败，该部门不存在')
         await DeptCRUD(auth).delete(ids=[id])
 
     @classmethod

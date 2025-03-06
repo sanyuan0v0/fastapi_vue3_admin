@@ -7,6 +7,7 @@ from app.api.v1.schemas.system.notice_schema import NoticeCreateSchema, NoticeUp
 from app.core.base_schema import BatchSetAvailable
 from app.api.v1.params.system.notice_param import NoticeQueryParams
 from app.api.v1.cruds.system.notice_crud import NoticeCRUD
+from app.core.exceptions import CustomException
 from app.utils.excel_util import ExcelUtil
 
 
@@ -27,16 +28,28 @@ class NoticeService:
     
     @classmethod
     async def create_notice_services(cls, auth: AuthSchema, data: NoticeCreateSchema) -> Dict:
+        config = await NoticeCRUD(auth).get(notice_title=data.notice_title)
+        if config:
+            raise CustomException(msg='创建失败，该公告通知已存在')
         config_obj = await NoticeCRUD(auth).create_notice(data=data)
         return NoticeOutSchema.model_validate(config_obj).model_dump()
     
     @classmethod
     async def update_notice_services(cls, auth: AuthSchema, data: NoticeUpdateSchema) -> Dict:
+        config = await NoticeCRUD(auth).get_notice_by_id(id=data.id)
+        if not config:
+            raise CustomException(msg='更新失败，该公告通知不存在')
+        exist_config = await NoticeCRUD(auth).get(notice_title=data.notice_title)
+        if exist_config and exist_config.id != data.id:
+            raise CustomException(msg='更新失败，公告通知标题重复')
         config_obj = await NoticeCRUD(auth).update_notice(id=data.id, data=data)
         return NoticeOutSchema.model_validate(config_obj).model_dump()
     
     @classmethod
     async def delete_notice_services(cls, auth: AuthSchema, id: int) -> None:
+        config = await NoticeCRUD(auth).get_notice_by_id(id=id)
+        if not config:
+            raise CustomException(msg='删除失败，该公告通知不存在')
         await NoticeCRUD(auth).delete_notice(ids=[id])
     
     @classmethod

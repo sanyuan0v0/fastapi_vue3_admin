@@ -244,7 +244,7 @@ class UserService:
         # 检查用户名是否存在
         user = await UserCRUD(auth).get_user_by_username(username=data.username)
         if user:
-            raise CustomException(msg='用户名已存在')
+            raise CustomException(msg='注册失败，用户名已存在')
 
         data.password = PwdUtil.set_password_hash(password=data.password)
         dict_data = data.model_dump(exclude_unset=True)

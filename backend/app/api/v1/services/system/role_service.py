@@ -4,6 +4,7 @@ from typing import Dict, List
 
 from app.api.v1.cruds.system.dept_crud import DeptCRUD
 from app.core.base_schema import BatchSetAvailable
+from app.core.exceptions import CustomException
 from app.utils.common_util import get_child_id_map, get_child_recursion, get_parent_id_map, get_parent_recursion
 from app.api.v1.cruds.system.role_crud import RoleCRUD, MenuCRUD
 from app.api.v1.schemas.system.auth_schema import AuthSchema
@@ -36,18 +37,30 @@ class RoleService:
     @classmethod
     async def create_role(cls, auth: AuthSchema, data: RoleCreateSchema) -> Dict:
         """创建角色"""
+        role = await RoleCRUD(auth).get(name=data.name)
+        if role:
+            raise CustomException(msg='创建失败，该角色已存在')
         new_role = await RoleCRUD(auth).create(data=data)
         return RoleOutSchema.model_validate(new_role).model_dump()
 
     @classmethod
     async def update_role(cls, auth: AuthSchema, data: RoleUpdateSchema) -> Dict:
         """更新角色"""
+        role = await RoleCRUD(auth).get_role_by_id(id=data.id)
+        if not role:
+            raise CustomException(msg='更新失败，该角色不存在')
+        exist_role = await RoleCRUD(auth).get(name=data.name)
+        if exist_role and exist_role.id != data.id:
+            raise CustomException(msg='更新失败，角色名称重复')
         updated_role = await RoleCRUD(auth).update(id=data.id, data=data)
         return RoleOutSchema.model_validate(updated_role).model_dump()
 
     @classmethod
     async def delete_role(cls, auth: AuthSchema, id: int) -> None:
         """删除角色"""
+        role = await RoleCRUD(auth).get_role_by_id(id=id)
+        if not role:
+            raise CustomException(msg='删除失败，该角色不存在')
         await RoleCRUD(auth).delete(ids=[id])
 
     @classmethod

@@ -10,6 +10,7 @@ from app.api.v1.schemas.system.position_schema import (
     PositionOutSchema,
 )
 from app.core.base_schema import BatchSetAvailable
+from app.core.exceptions import CustomException
 from app.utils.excel_util import ExcelUtil
 from app.api.v1.params.system.position_param import PositionQueryParams
 
@@ -32,18 +33,30 @@ class PositionService:
     @classmethod
     async def create_position(cls, auth: AuthSchema, data: PositionCreateSchema) -> Dict:
         """创建岗位"""
+        position = await PositionCRUD(auth).get(name=data.name)
+        if position:
+            raise CustomException(msg='创建失败，该岗位已存在')
         new_position = await PositionCRUD(auth).create(data=data)
         return PositionOutSchema.model_validate(new_position).model_dump()
 
     @classmethod
     async def update_position(cls, auth: AuthSchema, data: PositionUpdateSchema) -> Dict:
         """更新岗位"""
+        position = await PositionCRUD(auth).get_position_by_id(id=data.id)
+        if not position:
+            raise CustomException(msg='更新失败，该岗位不存在')
+        exist_position = await PositionCRUD(auth).get(name=data.name)
+        if exist_position and exist_position.id != data.id:
+            raise CustomException(msg='更新失败，岗位名称重复')
         updated_position = await PositionCRUD(auth).update(id=data.id, data=data)
         return PositionOutSchema.model_validate(updated_position).model_dump()
 
     @classmethod
     async def delete_position(cls, auth: AuthSchema, id: int) -> None:
         """删除岗位"""
+        position = await PositionCRUD(auth).get_position_by_id(id=id)
+        if not position:
+            raise CustomException(msg='删除失败，该岗位不存在')
         await PositionCRUD(auth).delete(ids=[id])
 
     @classmethod

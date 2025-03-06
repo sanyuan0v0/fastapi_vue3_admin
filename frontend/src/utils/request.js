@@ -4,6 +4,7 @@ import router from "@/router";
 import { getNewToken } from "@/api/system/auth";
 import { save_token } from "@/utils/util";
 import notification from "ant-design-vue/es/notification";
+import { message } from 'ant-design-vue';
 
 // 创建 axios 实例
 const request = axios.create({
@@ -13,7 +14,7 @@ const request = axios.create({
 
 // 异常拦截处理器
 const errorHandler = async (error) => {
-  console.log(error);
+  // console.error(error);
 
   if (!error.response) {
     return Promise.reject(error);
@@ -27,20 +28,14 @@ const errorHandler = async (error) => {
     storage.remove("Access-Token");
     storage.remove("Refresh-Token");
 
-    notification.error({
-      message: "错误",
-      description: data.msg,
-    });
+    message.error(data.msg);
     router.push("/login");
     return Promise.reject(error);
   }
 
   if (data.status_code === 401) {
     if (!access_token) {
-      notification.error({
-        message: "错误",
-        description: data.msg,
-      });
+      message.error(data.msg);
       router.push("/login");
       return Promise.reject(error);
     }
@@ -60,26 +55,16 @@ const errorHandler = async (error) => {
           );
           return request(error.response.config).then((response) => response);
         }
-
-        notification.error({
-          message: "错误",
-          description: result.msg,
-        });
+        message.error(result.msg);
         router.push("/login");
         return Promise.reject(error);
       })
       .catch((error) => {
-        notification.error({
-          message: "错误",
-          description: data.msg,
-        });
+        message.error(data.msg);
         return Promise.reject(error);
       });
   } else {
-    notification.error({
-      message: "错误",
-      description: data.msg,
-    });
+    message.error(data.msg);
     return Promise.reject(error);
   }
 };
@@ -98,18 +83,16 @@ request.interceptors.request.use((config) => {
 // 响应拦截器
 request.interceptors.response.use((response) => {
   // 打印全局响应
-  console.log(response);
+  console.log(response.data);
   // 如果是文件下载类型的响应，直接返回
   if (response.config.responseType === 'blob') {
     return response;
   }
   if (response.data.status_code !== 200) {
-    notification.error({
-      message: "错误",
-      description: response.data.msg,
-    });
+    message.error(response.data.msg);
     return Promise.reject(response);
   }
+  // message.success(response.data.msg);
   return response;
 }, errorHandler);
 

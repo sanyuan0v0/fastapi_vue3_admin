@@ -10,6 +10,7 @@ from app.api.v1.schemas.system.menu_schema import (
     MenuOutSchema
 )
 from app.core.base_schema import BatchSetAvailable
+from app.core.exceptions import CustomException
 from app.utils.common_util import (
     get_parent_id_map,
     get_parent_recursion,
@@ -39,6 +40,9 @@ class MenuService:
 
     @classmethod
     async def create_menu(cls, auth: AuthSchema, data: MenuCreateSchema) -> Dict:
+        menu = await MenuCRUD(auth).get(name=data.name)
+        if menu:
+            raise CustomException(msg='创建失败，该菜单已存在')
         if data.parent_id:
             parent_menu = await MenuCRUD(auth).get_menu_by_id(id=data.parent_id)
             data.parent_name = parent_menu.name
@@ -48,6 +52,13 @@ class MenuService:
 
     @classmethod
     async def update_menu(cls, auth: AuthSchema, data: MenuUpdateSchema) -> Dict:
+        menu = await MenuCRUD(auth).get_menu_by_id(id=data.id)
+        if not menu:
+            raise CustomException(msg='更新失败，该菜单不存在')
+        exist_menu = await MenuCRUD(auth).get(name=data.name)
+        if exist_menu and exist_menu.id != data.id:
+            raise CustomException(msg='更新失败，菜单名称重复')
+        
         if data.parent_id:
             parent_menu = await MenuCRUD(auth).get_menu_by_id(id=data.parent_id)
             data.parent_name = parent_menu.name
@@ -60,6 +71,9 @@ class MenuService:
     
     @classmethod
     async def delete_menu(cls, auth: AuthSchema, id: int) -> None:
+        menu = await MenuCRUD(auth).get_menu_by_id(id=id)
+        if not menu:
+            raise CustomException(msg='删除失败，该菜单不存在')
         await MenuCRUD(auth).delete(ids=[id])
 
     @classmethod

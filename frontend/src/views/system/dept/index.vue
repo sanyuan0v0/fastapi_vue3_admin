@@ -435,10 +435,29 @@ const handleMoreClick: MenuProps['onClick'] = e => {
   });
 };
 
+
 // 弹窗关键字处理
 const modalHandle = (modalType: string, record?: tableDataType) => {
   modalTitle.value = modalType;
   openModal.value = true;
+
+  // 重新创建 createState 和 updateState 以重置为初始状态
+  Object.assign(createState, {
+    name: '',
+    order: 1,
+    available: true,
+    parent_id: undefined,
+    description: ''
+  });
+
+  Object.assign(updateState, {
+    id: undefined,
+    name: '',
+    order: 1,
+    available: true,
+    parent_id: undefined,
+    description: ''
+  });
 
   if (modalType === 'view' && record !== undefined) {
     detailStateLoading.value = true;
@@ -478,6 +497,7 @@ const handleModalSumbit = () => {
         loadingData();
       }).catch(error => {
         console.error(error);
+        modalSubmitLoading.value = false;
       });
     }).catch(error => {
       modalSubmitLoading.value = false;
