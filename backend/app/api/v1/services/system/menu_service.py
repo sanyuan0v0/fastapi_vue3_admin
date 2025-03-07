@@ -43,9 +43,7 @@ class MenuService:
         menu = await MenuCRUD(auth).get(name=data.name)
         if menu:
             raise CustomException(msg='创建失败，该菜单已存在')
-        if data.parent_id:
-            parent_menu = await MenuCRUD(auth).get_menu_by_id(id=data.parent_id)
-            data.parent_name = parent_menu.name
+
         new_menu = await MenuCRUD(auth).create(data=data)
         new_menu_dict = MenuOutSchema.model_validate(new_menu).model_dump()
         return new_menu_dict

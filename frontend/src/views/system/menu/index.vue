@@ -159,7 +159,7 @@
               :rules="[{ required: createState.type !== 1 ? true : false, message: '请输入权限标识' }]">
               <a-input v-model:value="createState.permission" placeholder="请输入权限标识" allowClear></a-input>
             </a-form-item>
-            <a-form-item name="parent_id" label="父级菜单">
+            <a-form-item v-if="createState.type !== 1" name="parent_id" label="父级菜单" :rules="[{ required: true, message: '请选择父级' }]">
               <a-tree-select v-model:value="createState.parent_id"
                 :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }" 
                 :tree-data="menuSelectorTreeData"
@@ -170,7 +170,7 @@
                 allow-clear 
                 placeholder="请选择父级菜单"></a-tree-select>
             </a-form-item>
-            <a-form-item name="icon" label="图标">
+            <a-form-item v-if="createState.type == 1" name="icon" label="图标">
               <a-popover placement="right" trigger="click">
                 <template #content>
                   <div class="icon-clear-btn-wrapper">
@@ -248,11 +248,18 @@
             <a-form-item name="name" label="名称" :rules="[{ required: true, message: '请输入名称' }]">
               <a-input v-model:value="updateState.name" placeholder="请输入名称" allowClear></a-input>
             </a-form-item>
+            <a-form-item name="type" label="类型" :rules="[{ required: true, message: '请选择类型' }]">
+              <a-radio-group v-model:value="updateState.type">
+                <a-radio :value="1">目录</a-radio>
+                <a-radio :value="2">功能</a-radio>
+                <a-radio :value="3">权限</a-radio>
+              </a-radio-group>
+            </a-form-item>
             <a-form-item v-if="updateState.type !== 1" name="permission" label="权限标识"
               :rules="[{ required: updateState.type !== 1 ? true : false, message: '请输入权限标识' }]">
               <a-input v-model:value="updateState.permission" placeholder="请输入权限标识" allowClear></a-input>
             </a-form-item>
-            <a-form-item name="parent_id" label="父级菜单">
+            <a-form-item v-if="updateState.type !== 1" name="parent_id" label="父级菜单" :rules="[{ required: true, message: '请选择父级' }]">
               <a-tree-select v-model:value="updateState.parent_id"
                 :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }" 
                 :tree-data="menuSelectorTreeData"
@@ -263,7 +270,7 @@
                 allow-clear 
                 placeholder="请选择父级菜单"></a-tree-select>
             </a-form-item>
-            <a-form-item name="icon" label="图标">
+            <a-form-item v-if="updateState.type == 1" name="icon" label="图标">
               <a-popover placement="right" trigger="click">
                 <template #content>
                   <div class="icon-clear-btn-wrapper">

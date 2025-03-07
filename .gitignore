@@ -10,6 +10,7 @@ venv
 backend/logs
 backend/venv
 backend/__pycache__
+backend/dev_sql.db
 
 frontend/build
 frontend/node_modules
