@@ -146,9 +146,16 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
    ```shell
    # 进入后端根目录 backend 下运行
    python3 main.py run
+   
    # 如果使用celery管理任务，需要另外启动celery
    启动普通任务work: celery -A celery_app.celery_app worker --loglevel=info
    启动定时任务work: celery -A celery_app.celery_app beat --loglevel=info
+
+   # 修改了模型后需要：重新生成迁移文件，然后应用迁移
+   # 生成迁移
+   # python main.py revision "初始化迁移" --env=dev(不加默认为dev)
+   # 应用迁移
+   # python main.py upgrade --env=dev(不加默认为dev)
    ```
 
 ### 前端

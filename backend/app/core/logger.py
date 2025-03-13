@@ -25,35 +25,38 @@ class LoggerHandler:
 
     def _configure_logger(self):
         """配置日志处理器"""
-        # 清除现有处理器
-        self.logger.handlers.clear()
+        try:
+            # 清除现有处理器
+            self.logger.handlers.clear()
 
-        # 设置日志级别
-        self.logger.setLevel(settings.LOGGER_LEVEL)
+            # 设置日志级别
+            self.logger.setLevel(settings.LOGGER_LEVEL)
 
-        # 创建日志格式器
-        formatter = logging.Formatter(fmt=settings.LOGGER_FORMAT)
+            # 创建日志格式器
+            formatter = logging.Formatter(fmt=settings.LOGGER_FORMAT)
 
-        # 确保日志目录存在
-        settings.LOGGER_FILEPATH.parent.mkdir(parents=True, exist_ok=True)
+            # 确保日志目录存在
+            settings.LOGGER_FILEPATH.parent.mkdir(parents=True, exist_ok=True)
 
-        # 配置文件处理器
-        file_handler = TimedRotatingFileHandler(
-            filename=settings.LOGGER_FILEPATH,
-            when=settings.WHEN,
-            interval=settings.INTERVAL,
-            backupCount=settings.BACKUPCOUNT,
-            encoding=settings.ENCODING
-        )
-        file_handler.setLevel(settings.LOGGER_LEVEL)
-        file_handler.setFormatter(formatter)
-        self.logger.addHandler(file_handler)
+            # 配置文件处理器
+            file_handler = TimedRotatingFileHandler(
+                filename=settings.LOGGER_FILEPATH,
+                when=settings.WHEN,
+                interval=settings.INTERVAL,
+                backupCount=settings.BACKUPCOUNT,
+                encoding=settings.ENCODING
+            )
+            file_handler.setLevel(settings.LOGGER_LEVEL)
+            file_handler.setFormatter(formatter)
+            self.logger.addHandler(file_handler)
 
-        # 配置控制台处理器
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(settings.LOGGER_LEVEL)
-        console_handler.setFormatter(formatter)
-        self.logger.addHandler(console_handler)
+            # 配置控制台处理器
+            console_handler = logging.StreamHandler()
+            console_handler.setLevel(settings.LOGGER_LEVEL)
+            console_handler.setFormatter(formatter)
+            self.logger.addHandler(console_handler)
+        except Exception as e:
+            self.logger.error(f"日志配置失败: {e}")
 
     def __enter__(self):
         return self.logger

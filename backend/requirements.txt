@@ -1,3 +1,4 @@
+alembic==1.15.1     # 数据库迁移
 fastapi==0.115.2    # web 框架
 typer==0.12.5       # CLI
 uvicorn==0.30.6     # uvicorn web 框架

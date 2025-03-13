@@ -1388,12 +1388,18 @@
 <ol>
 <li>启动</li>
 </ol>
-<p><code>shell
+<p>```shell
    # 进入后端根目录 backend 下运行
-   python3 main.py run
-   # 如果使用celery管理任务，需要另外启动celery
+   python3 main.py run</p>
+<p># 如果使用celery管理任务，需要另外启动celery
    启动普通任务work: celery -A celery_app.celery_app worker --loglevel=info
-   启动定时任务work: celery -A celery_app.celery_app beat --loglevel=info</code></p>
+   启动定时任务work: celery -A celery_app.celery_app beat --loglevel=info</p>
+<p># 修改了模型后需要：重新生成迁移文件，然后应用迁移
+   # 生成迁移
+   # python main.py revision "初始化迁移" --env=dev(不加默认为dev)
+   # 应用迁移
+   # python main.py upgrade --env=dev(不加默认为dev)
+   ```</p>
 <h3 id="_9">前端</h3>
 <ol>
 <li>安装依赖</li>

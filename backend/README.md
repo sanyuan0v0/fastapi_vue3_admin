@@ -65,4 +65,10 @@ python main.py run    # 启动服务
 uvicorn main:create_app --host 0.0.0.0 --port 8000 --factory --workers 4
 # 方式三：
 gunicorn -c gunicorn.py main:create_app
+
+# 修改了模型后需要：重新生成迁移文件，然后应用迁移
+# 生成迁移
+python main.py revision "初始化迁移" --env=dev(不加默认为dev)
+# 应用迁移
+python main.py upgrade --env=dev(不加默认为dev)
 ```

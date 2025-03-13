@@ -152,9 +152,16 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
    ```shell
    # Run in the root directory of the backend project (backend)
    python3 main.py run
+
    # If using Celery to manage tasks, you need to start Celery separately.
    To start a regular task worker: celery -A celery_app.celery_app worker --loglevel=info
    To start a periodic task scheduler (beat): celery -A celery_app.celery_app beat --loglevel=info
+
+   # After modifying the models, you need to: regenerate migration files and then apply migrations
+   # Generate migration
+   # python main.py revision "initial migration" --env=dev (default is dev if not specified)
+   # Apply migration
+   # python main.py upgrade --env=dev (default is dev if not specified)
    ```
 
 ### Frontend
