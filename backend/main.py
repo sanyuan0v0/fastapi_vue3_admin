@@ -64,8 +64,10 @@ def init(env: EnvironmentEnum = typer.Option(EnvironmentEnum.DEV, "--env", help=
     os.environ["ENVIRONMENT"] = env.value
     # 初始化数据
     data = InitializeData()
-    # 使用asyncio.run来运行异步函数
-    asyncio.run(data.run())
+    # 使用asyncio.run来运行异步函数，
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(data.run())
+    # asyncio.run(data.run())
 
 @shell_app.command()
 def revision(message: str, env: EnvironmentEnum = typer.Option(EnvironmentEnum.DEV, "--env", help="运行环境 (dev, test, prod)")):
