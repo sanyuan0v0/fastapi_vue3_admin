@@ -250,7 +250,7 @@ The QR codes below are personal codes that can be used for technical discussions
 <table>
     <tr>
         <td><img src="./mkdocs/docs/resources/images/微信.jpg"/></td>
-        <td><img src="./mkdocs/docs/resources/images/wechat.png"/></td>
+        <td><img src="./mkdocs/docs/resources/images/微信群.jpg"/></td>
         <td><img src="./mkdocs/docs/resources/images/wechatPay.jpg"/></td>
     </tr>
 </table>
