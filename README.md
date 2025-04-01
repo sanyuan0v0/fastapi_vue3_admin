@@ -3,7 +3,7 @@
       <img src="./mkdocs/docs/resources/images/logo.png" height="150" alt="logo"/>
    </p>
       <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Fastapi-Vue3-Admin v1.0.0</h1>
-      <h4 align="center">基于Fastapi-Vue-Admi前后端分离的快速开发框架</h4>
+      <h4 align="center">基于Fastapi-Vue-Admin前后端分离的Web应用快速开发框架</h4>
    <p align="center">
       <a href="https://gitee.com/tao__tao/fastapi_vue3_admin.git">
          <img src="https://gitee.com/tao__tao/fastapi_vue3_admin/badge/star.svg?theme=dark">

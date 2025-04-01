@@ -3,7 +3,7 @@
       <img src="./mkdocs/docs/resources/images/logo.png" height="150" alt="logo"/>
    </p>
       <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Fastapi-Vue3-Admin v1.0.0</h1>
-      <h4 align="center">A rapid development framework for front-end and back-end separation based on Fastapi-Vue3-Admin</h4>
+      <h4 align="center">A rapid web application development framework for front-end and back-end separation based on Fastapi-Vue3-Admin</h4>
    <p align="center">
       <a href="https://gitee.com/tao__tao/fastapi_vue3_admin.git">
          <img src="https://gitee.com/tao__tao/fastapi_vue3_admin/badge/star.svg?theme=dark">
