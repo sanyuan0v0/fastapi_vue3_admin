@@ -13,6 +13,19 @@ class ExcelUtil:
     """Excel文件处理工具类"""
     
     @classmethod
+    def __mapping_list(cls, list_data: List[Dict[str, Any]], mapping_dict: Dict) -> List:
+        """
+        工具方法：将list数据中的字段名映射为对应的中文字段名
+
+        :param list_data: 数据列表
+        :param mapping_dict: 映射字典
+        :return: 映射后的数据列表
+        """
+        mapping_data = [{mapping_dict.get(key): item.get(key) for key in mapping_dict} for item in list_data]
+
+        return mapping_data
+    
+    @classmethod
     def get_excel_template(cls, header_list: List[str], selector_header_list: List[str], option_list: List[Dict[str, List[str]]]) -> bytes:
         """
         生成Excel模板文件
@@ -58,8 +71,8 @@ class ExcelUtil:
         buffer.seek(0)
         return buffer.getvalue()
     
-    @staticmethod
-    def export_list2excel(list_data: List[Dict[str, Any]]) -> bytes:
+    @classmethod
+    def export_list2excel(cls, list_data: List[Dict[str, Any]], mapping_dict: Dict) -> bytes:
         """
         将列表数据导出为Excel
 
@@ -69,7 +82,8 @@ class ExcelUtil:
         Returns:
             bytes: Excel文件的二进制数据
         """
-        df = pd.DataFrame(list_data)
+        mapping_data = cls.__mapping_list(list_data, mapping_dict)
+        df = pd.DataFrame(mapping_data)
         buffer = io.BytesIO()
         df.to_excel(buffer, index=False, engine='openpyxl')
         return buffer.getvalue()

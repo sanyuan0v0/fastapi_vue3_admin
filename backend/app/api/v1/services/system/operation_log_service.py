@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, List
+from typing import Any, Dict, List
 
 
 from app.api.v1.cruds.system.operation_log_crud import OperationLogCRUD
@@ -46,7 +46,7 @@ class OperationLogService:
         await OperationLogCRUD(auth).delete(ids=[id])
 
     @classmethod
-    async def export_log_list(cls, operation_log_list: List) -> bytes:
+    async def export_log_list(cls, operation_log_list: List[Dict[str, Any]]) -> bytes:
         """
         导出日志信息
 
@@ -80,10 +80,10 @@ class OperationLogService:
             # 处理状态
             item['response_code'] = '成功' if item.get('response_code') == 200 else '失败'
 
-        # 转换为中文键
-        new_data = [
-            {mapping_dict.get(key): value for key, value in item.items() if mapping_dict.get(key)} 
-            for item in data
-        ]
+        # # 转换为中文键
+        # new_data = [
+        #     {mapping_dict.get(key): value for key, value in item.items() if mapping_dict.get(key)} 
+        #     for item in data
+        # ]
 
-        return ExcelUtil.export_list2excel(new_data)
+        return ExcelUtil.export_list2excel(list_data=operation_log_list, mapping_dict=mapping_dict)

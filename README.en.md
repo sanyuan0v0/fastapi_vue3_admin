@@ -42,6 +42,7 @@ fastapi_vue_admin
   - **Swagger**:Automatically generates interactive API documentation.
   - **Pydantic**:Enforces type constraints.
   - **SQLAlchemy 2.0**:A powerful ORM library.
+  - **APScheduler**:A powerful job scheduling library.
 
 - **Frontend**:
   - **Vue3**:A modern frontend framework.
@@ -81,6 +82,8 @@ If you find the project helpful, please give it a star!
   - **Log Management**:Uniformly maintains commonly used and relatively fixed data in the system.
   - **Config Management**:Maintains system configuration information, such as system parameters and system settings.
   - **Notice Management**:Manages system notifications, such as system messages and system announcements.
+  - **Dict Management**:Manages system dictionaries, such as system parameters and system settings.
+  - **Job Management**:Manages system jobs, such as system messages and system announcements.
 
 - **Monitoring Management**
   - **Online Users**:Views currently online users in the system.
@@ -153,10 +156,6 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
    # Run in the root directory of the backend project (backend)
    python3 main.py run
 
-   # If using Celery to manage tasks, you need to start Celery separately.
-   To start a regular task worker: celery -A celery_app.celery_app worker --loglevel=info
-   To start a periodic task scheduler (beat): celery -A celery_app.celery_app beat --loglevel=info
-
    # After modifying the models, you need to: regenerate migration files and then apply migrations
    # Generate migration
    # python main.py revision "initial migration" --env=dev (default is dev if not specified)
@@ -219,7 +218,7 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
         <td><img src="./mkdocs/docs/resources/images/cache.png"/>Cache</td>
    </tr>
    <tr>
-        <td><img src="./mkdocs/docs/resources/images/task.jpeg"/>Task</td>
+        <td><img src="./mkdocs/docs/resources/images/job.png"/>Task</td>
         <td><img src="./mkdocs/docs/resources/images/docs.png"/>API</td>
    </tr>
         <td><img src="./mkdocs/docs/resources/images/redoc.png"/>Documentation</td>
@@ -227,6 +226,7 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
    </tr>
    </tr>
         <td><img src="./mkdocs/docs/resources/images/help.png"/>Help</td>
+        <td><img src="./mkdocs/docs/resources/images/dict.png"/>Dict</td>
    </tr>
 </table>
 
@@ -240,6 +240,7 @@ Thank you to the following projects for their contributions and support, which h
 - [Fastapi-Vue3-Admin Project](https://gitee.com/senqi666/fastapi-vue-admin)
 - [Vue-FastAPI-Admin Project](https://gitee.com/mizhexiaoxiao/vue-fastapi-admin)
 - [RuoYi-Vue3-FastAPI Project](https://gitee.com/insistence2022/RuoYi-Vue3-FastAPI)
+- [APScheduler Project](https://github.com/agronholm/apscheduler)
 
 ## 🎨 WeChat Group
 

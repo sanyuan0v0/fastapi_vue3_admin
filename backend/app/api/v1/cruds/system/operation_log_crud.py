@@ -9,7 +9,7 @@ from app.api.v1.schemas.system.auth_schema import AuthSchema
 
 
 class OperationLogCRUD(CRUDBase[OperationLogModel, OperationLogCreateSchema, None]):
-    """操作日志数据查询层"""
+    """操作日志数据层"""
 
     def __init__(self, auth: AuthSchema) -> None:
         """初始化操作日志CRUD"""

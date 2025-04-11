@@ -1,0 +1,186 @@
+# -*- coding: utf-8 -*-
+
+from fastapi import APIRouter, Depends, Query, Request
+from fastapi.responses import JSONResponse, StreamingResponse
+from aioredis import Redis
+
+from app.common.response import StreamResponse, SuccessResponse
+from app.core.base_params import PaginationQueryParams
+from app.core.dependencies import AuthPermission
+from app.core.router_class import OperationLogRoute
+from app.core.logger import logger
+from app.common.request import PaginationService
+from app.utils.common_util import bytes2file_response
+from app.api.v1.schemas.system.auth_schema import AuthSchema
+from app.api.v1.params.system.dict_param import DictTypeQueryParams, DictDataQueryParams
+from app.api.v1.services.system.dict_service import DictTypeService, DictDataService
+from app.api.v1.schemas.system.dict_schema import (
+    DictTypeCreateSchema,
+    DictTypeUpdateSchema,
+    DictDataCreateSchema,
+    DictDataUpdateSchema
+)
+
+
+router = APIRouter(route_class=OperationLogRoute)
+
+@router.get("/type/detail", summary="获取字典类型详情", description="获取字典类型详情")
+async def get_type_detail(
+    id: int = Query(..., description="字典类型ID"),
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_type:query"])),
+) -> JSONResponse:
+    result_dict = await DictTypeService.get_obj_detail_services(id=id, auth=auth)
+    logger.info(f"{auth.user.name} 获取字典类型详情成功 {id}")
+    return SuccessResponse(data=result_dict, msg="获取字典类型详情成功")
+
+@router.get("/type/list", summary="查询字典类型", description="查询字典类型")
+async def get_type_list(
+    page: PaginationQueryParams = Depends(),
+    search: DictTypeQueryParams = Depends(),
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_type:query"])),
+) -> JSONResponse:
+    result_dict_list = await DictTypeService.get_obj_list_services(auth=auth, search=search, order_by=page.order_by)
+    result_dict = await PaginationService.get_page_obj(data_list= result_dict_list, page_no= page.page_no, page_size = page.page_size)
+    logger.info(f"{auth.user.name} 查询字典类型列表成功")
+    return SuccessResponse(data=result_dict, msg="查询字典类型列表成功")
+
+@router.get("/type/optionselect", summary="查询字典类型", description="查询字典类型")
+async def get_type_list(
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_type:query"])),
+) -> JSONResponse:
+    result_dict_list = await DictTypeService.get_obj_list_services(auth=auth)
+    logger.info(f"{auth.user.name} 获取字典类型列表成功")
+    return SuccessResponse(data=result_dict_list, msg="获取字典类型列表成功")
+
+@router.post("/type/create", summary="创建字典类型", description="创建字典类型")
+async def create_type(
+    request: Request,
+    data: DictTypeCreateSchema,
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_type:create"])),
+) -> JSONResponse:
+    result_dict = await DictTypeService.create_obj_services(auth=auth, request=request, data=data)
+    logger.info(f"{auth.user.name} 创建字典类型成功: {result_dict}")
+    return SuccessResponse(data=result_dict, msg="创建字典类型成功")
+
+@router.put("/type/update", summary="修改字典类型", description="修改字典类型")
+async def update_type(
+    request: Request,
+    data: DictTypeUpdateSchema,
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_type:update"])),
+) -> JSONResponse:
+    result_dict = await DictTypeService.update_obj_services(auth=auth, request=request, data=data)
+    logger.info(f"{auth.user.name} 修改字典类型成功: {result_dict}")
+    return SuccessResponse(data=result_dict, msg="修改字典类型成功")
+
+@router.delete("/type/delete", summary="删除字典类型", description="删除字典类型")
+async def delete_type(
+    request: Request,
+    id: int = Query(..., description="字典类型ID"),
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_type:delete"])),
+) -> JSONResponse:
+    await DictTypeService.delete_obj_services(auth=auth, request=request, id=id)
+    logger.info(f"{auth.user.name} 删除字典类型成功: {id}")
+    return SuccessResponse(msg="删除字典类型成功")
+
+@router.post('/type/export', summary="导出字典类型", description="导出字典类型")
+async def export_type_list(
+    search: DictTypeQueryParams = Depends(),
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_type:export"])),
+) -> StreamingResponse:
+    # 获取全量数据
+    result_dict_list = await DictTypeService.get_obj_list_services(search=search, auth=auth)
+    export_result = await DictTypeService.export_obj_services(data_list=result_dict_list)
+    logger.info('导出字典类型成功')
+
+    return StreamResponse(
+        data=bytes2file_response(export_result),
+        media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers = {
+            'Content-Disposition': 'attachment; filename=data.xlsx'
+        }
+    )
+
+@router.get("/data/detail", summary="获取字典数据详情", description="获取字典数据详情")
+async def get_data_detail(
+    id: int = Query(..., description="字典数据ID"),
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_data:query"])),
+) -> JSONResponse:
+    result_dict = await DictDataService.get_obj_detail_services(id=id, auth=auth)
+    logger.info(f"{auth.user.name} 获取字典数据详情成功 {id}")
+    return SuccessResponse(data=result_dict, msg="获取字典数据详情成功")
+
+@router.get("/data/list", summary="查询字典数据", description="查询字典数据")
+async def get_data_list(
+    page: PaginationQueryParams = Depends(),
+    search: DictDataQueryParams = Depends(),
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_data:query"])),
+) -> JSONResponse:
+    result_dict_list = await DictDataService.get_obj_list_services(auth=auth, search=search, order_by=page.order_by)
+    result_dict = await PaginationService.get_page_obj(data_list= result_dict_list, page_no= page.page_no, page_size = page.page_size)
+    logger.info(f"{auth.user.name} 查询字典数据列表成功")
+    return SuccessResponse(data=result_dict, msg="查询字典数据列表成功")
+
+@router.post("/data/create", summary="创建字典数据", description="创建字典数据")
+async def create_data(
+    request: Request,
+    data: DictDataCreateSchema,
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_data:create"])),
+) -> JSONResponse:
+    result_dict = await DictDataService.create_obj_services(auth=auth, request=request, data=data)
+    logger.info(f"{auth.user.name} 创建字典数据成功: {result_dict}")
+    return SuccessResponse(data=result_dict, msg="创建字典数据成功")
+
+@router.put("/data/update", summary="修改字典数据", description="修改字典数据")
+async def update_data(
+    request: Request,
+    data: DictDataUpdateSchema,
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_data:update"])),
+) -> JSONResponse:
+    result_dict = await DictDataService.update_obj_services(auth=auth, request=request, data=data)
+    logger.info(f"{auth.user.name} 修改字典数据成功: {result_dict}")
+    return SuccessResponse(data=result_dict, msg="修改字典数据成功")
+
+@router.delete("/data/delete", summary="删除字典数据", description="删除字典数据")
+async def delete_data(
+    request: Request,
+    id: int = Query(..., description="字典数据ID"),
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_data:delete"])),
+) -> JSONResponse:
+    await DictDataService.delete_obj_services(auth=auth, request=request, id=id)
+    logger.info(f"{auth.user.name} 删除字典数据成功: {id}")
+    return SuccessResponse(msg="删除字典数据成功")
+
+@router.post('/data/export', summary="导出字典数据", description="导出字典数据")
+async def export_data_list(
+    search: DictDataQueryParams = Depends(),
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_data:export"])),
+) -> StreamingResponse:
+    # 获取全量数据
+    result_dict_list = await DictDataService.get_obj_list_services(search=search, auth=auth)
+    export_result = await DictDataService.export_obj_services(data_list=result_dict_list)
+    logger.info('导出字典数据成功')
+
+    return StreamResponse(
+        data=bytes2file_response(export_result),
+        media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers = {
+            'Content-Disposition': 'attachment; filename=data.xlsx'
+        }
+    )
+
+@router.get('/type/data',  summary="获取字典类型", description="获取字典类型")
+async def query_system_dict_type_options(request: Request):
+    result = await DictDataService.get_init_dict(redis=request.app.state.redis)
+    logger.info(f"获取初始化字典数据成功 {result}")
+    return SuccessResponse(data=result, msg="获取初始字典数据成功")
+
+@router.get('/data/type', summary="根据字典类型获取数据", description="根据字典类型获取数据")
+async def query_system_dict_type_data(request: Request, dict_type: str):
+    # 获取全量数据
+    dict_data_query_result = await DictDataService.query_init_dict(
+        redis=request.app.state.redis, dict_type=dict_type
+    )
+    logger.info(f"获取字典数据：{dict_data_query_result}")
+
+    return SuccessResponse(data=dict_data_query_result, msg="获取字典数据成功")
+

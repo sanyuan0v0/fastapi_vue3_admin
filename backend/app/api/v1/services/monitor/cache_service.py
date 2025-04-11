@@ -4,7 +4,7 @@ from fastapi import Request
 
 from app.common.enums import RedisInitKeyConfig
 from app.api.v1.schemas.monitor.cache_schema import CacheMonitorSchema, CacheInfoSchema
-from app.core.cache_crud import Cache
+from app.core.redis_crud import RedisCURD
 
 class CacheService:
     """
@@ -19,9 +19,9 @@ class CacheService:
         :param request: Request对象
         :return: 缓存监控信息
         """
-        info = await Cache(request.app.state.redis).info()
-        db_size = await Cache(request.app.state.redis).db_size()
-        command_stats_dict = await Cache(request.app.state.redis).commandstats()
+        info = await RedisCURD(request.app.state.redis).info()
+        db_size = await RedisCURD(request.app.state.redis).db_size()
+        command_stats_dict = await RedisCURD(request.app.state.redis).commandstats()
 
         command_stats = [
             dict(name=key.split('_')[1], value=str(value.get('calls'))) for key, value in command_stats_dict.items()
@@ -59,7 +59,7 @@ class CacheService:
         :param cache_name: 缓存名称
         :return: 缓存键名列表信息
         """
-        cache_keys = await Cache(request.app.state.redis).get_keys(f'{cache_name}*')
+        cache_keys = await RedisCURD(request.app.state.redis).get_keys(f'{cache_name}*')
         cache_key_list = [key.split(':', 1)[1] for key in cache_keys if key.startswith(f'{cache_name}:')]
 
         return cache_key_list
@@ -74,7 +74,7 @@ class CacheService:
         :param cache_key: 缓存键名
         :return: 缓存内容信息
         """
-        cache_value = await Cache(request.app.state.redis).get(f'{cache_name}:{cache_key}')
+        cache_value = await RedisCURD(request.app.state.redis).get(f'{cache_name}:{cache_key}')
 
         return CacheInfoSchema(cache_key=cache_key, cache_name=cache_name, cache_value=cache_value, remark='').model_dump()
 
@@ -87,9 +87,9 @@ class CacheService:
         :param cache_name: 缓存名称
         :return: 操作缓存响应信息
         """
-        cache_keys = await Cache(request.app.state.redis).get_keys(f'{cache_name}*')
+        cache_keys = await RedisCURD(request.app.state.redis).get_keys(f'{cache_name}*')
         if cache_keys:
-            await Cache(request.app.state.redis).delete(*cache_keys)
+            await RedisCURD(request.app.state.redis).delete(*cache_keys)
 
         return True
 
@@ -102,9 +102,9 @@ class CacheService:
         :param cache_key: 缓存键名
         :return: 操作缓存响应信息
         """
-        cache_keys = await Cache(request.app.state.redis).get_keys(f'*{cache_key}')
+        cache_keys = await RedisCURD(request.app.state.redis).get_keys(f'*{cache_key}')
         if cache_keys:
-            await Cache(request.app.state.redis).delete(*cache_keys)
+            await RedisCURD(request.app.state.redis).delete(*cache_keys)
 
         return True
 
@@ -116,8 +116,8 @@ class CacheService:
         :param request: Request对象
         :return: 操作缓存响应信息
         """
-        cache_keys = await Cache(request.app.state.redis).get_keys
+        cache_keys = await RedisCURD(request.app.state.redis).get_keys
         if cache_keys:
-            await Cache(request.app.state.redis).delete(*cache_keys)
+            await RedisCURD(request.app.state.redis).delete(*cache_keys)
 
         return True

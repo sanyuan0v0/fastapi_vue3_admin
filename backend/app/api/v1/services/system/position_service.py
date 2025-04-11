@@ -85,9 +85,9 @@ class PositionService:
             item['available'] = '正常' if item.get('available') else '停用'
 
         # 转换为中文键
-        new_data = [
-            {mapping_dict.get(key): value for key, value in item.items() if mapping_dict.get(key)} 
-            for item in data
-        ]
+        # new_data = [
+        #     {mapping_dict.get(key): value for key, value in item.items() if mapping_dict.get(key)} 
+        #     for item in data
+        # ]
 
-        return ExcelUtil.export_list2excel(list_data=new_data)
+        return ExcelUtil.export_list2excel(list_data=post_list, mapping_dict=mapping_dict)

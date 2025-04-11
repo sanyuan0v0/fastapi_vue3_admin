@@ -13,6 +13,7 @@ from fastapi.openapi.docs import (
 from app.config.setting import settings
 from app.api.v1.urls.system_url import SystemApiRouter
 from app.api.v1.urls.monitor_url import MonitorApiRouter
+from app.core.ap_scheduler import SchedulerUtil
 from app.core.logger import logger
 from app.utils.common_util import import_module, import_modules_async
 from app.core.exceptions import (
@@ -32,6 +33,7 @@ from app.core.exceptions import (
     ResponseValidationError
 )
 from app.api.v1.services.system.config_service import ConfigService
+from app.api.v1.services.system.dict_service import DictDataService
 from app.core.database import async_session
 
 
@@ -44,13 +46,16 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     await import_modules_async(modules=settings.EVENT_LIST, desc="全局事件", app=app, status=True)
     async with async_session() as session:
         await ConfigService().init_config(redis=app.state.redis, db=session)
-        logger.info('初始化系统配置完成...')
-
+        logger.info("初始化系统配置完成...")
+        await DictDataService().init_dict(redis=app.state.redis, db=session)
+        logger.info('初始化数据字典完成...')
+    await SchedulerUtil.init_system_scheduler()
     logger.info(f'{settings.TITLE} 服务成功启动...')
 
     yield
 
     await import_modules_async(modules=settings.EVENT_LIST, desc="全局事件", app=app, status=False)
+    await SchedulerUtil.close_system_scheduler()
     logger.info(f'{settings.TITLE} 服务关闭...')
 
 def register_middlewares(app: FastAPI) -> None:

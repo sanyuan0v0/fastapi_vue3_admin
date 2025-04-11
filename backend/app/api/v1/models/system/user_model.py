@@ -60,7 +60,7 @@ class UserModel(ModelBase):
     __table_args__ = ({'comment': '用户表'})
     
     # 基础字段
-    id = Column(Integer, primary_key=True, autoincrement=True, unique=True, comment='主键ID')
+    id = Column(Integer, primary_key=True, autoincrement=True, comment='主键ID')
     username = Column(String(150), nullable=False, unique=True, comment="用户名/登录账号")
     password = Column(String(128), nullable=False, comment="密码")
     name = Column(String(40), nullable=False, comment="姓名")

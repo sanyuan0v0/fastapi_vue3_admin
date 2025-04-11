@@ -13,8 +13,6 @@ from app.core.database import session_connect
 from app.core.logger import logger
 from app.api.v1.cruds.system.user_crud import UserCRUD
 from app.api.v1.schemas.system.auth_schema import AuthSchema
-from app.common.enums import RedisInitKeyConfig
-from app.core.cache_crud import Cache
 
 
 async def db_getter() -> AsyncGenerator[AsyncSession, None]:

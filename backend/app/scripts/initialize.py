@@ -16,7 +16,9 @@ from app.api.v1.models.system import (
     position_model,
     operation_log_model,
     notice_model,
-    config_model
+    config_model,
+    dict_model,
+    job_model
 )
 
 class InitializeData:
@@ -40,6 +42,9 @@ class InitializeData:
             notice_model.NoticeModel,
             config_model.ConfigModel,
             operation_log_model.OperationLogModel,
+            dict_model.DictTypeModel,
+            dict_model.DictDataModel,
+            job_model.JobModel,
         ]
 
     async def __init_model(self) -> None:

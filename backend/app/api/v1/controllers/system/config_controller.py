@@ -1,18 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from typing import List
 from fastapi import APIRouter, Depends, Request, UploadFile
 from fastapi.responses import JSONResponse
 
 from app.common.response import SuccessResponse
-from app.common.request import PaginationService
-from app.core.base_params import PaginationQueryParams
 from app.core.dependencies import AuthPermission
 from app.core.router_class import OperationLogRoute
 from app.core.logger import logger
 from app.api.v1.schemas.system.auth_schema import AuthSchema
 from app.api.v1.schemas.system.config_schema import ConfigUpdateSchema
-from app.api.v1.params.system.config_param import ConfigQueryParams
 from app.api.v1.services.system.config_service import ConfigService
 
 

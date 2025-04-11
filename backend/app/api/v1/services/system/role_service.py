@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, List
+from typing import Any, Dict, List
 
-from app.api.v1.cruds.system.dept_crud import DeptCRUD
 from app.core.base_schema import BatchSetAvailable
 from app.core.exceptions import CustomException
-from app.utils.common_util import get_child_id_map, get_child_recursion, get_parent_id_map, get_parent_recursion
-from app.api.v1.cruds.system.role_crud import RoleCRUD, MenuCRUD
+from app.api.v1.cruds.system.role_crud import RoleCRUD
 from app.api.v1.schemas.system.auth_schema import AuthSchema
 from app.api.v1.schemas.system.role_schema import (
     RoleCreateSchema,
@@ -84,7 +82,7 @@ class RoleService:
         await RoleCRUD(auth).set_role_available(ids=data.ids, available=data.available)
 
     @classmethod
-    async def export_role_list(cls, role_list: List) -> bytes:
+    async def export_role_list(cls, role_list: List[Dict[str, Any]]) -> bytes:
         """导出角色列表"""
         # 字段映射配置
         mapping_dict = {
@@ -116,9 +114,9 @@ class RoleService:
             item['data_scope'] = data_scope_map.get(item.get('data_scope'))
 
         # 转换为中文键
-        new_data = [
-            {mapping_dict.get(key): value for key, value in item.items() if mapping_dict.get(key)} 
-            for item in data
-        ]
+        # new_data = [
+        #     {mapping_dict.get(key): value for key, value in item.items() if mapping_dict.get(key)} 
+        #     for item in data
+        # ]
 
-        return ExcelUtil.export_list2excel(new_data)
+        return ExcelUtil.export_list2excel(list_data=role_list, mapping_dict=mapping_dict)

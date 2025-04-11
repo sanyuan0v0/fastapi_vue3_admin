@@ -9,7 +9,7 @@ from app.api.v1.schemas.system.auth_schema import AuthSchema
 
 
 class ConfigCRUD(CRUDBase[ConfigModel, ConfigCreateSchema, ConfigUpdateSchema]):
-    """操作配置数据查询层"""
+    """操作配置数据层"""
 
     def __init__(self, auth: AuthSchema) -> None:
         """初始化配置CRUD"""

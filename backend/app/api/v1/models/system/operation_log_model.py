@@ -12,7 +12,7 @@ class OperationLogModel(ModelBase):
     __tablename__ = "system_operation_log"
     __table_args__ = ({'comment': '操作日志表'})
 
-    id = Column(Integer, primary_key=True, autoincrement=True, unique=True, comment='主键ID')
+    id = Column(Integer, primary_key=True, autoincrement=True, comment='主键ID')
     request_path = Column(String(255), nullable=True, comment="请求路径", index=True)
     request_method = Column(String(10), nullable=True, comment="请求方式", index=True)
     request_payload = Column(Text, nullable=True, comment="请求体")

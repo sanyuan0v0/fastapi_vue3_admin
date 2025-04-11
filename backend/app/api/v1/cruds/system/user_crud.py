@@ -17,7 +17,7 @@ from app.api.v1.schemas.system.auth_schema import AuthSchema
 
 
 class UserCRUD(CRUDBase[UserModel, UserCreateSchema, UserUpdateSchema]):
-    """用户模块数据查询层"""
+    """用户模块数据层"""
 
     def __init__(self, auth: AuthSchema) -> None:
         """初始化用户CRUD"""

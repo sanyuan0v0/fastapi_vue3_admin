@@ -9,7 +9,7 @@ from app.api.v1.schemas.system.auth_schema import AuthSchema
 
 
 class PositionCRUD(CRUDBase[PositionModel, PositionCreateSchema, PositionUpdateSchema]):
-    """岗位模块数据查询层"""
+    """岗位模块数据层"""
 
     def __init__(self, auth: AuthSchema) -> None:
         """初始化岗位CRUD"""

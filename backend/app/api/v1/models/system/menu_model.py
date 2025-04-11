@@ -19,7 +19,7 @@ class MenuModel(ModelBase):
     __table_args__ = ({'comment': '菜单表'})
 
     # 基础字段
-    id = Column(Integer, primary_key=True, autoincrement=True, unique=True, comment='主键ID')
+    id = Column(Integer, primary_key=True, autoincrement=True, comment='主键ID')
     name = Column(String(50), nullable=False, comment="菜单名称", unique=True)
     type = Column(Integer, nullable=False, default=2, comment="菜单类型")
     order = Column(Integer, nullable=False, default=1, comment="显示排序")

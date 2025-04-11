@@ -20,7 +20,7 @@ UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 
 
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
-    """基础数据查询层"""
+    """基础数据层"""
 
     def __init__(self, model: ModelType, auth: AuthSchema) -> None:
         """
@@ -163,6 +163,20 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             await self.db.flush()
         except Exception as e:
             raise CustomException(msg=f"删除失败: {str(e)}")
+
+    async def clear(self) -> None:
+        """
+        清空对象表
+        
+        Raises:
+            CustomException: 清空失败时抛出异常
+        """
+        try:
+            sql = delete(self.model)
+            await self.db.execute(sql)
+            await self.db.flush()
+        except Exception as e:
+            raise CustomException(msg=f"清空失败: {str(e)}")
 
     async def set(self, ids: List[int], **kwargs) -> None:
         """

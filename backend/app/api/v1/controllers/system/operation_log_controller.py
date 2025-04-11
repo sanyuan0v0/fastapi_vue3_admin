@@ -2,8 +2,6 @@
 
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import JSONResponse, StreamingResponse
-import urllib.parse
-from urllib.parse import quote
 
 from app.common.request import PaginationService
 from app.common.response import SuccessResponse, StreamResponse

@@ -8,7 +8,7 @@ from app.common.enums import RedisInitKeyConfig
 from app.core.exceptions import CustomException
 from app.api.v1.params.monitor.online_param import OnlineQueryParams
 from app.api.v1.schemas.monitor.online_schema import OnlineOutSchema
-from app.core.cache_crud import Cache
+from app.core.redis_crud import RedisCURD
 
 class OnlineService:
     """在线用户管理模块服务层"""
@@ -17,12 +17,12 @@ class OnlineService:
     async def get_online_list(cls, request: Request, search: OnlineQueryParams) -> List[Dict]:
         """获取在线用户列表信息"""
         # 获取所有在线用户信息
-        token_keys = await Cache(request.app.state.redis).get_keys(f'{RedisInitKeyConfig.ONLINE_USER.key}*')
+        token_keys = await RedisCURD(request.app.state.redis).get_keys(f'{RedisInitKeyConfig.ONLINE_USER.key}*')
         if not token_keys:
             return []
             
         # 批量获取在线用户信息
-        online_values = await Cache(request.app.state.redis).mget(*token_keys)
+        online_values = await RedisCURD(request.app.state.redis).mget(*token_keys)
         online_list = []
         
         for online_value in online_values:
@@ -53,9 +53,9 @@ class OnlineService:
             
         # 批量删除token
 
-        await Cache(request.app.state.redis).delete(f"{RedisInitKeyConfig.ONLINE_USER.key}:{username}")
-        await Cache(request.app.state.redis).delete(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}")
-        await Cache(request.app.state.redis).delete(f"{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}")
+        await RedisCURD(request.app.state.redis).delete(f"{RedisInitKeyConfig.ONLINE_USER.key}:{username}")
+        await RedisCURD(request.app.state.redis).delete(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}")
+        await RedisCURD(request.app.state.redis).delete(f"{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}")
         return True
     
     @staticmethod

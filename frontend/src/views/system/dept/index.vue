@@ -144,7 +144,7 @@
             label="排序"
             :rules="[{ required: true, message: '请输入排序' }]"
           >
-            <a-input-number v-model:value="createState.order" :min="1" />
+            <a-input-number v-model:value="createState.order" :min="1" style="width: 100%"/>
           </a-form-item>
 
           <a-form-item name="parent_id" label="上级部门">
@@ -204,7 +204,7 @@
             label="排序"
             :rules="[{ required: true, message: '请输入排序' }]"
           >
-            <a-input-number v-model:value="updateState.order" :min="1" />
+            <a-input-number v-model:value="updateState.order" :min="1" style="width: 100%"/>
           </a-form-item>
 
           <a-form-item name="parent_id" label="上级部门">

@@ -203,7 +203,7 @@
               </a-popover>
             </a-form-item>
             <a-form-item name="order" label="排序">
-              <a-input-number v-model:value="createState.order" :min="1" />
+              <a-input-number v-model:value="createState.order" :min="1" style="width: 100%"/>
             </a-form-item>
             <a-form-item name="available" label="状态" :rules="[{ required: true, message: '请选择状态' }]">
               <a-radio-group v-model:value="createState.available">
@@ -303,7 +303,7 @@
               </a-popover>
             </a-form-item>
             <a-form-item name="order" label="排序">
-              <a-input-number v-model:value="updateState.order" :min="1" />
+              <a-input-number v-model:value="updateState.order" :min="1" style="width: 100%"/>
             </a-form-item>
             <a-form-item name="available" label="状态" :rules="[{ required: true, message: '请选择状态' }]">
               <a-radio-group v-model:value="updateState.available">
@@ -325,7 +325,7 @@
                 <a-input v-model:value="updateState.route_path" placeholder="请输入路由路径" allowClear></a-input>
               </a-form-item>
               <a-form-item v-if="updateState.type === 1" name="redirect" label="重定向"
-                :rules="[{ required: updateState.type === 1 ? true : false, message: '请输入重定向' }]">
+                :rules="[{ required: false, message: '请输入重定向' }]">
                 <a-input v-model:value="updateState.redirect" placeholder="请输入重定向" allowClear></a-input>
               </a-form-item>
               <a-form-item v-if="updateState.type === 2" name="component_path" label="组件地址"
@@ -390,7 +390,7 @@ const createState = reactive<tableDataType>({
   route_name: '',
   route_path: '',
   component_path: '',
-  redirect: '',
+  redirect: null,
   parent_id: undefined,
   cache: true,
   hidden: false,
@@ -407,7 +407,7 @@ const updateState = reactive<tableDataType>({
   route_name: '',
   route_path: '',
   component_path: '',
-  redirect: '',
+  redirect: null,
   parent_id: undefined,
   cache: true,
   hidden: false,

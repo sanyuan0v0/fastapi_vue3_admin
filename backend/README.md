@@ -7,6 +7,7 @@
 ```sh
 fastapi_project/backend
 ├─ app                     # 项目核心代码 
+│  ├─ almbic               # 数据库迁移文件
 │  ├─ api                  # 接口模块  
 │  │  └─ v1                # 接口版本模块
 │  │     ├─ controllers    # 控制器模块
@@ -19,6 +20,7 @@ fastapi_project/backend
 │  ├─ common               # 公共模块
 │  ├─ config               # 项目配置文件
 │  ├─ core                 # 项目核心模块
+│  ├─ module_task          # 项目任务模块
 │  ├─ plugin               # 项目插件模块
 │  ├─ scripts              # 项目初始化模块
 │  └─ utils                # 工具模块
@@ -26,6 +28,7 @@ fastapi_project/backend
 ├─ static                  # 项目静态文件
 ├─ templates               # 项目模板文件
 ├─ main.py                 # 项目启动文件
+├─ alembic.ini             # alembic配置文件
 ├─ gunicorn.py             # gunicorn配置文件
 ├─ requirements.txt        # 项目依赖文件
 ├─ dev_sql.db              # 项目数据库文件

@@ -9,7 +9,7 @@ from app.api.v1.schemas.system.auth_schema import AuthSchema
 
 
 class DeptCRUD(CRUDBase[DeptModel, DeptCreateSchema, DeptUpdateSchema]):
-    """部门模块数据查询层"""
+    """部门模块数据层"""
 
     def __init__(self, auth: AuthSchema) -> None:
         """初始化部门CRUD"""

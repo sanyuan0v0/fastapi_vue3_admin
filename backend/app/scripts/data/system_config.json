@@ -2,15 +2,15 @@
   {
     "id": 1,
     "title": "FastAPI Vue Admin",
-    "favicon": "http://localhost:8000/api/v1/static/upload/image/png/2025/01/09/logo_20250109090456A114.png",
-    "logo": "http://localhost:8000/api/v1/static/upload/image/png/2025/01/09/logo_20250109090448A263.png",
-    "background": "http://localhost:8000/api/v1/static/upload/image/png/2025/01/09/background_20250109090435A357.png",
+    "favicon": "http://localhost:8000/api/v1/static/image/favicon.ico",
+    "logo": "http://localhost:8000/api/v1/static/image/logo.png",
+    "background": "http://localhost:8000/api/v1/static/image/background.png",
     "description": "FastAPI Vue Admin 是完全开源的权限管理系统",
     "copyright": "Copyright © 2021-2025 fastapi-vue-admin.com 版权所有",
     "keep_record": "晋ICP备18005113号-3",
-    "help_url": "https://django-vue-admin.com",
-    "privacy_url": "/api/system/clause/privacy.html",
-    "clause_url": "/api/system/clause/terms_service.html",
+    "help_url": "https://gitee.com/tao__tao/fastapi_vue3_admin.git",
+    "privacy_url": "https://gitee.com/tao__tao/fastapi_vue3_admin/blob/master/LICENSE",
+    "clause_url": "https://gitee.com/tao__tao/fastapi_vue3_admin/blob/master/LICENSE",
     "code_url": "https://gitee.com/tao__tao/fastapi_vue3_admin.git",
     "creator_id": 1
   }

@@ -11,6 +11,8 @@ from app.api.v1.controllers.system.operation_log_controller import router as Log
 from app.api.v1.controllers.system.position_controller import router as PositionRouter
 from app.api.v1.controllers.system.notice_controller import router as NoticeRouter
 from app.api.v1.controllers.system.config_controller import router as ConfigRouter
+from app.api.v1.controllers.system.dict_controller import router as DictRouter
+from app.api.v1.controllers.system.job_controller import router as JobRouter
 
 SystemApiRouter = APIRouter(prefix="/system")
 
@@ -23,3 +25,5 @@ SystemApiRouter.include_router(router=LogRouter,  prefix="/log",  tags=["日志�
 SystemApiRouter.include_router(router=PositionRouter, prefix="/position", tags=["岗位模块"])
 SystemApiRouter.include_router(router=NoticeRouter, prefix="/notice", tags=["通知模块"])
 SystemApiRouter.include_router(router=ConfigRouter, prefix="/config", tags=["配置模块"])
+SystemApiRouter.include_router(router=DictRouter, prefix="/dict", tags=["字典模块"])
+SystemApiRouter.include_router(router=JobRouter, prefix="/job", tags=["任务模块"])

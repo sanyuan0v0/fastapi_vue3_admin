@@ -1,10 +1,11 @@
 alembic==1.15.1     # 数据库迁移
+APScheduler==3.11.0 # 定时任务
 fastapi==0.115.2    # web 框架
 typer==0.12.5       # CLI
 uvicorn==0.30.6     # uvicorn web 框架
 websockets==14.2    # websocket 框架
 gunicorn==23.0.0    # 协程框架
-celery==5.4.0       # 任务队列
+# celery==5.4.0       # 任务队列(移除，使用APScheduler)
 croniter==6.0.0     # 实现cron表达式验证和解析执行计划
 pandas==2.2.2       # 数据处理
 openpyxl==3.1.5     # Excel

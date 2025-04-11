@@ -3,6 +3,8 @@
 import aioredis
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi import FastAPI
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
     async_sessionmaker,
@@ -12,7 +14,6 @@ from sqlalchemy.ext.asyncio import (
 from app.core.logger import logger
 from app.config.setting import settings
 from app.core.exceptions import CustomException
-
 
 # 创建数据库引擎
 async_engine = create_async_engine(

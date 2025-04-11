@@ -16,7 +16,7 @@ class PositionModel(ModelBase):
     __table_args__ = ({'comment': '岗位表'})
 
     # 基础字段
-    id = Column(Integer, primary_key=True, autoincrement=True, unique=True, comment='主键ID')
+    id = Column(Integer, primary_key=True, autoincrement=True, comment='主键ID')
     name = Column(String(40), nullable=False, comment="岗位名称", unique=True)
     order = Column(Integer, nullable=False, default=1, comment="显示排序")
 

@@ -120,7 +120,7 @@ class Settings(BaseSettings):
     # ================================================= #
     # ******************** MongoDB配置 ******************* #
     # ================================================= #
-    MONGO_DB_ENABLE: bool = False  # 是否启用MongoDB
+    MONGO_DB_ENABLE: bool # 是否启用MongoDB
     MONGO_DB_USER: str
     MONGO_DB_PASSWORD: str
     MONGO_DB_HOST: str
@@ -130,7 +130,7 @@ class Settings(BaseSettings):
     # ================================================= #
     # ******************** Redis配置 ******************* #
     # ================================================= #
-    REDIS_ENABLE: bool = True  # 是否启用Redis
+    REDIS_ENABLE: bool  # 是否启用Redis
     REDIS_HOST: str
     REDIS_PORT: int
     REDIS_DB_NAME: int
@@ -260,15 +260,38 @@ class Settings(BaseSettings):
         else:
             POSRGRES_URI: PostgresDsn = f"postgresql+asyncpg://{settings.POSTGRESQL_USER}:{settings.POSTGRESQL_PASSWORD}@{settings.POSTGRESQL_HOST}:{settings.POSTGRESQL_PORT}/{settings.POSTGRESQL_DB_NAME}"
             return POSRGRES_URI
+    
+    @property
+    def DATABASES_URI(self) -> str:
+        """获取数据库连接"""
+        supported_db_drivers = ("sqlite", "mysql", "postgresql")
+        if settings.DB_DRIVER not in supported_db_drivers:
+            raise ValueError(f"数据库驱动不支持: {settings.DB_DRIVER}, 请选择 {supported_db_drivers}")
+        if settings.DB_DRIVER == "sqlite":
+            SQLITE_URI: str = f"sqlite:///{settings.BASE_DIR.joinpath(settings.SQLITE_DB_NAME)}?characterEncoding=UTF-8"
+            return SQLITE_URI
+        elif settings.DB_DRIVER == "mysql":
+            MYSQL_URI: MySQLDsn = f"mysql+pymysql://{settings.MYSQL_USER}:{settings.MYSQL_PASSWORD}@{settings.MYSQL_HOST}:{settings.MYSQL_PORT}/{settings.MYSQL_DB_NAME}?charset=utf8mb4"
+            return MYSQL_URI
+        else:
+            POSRGRES_URI: PostgresDsn = f"postgresql://{settings.POSTGRESQL_USER}:{settings.POSTGRESQL_PASSWORD}@{settings.POSTGRESQL_HOST}:{settings.POSTGRESQL_PORT}/{settings.POSTGRESQL_DB_NAME}"
+            return POSRGRES_URI
+        
     @property
     def MONGO_DB_URI(self) -> MongoDsn:
         """获取MongoDB连接"""
-        return f"mongodb://{settings.MONGO_DB_USER}:{settings.MONGO_DB_PASSWORD}@{settings.MONGO_DB_HOST}:{settings.MONGO_DB_PORT}/{settings.MONGO_DB_NAME}"
+        if settings.MONGO_DB_USER and settings.MONGO_DB_PASSWORD:
+            return f"mongodb://{settings.MONGO_DB_USER}:{settings.MONGO_DB_PASSWORD}@{settings.MONGO_DB_HOST}:{settings.MONGO_DB_PORT}/{settings.MONGO_DB_NAME}"
+        else:
+            return f"mongodb://{settings.MONGO_DB_HOST}:{settings.MONGO_DB_PORT}/{settings.MONGO_DB_NAME}"
     
     @property
     def REDIS_URI(self) -> RedisDsn:
         """获取Redis连接"""
-        return f"redis://:{settings.REDIS_PASSWORD}@{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB_NAME}"
+        if settings.REDIS_PASSWORD is None:
+            return f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB_NAME}"
+        else:
+            return f"redis://:{settings.REDIS_PASSWORD}@{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB_NAME}"
     
     @property
     def FASTAPI_CONFIG(self) -> Dict[str, Union[str, bool, None]]:

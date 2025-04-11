@@ -225,6 +225,61 @@ class CommonConstant:
     NOT_UNIQUE = False
 
 
+class JobConstant:
+    """
+    定时任务常量
+
+    JOB_ERROR_LIST: 定时任务禁止调用模块及违规字符串列表
+    JOB_WHITE_LIST: 定时任务允许调用模块列表
+    """
+
+    JOB_ERROR_LIST = [
+        'app',
+        'config',
+        'exceptions',
+        'import ',
+        'middlewares',
+        'module_admin',
+        'open(',
+        'os.',
+        'server',
+        'sub_applications',
+        'subprocess.',
+        'sys.',
+        'utils',
+        'while ',
+        '__import__',
+        '"',
+        "'",
+        ',',
+        '?',
+        ':',
+        ';',
+        '/',
+        '|',
+        '+',
+        '-',
+        '=',
+        '~',
+        '!',
+        '#',
+        '$',
+        '%',
+        '^',
+        '&',
+        '*',
+        '<',
+        '>',
+        '(',
+        ')',
+        '[',
+        ']',
+        '{',
+        '}',
+        ' ',
+    ]
+    JOB_WHITE_LIST = ['module_task']
+
 
 # if __name__ == "__main__":
 #     print(RET.OK.msg)  # 输出: 成功

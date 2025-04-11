@@ -9,7 +9,7 @@ from app.api.v1.schemas.system.auth_schema import AuthSchema
 
 
 class MenuCRUD(CRUDBase[MenuModel, MenuCreateSchema, MenuUpdateSchema]):
-    """菜单模块数据查询层"""
+    """菜单模块数据层"""
 
     def __init__(self, auth: AuthSchema) -> None:
         """初始化菜单CRUD"""

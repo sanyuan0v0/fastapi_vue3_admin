@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import time
 from typing import Union, Dict
-from fastapi import APIRouter, Depends, Request, Query, BackgroundTasks, WebSocket
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Depends, Request, BackgroundTasks, WebSocket
+from fastapi.responses import JSONResponse, StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config.setting import settings
-from app.common.response import ErrorResponse, SuccessResponse, StreamResponse
+from app.common.response import ErrorResponse, SuccessResponse
 from app.api.v1.services.system.auth_service import (
     LoginService,
     CaptchaService
@@ -76,3 +77,27 @@ async def logout(
         logger.info('退出成功')
         return SuccessResponse(msg='退出成功')
     return ErrorResponse(msg='退出失败')    
+
+
+# 以下接口为预留，后期会用
+@router.post("/background_tasks", summary="模拟fastapi自带后台任务-模拟流式响应")
+async def stream_response(background_tasks: BackgroundTasks, message:str):
+    def task(message):
+        for i in range(5):
+            yield f"睡眠 {message} {i}\n"
+            time.sleep(1)
+    background_tasks.add_task(task, message)
+    
+    return StreamingResponse(
+        data=task(*args, **kwargs),
+        headers={"X-Custom-Header": "Streaming-Response"},
+        media_type="text/plain",
+    )
+
+@router.websocket("/ws", name="websocket")
+async def websocket_endpoint(websocket: WebSocket):
+    # ws://127.0.0.1:8000/ws
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_text()
+        await websocket.send_text(f"Message text was: {data}")

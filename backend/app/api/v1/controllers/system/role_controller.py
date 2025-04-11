@@ -2,7 +2,6 @@
 
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import JSONResponse, StreamingResponse
-import urllib.parse
 
 from app.common.response import StreamResponse, SuccessResponse
 from app.core.router_class import OperationLogRoute

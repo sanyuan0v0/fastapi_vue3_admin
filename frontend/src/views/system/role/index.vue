@@ -143,7 +143,7 @@
               <a-input v-model:value="createState.name" placeholder="请输入名称" allowClear></a-input>
             </a-form-item>
             <a-form-item name="order" label="排序" :rules="[{ required: true, message: '请输入排序' }]">
-              <a-input-number v-model:value="createState.order" :min="1" />
+              <a-input-number v-model:value="createState.order" :min="1" style="width: 100%"/>
             </a-form-item>
             <a-form-item name="available" label="状态" :rules="[{ required: true, message: '请选择状态' }]">
               <a-radio-group v-model:value="createState.available">
@@ -162,7 +162,7 @@
               <a-input v-model:value="updateState.name" placeholder="请输入名称" allowClear></a-input>
             </a-form-item>
             <a-form-item name="order" label="排序" :rules="[{ required: true, message: '请输入排序' }]">
-              <a-input-number v-model:value="updateState.order" :min="1" />
+              <a-input-number v-model:value="updateState.order" :min="1" style="width: 100%"/>
             </a-form-item>
             <a-form-item name="available" label="状态" :rules="[{ required: true, message: '请选择状态' }]">
               <a-radio-group v-model:value="updateState.available">

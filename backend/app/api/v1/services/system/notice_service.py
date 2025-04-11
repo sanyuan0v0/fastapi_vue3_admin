@@ -80,10 +80,10 @@ class NoticeService:
             # 处理公告类型
             item['notice_type'] = '通知' if item.get('notice_type') == 1 else '公告'
 
-        # 转换为中文键
-        new_data = [
-            {mapping_dict.get(key): value for key, value in item.items() if mapping_dict.get(key)} 
-            for item in data
-        ]
+        # # 转换为中文键
+        # new_data = [
+        #     {mapping_dict.get(key): value for key, value in item.items() if mapping_dict.get(key)} 
+        #     for item in data
+        # ]
 
-        return ExcelUtil.export_list2excel(list_data=new_data)
+        return ExcelUtil.export_list2excel(list_data=notice_list, mapping_dict=mapping_dict)

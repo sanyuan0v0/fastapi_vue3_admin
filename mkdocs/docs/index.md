@@ -79,6 +79,8 @@ my_demo_project/fastapi_project
   - **日志管理**：对系统中常用的较为固定的数据进行统一维护。
   - **配置管理**：主要是系统配置信息，如：系统名称、系统版本、系统描述等。
   - **公告管理**：系统通知公告信息发布维护。
+  - **字典管理**：对系统中常用的较为固定的数据进行统一维护。
+  - **任务管理**：任务调度，支持定时任务，支持任务日志查看。
 
 - **监控管理**
   - **在线用户**：查看当前系统中在线的用户。
@@ -146,10 +148,6 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
    ```shell
    # 进入后端根目录 backend 下运行
    python3 main.py run
-   
-   # 如果使用celery管理任务，需要另外启动celery
-   启动普通任务work: celery -A celery_app.celery_app worker --loglevel=info
-   启动定时任务work: celery -A celery_app.celery_app beat --loglevel=info
 
    # 修改了模型后需要：重新生成迁移文件，然后应用迁移
    # 生成迁移
@@ -237,7 +235,11 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
 
 ### 任务管理
 
-![任务管理](./resources/images/task.jpeg)
+![任务管理](./resources/images/job.png)
+
+### 字典管理
+
+![任务管理](./resources/images/dict.png)
 
 ### 接口管理
 
@@ -265,3 +267,4 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
 - [Fastapi-Vue3-Admin 项目](https://gitee.com/senqi666/fastapi-vue-admin)
 - [Vue-FastAPI-Admin 项目](https://gitee.com/mizhexiaoxiao/vue-fastapi-admin)
 - [RuoYi-Vue3-FastAPI 项目](https://gitee.com/insistence2022/RuoYi-Vue3-FastAPI)
+- [APScheduler 项目](https://github.com/agronholm/apscheduler)

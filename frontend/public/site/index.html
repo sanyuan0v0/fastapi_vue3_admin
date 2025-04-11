@@ -582,7 +582,7 @@
           <li class="md-nav__item">
   <a href="#_25" class="md-nav__link">
     <span class="md-ellipsis">
-      接口管理
+      字典管理
     </span>
   </a>
   
@@ -591,7 +591,7 @@
           <li class="md-nav__item">
   <a href="#_26" class="md-nav__link">
     <span class="md-ellipsis">
-      文档管理
+      接口管理
     </span>
   </a>
   
@@ -600,7 +600,7 @@
           <li class="md-nav__item">
   <a href="#_27" class="md-nav__link">
     <span class="md-ellipsis">
-      个人信息
+      文档管理
     </span>
   </a>
   
@@ -608,6 +608,15 @@
         
           <li class="md-nav__item">
   <a href="#_28" class="md-nav__link">
+    <span class="md-ellipsis">
+      个人信息
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_29" class="md-nav__link">
     <span class="md-ellipsis">
       在线文档
     </span>
@@ -621,7 +630,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_29" class="md-nav__link">
+  <a href="#_30" class="md-nav__link">
     <span class="md-ellipsis">
       ✨ 特别鸣谢
     </span>
@@ -1113,7 +1122,7 @@
           <li class="md-nav__item">
   <a href="#_25" class="md-nav__link">
     <span class="md-ellipsis">
-      接口管理
+      字典管理
     </span>
   </a>
   
@@ -1122,7 +1131,7 @@
           <li class="md-nav__item">
   <a href="#_26" class="md-nav__link">
     <span class="md-ellipsis">
-      文档管理
+      接口管理
     </span>
   </a>
   
@@ -1131,7 +1140,7 @@
           <li class="md-nav__item">
   <a href="#_27" class="md-nav__link">
     <span class="md-ellipsis">
-      个人信息
+      文档管理
     </span>
   </a>
   
@@ -1139,6 +1148,15 @@
         
           <li class="md-nav__item">
   <a href="#_28" class="md-nav__link">
+    <span class="md-ellipsis">
+      个人信息
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_29" class="md-nav__link">
     <span class="md-ellipsis">
       在线文档
     </span>
@@ -1152,7 +1170,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_29" class="md-nav__link">
+  <a href="#_30" class="md-nav__link">
     <span class="md-ellipsis">
       ✨ 特别鸣谢
     </span>
@@ -1261,8 +1279,10 @@
 <li><strong>用户管理</strong>：用于维护管理系统的用户，常规信息的维护与账号设置。</li>
 <li><strong>日志管理</strong>：对系统中常用的较为固定的数据进行统一维护。</li>
 <li><strong>配置管理</strong>：主要是系统配置信息，如：系统名称、系统版本、系统描述等。</li>
+<li><strong>公告管理</strong>：系统通知公告信息发布维护。</li>
+<li><strong>字典管理</strong>：对系统中常用的较为固定的数据进行统一维护。</li>
 <li>
-<p><strong>公告管理</strong>：系统通知公告信息发布维护。</p>
+<p><strong>任务管理</strong>：任务调度，支持定时任务，支持任务日志查看。</p>
 </li>
 <li>
 <p><strong>监控管理</strong></p>
@@ -1391,9 +1411,6 @@
 <p>```shell
    # 进入后端根目录 backend 下运行
    python3 main.py run</p>
-<p># 如果使用celery管理任务，需要另外启动celery
-   启动普通任务work: celery -A celery_app.celery_app worker --loglevel=info
-   启动定时任务work: celery -A celery_app.celery_app beat --loglevel=info</p>
 <p># 修改了模型后需要：重新生成迁移文件，然后应用迁移
    # 生成迁移
    # python main.py revision "初始化迁移" --env=dev(不加默认为dev)
@@ -1449,16 +1466,18 @@
 <h3 id="_23">缓存监控</h3>
 <p><img alt="缓存监控" src="resources/images/cache.png" /></p>
 <h3 id="_24">任务管理</h3>
-<p><img alt="任务管理" src="resources/images/task.jpeg" /></p>
-<h3 id="_25">接口管理</h3>
+<p><img alt="任务管理" src="resources/images/job.png" /></p>
+<h3 id="_25">字典管理</h3>
+<p><img alt="任务管理" src="resources/images/dict.png" /></p>
+<h3 id="_26">接口管理</h3>
 <p><img alt="接口管理" src="resources/images/docs.png" /></p>
-<h3 id="_26">文档管理</h3>
+<h3 id="_27">文档管理</h3>
 <p><img alt="文档管理" src="resources/images/redoc.png" /></p>
-<h3 id="_27">个人信息</h3>
+<h3 id="_28">个人信息</h3>
 <p><img alt="个人信息" src="resources/images/info.png" /></p>
-<h3 id="_28">在线文档</h3>
+<h3 id="_29">在线文档</h3>
 <p><img alt="在线文档" src="resources/images/help.png" /></p>
-<h2 id="_29">✨ 特别鸣谢</h2>
+<h2 id="_30">✨ 特别鸣谢</h2>
 <p>感谢以下项目的贡献和支持，使本项目得以顺利完成：</p>
 <ul>
 <li><a href="https://fastapi.tiangolo.com/">FastAPI 项目</a></li>
@@ -1467,6 +1486,7 @@
 <li><a href="https://gitee.com/senqi666/fastapi-vue-admin">Fastapi-Vue3-Admin 项目</a></li>
 <li><a href="https://gitee.com/mizhexiaoxiao/vue-fastapi-admin">Vue-FastAPI-Admin 项目</a></li>
 <li><a href="https://gitee.com/insistence2022/RuoYi-Vue3-FastAPI">RuoYi-Vue3-FastAPI 项目</a></li>
+<li><a href="https://github.com/agronholm/apscheduler">APScheduler 项目</a></li>
 </ul>
 
 

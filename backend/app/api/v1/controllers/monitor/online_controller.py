@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from fastapi import APIRouter, Body, Depends, Request, Query
+from fastapi import APIRouter, Body, Depends, Request
 from fastapi.responses import JSONResponse
 
 from app.core.dependencies import AuthPermission

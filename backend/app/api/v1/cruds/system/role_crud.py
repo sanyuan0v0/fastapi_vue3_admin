@@ -11,7 +11,7 @@ from app.api.v1.cruds.system.dept_crud import DeptCRUD
 
 
 class RoleCRUD(CRUDBase[RoleModel, RoleCreateSchema, RoleUpdateSchema]):
-    """角色模块数据查询层"""
+    """角色模块数据层"""
 
     def __init__(self, auth: AuthSchema) -> None:
         self.auth = auth
