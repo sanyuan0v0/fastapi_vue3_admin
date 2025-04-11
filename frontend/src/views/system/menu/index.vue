@@ -225,7 +225,7 @@
                 <a-input v-model:value="createState.route_path" placeholder="请输入路由路径" allowClear></a-input>
               </a-form-item>
               <a-form-item v-if="createState.type === 1" name="redirect" label="重定向"
-                :rules="[{ required: createState.type === 1 ? true : false, message: '请输入重定向' }]">
+                :rules="[{ required: false, message: '请输入重定向' }]">
                 <a-input v-model:value="createState.redirect" placeholder="请输入重定向" allowClear></a-input>
               </a-form-item>
               <a-form-item v-if="createState.type === 2" name="component_path" label="组件地址"
