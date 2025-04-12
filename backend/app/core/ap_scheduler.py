@@ -121,7 +121,7 @@ class SchedulerUtil:
         :param job_id: 任务id
         :return: 任务对象
         """
-        return scheduler.get_job(job_id=job_id)
+        return scheduler.get_job(job_id=str(job_id))
 
     @classmethod
     def get_all_jobs(cls) -> List[Job]:
@@ -160,21 +160,42 @@ class SchedulerUtil:
                 if len(fields) != 5:
                     raise ValueError("无效的 interval 表达式")
                 second, minute, hour, day, week = tuple([int(field) if field != '*' else 0 for field in fields])
-                # 秒、分、时、天、周，开始时间，结束时间（* * * * 1）
+                # 秒、分、时、天、周（* * * * 1）
                 trigger = IntervalTrigger(
                     weeks=week,
                     days=day,
                     hours=hour,
                     minutes=minute,
                     seconds=second,
-                    start_date=None,
-                    end_date=None,
+                    start_date=job_info.start_date,
+                    end_date=job_info.end_date,
                     timezone='Asia/Shanghai',
                     jitter=None
                 )
             elif job_info.trigger == 'cron':
                 # 秒、分、时、天、月、星期几、年 ()
-                trigger = CronTrigger.from_crontab(job_info.trigger_args)
+                fields = job_info.trigger_args.strip().split()
+                logger.info(f"Cron 表达式长度：{len(fields)}")
+                if len(fields) not in (6, 7):
+                    raise ValueError("无效的 Cron 表达式")
+
+                parsed_fields = [None if field in ('*', '?') else field for field in fields]
+                if len(fields) == 6:
+                    parsed_fields.append(None)
+
+                second, minute, hour, day, month, day_of_week, year = tuple(parsed_fields)
+                trigger = CronTrigger(
+                    second=second,
+                    minute=minute,
+                    hour=hour,
+                    day=day,
+                    month=month,
+                    day_of_week=day_of_week,
+                    year=year,
+                    start_date=job_info.start_date,
+                    end_date=job_info.end_date,
+                    timezone='Asia/Shanghai'
+                )
             else:
                 raise ValueError("无效的 trigger 触发器")
 

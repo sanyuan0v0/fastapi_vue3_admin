@@ -14,6 +14,7 @@
     "ant-design-vue": "^4.2.5",
     "axios": "^1.6.7",
     "echarts": "^5.5.0",
+    "element-plus": "^2.8.4",
     "highlight.js": "^11.10.0",
     "json-viewer-js": "^1.0.8",
     "md5": "^2.3.0",
@@ -26,6 +27,7 @@
     "vue-request": "^2.0.4",
     "vue-router": "^4.2.5",
     "vue3-cron-plus": "^0.1.9",
+    "vue3-cron-plus-picker": "^1.0.2",
     "vuex": "^4.1.0",
     "xlsx": "^0.18.5"
   },

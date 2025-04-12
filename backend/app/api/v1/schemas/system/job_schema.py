@@ -2,6 +2,7 @@
 
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional
+from datetime import datetime
 
 from app.core.validator import DateTimeStr
 from app.core.base_schema import BaseSchema
@@ -22,6 +23,8 @@ class JobCreateSchema(BaseModel):
     jobstore: Optional[str] = Field(default='default', max_length=64, description='任务存储')
     executor: Optional[str] = Field(default='default', max_length=64, description='任务执行器:将运行此作业的执行程序的名称')
     trigger_args: Optional[str] = Field(default=None, description='触发器参数')
+    start_date: Optional[str] = Field(default=None, description='开始时间')
+    end_date: Optional[str] = Field(default=None, description='结束时间')
     description: Optional[str] = Field(default=None, description='备注说明')
     status: Optional[bool] = Field(default=False, description='任务状态:启动,停止')
     message: Optional[str] = Field(default=None, max_length=500, description='日志信息')

@@ -30,8 +30,12 @@ export default defineConfig(({ command, mode }) => {
     },
     resolve: {
       alias: {
-        "@": resolve(__dirname, "./src"),
+        // 设置路径
+        '~': resolve(__dirname, './'),
+        // 设置别名
+        '@': resolve(__dirname, './src')
       },
+      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
     },
   };
 });

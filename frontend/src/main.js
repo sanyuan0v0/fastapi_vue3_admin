@@ -8,15 +8,16 @@ import "echarts";
 import './style.css'
 import { createPinia } from 'pinia';
 import { useConfigStore } from "@/store/index";
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 
-import VueCron from 'vue-cron'; // 确保已经正确安装并定位到正确的路径
-// import 'vue-cron/dist/vue-cron.css'; // 引入样式
 
 const app = createApp(App);
 const pinia = createPinia();
 
 app.use(pinia);
-app.use(VueCron);
+// app.use(VueCron);
+app.use(ElementPlus)
 
 const initConfig = async () => {
   const configStore = useConfigStore();

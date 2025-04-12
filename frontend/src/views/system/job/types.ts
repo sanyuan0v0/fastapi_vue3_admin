@@ -17,6 +17,8 @@ export interface tableJobType {
     jobstore?: string;
     executor?: string;
     trigger_args?: string;
+    start_date?: string;
+    end_date?: string;
     status?: boolean;
     message?: string;
     description?: string;
