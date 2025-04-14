@@ -175,7 +175,6 @@ class SchedulerUtil:
             elif job_info.trigger == 'cron':
                 # 秒、分、时、天、月、星期几、年 ()
                 fields = job_info.trigger_args.strip().split()
-                logger.info(f"Cron 表达式长度：{len(fields)}")
                 if len(fields) not in (6, 7):
                     raise ValueError("无效的 Cron 表达式")
 

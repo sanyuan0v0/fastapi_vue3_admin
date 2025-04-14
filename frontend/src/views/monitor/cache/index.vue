@@ -85,7 +85,7 @@
                 <a-table-column key="remark" title="备注" align="center" :ellipsis="true" dataIndex="remark" />
                 <a-table-column key="action" title="操作" width="60" align="center">
                   <template #customRender="{ record }">
-                    <a-button type="link" @click.stop="handleClearCacheName(record)">
+                    <a-button type="link" danger @click.stop="handleClearCacheName(record)">
                       <template #icon><DeleteOutlined /></template>
                     </a-button>
                   </template>
@@ -110,7 +110,7 @@
                 :loading="subLoading"
                 :dataSource="cacheKeys.map(key => ({ cacheKey: key }))"
                 :pagination="false"
-                :scroll="{ y: 600 }"
+                :scroll="{ y: 500 }"
                 rowKey="cacheKey"
               >
                 <a-table-column key="cacheKey" title="缓存键名" align="center" :ellipsis="true">
@@ -120,7 +120,7 @@
                 </a-table-column>
                 <a-table-column key="action" title="操作" width="60" align="center">
                   <template #customRender="{ record }">
-                    <a-button type="link" @click.stop="handleClearCacheKey(record.cacheKey)">
+                    <a-button type="link" danger @click.stop="handleClearCacheKey(record.cacheKey)">
                       <template #icon><DeleteOutlined /></template>
                     </a-button>
                   </template>
@@ -137,7 +137,7 @@
                 <span class="title">缓存内容</span>
               </template>
               <template #extra>
-                <a-button type="link" @click="handleClearCacheAll">清理全部</a-button>
+                <a-button type="link" danger @click="handleClearCacheAll">清理全部</a-button>
               </template>
               <a-form :model="cacheForm" layout="vertical">
                 <a-form-item label="缓存名称:" name="cache_name">

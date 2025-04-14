@@ -94,25 +94,25 @@
           <a-descriptions :column="{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 1, xs: 1 }" :labelStyle="{ width: '140px' }"
             bordered>
             <a-descriptions-item label="序号">{{ (pagination.current - 1) * pagination.pageSize + detailState.index + 1 }}</a-descriptions-item>
-            <a-descriptions-item label="请求地址" :span="2">{{ detailState.request_path }}</a-descriptions-item>
+            <a-descriptions-item label="请求地址" >{{ detailState.request_path }}</a-descriptions-item>
             <a-descriptions-item label="请求方法">
               <a-tag :color="getRequestMethodColor(detailState.request_method)">{{ detailState.request_method }}</a-tag>
             </a-descriptions-item>
             <a-descriptions-item label="IP地址">{{ detailState.request_ip }}</a-descriptions-item>
             <a-descriptions-item label="浏览器">{{ detailState.request_browser }}</a-descriptions-item>
             <a-descriptions-item label="系统">{{ detailState.request_os }}</a-descriptions-item>
-            <a-descriptions-item label="响应码" :span="4">
+            <a-descriptions-item label="响应码" :span="2">
               <a-tag :color="detailState.response_code === 200 ? 'green' : 'red'">{{ detailState.response_code
                 }}</a-tag>
             </a-descriptions-item>
-            <a-descriptions-item label="请求体" :span="4">{{ detailState.request_payload }}</a-descriptions-item>
-            <a-descriptions-item label="返回信息" :span="4">
+            <a-descriptions-item label="请求体" :span="2">{{ detailState.request_payload }}</a-descriptions-item>
+            <a-descriptions-item label="返回信息" :span="2">
               <div class="scrollable-content">{{ detailState.response_json }}</div>
             </a-descriptions-item>
             <a-descriptions-item label="创建人">{{ detailState.creator ? detailState.creator.name : '-' }}</a-descriptions-item>
             <a-descriptions-item label="创建时间">{{ detailState.created_at }}</a-descriptions-item>
             <a-descriptions-item label="修改时间">{{ detailState.updated_at }}</a-descriptions-item>
-            <a-descriptions-item label="备注" :span="2">{{ detailState.description }}</a-descriptions-item>
+            <a-descriptions-item label="备注">{{ detailState.description }}</a-descriptions-item>
           </a-descriptions>
         </a-spin>
       </a-modal>

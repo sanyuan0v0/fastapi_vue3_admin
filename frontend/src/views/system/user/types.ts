@@ -17,7 +17,7 @@ export interface tableDataType {
     name?: string;
     email?: string;
     mobile?: string;
-    gender?: number;
+    gender?: string;
     password?: string;
     dept_id?: deptTreeType['id'];
     dept_name?: deptTreeType['name'];

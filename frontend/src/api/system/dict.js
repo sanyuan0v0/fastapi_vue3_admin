@@ -105,18 +105,16 @@ export function exportDictData(body) {
   });
 }
 
-export function getDictTypeOption(query) {
+export function getDictTypeOption() {
   return request({
     url: "/api/v1/system/dict/type/data",
     method: "get",
-    params: query,
   });
 }
 
 export function getDictDataByType(query) {
   return request({
-    url: "/api/v1/system/dict/data/type",
+    url: `/api/v1/system/dict/data/type/${query}`,
     method: "get",
-    params: query,
   });
 }

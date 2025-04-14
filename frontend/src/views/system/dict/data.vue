@@ -10,7 +10,7 @@
                     <a-row>
                         <a-col flex="0 1 450px">
                             <a-form-item name="dict_type" label="字典" style="max-width: 300px;">
-                                <a-select v-model:value="queryState.dict_type" placeholder="请选择字典名称" allowClear @dropdownVisibleChange="loadDictTypes">
+                                <a-select v-model:value="queryState.dict_type" placeholder="请选择字典名称" allowClear @click="loadDictTypes">
                                     <a-select-option v-for="item in dictTypeOptions" :key="item.dict_type" :value="item.dict_type">
                                         {{ item.dict_name }}
                                     </a-select-option>
@@ -74,6 +74,11 @@
                                 <a-badge :status="record.is_default ? 'processing': 'error'" :text="record.is_default ? '是' : '否'" />
                             </span>
                         </template>
+                        <template v-if="column.dataIndex === 'list_class'">
+                            <span>
+                                {{ dictStore.getDictLabel(DictDataStore['sys_dictdata_list_class'],record.list_class).dict_label }}
+                            </span>
+                        </template>
                         <template v-if="column.dataIndex === 'available'">
                             <span>
                                 <a-badge :status="record.available ? 'processing': 'error'" :text="record.available ? '启用' : '停用'" />
@@ -112,7 +117,9 @@
                             <a-descriptions-item label="字典键值">{{ detailState.dict_value }}</a-descriptions-item>
                             <a-descriptions-item label="字典类型">{{ detailState.dict_type }}</a-descriptions-item>
                             <a-descriptions-item label="样式属性">{{ detailState.css_class }}</a-descriptions-item>
-                            <a-descriptions-item label="表格回显样式">{{ detailState.list_class }}</a-descriptions-item>
+                            <a-descriptions-item label="表格回显样式">
+                                {{ dictStore.getDictLabel(DictDataStore['sys_dictdata_list_class'],detailState.list_class).dict_label }}
+                            </a-descriptions-item>
                             <a-descriptions-item label="是否默认">
                                 <a-badge :status="detailState.is_default ? 'processing': 'error'" :text="detailState.is_default ? '是' : '否'" />
                             </a-descriptions-item>
@@ -148,8 +155,8 @@
                         </a-form-item>
                         <a-form-item name="list_class" label="表格回显样式" :rules="[{ required: false, message: '请选择表格回显样式' }]">
                             <a-select v-model:value="createState.list_class" placeholder="请选择表格回显样式" allowClear>
-                                <a-select-option v-for="item in listClassOptions" :key="item.value" :value="item.value">
-                                    {{ item.label }}
+                                <a-select-option v-for="item in DictDataStore['sys_dictdata_list_class']" :key="item.id" :value="item.dict_value">
+                                    {{ item.dict_label }}
                                 </a-select-option>
                             </a-select>
                         </a-form-item>
@@ -173,7 +180,7 @@
                 </div>
                 <div v-else>
                     <a-form ref="updateForm" :model="updateState"
-                        v-bind="{ labelCol: { span: 5 }, wrapperCol: { span: 15 } }">
+                        v-bind="{ labelCol: { span: 4 }, wrapperCol: { span: 15 } }">
                         <a-form-item name="dict_type" label="字典类型">
                             <a-input v-model:value="updateState.dict_type" placeholder="请输入字典类型" :disabled="true"></a-input>
                         </a-form-item>
@@ -191,8 +198,8 @@
                         </a-form-item>
                         <a-form-item name="list_class" label="表格回显样式" :rules="[{ required: false, message: '请选择表格回显样式' }]">
                             <a-select v-model:value="updateState.list_class" placeholder="请选择表格回显样式" allowClear>
-                                <a-select-option v-for="item in listClassOptions" :key="item.value" :value="item.value">
-                                    {{ item.label }}
+                                <a-select-option v-for="item in DictDataStore['sys_dictdata_list_class']" :key="item.id" :value="item.dict_value">
+                                    {{ item.dict_label }}
                                 </a-select-option>
                             </a-select>
                         </a-form-item>
@@ -229,6 +236,18 @@ import { cloneDeep, isEmpty } from '@/utils/util';
 import PageHeader from '@/components/PageHeader.vue';
 import { getDictTypeOptionselect, getDictTypeList,getDictTypeDetail,createDictType,updateDictType,deleteDictType,exportDictType,getDictDataList,getDictDataDetail,createDictData,updateDictData,deleteDictData,exportDictData,getDictTypeOption,getDictDataByType } from '@/api/system/dict'
 import type { searchDictDataType, tableDictDataType } from './types'
+import { useDictStore } from "@/store/index";
+
+const dictStore = useDictStore();
+
+const DictDataStore = computed(() => {
+    return dictStore.dictObj;
+})
+
+const getOptions = async () => {
+    const dictOptions = await dictStore.setDict(['sys_dictdata_list_class'])
+    return dictOptions
+}
 
 const route = useRoute();
 const createForm = ref();
@@ -241,15 +260,6 @@ const detailStateLoading = ref(false);
 const dataSource = ref<tableDictDataType[]>([]);
 const selectedRowKeys = ref<tableDictDataType['id'][]>([]);
 
-// 数据标签回显样式
-const listClassOptions = ref([
-    { value: "default", label: "默认(default)" },
-    { value: "primary", label: "主要(primary)" },
-    { value: "success", label: "成功(success)" },
-    { value: "info", label: "信息(info)" },
-    { value: "warning", label: "警告(warning)" },
-    { value: "danger", label: "危险(danger)" }
-]);
 const queryState = reactive<searchDictDataType>({
     dict_label: null,
     dict_type: null,
@@ -439,7 +449,8 @@ const loadingData = () => {
 }
 
 // 生命周期钩子
-onMounted(() => {
+onMounted(async () => {
+    await getOptions();
     loadingData();
 });
 

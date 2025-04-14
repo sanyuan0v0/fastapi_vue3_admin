@@ -109,7 +109,9 @@
                     <span>{{ record.positionNames }}</span>
                   </template>
                   <template v-if="column.dataIndex === 'gender'">
-                    <a-tag :color="record.gender === 1 ? 'blue' : 'pink'">{{ record.gender === 1 ? '男' : '女' }}</a-tag>
+                    <a-tag :color="dictStore.getDictLabel(DictDataStore['sys_user_sex'],record.gender).css_class">
+                      {{ dictStore.getDictLabel(DictDataStore['sys_user_sex'],record.gender).dict_label }}
+                    </a-tag>
                   </template>
                   <template v-if="column.dataIndex === 'available'">
                     <span>
@@ -155,7 +157,9 @@
                 }}</a-descriptions-item>
               <a-descriptions-item label="用户名">{{ detailState.username }}</a-descriptions-item>
               <a-descriptions-item label="姓名">{{ detailState.name }}</a-descriptions-item>
-              <a-descriptions-item label="性别">{{ detailState.gender === 1 ? '男' : '女' }}</a-descriptions-item>
+              <a-descriptions-item label="性别">
+                {{ dictStore.getDictLabel(DictDataStore['sys_user_sex'],detailState.gender).dict_label }}
+              </a-descriptions-item>
               <a-descriptions-item label="部门" :span="2">{{ detailState.dept_name }}</a-descriptions-item>
               <a-descriptions-item label="角色" :span="2">{{ detailState.roleNames }}</a-descriptions-item>
               <a-descriptions-item label="岗位" :span="2">{{ detailState.positionNames }}</a-descriptions-item>
@@ -213,8 +217,9 @@
             </a-form-item>
             <a-form-item name="gender" label="性别" :rules="[{ required: true, message: '请选择性别' }]">
               <a-select v-model:value="createState.gender" placeholder="请选择性别" allowClear>
-                <a-select-option :value="1">男</a-select-option>
-                <a-select-option :value="2">女</a-select-option>
+                  <a-select-option v-for="item in DictDataStore['sys_user_sex']" :key="item.id" :value="item.dict_value">
+                      {{ item.dict_label }}
+                  </a-select-option>
               </a-select>
             </a-form-item>
             <a-form-item name="email" label="邮箱">
@@ -278,8 +283,9 @@
             </a-form-item>
             <a-form-item name="gender" label="性别" :rules="[{ required: true, message: '请选择性别' }]">
               <a-select v-model:value="updateState.gender" placeholder="请选择性别" allowClear>
-                <a-select-option :value="1">男</a-select-option>
-                <a-select-option :value="2">女</a-select-option>
+                  <a-select-option v-for="item in DictDataStore['sys_user_sex']" :key="item.id" :value="item.dict_value">
+                      {{ item.dict_label }}
+                  </a-select-option>
               </a-select>
             </a-form-item>
             <a-form-item name="email" label="邮箱">
@@ -366,7 +372,18 @@ import { getUserList, createUser, updateUser, deleteUser, batchAvailableUser, ex
 import SelectorModal from './SelectorModal.vue'
 import type { searchDataType, tableDataType, deptTreeType, roleSelectorType, positionSelectorType } from './types'
 import storage from 'store';
+import { useDictStore } from "@/store/index";
 
+const dictStore = useDictStore();
+
+const DictDataStore = computed(() => {
+    return dictStore.dictObj;
+})
+
+const getOptions = async () => {
+    const dictOptions = await dictStore.setDict(['sys_user_sex'])
+    return dictOptions
+}
 const deptTree = ref(null);
 const tableLoading = ref(false);
 const openModal = ref(false);
@@ -523,8 +540,10 @@ const rowSelection = computed(() => {
 const selectedKeys = ref<number[]>([]);
 
 // 生命周期钩子
-onMounted(() => loadingData());
-
+onMounted(async () => {
+    await getOptions();
+    loadingData();
+});
 // 查询
 const onFinish = () => {
   pagination.current = 1;

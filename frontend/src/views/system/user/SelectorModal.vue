@@ -75,7 +75,7 @@ const selectedRowItemNames = ref<roleSelectorType['name'][] | positionSelectorTy
 
 const queryState: searchSelectDataType = reactive({
   name: "",
-  available: 'true'
+  available: null
 });
 
 const pagination = reactive({

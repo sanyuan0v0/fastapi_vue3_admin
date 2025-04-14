@@ -70,7 +70,7 @@ class UserModel(ModelBase):
     email = Column(String(255), nullable=True, comment="邮箱")
     
     # 个人信息
-    gender = Column(Integer, default=1, nullable=False, comment="性别(1:男 2:女 3:未知)")
+    gender = Column(String(20), default='1', nullable=False, comment="性别(1:男 2:女 3:未知)")
     avatar = Column(String(255), nullable=True, comment="头像地址", default="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png")
     
     # 账号状态

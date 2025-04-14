@@ -89,4 +89,5 @@ class ConfigService:
         config_obj_list_dict = await RedisCURD(request.app.state.redis).get(redis_key)
         if not config_obj_list_dict:
             raise CustomException(msg="系统配置不存在")
-        return config_obj_list_dict
+        return json.loads(config_obj_list_dict)
+    

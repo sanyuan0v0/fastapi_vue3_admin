@@ -15,7 +15,7 @@ class CurrentUserUpdateSchema(BaseModel):
     name: str = Field(default=None, max_length=15, description="名称")
     mobile: Optional[str] = Field(default=None, description="手机号")
     email: Optional[EmailStr] = Field(default=None, description="邮箱")
-    gender: Optional[int] = Field(default=1, description="性别")  # 1:男 2:女
+    gender: Optional[str] = Field(default='1', description="性别")  # 1:男 2:女
     avatar: Optional[str] = Field(default=None, description="头像")
 
     @classmethod
@@ -29,7 +29,7 @@ class UserRegisterSchema(BaseModel):
     name: str = Field(default=None, max_length=15, description="名称")
     mobile: Optional[str] = Field(default=None, description="手机号")
     email: Optional[EmailStr] = Field(default=None, description="邮箱")
-    gender: Optional[int] = Field(default=1, description="性别")  # 1:男 2:女
+    gender: Optional[str] = Field(default='1', description="性别")  # 1:男 2:女
     username: str = Field(default=None, max_length=15, description="用户名")
     password: str = Field(default=None, max_length=128, description="密码哈希值")
     dept_id: Optional[int] = Field(default=1, description='部门ID')

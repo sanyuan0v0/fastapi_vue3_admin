@@ -15,6 +15,7 @@ from app.core.redis_crud import RedisCURD
 from app.core.exceptions import CustomException
 from app.utils.excel_util import ExcelUtil
 from app.core.logger import logger
+from app.config.setting import settings
 
 class DictTypeService:
     """
@@ -48,6 +49,7 @@ class DictTypeService:
             await RedisCURD(request.app.state.redis).set(
                     key=redis_key,
                     value="",
+                    expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
                 )
             logger.info(f"创建字典类型成功: {new_obj_dict}")
         except Exception as e:
@@ -102,6 +104,7 @@ class DictTypeService:
             await RedisCURD(request.app.state.redis).set(
                     key=redis_key,
                     value=value,
+                    expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
                 )
             logger.info(f"更新字典类型成功并刷新缓存: {new_obj_dict}")
         except Exception as e:
@@ -174,9 +177,9 @@ class DictDataService:
         """应用初始化: 获取所有字典类型对应的字典数据信息并缓存service"""
         keys = await redis.keys(f'{RedisInitKeyConfig.System_Dict.key}:*')
         # 删除匹配的键
-        if keys:
-            await RedisCURD(redis).delete(*keys)
-            logger.info(f"已清除原有字典缓存, keys: {keys}")
+        # if keys:
+        #     await RedisCURD(redis).delete(*keys)
+        #     logger.info(f"已清除原有字典缓存, keys: {keys}")
 
         auth = AuthSchema(db=db)
         obj_list = await DictTypeCRUD(auth).get_obj_list_crud()
@@ -200,6 +203,7 @@ class DictDataService:
                 await RedisCURD(redis).set(
                         key=redis_key,
                         value=value,
+                        expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
                     )
             except Exception as e:
                 logger.error(f"初始化字典数据失败: {e}")
@@ -210,10 +214,11 @@ class DictDataService:
         """获取系统配置"""
         redis_key = f"{RedisInitKeyConfig.System_Dict.key}:*"
         obj_list_dict = await RedisCURD(redis).get_keys(redis_key)
-        logger.info(f"获取字典数据：{obj_list_dict}")
-        if not obj_list_dict:
+        cache_key_list = [key.split(':', 1)[1] for key in obj_list_dict if key.startswith(f'{RedisInitKeyConfig.System_Dict.key}:')]
+        logger.info(f"获取字典数据：{cache_key_list}")
+        if not cache_key_list:
             raise CustomException(msg="字典数据不存在")
-        return obj_list_dict
+        return cache_key_list
     
     @classmethod
     async def query_init_dict(cls, redis: Redis, dict_type: str):
@@ -241,6 +246,7 @@ class DictDataService:
             await RedisCURD(request.app.state.redis).set(
                     key=redis_key,
                     value=value,
+                    expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
                 )
             logger.info(f"创建字典数据写入缓存成功: {obj}")
         except Exception as e:
@@ -279,6 +285,7 @@ class DictDataService:
                     await RedisCURD(request.app.state.redis).set(
                             key=redis_key,
                             value=value,
+                            expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
                         )
                 except Exception as e:
                     logger.error(f"更新字典数据状态时刷新缓存失败: {e}")
@@ -294,6 +301,7 @@ class DictDataService:
             await RedisCURD(request.app.state.redis).set(
                     key=redis_key,
                     value=value,
+                    expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
                 )
             logger.info(f"更新字典数据写入缓存成功: {obj}")
         except Exception as e:

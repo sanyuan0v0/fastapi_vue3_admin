@@ -1,7 +1,16 @@
-import { defineStore } from "pinia";
+import { defineStore, createPinia } from "pinia";
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+
 import { getCurrentUserInfo } from "@/api/system/user";
 import { getInitConfig } from "@/api/system/config";
 import { getNoticeList } from '@/api/system/notice'
+import { getDictDataByType } from '@/api/system/dict'
+
+// pinia-plugin-persistedstate 持久化存储官方文档：https://prazdevs.github.io/pinia-plugin-persistedstate/zh/guide/
+const store = createPinia()
+
+store.use(piniaPluginPersistedstate)
+
 
 export const useNoticeStore = defineStore("notice", {
   state: () => ({
@@ -13,12 +22,10 @@ export const useNoticeStore = defineStore("notice", {
     async getNotice() {
       try {
         const response = await getNoticeList({ available: true });
-        console.log(response);
         const { status_code, data } = response.data;
         if (status_code === 200) {
           this.noticeList = data.items;
           this.total = data.total;
-          console.log(this.noticeList);
           this.isNoticeLoaded = true;
         }
       } catch (error) {
@@ -48,7 +55,6 @@ export const useUserStore = defineStore("user", {
         delete result.data.menus;
         this.setRoute(routers);
         this.basicInfo = { ...this.basicInfo, ...result.data };
-        console.log(this.basicInfo);
       } catch (error) {
         console.error(error);
       }
@@ -79,8 +85,7 @@ export const useConfigStore = defineStore("config", {
         const response = await getInitConfig();
         const { status_code, data } = response.data;
         if (status_code === 200) {
-          this.configData = JSON.parse(data);
-          console.log(this.configData);
+          this.configData = data;
           this.isConfigLoaded = true;
         }
       } catch (error) {
@@ -92,3 +97,50 @@ export const useConfigStore = defineStore("config", {
     },
   },
 });
+
+export const useDictStore = defineStore('dict', {
+  state: () => ({
+    dictObj: {},
+    isLoaded: false,
+  }),
+  getters: {
+    getDictObjData() {
+      return this.dictObj
+    }
+  },
+  actions: {
+    // 批量获取字典数据
+    async setDict(types) {
+      try {
+        for (const type of types) {
+          const response = await getDictDataByType(type)
+          const result = response.data;
+          if (result.status_code === 200) {
+            console.log("参数:",type, "根据字典类型获取字典数据:",result.data);
+            // 格式化数据
+            this.dictObj[type] = result.data;
+            this.isLoaded = true;
+          }
+        }
+      } catch (error) {
+        console.error("获取字典数据失败", error);
+      }
+    },
+
+    getDictLabel(datas, value) {
+        const result = datas.find((item) => item.dict_value === value);
+        const dict_data = {
+          id: result.id,
+          dict_value: result.dict_value,
+          dict_label: result.dict_label,
+          dict_type: result.dict_type,
+          css_class: result.css_class,
+          list_class: result.list_class,
+          is_default: result.is_default,
+        }
+        return dict_data;
+    }
+  },
+  persist: true
+})
+

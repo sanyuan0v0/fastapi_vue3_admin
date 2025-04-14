@@ -77,9 +77,9 @@
                             <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
                         </template>
                         <template v-if="column.dataIndex === 'notice_type'">
-                            <a-tag :color="record.notice_type === 1 ? 'blue' : 'orange' ">
-                                {{ record.notice_type === 1 ? '通知' : '公告' }}
-                            </a-tag>
+                            <a-tag :color="dictStore.getDictLabel(DictDataStore['sys_notice_type'], record.notice_type).css_class ">
+                                    {{ dictStore.getDictLabel(DictDataStore['sys_notice_type'], record.notice_type).dict_label }}
+                                </a-tag>
                         </template>
                         <template v-if="column.dataIndex === 'available'">
                             <span>
@@ -116,9 +116,9 @@
                                 detailState.index + 1 }}</a-descriptions-item>
                             <a-descriptions-item label="标题">{{ detailState.notice_title }}</a-descriptions-item>
                             <a-descriptions-item label="类型">
-                                <a-tag :color="detailState.notice_type === 1 ? 'blue' : 'orange'">{{
-                                    detailState.notice_type
-                                    === 1 ? '通知' : '公告' }}</a-tag>
+                                <a-tag :color="dictStore.getDictLabel(DictDataStore['sys_notice_type'], detailState.notice_type).css_class ">
+                                    {{ dictStore.getDictLabel(DictDataStore['sys_notice_type'], detailState.notice_type).dict_label }}
+                                </a-tag>
                             </a-descriptions-item>
                             <a-descriptions-item label="内容">{{ detailState.notice_content }}</a-descriptions-item>
                             <a-descriptions-item label="状态">
@@ -141,8 +141,9 @@
                         </a-form-item>
                         <a-form-item name="notice_type" label="类型" :rules="[{ required: true, message: '请选择类型' }]">
                             <a-radio-group v-model:value="createState.notice_type">
-                                <a-radio :value="1">通知</a-radio>
-                                <a-radio :value="2">公告</a-radio>
+                                <a-radio v-for="item in DictDataStore['sys_notice_type']" :value="item.dict_value">
+                                    {{ item.dict_label }}
+                                </a-radio>
                             </a-radio-group>
                         </a-form-item>
                         <a-form-item name="notice_content" label="内容" :rules="[{ required: true, message: '请输入内容' }]">
@@ -169,8 +170,9 @@
                         </a-form-item>
                         <a-form-item name="notice_type" label="类型" :rules="[{ required: true, message: '请选择类型' }]">
                             <a-radio-group v-model:value="updateState.notice_type">
-                                <a-radio :value="1">通知</a-radio>
-                                <a-radio :value="2">公告</a-radio>
+                                <a-radio v-for="item in DictDataStore['sys_notice_type']" :value="item.dict_value">
+                                    {{ item.dict_label }}
+                                </a-radio>
                             </a-radio-group>
                         </a-form-item>
                         <a-form-item name="notice_content" label="内容" :rules="[{ required: true, message: '请输入内容' }]">
@@ -203,6 +205,18 @@ import { cloneDeep, isEmpty } from '@/utils/util';
 import PageHeader from '@/components/PageHeader.vue';
 import { getNoticeList, createNotice, updateNotice, deleteNotice, batchAvailableNotice, exportNotice } from '@/api/system/notice'
 import type { searchDataType, tableDataType } from './types'
+import { useDictStore } from "@/store/index";
+
+const dictStore = useDictStore();
+
+const DictDataStore = computed(() => {
+    return dictStore.dictObj;
+})
+
+const getOptions = async () => {
+    const dictOptions = await dictStore.setDict(['sys_notice_type'])
+    return dictOptions
+}
 
 const createForm = ref();
 const updateForm = ref();
@@ -228,7 +242,7 @@ const pagination = reactive({
 })
 const createState = reactive<tableDataType>({
     notice_title: '',
-    notice_type: 1,
+    notice_type: '1',
     notice_content: '',
     available: true,
     description: ''
@@ -236,7 +250,7 @@ const createState = reactive<tableDataType>({
 const updateState = reactive<tableDataType>({
     id: undefined,
     notice_title: '',
-    notice_type: 1,
+    notice_type: '',
     notice_content: '',
     available: true,
     description: ''
@@ -350,7 +364,10 @@ const loadingData = () => {
 }
 
 // 生命周期钩子
-onMounted(() => loadingData());
+onMounted(async () => {
+    await getOptions();
+    loadingData();
+});
 
 // 查询
 const onFinish = () => {
@@ -379,24 +396,6 @@ const handleTableChange = (values: any) => {
 const modalHandle = (modalType: string, index?: number) => {
     modalTitle.value = modalType;
     openModal.value = true;
-
-    // 重新创建 createState 和 updateState 以重置为初始状态
-    Object.assign(createState, {
-        notice_title: '',
-        notice_type: 1,
-        notice_content: '',
-        available: true,
-        description: ''
-    });
-
-    Object.assign(updateState, {
-        id: undefined,
-        notice_title: '',
-        notice_type: 1,
-        notice_content: '',
-        available: true,
-        description: ''
-    });
 
     if (modalType === 'view' && index !== undefined) {
         detailStateLoading.value = true;

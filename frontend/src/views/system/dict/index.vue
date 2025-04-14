@@ -113,7 +113,7 @@
                                 }}</a-descriptions-item>
                             <a-descriptions-item label="创建时间">{{ detailState.created_at }}</a-descriptions-item>
                             <a-descriptions-item label="修改时间">{{ detailState.updated_at }}</a-descriptions-item>
-                            <a-descriptions-item label="备注" :span="2">{{ detailState.description
+                            <a-descriptions-item label="备注">{{ detailState.description
                                 }}</a-descriptions-item>
                         </a-descriptions>
                     </a-spin>

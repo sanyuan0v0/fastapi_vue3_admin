@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import json
 from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 from aioredis import Redis
@@ -44,7 +45,7 @@ async def get_type_list(
     logger.info(f"{auth.user.name} 查询字典类型列表成功")
     return SuccessResponse(data=result_dict, msg="查询字典类型列表成功")
 
-@router.get("/type/optionselect", summary="查询字典类型", description="查询字典类型")
+@router.get("/type/optionselect", summary="获取全部字典类型", description="获取全部字典类型")
 async def get_type_list(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_type:query"])),
 ) -> JSONResponse:
@@ -168,13 +169,13 @@ async def export_data_list(
         }
     )
 
-@router.get('/type/data',  summary="获取字典类型", description="获取字典类型")
+@router.get('/type/data',  summary="获取字典类型", description="获取字典类型", dependencies=[Depends(AuthPermission(permissions=["system:dict_data:query"]))])
 async def query_system_dict_type_options(request: Request):
     result = await DictDataService.get_init_dict(redis=request.app.state.redis)
     logger.info(f"获取初始化字典数据成功 {result}")
     return SuccessResponse(data=result, msg="获取初始字典数据成功")
 
-@router.get('/data/type', summary="根据字典类型获取数据", description="根据字典类型获取数据")
+@router.get('/data/type/{dict_type}', summary="根据字典类型获取数据", description="根据字典类型获取数据", dependencies=[Depends(AuthPermission(permissions=["system:dict_data:query"]))])
 async def query_system_dict_type_data(request: Request, dict_type: str):
     # 获取全量数据
     dict_data_query_result = await DictDataService.query_init_dict(
@@ -182,5 +183,5 @@ async def query_system_dict_type_data(request: Request, dict_type: str):
     )
     logger.info(f"获取字典数据：{dict_data_query_result}")
 
-    return SuccessResponse(data=dict_data_query_result, msg="获取字典数据成功")
+    return SuccessResponse(data=json.loads(dict_data_query_result), msg="获取字典数据成功")
 

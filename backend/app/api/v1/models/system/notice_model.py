@@ -18,7 +18,7 @@ class NoticeModel(ModelBase):
     # 基础字段
     id = Column(Integer, primary_key=True, autoincrement=True, comment='主键ID')
     notice_title = Column(String(50), nullable=False, comment='公告标题')
-    notice_type = Column(Integer, nullable=False, comment='公告类型（1通知 2公告）')
+    notice_type = Column(String(50), nullable=False, comment='公告类型（1通知 2公告）')
     notice_content = Column(Text, comment='公告内容')
 
     # 状态字段

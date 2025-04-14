@@ -136,9 +136,10 @@
                           :rules="[{ required: true, message: '请选择性别' }]"
                         >
                           <a-radio-group v-model:value="infoFormState.gender" class="gender-group">
-                            <a-radio :value="1">男</a-radio>
-                            <a-radio :value="2">女</a-radio>
-                          </a-radio-group>
+                                <a-radio v-for="item in DictDataStore['sys_user_sex']" :value="item.dict_value">
+                                    {{ item.dict_label }}
+                                </a-radio>
+                            </a-radio-group>
                         </a-form-item>
                       </a-col>
                       
@@ -282,7 +283,7 @@
 
 <script lang="ts" setup>
 import PageHeader from '@/components/PageHeader.vue';
-import { ref, reactive, onMounted, h, watch } from 'vue';
+import { ref, reactive, onMounted, h, watch, computed } from 'vue';
 import { message } from 'ant-design-vue';
 import type { UploadChangeParam } from "ant-design-vue";
 import { 
@@ -305,6 +306,18 @@ import { useUserStore } from "@/store/index";
 import storage from 'store';
 import { updateCurrentUserInfo, changeCurrentUserPassword, avatarHandleChange } from '@/api/system/user';
 import type { InfoFormState, PasswordFormState } from './types';
+import { useDictStore } from "@/store/index";
+
+const dictStore = useDictStore();
+
+const DictDataStore = computed(() => {
+    return dictStore.dictObj;
+})
+
+const getOptions = async () => {
+    const dictOptions = await dictStore.setDict(['sys_user_sex'])
+    return dictOptions
+}
 
 // 状态定义
 const passwordChanging = ref(false);
@@ -466,7 +479,8 @@ const handleTabChange = (key: string) => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
+  await getOptions();
   initInfoForm();
 });
 </script>
