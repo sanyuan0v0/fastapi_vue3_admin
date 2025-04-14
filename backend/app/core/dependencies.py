@@ -62,7 +62,7 @@ async def get_current_user(
     auth = AuthSchema(db=db)
     
     # 获取用户信息
-    user = await UserCRUD(auth).get_user_by_username(username=username)
+    user = await UserCRUD(auth).get_by_username_crud(username=username)
     if not user:
         raise CustomException(msg="用户不存在")
     if not user.available:

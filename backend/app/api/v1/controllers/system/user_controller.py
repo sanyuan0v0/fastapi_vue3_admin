@@ -42,7 +42,7 @@ async def user_avatar_upload_controller(
     file: UploadFile, 
     request: Request
 ) -> JSONResponse:
-    result_str = await UserService.upload_avatar_service(request=request, file=file)
+    result_str = await UserService.upload_avatar_service(base_url=str(request.base_url), file=file)
     logger.info(f"上传头像成功: {result_str}")
     return SuccessResponse(data=result_str, msg='上传头像成功')
 

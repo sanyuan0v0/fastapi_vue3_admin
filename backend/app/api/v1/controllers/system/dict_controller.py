@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import json
-from fastapi import APIRouter, Depends, Query, Request
+from fastapi import APIRouter, Depends, Query
 from fastapi.responses import JSONResponse, StreamingResponse
 from aioredis import Redis
 
 from app.common.response import StreamResponse, SuccessResponse
 from app.core.base_params import PaginationQueryParams
-from app.core.dependencies import AuthPermission
+from app.core.dependencies import AuthPermission, redis_getter
 from app.core.router_class import OperationLogRoute
 from app.core.logger import logger
 from app.common.request import PaginationService
@@ -55,31 +55,31 @@ async def get_type_list_controller(
 
 @router.post("/type/create", summary="创建字典类型", description="创建字典类型")
 async def create_type_controller(
-    request: Request,
     data: DictTypeCreateSchema,
+    redis: Redis = Depends(redis_getter),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_type:create"]))
 ) -> JSONResponse:
-    result_dict = await DictTypeService.create_obj_service(auth=auth, request=request, data=data)
+    result_dict = await DictTypeService.create_obj_service(auth=auth, redis=redis, data=data)
     logger.info(f"{auth.user.name} 创建字典类型成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg="创建字典类型成功")
 
 @router.put("/type/update", summary="修改字典类型", description="修改字典类型")
 async def update_type_controller(
-    request: Request,
     data: DictTypeUpdateSchema,
+    redis: Redis = Depends(redis_getter),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_type:update"]))
 ) -> JSONResponse:
-    result_dict = await DictTypeService.update_obj_service(auth=auth, request=request, data=data)
+    result_dict = await DictTypeService.update_obj_service(auth=auth, redis=redis, data=data)
     logger.info(f"{auth.user.name} 修改字典类型成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg="修改字典类型成功")
 
 @router.delete("/type/delete", summary="删除字典类型", description="删除字典类型")
 async def delete_type_controller(
-    request: Request,
+    redis: Redis = Depends(redis_getter),
     id: int = Query(..., description="字典类型ID"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_type:delete"]))
 ) -> JSONResponse:
-    await DictTypeService.delete_obj_service(auth=auth, request=request, id=id)
+    await DictTypeService.delete_obj_service(auth=auth, redis=redis, id=id)
     logger.info(f"{auth.user.name} 删除字典类型成功: {id}")
     return SuccessResponse(msg="删除字典类型成功")
 
@@ -123,31 +123,31 @@ async def get_data_list_controller(
 
 @router.post("/data/create", summary="创建字典数据", description="创建字典数据")
 async def create_data_controller(
-    request: Request,
     data: DictDataCreateSchema,
+    redis: Redis = Depends(redis_getter),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_data:create"]))
 ) -> JSONResponse:
-    result_dict = await DictDataService.create_obj_service(auth=auth, request=request, data=data)
+    result_dict = await DictDataService.create_obj_service(auth=auth, redis=redis, data=data)
     logger.info(f"{auth.user.name} 创建字典数据成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg="创建字典数据成功")
 
 @router.put("/data/update", summary="修改字典数据", description="修改字典数据")
 async def update_data_controller(
-    request: Request,
     data: DictDataUpdateSchema,
+    redis: Redis = Depends(redis_getter),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_data:update"]))
 ) -> JSONResponse:
-    result_dict = await DictDataService.update_obj_service(auth=auth, request=request, data=data)
+    result_dict = await DictDataService.update_obj_service(auth=auth, redis=redis, data=data)
     logger.info(f"{auth.user.name} 修改字典数据成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg="修改字典数据成功")
 
 @router.delete("/data/delete", summary="删除字典数据", description="删除字典数据")
 async def delete_data_controller(
-    request: Request,
+    redis: Redis = Depends(redis_getter),
     id: int = Query(..., description="字典数据ID"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_data:delete"]))
 ) -> JSONResponse:
-    await DictDataService.delete_obj_service(auth=auth, request=request, id=id)
+    await DictDataService.delete_obj_service(auth=auth, redis=redis, id=id)
     logger.info(f"{auth.user.name} 删除字典数据成功: {id}")
     return SuccessResponse(msg="删除字典数据成功")
 
@@ -171,20 +171,20 @@ async def export_data_list_controller(
 
 @router.get('/type/data',  summary="获取字典类型", description="获取字典类型", dependencies=[Depends(AuthPermission(permissions=["system:dict_data:query"]))])
 async def query_system_dict_type_options_controller(
-    request: Request
+    redis: Redis = Depends(redis_getter)
 ):
-    result = await DictDataService.get_init_dict_service(redis=request.app.state.redis)
+    result = await DictDataService.get_init_dict_service(redis=redis)
     logger.info(f"获取初始化字典数据成功 {result}")
     return SuccessResponse(data=result, msg="获取初始字典数据成功")
 
 @router.get('/data/type/{dict_type}', summary="根据字典类型获取数据", description="根据字典类型获取数据", dependencies=[Depends(AuthPermission(permissions=["system:dict_data:query"]))])
 async def query_system_dict_type_data_controller(
-    request: Request, 
-    dict_type: str
+    dict_type: str,
+    redis: Redis = Depends(redis_getter)
 ):
     # 获取全量数据
     dict_data_query_result = await DictDataService.query_init_dict_service(
-        redis=request.app.state.redis, dict_type=dict_type
+        redis=redis, dict_type=dict_type
     )
     logger.info(f"获取字典数据：{dict_data_query_result}")
 

@@ -3,7 +3,6 @@
 import json
 from typing import Any, List, Dict
 from aioredis import Redis
-from fastapi import Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.v1.schemas.system.auth_schema import AuthSchema
@@ -35,7 +34,7 @@ class DictTypeService:
         return [DictTypeOutSchema.model_validate(obj).model_dump() for obj in obj_list]
     
     @classmethod
-    async def create_obj_service(cls, auth: AuthSchema,request: Request, data: DictTypeCreateSchema) -> Dict:
+    async def create_obj_service(cls, auth: AuthSchema, redis: Redis, data: DictTypeCreateSchema) -> Dict:
         exist_obj = await DictTypeCRUD(auth).get(dict_name=data.dict_name)
         if exist_obj:
             raise CustomException(msg='创建失败，该数据字典类型已存在')
@@ -46,7 +45,7 @@ class DictTypeService:
         redis_key = f"{RedisInitKeyConfig.System_Dict.key}:{data.dict_type}"
         
         try:
-            await RedisCURD(request.app.state.redis).set(
+            await RedisCURD(redis).set(
                     key=redis_key,
                     value="",
                     expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
@@ -59,7 +58,7 @@ class DictTypeService:
         return new_obj_dict
     
     @classmethod
-    async def update_obj_service(cls, auth: AuthSchema, request: Request, data: DictTypeUpdateSchema) -> Dict:
+    async def update_obj_service(cls, auth: AuthSchema, redis: Redis, data: DictTypeUpdateSchema) -> Dict:
         exist_obj = await DictTypeCRUD(auth).get_obj_by_id_crud(id=data.id)
         if not exist_obj:
             raise CustomException(msg='更新失败，该数据字典类型不存在')
@@ -101,7 +100,7 @@ class DictTypeService:
             dict_data = [DictDataOutSchema.model_validate(row).model_dump() for row in dict_data_list if row]
             
             value = json.dumps(dict_data, ensure_ascii=False)
-            await RedisCURD(request.app.state.redis).set(
+            await RedisCURD(redis).set(
                     key=redis_key,
                     value=value,
                     expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
@@ -114,7 +113,7 @@ class DictTypeService:
         return new_obj_dict
     
     @classmethod
-    async def delete_obj_service(cls, auth: AuthSchema, request: Request, id: int) -> None:
+    async def delete_obj_service(cls, auth: AuthSchema, redis: Redis, id: int) -> None:
         exist_obj = await DictTypeCRUD(auth).get_obj_by_id_crud(id=id)
         if not exist_obj:
             raise CustomException(msg='删除失败，该数据字典类型不存在')
@@ -127,7 +126,7 @@ class DictTypeService:
         # 删除Redis缓存
         redis_key = f"{RedisInitKeyConfig.System_Dict.key}:{exist_obj.dict_type}"
         try:
-            await RedisCURD(request.app.state.redis).delete(redis_key)
+            await RedisCURD(redis).delete(redis_key)
             logger.info(f"删除字典类型成功: {id}")
         except Exception as e:
             logger.error(f"删除字典类型失败: {e}")
@@ -225,7 +224,7 @@ class DictDataService:
         return obj_list_dict
 
     @classmethod
-    async def create_obj_service(cls, auth: AuthSchema, request: Request, data: DictDataCreateSchema) -> Dict:
+    async def create_obj_service(cls, auth: AuthSchema, redis: Redis, data: DictDataCreateSchema) -> Dict:
         exist_obj = await DictDataCRUD(auth).get(dict_label=data.dict_label)
         if exist_obj:
             raise CustomException(msg='创建失败，该字典数据已存在')
@@ -238,7 +237,7 @@ class DictDataService:
             dict_data = [DictDataOutSchema.model_validate(row).model_dump() for row in dict_data_list if row]
             
             value = json.dumps(dict_data, ensure_ascii=False)
-            await RedisCURD(request.app.state.redis).set(
+            await RedisCURD(redis).set(
                     key=redis_key,
                     value=value,
                     expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
@@ -251,7 +250,7 @@ class DictDataService:
         return DictDataOutSchema.model_validate(obj).model_dump()
     
     @classmethod
-    async def update_obj_service(cls, auth: AuthSchema, request: Request, data: DictDataUpdateSchema) -> Dict:
+    async def update_obj_service(cls, auth: AuthSchema, redis: Redis, data: DictDataUpdateSchema) -> Dict:
         exist_obj = await DictDataCRUD(auth).get_obj_by_id_crud(id=data.id)
         if not exist_obj:
             raise CustomException(msg='更新失败，该字典数据不存在')
@@ -277,7 +276,7 @@ class DictDataService:
                     dict_data_list = await DictDataCRUD(auth).get_obj_list_crud(search={'dict_type': dict_type.dict_type})
                     dict_data = [DictDataOutSchema.model_validate(row).model_dump() for row in dict_data_list if row]
                     value = json.dumps(dict_data, ensure_ascii=False)
-                    await RedisCURD(request.app.state.redis).set(
+                    await RedisCURD(redis).set(
                             key=redis_key,
                             value=value,
                             expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
@@ -293,7 +292,7 @@ class DictDataService:
             dict_data = [DictDataOutSchema.model_validate(row).model_dump() for row in dict_data_list if row]
             
             value = json.dumps(dict_data, ensure_ascii=False)
-            await RedisCURD(request.app.state.redis).set(
+            await RedisCURD(redis).set(
                     key=redis_key,
                     value=value,
                     expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
@@ -306,7 +305,7 @@ class DictDataService:
         return DictDataOutSchema.model_validate(obj).model_dump()
     
     @classmethod
-    async def delete_obj_service(cls, auth: AuthSchema, request: Request, id: int) -> None:
+    async def delete_obj_service(cls, auth: AuthSchema, redis: Redis, id: int) -> None:
         exist_obj = await DictDataCRUD(auth).get_obj_by_id_crud(id=id)
         if not exist_obj:
             raise CustomException(msg='删除失败，该字典数据不存在')
@@ -315,7 +314,7 @@ class DictDataService:
         redis_key = f"{RedisInitKeyConfig.System_Dict.key}:{exist_obj.dict_type}"
         try:
             # 删除Redis缓存
-            await RedisCURD(request.app.state.redis).delete(redis_key)
+            await RedisCURD(redis).delete(redis_key)
             logger.info(f"删除字典数据成功: {id}")
         except Exception as e:
             logger.error(f"删除字典数据失败: {e}")

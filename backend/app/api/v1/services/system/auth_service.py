@@ -2,6 +2,7 @@
 
 from typing import Dict, Union, NewType
 from fastapi import Request
+from aioredis import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timedelta
 from user_agents import parse
@@ -40,7 +41,7 @@ class LoginService:
     """登录认证服务"""
 
     @classmethod
-    async def authenticate_user_service(cls, request: Request, login_form: CustomOAuth2PasswordRequestForm, db: AsyncSession) -> UserModel:
+    async def authenticate_user_service(cls, request: Request, redis: Redis, login_form: CustomOAuth2PasswordRequestForm, db: AsyncSession) -> UserModel:
         """
         用户认证
         
@@ -61,7 +62,7 @@ class LoginService:
         
         # 验证码校验
         if settings.CAPTCHA_ENABLE and not request_from_docs:
-            await CaptchaService.check_captcha_service(request=request, key=login_form.captcha_key, captcha=login_form.captcha)
+            await CaptchaService.check_captcha_service(redis=redis, key=login_form.captcha_key, captcha=login_form.captcha)
 
         # 用户认证
         auth = AuthSchema(db=db)
@@ -81,11 +82,11 @@ class LoginService:
         user = await UserCRUD(auth).update_last_login_crud(id=user.id)
         
         # 创建token
-        token = await cls.create_token_service(request=request, username=user.username)
+        token = await cls.create_token_service(redis=redis, username=user.username)
         user_agent = parse(request.headers.get("user-agent"))
         
         # 缓存中构建在线用户信息
-        await RedisCURD(request.app.state.redis).set(
+        await RedisCURD(redis).set(
             key=f"{RedisInitKeyConfig.ONLINE_USER.key}:{user.username}",
             value=OnlineOutSchema(
                 session_id=token.access_token,
@@ -104,7 +105,7 @@ class LoginService:
         return user
 
     @classmethod
-    async def create_token_service(cls, request: Request, username: str) -> JWTOutSchema:
+    async def create_token_service(cls, redis: Redis, username: str) -> JWTOutSchema:
         """
         创建访问令牌和刷新令牌
         
@@ -131,17 +132,17 @@ class LoginService:
         ))
 
         # 清除该用户之前的token
-        await RedisCURD(request.app.state.redis).delete(f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}')
-        await RedisCURD(request.app.state.redis).delete(f'{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}')
+        await RedisCURD(redis).delete(f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}')
+        await RedisCURD(redis).delete(f'{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}')
         
         # 设置新的token
-        await RedisCURD(request.app.state.redis).set(
+        await RedisCURD(redis).set(
             key=f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}',
             value=access_token,
             expire=int(access_expires.total_seconds())
         )
 
-        await RedisCURD(request.app.state.redis).set(
+        await RedisCURD(redis).set(
             key=f'{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}',
             value=refresh_token,
             expire=int(refresh_expires.total_seconds())
@@ -155,7 +156,7 @@ class LoginService:
         )
 
     @classmethod
-    async def refresh_token_service(cls, request: Request, refresh_token: RefreshTokenPayloadSchema) -> JWTOutSchema:
+    async def refresh_token_service(cls, redis: Redis, refresh_token: RefreshTokenPayloadSchema) -> JWTOutSchema:
         """
         刷新访问令牌
         
@@ -172,10 +173,10 @@ class LoginService:
         if not token_payload.is_refresh:
             raise CustomException(msg="非法凭证")
 
-        return await cls.create_token_service(request=request, username=token_payload.sub)
+        return await cls.create_token_service(redis=redis, username=token_payload.sub)
 
     @classmethod
-    async def logout_services_service(cls, request: Request, token: LogoutPayloadSchema) -> bool:
+    async def logout_services_service(cls, redis: Redis, token: LogoutPayloadSchema) -> bool:
         """
         退出登录
         
@@ -190,9 +191,9 @@ class LoginService:
         username: str = payload.sub
         
         # 删除Redis中的在线用户、访问令牌、刷新令牌
-        await RedisCURD(request.app.state.redis).delete(f"{RedisInitKeyConfig.ONLINE_USER.key}:{username}")
-        await RedisCURD(request.app.state.redis).delete(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}")
-        await RedisCURD(request.app.state.redis).delete(f"{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}")
+        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.ONLINE_USER.key}:{username}")
+        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}")
+        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}")
 
         logger.info(f"用户退出登录成功,会话账号:{username}")
         return True
@@ -202,7 +203,7 @@ class CaptchaService:
     """验证码服务"""
 
     @classmethod
-    async def get_captcha_service(cls, request: Request) -> Dict[str, Union[CaptchaKey, CaptchaBase64]]:
+    async def get_captcha_service(cls, redis: Redis) -> Dict[str, Union[CaptchaKey, CaptchaBase64]]:
         """
         获取验证码
         
@@ -224,7 +225,7 @@ class CaptchaService:
 
         # 保存到Redis并设置过期时间
         redis_key = f"{RedisInitKeyConfig.CAPTCHA_CODES.key}:{captcha_key}"
-        await RedisCURD(request.app.state.redis).set(
+        await RedisCURD(redis).set(
             key=redis_key,
             value=captcha_value,
             expire=settings.CAPTCHA_EXPIRE_SECONDS
@@ -239,7 +240,7 @@ class CaptchaService:
         ).model_dump()
 
     @classmethod
-    async def check_captcha_service(cls, request: Request, key: str, captcha: str) -> bool:
+    async def check_captcha_service(cls, redis: Redis, key: str, captcha: str) -> bool:
         """
         校验验证码
         
@@ -260,7 +261,7 @@ class CaptchaService:
         # 获取Redis中存储的验证码
         redis_key = f'{RedisInitKeyConfig.CAPTCHA_CODES.key}:{key}'
         
-        captcha_value = await RedisCURD(request.app.state.redis).get(redis_key)
+        captcha_value = await RedisCURD(redis).get(redis_key)
         if not captcha_value:
             logger.warning('验证码已过期或不存在')
             raise CustomException(msg="验证码已过期")
@@ -271,6 +272,6 @@ class CaptchaService:
             raise CustomException(msg="验证码错误")
 
         # 验证成功后删除验证码,避免重复使用
-        await RedisCURD(request.app.state.redis).delete(redis_key)
+        await RedisCURD(redis).delete(redis_key)
         logger.info(f'验证码校验成功,key:{key}')
         return True

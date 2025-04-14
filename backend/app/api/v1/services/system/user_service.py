@@ -2,7 +2,7 @@
 
 import io
 from typing import Any, Dict, List
-from fastapi import Request, UploadFile
+from fastapi import UploadFile
 import pandas as pd
 
 from app.core.exceptions import CustomException
@@ -207,7 +207,7 @@ class UserService:
         await UserCRUD(auth).set_available_crud(ids=data.ids, available=data.available)
 
     @classmethod
-    async def upload_avatar_service(cls, request: Request, file: UploadFile) -> Dict:
+    async def upload_avatar_service(cls, base_url: str, file: UploadFile) -> Dict:
         """上传头像"""
         if not file:
             raise CustomException(msg="请选择要上传的文件")
@@ -217,7 +217,7 @@ class UserService:
             file_path=f'{filepath}',
             file_name=filename,
             origin_name=file.filename,
-            file_url=f'{request.base_url}{filepath}',
+            file_url=f'{base_url}{filepath}',
         ).model_dump()
 
     @classmethod

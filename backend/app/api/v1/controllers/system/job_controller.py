@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from unittest import result
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import JSONResponse, StreamingResponse
 

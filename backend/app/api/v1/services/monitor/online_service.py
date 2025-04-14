@@ -2,7 +2,7 @@
 
 import json
 from typing import Dict, List
-from fastapi import Request
+from aioredis import Redis
 
 from app.common.enums import RedisInitKeyConfig
 from app.core.exceptions import CustomException
@@ -14,15 +14,15 @@ class OnlineService:
     """在线用户管理模块服务层"""
 
     @classmethod
-    async def get_online_list_service(cls, request: Request, search: OnlineQueryParams) -> List[Dict]:
+    async def get_online_list_service(cls, redis: Redis, search: OnlineQueryParams) -> List[Dict]:
         """获取在线用户列表信息"""
         # 获取所有在线用户信息
-        token_keys = await RedisCURD(request.app.state.redis).get_keys(f'{RedisInitKeyConfig.ONLINE_USER.key}*')
+        token_keys = await RedisCURD(redis).get_keys(f'{RedisInitKeyConfig.ONLINE_USER.key}*')
         if not token_keys:
             return []
             
         # 批量获取在线用户信息
-        online_values = await RedisCURD(request.app.state.redis).mget(*token_keys)
+        online_values = await RedisCURD(redis).mget(*token_keys)
         online_list = []
         
         for online_value in online_values:
@@ -46,16 +46,16 @@ class OnlineService:
         return online_list
 
     @classmethod
-    async def delete_online_service(cls, request: Request, username: str) -> bool:
+    async def delete_online_service(cls, redis: Redis, username: str) -> bool:
         """强制下线在线用户"""
         if not username:
             raise CustomException(msg='传入username不能为空')
             
         # 批量删除token
 
-        await RedisCURD(request.app.state.redis).delete(f"{RedisInitKeyConfig.ONLINE_USER.key}:{username}")
-        await RedisCURD(request.app.state.redis).delete(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}")
-        await RedisCURD(request.app.state.redis).delete(f"{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}")
+        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.ONLINE_USER.key}:{username}")
+        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}")
+        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}")
         return True
     
     @staticmethod
