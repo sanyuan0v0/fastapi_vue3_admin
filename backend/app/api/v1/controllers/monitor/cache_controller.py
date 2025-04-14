@@ -20,9 +20,9 @@ router = APIRouter(route_class=OperationLogRoute)
     summary="获取缓存监控信息",
     description="获取缓存监控信息"
 )
-async def get_monitor_cache_info(request: Request) -> JSONResponse:
+async def get_monitor_cache_info_controller(request: Request) -> JSONResponse:
     """获取缓存监控统计信息"""
-    result = await CacheService.get_cache_monitor_statistical_info_services(request)
+    result = await CacheService.get_cache_monitor_statistical_info_service(request)
     logger.info('获取缓存监控信息成功')
     return SuccessResponse(data=result, msg='获取缓存监控信息成功')
 
@@ -33,9 +33,9 @@ async def get_monitor_cache_info(request: Request) -> JSONResponse:
     summary="获取缓存名称列表",
     description="获取缓存名称列表"
 )
-async def get_monitor_cache_name() -> JSONResponse:
+async def get_monitor_cache_name_controller() -> JSONResponse:
     """获取缓存名称列表"""
-    result = await CacheService.get_cache_monitor_cache_name_services()
+    result = await CacheService.get_cache_monitor_cache_name_service()
     logger.info('获取缓存名称列表成功')
     return SuccessResponse(data=result, msg='获取缓存名称列表成功')
 
@@ -46,9 +46,9 @@ async def get_monitor_cache_name() -> JSONResponse:
     summary="获取缓存键名列表",
     description="获取缓存键名列表"
 )
-async def get_monitor_cache_key(request: Request, cache_name: str) -> JSONResponse:
+async def get_monitor_cache_key_controller(request: Request, cache_name: str) -> JSONResponse:
     """获取指定缓存名称下的键名列表"""
-    result = await CacheService.get_cache_monitor_cache_key_services(request, cache_name)
+    result = await CacheService.get_cache_monitor_cache_key_service(request, cache_name)
     logger.info(f'获取缓存{cache_name}的键名列表成功')
     return SuccessResponse(data=result, msg=f'获取缓存{cache_name}的键名列表成功')
 
@@ -59,9 +59,9 @@ async def get_monitor_cache_key(request: Request, cache_name: str) -> JSONRespon
     summary="获取缓存值",
     description="获取缓存值"
 )
-async def get_monitor_cache_value(request: Request, cache_name: str, cache_key: str) -> JSONResponse:
+async def get_monitor_cache_value_controller(request: Request, cache_name: str, cache_key: str) -> JSONResponse:
     """获取指定缓存键的值"""
-    result = await CacheService.get_cache_monitor_cache_value_services(request, cache_name, cache_key)
+    result = await CacheService.get_cache_monitor_cache_value_service(request, cache_name, cache_key)
     logger.info(f'获取缓存{cache_name}:{cache_key}的值成功')
     return SuccessResponse(data=result, msg=f'获取缓存{cache_name}:{cache_key}的值成功')
 
@@ -72,9 +72,9 @@ async def get_monitor_cache_value(request: Request, cache_name: str, cache_key: 
     summary="清除指定缓存名称的所有缓存",
     description="清除指定缓存名称的所有缓存"
 )
-async def clear_monitor_cache_name(request: Request, cache_name: str) -> JSONResponse:
+async def clear_monitor_cache_name_controller(request: Request, cache_name: str) -> JSONResponse:
     """清除指定缓存名称下的所有缓存"""
-    result = await CacheService.clear_cache_monitor_cache_name_services(request, cache_name)
+    result = await CacheService.clear_cache_monitor_cache_name_service(request, cache_name)
     if not result:
         raise CustomException(message='清除缓存失败', data=result)
     logger.info(f'清除缓存{cache_name}成功')
@@ -87,9 +87,9 @@ async def clear_monitor_cache_name(request: Request, cache_name: str) -> JSONRes
     summary="清除指定缓存键",
     description="清除指定缓存键"
 )
-async def clear_monitor_cache_key(request: Request, cache_key: str) -> JSONResponse:
+async def clear_monitor_cache_key_controller(request: Request, cache_key: str) -> JSONResponse:
     """清除指定缓存键"""
-    result = await CacheService.clear_cache_monitor_cache_key_services(request, cache_key)
+    result = await CacheService.clear_cache_monitor_cache_key_service(request, cache_key)
     if not result:
         raise CustomException(message='清除缓存失败', data=result)
     logger.info(f'清除缓存键{cache_key}成功')
@@ -102,9 +102,9 @@ async def clear_monitor_cache_key(request: Request, cache_key: str) -> JSONRespo
     summary="清除所有缓存",
     description="清除所有缓存"
 )
-async def clear_monitor_cache_all(request: Request) -> JSONResponse:
+async def clear_monitor_cache_all_controller(request: Request) -> JSONResponse:
     """清除所有缓存"""
-    result = await CacheService.clear_cache_monitor_all_services(request)
+    result = await CacheService.clear_cache_monitor_all_service(request)
     if not result:
         raise CustomException(message='清除缓存失败', data=result)
     logger.info('清除所有缓存成功')

@@ -19,34 +19,34 @@ class OperationLogService:
     """
 
     @classmethod
-    async def get_log_detail(cls, auth: AuthSchema, id: int) -> Dict:
+    async def get_log_detail_service(cls, auth: AuthSchema, id: int) -> Dict:
         """获取日志详情"""
-        log = await OperationLogCRUD(auth).get_operation_log_by_id(id=id)
+        log = await OperationLogCRUD(auth).get_by_id_crud(id=id)
         log_dict = OperationLogOutSchema.model_validate(log).model_dump()
         return log_dict
 
     @classmethod
-    async def get_log_list(cls, auth: AuthSchema, search: OperationLogQueryParams, order_by: List[Dict] = None) -> List[Dict]:
+    async def get_log_list_service(cls, auth: AuthSchema, search: OperationLogQueryParams, order_by: List[Dict] = None) -> List[Dict]:
         """获取日志列表"""
         order_by = order_by if order_by else [{"created_at": "desc"}]
-        log_list = await OperationLogCRUD(auth).get_operation_log_list(search=search.__dict__, order_by=order_by)
+        log_list = await OperationLogCRUD(auth).get_list_crud(search=search.__dict__, order_by=order_by)
         log_dict_list = [OperationLogOutSchema.model_validate(log).model_dump() for log in log_list]
         return log_dict_list
 
     @classmethod
-    async def create_log(cls, auth: AuthSchema, data: OperationLogCreateSchema) -> Dict:
+    async def create_log_service(cls, auth: AuthSchema, data: OperationLogCreateSchema) -> Dict:
         """创建日志"""
         new_log = await OperationLogCRUD(auth).create(data=data)
         new_log_dict = OperationLogOutSchema.model_validate(new_log).model_dump()
         return new_log_dict
     
     @classmethod
-    async def delete_log(cls, auth: AuthSchema, id: int) -> None:
+    async def delete_log_service(cls, auth: AuthSchema, id: int) -> None:
         """删除日志"""
         await OperationLogCRUD(auth).delete(ids=[id])
 
     @classmethod
-    async def export_log_list(cls, operation_log_list: List[Dict[str, Any]]) -> bytes:
+    async def export_log_list_service(cls, operation_log_list: List[Dict[str, Any]]) -> bytes:
         """
         导出日志信息
 
@@ -79,11 +79,5 @@ class OperationLogService:
         for item in data:
             # 处理状态
             item['response_code'] = '成功' if item.get('response_code') == 200 else '失败'
-
-        # # 转换为中文键
-        # new_data = [
-        #     {mapping_dict.get(key): value for key, value in item.items() if mapping_dict.get(key)} 
-        #     for item in data
-        # ]
 
         return ExcelUtil.export_list2excel(list_data=operation_log_list, mapping_dict=mapping_dict)

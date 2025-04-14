@@ -14,7 +14,7 @@ class OnlineService:
     """在线用户管理模块服务层"""
 
     @classmethod
-    async def get_online_list(cls, request: Request, search: OnlineQueryParams) -> List[Dict]:
+    async def get_online_list_service(cls, request: Request, search: OnlineQueryParams) -> List[Dict]:
         """获取在线用户列表信息"""
         # 获取所有在线用户信息
         token_keys = await RedisCURD(request.app.state.redis).get_keys(f'{RedisInitKeyConfig.ONLINE_USER.key}*')
@@ -46,7 +46,7 @@ class OnlineService:
         return online_list
 
     @classmethod
-    async def delete_online(cls, request: Request, username: str) -> bool:
+    async def delete_online_service(cls, request: Request, username: str) -> bool:
         """强制下线在线用户"""
         if not username:
             raise CustomException(msg='传入username不能为空')

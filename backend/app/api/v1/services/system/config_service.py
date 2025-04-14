@@ -25,13 +25,13 @@ class ConfigService:
     """
     
     @classmethod
-    async def get_services(cls, auth: AuthSchema, id: int) -> Dict:
-        config_obj = await ConfigCRUD(auth).get_curd(id=id)
+    async def get_service(cls, auth: AuthSchema, id: int) -> Dict:
+        config_obj = await ConfigCRUD(auth).get_crud(id=id)
         return ConfigOutSchema.model_validate(config_obj).model_dump()
 
     @classmethod
-    async def update_services(cls, auth: AuthSchema, request: Request, data: ConfigUpdateSchema) -> Dict:
-        new_obj = await ConfigCRUD(auth).update_curd(id=data.id, data=data)
+    async def update_service(cls, auth: AuthSchema, request: Request, data: ConfigUpdateSchema) -> Dict:
+        new_obj = await ConfigCRUD(auth).update_crud(id=data.id, data=data)
         new_obj_dict = ConfigOutSchema.model_validate(new_obj).model_dump()
         
         # 保存到Redis并设置过期时间
@@ -50,7 +50,7 @@ class ConfigService:
         return new_obj_dict
 
     @classmethod
-    async def upload_services(cls, request: Request, file: UploadFile) -> Dict:
+    async def upload_service(cls, request: Request, file: UploadFile) -> Dict:
         """上传文件"""
         if not file:
             raise CustomException(msg="请选择要上传的文件")
@@ -64,9 +64,9 @@ class ConfigService:
         ).model_dump()
     
     @classmethod
-    async def init_config(cls, redis: Redis, db: AsyncSession):
+    async def init_config_service(cls, redis: Redis, db: AsyncSession):
         auth = AuthSchema(db=db)
-        config_obj = await ConfigCRUD(auth).get_curd(id=1)
+        config_obj = await ConfigCRUD(auth).get_crud(id=1)
         config_obj_dict = ConfigOutSchema.model_validate(config_obj).model_dump()
 
         # 保存到Redis并设置过期时间
@@ -83,7 +83,7 @@ class ConfigService:
             raise CustomException(msg="初始化系统配置失败")
 
     @classmethod
-    async def get_init_config(cls, request: Request) -> Dict:
+    async def get_init_config_service(cls, request: Request) -> Dict:
         """获取系统配置"""
         redis_key = f"{RedisInitKeyConfig.System_Config.key}:{'init_system_config'}"
         config_obj_list_dict = await RedisCURD(request.app.state.redis).get(redis_key)

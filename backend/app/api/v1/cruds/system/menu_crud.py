@@ -16,7 +16,7 @@ class MenuCRUD(CRUDBase[MenuModel, MenuCreateSchema, MenuUpdateSchema]):
         self.auth = auth
         super().__init__(model=MenuModel, auth=auth)
 
-    async def get_menu_by_id(self, id: int) -> Optional[MenuModel]:
+    async def get_by_id_crud(self, id: int) -> Optional[MenuModel]:
         """
         根据id获取菜单信息
         
@@ -33,7 +33,7 @@ class MenuCRUD(CRUDBase[MenuModel, MenuCreateSchema, MenuUpdateSchema]):
                 obj.parent_name = parent.name
         return obj
 
-    async def get_menu_list(self, search: Dict = None, order_by: List[Dict[str, str]] = None) -> Sequence[MenuModel]:
+    async def get_list_crud(self, search: Dict = None, order_by: List[Dict[str, str]] = None) -> Sequence[MenuModel]:
         """
         获取菜单列表
         
@@ -51,7 +51,7 @@ class MenuCRUD(CRUDBase[MenuModel, MenuCreateSchema, MenuUpdateSchema]):
                     obj.parent_name = parent_map.get(obj.parent_id)
         return obj_list
 
-    async def set_menu_available(self, ids: List[int], available: bool) -> None:
+    async def set_available_crud(self, ids: List[int], available: bool) -> None:
         """
         批量设置菜单可用状态
         

@@ -60,7 +60,7 @@ class OperationLogRoute(APIRoute):
                     # 获取当前用户ID,如果是登录接口则为空
                     current_user_id = request.scope.get("user_id") if "user_id" in request.scope else None
 
-                    await OperationLogService.create_log(data=OperationLogCreateSchema(
+                    await OperationLogService.create_log_service(data=OperationLogCreateSchema(
                         request_path = request.url.path,
                         request_method = request.method,
                         request_payload = payload,

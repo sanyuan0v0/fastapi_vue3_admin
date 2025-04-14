@@ -18,65 +18,66 @@ from app.api.v1.schemas.system.job_schema import (
     JobCreateSchema,
     JobUpdateSchema
 )
+from app.core.ap_scheduler import SchedulerUtil
 
 
 router = APIRouter(route_class=OperationLogRoute)
 
 @router.get("/detail", summary="获取定时任务详情", description="获取定时任务详情")
-async def get_obj_detail(
-        id: int = Query(..., description="定时任务ID"),
-        auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:query"])),
+async def get_obj_detail_controller(
+    id: int = Query(..., description="定时任务ID"),
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:query"]))
 ) -> JSONResponse:
-    result_dict = await JobService.get_job_detail_services(id=id, auth=auth)
+    result_dict = await JobService.get_job_detail_service(id=id, auth=auth)
     logger.info(f"{auth.user.name} 获取定时任务详情成功 {id}")
     return SuccessResponse(data=result_dict, msg="获取定时任务详情成功")
 
 @router.get("/list", summary="查询定时任务", description="查询定时任务")
-async def get_obj_list(
-        page: PaginationQueryParams = Depends(),
-        search: JobQueryParams = Depends(),
-        auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:query"])),
+async def get_obj_list_controller(
+    page: PaginationQueryParams = Depends(),
+    search: JobQueryParams = Depends(),
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:query"]))
 ) -> JSONResponse:
-    result_dict_list = await JobService.get_job_list_services(auth=auth, search=search, order_by=page.order_by)
+    result_dict_list = await JobService.get_job_list_service(auth=auth, search=search, order_by=page.order_by)
     result_dict = await PaginationService.get_page_obj(data_list= result_dict_list, page_no= page.page_no, page_size = page.page_size)
     logger.info(f"{auth.user.name} 查询定时任务列表成功")
     return SuccessResponse(data=result_dict, msg="查询定时任务列表成功")
 
 @router.post("/create", summary="创建定时任务", description="创建定时任务")
-async def create_obj(
-        data: JobCreateSchema,
-        auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:create"])),
+async def create_obj_controller(
+    data: JobCreateSchema,
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:create"]))
 ) -> JSONResponse:
-    result_dict = await JobService.create_job_services(auth=auth, data=data)
+    result_dict = await JobService.create_job_service(auth=auth, data=data)
     logger.info(f"{auth.user.name} 创建定时任务成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg="创建定时任务成功")
 
 @router.put("/update", summary="修改定时任务", description="修改定时任务")
-async def update_obj(
-        data: JobUpdateSchema,
-        auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:update"])),
+async def update_obj_controller(
+    data: JobUpdateSchema,
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:update"]))
 ) -> JSONResponse:
-    result_dict = await JobService.update_job_services(auth=auth, data=data)
+    result_dict = await JobService.update_job_service(auth=auth, data=data)
     logger.info(f"{auth.user.name} 修改定时任务成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg="修改定时任务成功")
 
 @router.delete("/delete", summary="删除定时任务", description="删除定时任务")
-async def delete_obj(
-        id: int = Query(..., description="定时任务ID"),
-        auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:delete"])),
+async def delete_obj_controller(
+    id: int = Query(..., description="定时任务ID"),
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:delete"]))
 ) -> JSONResponse:
-    await JobService.delete_job_services(auth=auth, id=id)
+    await JobService.delete_job_service(auth=auth, id=id)
     logger.info(f"{auth.user.name} 删除定时任务成功: {id}")
     return SuccessResponse(msg="删除定时任务成功")
 
 @router.post('/export', summary="导出定时任务", description="导出定时任务")
-async def export_obj_list(
+async def export_obj_list_controller(
     search: JobQueryParams = Depends(),
-    auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:export"])),
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:export"]))
 ) -> StreamingResponse:
     # 获取全量数据
-    result_dict_list = await JobService.get_job_list_services(search=search, auth=auth)
-    export_result = await JobService.export_job_services(data_list=result_dict_list)
+    result_dict_list = await JobService.get_job_list_service(search=search, auth=auth)
+    export_result = await JobService.export_job_service(data_list=result_dict_list)
     logger.info('导出定时任务成功')
 
     return StreamResponse(
@@ -88,28 +89,25 @@ async def export_obj_list(
     )
 
 @router.delete("/clear", summary="清空定时任务日志", description="清空定时任务日志")
-async def clear_obj_log(
-    auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:delete"])),
+async def clear_obj_log_controller(
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:delete"]))
 ) -> JSONResponse:
-    await JobService.clear_job_services(auth=auth)
+    await JobService.clear_job_service(auth=auth)
     logger.info(f"{auth.user.name} 清空定时任务成功")
     return SuccessResponse(msg="清空定时任务成功")
 
 @router.put("/option", summary="暂停/恢复/重启定时任务", description="暂停/恢复/重启定时任务")
-async def option_obj(
+async def option_obj_controller(
     id: int = Query(..., description="定时任务ID"),
     option: int = Query(..., description="操作类型 1: 暂停 2: 恢复 3: 重启"),
-    auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:update"])),
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:update"]))
 ) -> JSONResponse:
-    await JobService.option_job_services(auth=auth, id=id, option=option)
+    await JobService.option_job_service(auth=auth, id=id, option=option)
     logger.info(f"{auth.user.name} 操作定时任务成功: {id}")
     return SuccessResponse(msg="操作定时任务成功")
 
-@router.get("/log", summary="获取定时任务日志", description="获取定时任务日志")
-async def test_job():
-    from app.core.ap_scheduler import SchedulerUtil
-    logger.info(f"获取定时任务日志: {SchedulerUtil.get_all_jobs()}")
-    logger.info(f"打印定时任务日志: {SchedulerUtil.print_jobs('default')}")
+@router.get("/log", summary="获取定时任务日志", description="获取定时任务日志", dependencies=[Depends(AuthPermission(permissions=["system:job:query"]))])
+async def get_job_log_controller():
     data = [
         {
             "id": i.id,
@@ -124,15 +122,9 @@ async def test_job():
             "coalesce": i.coalesce,
             "max_instances": i.max_instances,
             "next_run_time": i.next_run_time,
-            "state": SchedulerUtil.get_job_status(),
+            "state": SchedulerUtil.get_job_status()
         }
         for i in SchedulerUtil.get_all_jobs()
     ]
 
-    return data
-
-@router.put("/log", summary="暂停任务", description="暂停任务")
-async def pauseJob(job_id):
-    from app.core.ap_scheduler import SchedulerUtil
-    return SchedulerUtil.pause_job(job_id=str(job_id))
-
+    return SuccessResponse(msg="获取定时任务日志成功", data=data)

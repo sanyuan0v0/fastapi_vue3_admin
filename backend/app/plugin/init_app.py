@@ -45,9 +45,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     logger.info(settings.BANNER + '\n' + f'{settings.TITLE} 服务开始启动...')
     await import_modules_async(modules=settings.EVENT_LIST, desc="全局事件", app=app, status=True)
     async with async_session() as session:
-        await ConfigService().init_config(redis=app.state.redis, db=session)
+        await ConfigService().init_config_service(redis=app.state.redis, db=session)
         logger.info("初始化系统配置完成...")
-        await DictDataService().init_dict(redis=app.state.redis, db=session)
+        await DictDataService().init_dict_service(redis=app.state.redis, db=session)
         logger.info('初始化数据字典完成...')
     await SchedulerUtil.init_system_scheduler()
     logger.info(f'{settings.TITLE} 服务成功启动...')

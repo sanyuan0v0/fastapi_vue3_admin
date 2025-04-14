@@ -16,7 +16,7 @@ class PositionCRUD(CRUDBase[PositionModel, PositionCreateSchema, PositionUpdateS
         self.auth = auth
         super().__init__(model=PositionModel, auth=auth)
 
-    async def get_position_by_id(self, id: int) -> Optional[PositionModel]:
+    async def get_by_id_crud(self, id: int) -> Optional[PositionModel]:
         """
         根据id获取岗位信息
         
@@ -25,7 +25,7 @@ class PositionCRUD(CRUDBase[PositionModel, PositionCreateSchema, PositionUpdateS
         """
         return await self.get(id=id)
 
-    async def get_position_list(self, search: Dict = None, order_by: List[Dict[str, str]] = None) -> Sequence[PositionModel]:
+    async def get_list_crud(self, search: Dict = None, order_by: List[Dict[str, str]] = None) -> Sequence[PositionModel]:
         """
         获取岗位列表
         
@@ -35,7 +35,7 @@ class PositionCRUD(CRUDBase[PositionModel, PositionCreateSchema, PositionUpdateS
         """
         return await self.list(search=search, order_by=order_by)
 
-    async def set_position_available(self, ids: List[int], available: bool) -> None:
+    async def set_available_crud(self, ids: List[int], available: bool) -> None:
         """
         批量设置岗位可用状态
         
@@ -44,7 +44,7 @@ class PositionCRUD(CRUDBase[PositionModel, PositionCreateSchema, PositionUpdateS
         """
         await self.set(ids=ids, available=available)
 
-    async def get_position_name(self, ids: List[int]) -> Optional[str]:
+    async def get_name_crud(self, ids: List[int]) -> Optional[str]:
         """
         根据id列表获取岗位名称
         """

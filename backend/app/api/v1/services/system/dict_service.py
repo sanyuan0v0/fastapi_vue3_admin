@@ -10,7 +10,7 @@ from app.api.v1.schemas.system.auth_schema import AuthSchema
 from app.api.v1.schemas.system.dict_schema import DictDataCreateSchema,DictDataOutSchema,DictDataUpdateSchema,DictTypeCreateSchema,DictTypeOutSchema,DictTypeUpdateSchema
 from app.common.enums import RedisInitKeyConfig
 from app.api.v1.params.system.dict_param import DictDataQueryParams, DictTypeQueryParams
-from app.api.v1.cruds.system.dict_curd import DictDataCRUD, DictTypeCRUD
+from app.api.v1.cruds.system.dict_crud import DictDataCRUD, DictTypeCRUD
 from app.core.redis_crud import RedisCURD
 from app.core.exceptions import CustomException
 from app.utils.excel_util import ExcelUtil
@@ -23,19 +23,19 @@ class DictTypeService:
     """
     
     @classmethod
-    async def get_obj_detail_services(cls, auth: AuthSchema, id: int) -> Dict:
+    async def get_obj_detail_service(cls, auth: AuthSchema, id: int) -> Dict:
         obj = await DictTypeCRUD(auth).get_obj_by_id_crud(id=id)
         return DictTypeOutSchema.model_validate(obj).model_dump()
     
     @classmethod
-    async def get_obj_list_services(cls, auth: AuthSchema, search: DictTypeQueryParams = None, order_by: List[Dict[str, str]] = None) -> List[Dict]:
+    async def get_obj_list_service(cls, auth: AuthSchema, search: DictTypeQueryParams = None, order_by: List[Dict[str, str]] = None) -> List[Dict]:
         if search:
             obj_list = await DictTypeCRUD(auth).get_obj_list_crud(search=search.__dict__, order_by=order_by)
         obj_list = await DictTypeCRUD(auth).get_obj_list_crud()
         return [DictTypeOutSchema.model_validate(obj).model_dump() for obj in obj_list]
     
     @classmethod
-    async def create_obj_services(cls, auth: AuthSchema,request: Request, data: DictTypeCreateSchema) -> Dict:
+    async def create_obj_service(cls, auth: AuthSchema,request: Request, data: DictTypeCreateSchema) -> Dict:
         exist_obj = await DictTypeCRUD(auth).get(dict_name=data.dict_name)
         if exist_obj:
             raise CustomException(msg='创建失败，该数据字典类型已存在')
@@ -59,7 +59,7 @@ class DictTypeService:
         return new_obj_dict
     
     @classmethod
-    async def update_obj_services(cls, auth: AuthSchema, request: Request, data: DictTypeUpdateSchema) -> Dict:
+    async def update_obj_service(cls, auth: AuthSchema, request: Request, data: DictTypeUpdateSchema) -> Dict:
         exist_obj = await DictTypeCRUD(auth).get_obj_by_id_crud(id=data.id)
         if not exist_obj:
             raise CustomException(msg='更新失败，该数据字典类型不存在')
@@ -114,7 +114,7 @@ class DictTypeService:
         return new_obj_dict
     
     @classmethod
-    async def delete_obj_services(cls, auth: AuthSchema, request: Request, id: int) -> None:
+    async def delete_obj_service(cls, auth: AuthSchema, request: Request, id: int) -> None:
         exist_obj = await DictTypeCRUD(auth).get_obj_by_id_crud(id=id)
         if not exist_obj:
             raise CustomException(msg='删除失败，该数据字典类型不存在')
@@ -134,7 +134,7 @@ class DictTypeService:
             raise CustomException(msg=f"删除字典类型失败 {e}")
 
     @classmethod
-    async def export_obj_services(cls, data_list: List[Dict[str, Any]]) -> bytes:
+    async def export_obj_service(cls, data_list: List[Dict[str, Any]]) -> bytes:
         """导出公告列表"""
         mapping_dict = {
             'id': '编号',
@@ -163,23 +163,18 @@ class DictDataService:
     """
     
     @classmethod
-    async def get_obj_detail_services(cls, auth: AuthSchema, id: int) -> Dict:
+    async def get_obj_detail_service(cls, auth: AuthSchema, id: int) -> Dict:
         obj = await DictDataCRUD(auth).get_obj_by_id_crud(id=id)
         return DictDataOutSchema.model_validate(obj).model_dump()
     
     @classmethod
-    async def get_obj_list_services(cls, auth: AuthSchema, search: DictDataQueryParams = None, order_by: List[Dict[str, str]] = None) -> List[Dict]:
+    async def get_obj_list_service(cls, auth: AuthSchema, search: DictDataQueryParams = None, order_by: List[Dict[str, str]] = None) -> List[Dict]:
         obj_list = await DictDataCRUD(auth).get_obj_list_crud(search=search.__dict__, order_by=order_by)
         return [DictDataOutSchema.model_validate(obj).model_dump() for obj in obj_list]
 
     @classmethod
-    async def init_dict(cls, redis: Redis, db: AsyncSession):
+    async def init_dict_service(cls, redis: Redis, db: AsyncSession):
         """应用初始化: 获取所有字典类型对应的字典数据信息并缓存service"""
-        keys = await redis.keys(f'{RedisInitKeyConfig.System_Dict.key}:*')
-        # 删除匹配的键
-        # if keys:
-        #     await RedisCURD(redis).delete(*keys)
-        #     logger.info(f"已清除原有字典缓存, keys: {keys}")
 
         auth = AuthSchema(db=db)
         obj_list = await DictTypeCRUD(auth).get_obj_list_crud()
@@ -210,7 +205,7 @@ class DictDataService:
                 raise CustomException(msg=f"初始化字典数据成功 {e}")
     
     @classmethod
-    async def get_init_dict(cls, redis: Redis) -> Dict:
+    async def get_init_dict_service(cls, redis: Redis) -> Dict:
         """获取系统配置"""
         redis_key = f"{RedisInitKeyConfig.System_Dict.key}:*"
         obj_list_dict = await RedisCURD(redis).get_keys(redis_key)
@@ -221,7 +216,7 @@ class DictDataService:
         return cache_key_list
     
     @classmethod
-    async def query_init_dict(cls, redis: Redis, dict_type: str):
+    async def query_init_dict_service(cls, redis: Redis, dict_type: str):
         """从缓存获取字典数据列表信息service"""
         redis_key = f"{RedisInitKeyConfig.System_Dict.key}:{dict_type}"
         obj_list_dict = await RedisCURD(redis).get(redis_key)
@@ -230,7 +225,7 @@ class DictDataService:
         return obj_list_dict
 
     @classmethod
-    async def create_obj_services(cls, auth: AuthSchema, request: Request, data: DictDataCreateSchema) -> Dict:
+    async def create_obj_service(cls, auth: AuthSchema, request: Request, data: DictDataCreateSchema) -> Dict:
         exist_obj = await DictDataCRUD(auth).get(dict_label=data.dict_label)
         if exist_obj:
             raise CustomException(msg='创建失败，该字典数据已存在')
@@ -256,7 +251,7 @@ class DictDataService:
         return DictDataOutSchema.model_validate(obj).model_dump()
     
     @classmethod
-    async def update_obj_services(cls, auth: AuthSchema, request: Request, data: DictDataUpdateSchema) -> Dict:
+    async def update_obj_service(cls, auth: AuthSchema, request: Request, data: DictDataUpdateSchema) -> Dict:
         exist_obj = await DictDataCRUD(auth).get_obj_by_id_crud(id=data.id)
         if not exist_obj:
             raise CustomException(msg='更新失败，该字典数据不存在')
@@ -311,7 +306,7 @@ class DictDataService:
         return DictDataOutSchema.model_validate(obj).model_dump()
     
     @classmethod
-    async def delete_obj_services(cls, auth: AuthSchema, request: Request, id: int) -> None:
+    async def delete_obj_service(cls, auth: AuthSchema, request: Request, id: int) -> None:
         exist_obj = await DictDataCRUD(auth).get_obj_by_id_crud(id=id)
         if not exist_obj:
             raise CustomException(msg='删除失败，该字典数据不存在')
@@ -327,7 +322,7 @@ class DictDataService:
             raise CustomException(msg=f"删除字典数据失败 {e}")
 
     @classmethod
-    async def export_obj_services(cls, data_list: List[Dict[str, Any]]) -> bytes:
+    async def export_obj_service(cls, data_list: List[Dict[str, Any]]) -> bytes:
         """导出公告列表"""
         mapping_dict = {
             'id': '编号',

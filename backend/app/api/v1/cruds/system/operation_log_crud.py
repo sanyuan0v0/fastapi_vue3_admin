@@ -16,7 +16,7 @@ class OperationLogCRUD(CRUDBase[OperationLogModel, OperationLogCreateSchema, Non
         self.auth = auth
         super().__init__(model=OperationLogModel, auth=auth)
 
-    async def create_operation_log(self, data: OperationLogCreateSchema) -> Optional[OperationLogModel]:
+    async def create_crud(self, data: OperationLogCreateSchema) -> Optional[OperationLogModel]:
         """
         创建操作日志记录
         
@@ -25,7 +25,7 @@ class OperationLogCRUD(CRUDBase[OperationLogModel, OperationLogCreateSchema, Non
         """
         return await self.create(data=data.model_dump())
 
-    async def get_operation_log_by_id(self, id: int) -> Optional[OperationLogModel]:
+    async def get_by_id_crud(self, id: int) -> Optional[OperationLogModel]:
         """
         根据ID获取操作日志详情
         
@@ -34,7 +34,7 @@ class OperationLogCRUD(CRUDBase[OperationLogModel, OperationLogCreateSchema, Non
         """
         return await self.get(id=id)
 
-    async def get_operation_log_list(self, search: Dict = None, order_by: List[Dict[str, str]] = None) -> Sequence[OperationLogModel]:
+    async def get_list_crud(self, search: Dict = None, order_by: List[Dict[str, str]] = None) -> Sequence[OperationLogModel]:
         """
         获取操作日志列表
         

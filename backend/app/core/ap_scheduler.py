@@ -76,8 +76,9 @@ class SchedulerUtil:
                 job_id = event.job_id
                 query_job = cls.get_job(job_id=job_id)
                 job_group = query_job._jobstore_alias # 获取任务组
-                job_message = f"事件类型: {event_type}, 任务ID: {job_id}, 任务组: {job_group}, 错误详情: {exception_info}"
-                JobCRUD(AuthSchema(db=session)).set_obj_field_crud(ids=[job_id], status=status, message=job_message)
+                job_message = f"事件类型: {event_type}, 任务ID: {job_id}, 状态: {status}, 任务组: {job_group}, 错误详情: {exception_info}"
+                logger.error(job_message)
+                # JobCRUD(AuthSchema(db=session)).set_obj_field_crud(ids=[job_id], status=status, message=job_message)
 
     @classmethod
     async def init_system_scheduler(cls):
@@ -213,11 +214,9 @@ class SchedulerUtil:
             )
             return job
         except ModuleNotFoundError:
-            raise ValueError(f"未找到该模块：{module_pag}")
+            raise ValueError(f"未找到该模块：{module_path}")
         except AttributeError:
-            raise ValueError(f"未找到该模块下的方法：{module_class}")
-        except TypeError as e:
-            raise ValueError(f"参数传递错误：{args}, 详情：{e}")
+            raise ValueError(f"未找到该模块下的方法：{func_name}")
         except Exception as e:
             raise CustomException(msg=f"添加任务失败: {str(e)}")
 

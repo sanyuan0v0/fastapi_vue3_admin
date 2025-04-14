@@ -17,47 +17,47 @@ class NoticeService:
     """
     
     @classmethod
-    async def get_notice_detail_services(cls, auth: AuthSchema, id: int) -> Dict:
-        config_obj = await NoticeCRUD(auth).get_notice_by_id(id=id)
+    async def get_notice_detail_service(cls, auth: AuthSchema, id: int) -> Dict:
+        config_obj = await NoticeCRUD(auth).get_by_id_crud(id=id)
         return NoticeOutSchema.model_validate(config_obj).model_dump()
     
     @classmethod
-    async def get_notice_list_services(cls, auth: AuthSchema, search: NoticeQueryParams = None, order_by: List[Dict[str, str]] = None) -> List[Dict]:
-        config_obj_list = await NoticeCRUD(auth).get_notice_list(search=search.__dict__, order_by=order_by)
+    async def get_notice_list_service(cls, auth: AuthSchema, search: NoticeQueryParams = None, order_by: List[Dict[str, str]] = None) -> List[Dict]:
+        config_obj_list = await NoticeCRUD(auth).get_list_crud(search=search.__dict__, order_by=order_by)
         return [NoticeOutSchema.model_validate(config_obj).model_dump() for config_obj in config_obj_list]
     
     @classmethod
-    async def create_notice_services(cls, auth: AuthSchema, data: NoticeCreateSchema) -> Dict:
+    async def create_notice_service(cls, auth: AuthSchema, data: NoticeCreateSchema) -> Dict:
         config = await NoticeCRUD(auth).get(notice_title=data.notice_title)
         if config:
             raise CustomException(msg='创建失败，该公告通知已存在')
-        config_obj = await NoticeCRUD(auth).create_notice(data=data)
+        config_obj = await NoticeCRUD(auth).create_crud(data=data)
         return NoticeOutSchema.model_validate(config_obj).model_dump()
     
     @classmethod
-    async def update_notice_services(cls, auth: AuthSchema, data: NoticeUpdateSchema) -> Dict:
-        config = await NoticeCRUD(auth).get_notice_by_id(id=data.id)
+    async def update_notice_service(cls, auth: AuthSchema, data: NoticeUpdateSchema) -> Dict:
+        config = await NoticeCRUD(auth).get_by_id_crud(id=data.id)
         if not config:
             raise CustomException(msg='更新失败，该公告通知不存在')
         exist_config = await NoticeCRUD(auth).get(notice_title=data.notice_title)
         if exist_config and exist_config.id != data.id:
             raise CustomException(msg='更新失败，公告通知标题重复')
-        config_obj = await NoticeCRUD(auth).update_notice(id=data.id, data=data)
+        config_obj = await NoticeCRUD(auth).update_crud(id=data.id, data=data)
         return NoticeOutSchema.model_validate(config_obj).model_dump()
     
     @classmethod
-    async def delete_notice_services(cls, auth: AuthSchema, id: int) -> None:
-        config = await NoticeCRUD(auth).get_notice_by_id(id=id)
+    async def delete_notice_service(cls, auth: AuthSchema, id: int) -> None:
+        config = await NoticeCRUD(auth).get_by_id_crud(id=id)
         if not config:
             raise CustomException(msg='删除失败，该公告通知不存在')
-        await NoticeCRUD(auth).delete_notice(ids=[id])
+        await NoticeCRUD(auth).delete_crud(ids=[id])
     
     @classmethod
-    async def set_notice_available_services(cls, auth: AuthSchema, data: BatchSetAvailable) -> None:
-        await NoticeCRUD(auth).set_notice_available(ids=data.ids, available=data.available)
+    async def set_notice_available_service(cls, auth: AuthSchema, data: BatchSetAvailable) -> None:
+        await NoticeCRUD(auth).set_available_crud(ids=data.ids, available=data.available)
     
     @classmethod
-    async def export_notice_services(cls, notice_list: List[Dict[str, Any]]) -> bytes:
+    async def export_notice_service(cls, notice_list: List[Dict[str, Any]]) -> bytes:
         """导出公告列表"""
         mapping_dict = {
             'id': '编号',
@@ -79,11 +79,5 @@ class NoticeService:
             item['available'] = '正常' if item.get('available') else '停用'
             # 处理公告类型
             item['notice_type'] = '通知' if item.get('notice_type') == 1 else '公告'
-
-        # # 转换为中文键
-        # new_data = [
-        #     {mapping_dict.get(key): value for key, value in item.items() if mapping_dict.get(key)} 
-        #     for item in data
-        # ]
 
         return ExcelUtil.export_list2excel(list_data=notice_list, mapping_dict=mapping_dict)

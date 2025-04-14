@@ -16,10 +16,10 @@ class ConfigCRUD(CRUDBase[ConfigModel, ConfigCreateSchema, ConfigUpdateSchema]):
         self.auth = auth
         super().__init__(model=ConfigModel, auth=auth)
     
-    async def get_curd(self, id: int) -> Optional[ConfigModel]:
+    async def get_crud(self, id: int) -> Optional[ConfigModel]:
         """获取配置"""
         return await self.get(id=id)
 
-    async def update_curd(self, id: int, data: ConfigUpdateSchema) -> Optional[ConfigModel]:
+    async def update_crud(self, id: int, data: ConfigUpdateSchema) -> Optional[ConfigModel]:
         """更新配置"""
         return await self.update(id=id, data=data)

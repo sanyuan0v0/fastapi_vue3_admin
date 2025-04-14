@@ -18,17 +18,17 @@ class JobService:
     """
     
     @classmethod
-    async def get_job_detail_services(cls, auth: AuthSchema, id: int) -> Dict:
+    async def get_job_detail_service(cls, auth: AuthSchema, id: int) -> Dict:
         obj = await JobCRUD(auth).get_obj_by_id_crud(id=id)
         return JobOutSchema.model_validate(obj).model_dump()
     
     @classmethod
-    async def get_job_list_services(cls, auth: AuthSchema, search: JobQueryParams = None, order_by: List[Dict[str, str]] = None) -> List[Dict]:
+    async def get_job_list_service(cls, auth: AuthSchema, search: JobQueryParams = None, order_by: List[Dict[str, str]] = None) -> List[Dict]:
         obj_list = await JobCRUD(auth).get_obj_list_crud(search=search.__dict__, order_by=order_by)
         return [JobOutSchema.model_validate(obj).model_dump() for obj in obj_list]
     
     @classmethod
-    async def create_job_services(cls, auth: AuthSchema, data: JobCreateSchema) -> Dict:
+    async def create_job_service(cls, auth: AuthSchema, data: JobCreateSchema) -> Dict:
         exist_obj = await JobCRUD(auth).get(name=data.name)
         if exist_obj:
             raise CustomException(msg='创建失败，该定时任务已存在')
@@ -40,7 +40,7 @@ class JobService:
         return JobOutSchema.model_validate(obj).model_dump()
     
     @classmethod
-    async def update_job_services(cls, auth: AuthSchema, data: JobUpdateSchema) -> Dict:
+    async def update_job_service(cls, auth: AuthSchema, data: JobUpdateSchema) -> Dict:
         exist_obj = await JobCRUD(auth).get_obj_by_id_crud(id=data.id)
         if not exist_obj:
             raise CustomException(msg='更新失败，该定时任务不存在')
@@ -51,7 +51,7 @@ class JobService:
         return JobOutSchema.model_validate(obj).model_dump()
     
     @classmethod
-    async def delete_job_services(cls, auth: AuthSchema, id: int) -> None:
+    async def delete_job_service(cls, auth: AuthSchema, id: int) -> None:
         exist_obj = await JobCRUD(auth).get_obj_by_id_crud(id=id)
         if not exist_obj:
             raise CustomException(msg='删除失败，该数据定时任务不存在')
@@ -59,12 +59,12 @@ class JobService:
         SchedulerUtil.remove_job(job_id=id)
 
     @classmethod
-    async def clear_job_services(cls, auth: AuthSchema) -> None:
+    async def clear_job_service(cls, auth: AuthSchema) -> None:
         SchedulerUtil().clear_jobs()
         await JobCRUD(auth).clear_obj_crud()
 
     @classmethod
-    async def option_job_services(cls, auth: AuthSchema, id: int, option: int) -> None:
+    async def option_job_service(cls, auth: AuthSchema, id: int, option: int) -> None:
         # 1: 暂停 2: 恢复 3: 重启
         obj = await JobCRUD(auth).get_obj_by_id_crud(id=id)
         if not obj:
@@ -80,7 +80,7 @@ class JobService:
             await JobCRUD(auth).set_obj_field_crud(ids=[id], status=False)
 
     @classmethod
-    async def export_job_services(cls, data_list: List[Dict[str, Any]]) -> bytes:
+    async def export_job_service(cls, data_list: List[Dict[str, Any]]) -> bytes:
         """导出公告列表"""
         mapping_dict = {
             'id': '编号',

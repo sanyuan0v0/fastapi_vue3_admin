@@ -40,7 +40,7 @@ class LoginService:
     """登录认证服务"""
 
     @classmethod
-    async def authenticate_user(cls, request: Request, login_form: CustomOAuth2PasswordRequestForm, db: AsyncSession) -> UserModel:
+    async def authenticate_user_service(cls, request: Request, login_form: CustomOAuth2PasswordRequestForm, db: AsyncSession) -> UserModel:
         """
         用户认证
         
@@ -61,11 +61,11 @@ class LoginService:
         
         # 验证码校验
         if settings.CAPTCHA_ENABLE and not request_from_docs:
-            await CaptchaService.check_captcha(request=request, key=login_form.captcha_key, captcha=login_form.captcha)
+            await CaptchaService.check_captcha_service(request=request, key=login_form.captcha_key, captcha=login_form.captcha)
 
         # 用户认证
         auth = AuthSchema(db=db)
-        user = await UserCRUD(auth).get_user_by_username(username=login_form.username)
+        user = await UserCRUD(auth).get_by_username_crud(username=login_form.username)
 
         if not user:
             raise CustomException(msg="用户不存在")
@@ -78,10 +78,10 @@ class LoginService:
             raise CustomException(msg="用户已被停用")
 
         # 更新最后登录时间
-        user = await UserCRUD(auth).update_user_last_login(id=user.id)
+        user = await UserCRUD(auth).update_last_login_crud(id=user.id)
         
         # 创建token
-        token = await cls.create_token(request=request, username=user.username)
+        token = await cls.create_token_service(request=request, username=user.username)
         user_agent = parse(request.headers.get("user-agent"))
         
         # 缓存中构建在线用户信息
@@ -104,7 +104,7 @@ class LoginService:
         return user
 
     @classmethod
-    async def create_token(cls, request: Request, username: str) -> JWTOutSchema:
+    async def create_token_service(cls, request: Request, username: str) -> JWTOutSchema:
         """
         创建访问令牌和刷新令牌
         
@@ -155,7 +155,7 @@ class LoginService:
         )
 
     @classmethod
-    async def refresh_token(cls, request: Request, refresh_token: RefreshTokenPayloadSchema) -> JWTOutSchema:
+    async def refresh_token_service(cls, request: Request, refresh_token: RefreshTokenPayloadSchema) -> JWTOutSchema:
         """
         刷新访问令牌
         
@@ -172,10 +172,10 @@ class LoginService:
         if not token_payload.is_refresh:
             raise CustomException(msg="非法凭证")
 
-        return await cls.create_token(request=request, username=token_payload.sub)
+        return await cls.create_token_service(request=request, username=token_payload.sub)
 
     @classmethod
-    async def logout_services(cls, request: Request, token: LogoutPayloadSchema) -> bool:
+    async def logout_services_service(cls, request: Request, token: LogoutPayloadSchema) -> bool:
         """
         退出登录
         
@@ -202,7 +202,7 @@ class CaptchaService:
     """验证码服务"""
 
     @classmethod
-    async def get_captcha(cls, request: Request) -> Dict[str, Union[CaptchaKey, CaptchaBase64]]:
+    async def get_captcha_service(cls, request: Request) -> Dict[str, Union[CaptchaKey, CaptchaBase64]]:
         """
         获取验证码
         
@@ -239,7 +239,7 @@ class CaptchaService:
         ).model_dump()
 
     @classmethod
-    async def check_captcha(cls, request: Request, key: str, captcha: str) -> bool:
+    async def check_captcha_service(cls, request: Request, key: str, captcha: str) -> bool:
         """
         校验验证码
         

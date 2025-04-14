@@ -219,22 +219,22 @@ class MongoCURD:
         return params
 
 
-class OperationRecordDal(MongoCURD):
-    """
-    操作记录数据访问层
-    """
+# class OperationRecordDal(MongoCURD):
+#     """
+#     操作记录数据访问层
+#     """
 
-    def __init__(self, db: AsyncIOMotorDatabase):
-        """
-        初始化操作记录数据访问层。
+#     def __init__(self, db: AsyncIOMotorDatabase):
+#         """
+#         初始化操作记录数据访问层。
 
-        :param db: 数据库连接
-        """
-        super().__init__(
-            db=db,
-            collection="system_operation_log",
-            schema=OperationLogOutSchema,
-        )
+#         :param db: 数据库连接
+#         """
+#         super().__init__(
+#             db=db,
+#             collection="system_operation_log",
+#             schema=OperationLogOutSchema,
+#         )
 
 # 创建日志到mongodb(已测试成功，可以成功创建):暂时注释，是因为该中间保存日志到mongodb(已调试成功)，而我现在实现的是记录到mysql的log表
 # if not settings.MONGO_DB_ENABLE:

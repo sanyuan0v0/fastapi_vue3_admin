@@ -2,9 +2,7 @@
 
 from typing import Optional
 from fastapi import Query
-from datetime import datetime
 
-from app.core.validator import DateTimeStr
 
 class DeptQueryParams:
     """部门管理查询参数"""

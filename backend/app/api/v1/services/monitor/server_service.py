@@ -22,7 +22,7 @@ class ServerService:
     """服务监控模块服务层"""
 
     @classmethod
-    async def get_server_monitor_info(cls) -> Dict:
+    async def get_server_monitor_info_service(cls) -> Dict:
         """获取服务器监控信息"""
         return ServerMonitorSchema(
             cpu=cls._get_cpu_info().model_dump(),

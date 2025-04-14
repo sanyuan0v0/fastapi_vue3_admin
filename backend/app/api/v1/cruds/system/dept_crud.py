@@ -16,7 +16,7 @@ class DeptCRUD(CRUDBase[DeptModel, DeptCreateSchema, DeptUpdateSchema]):
         self.auth = auth
         super().__init__(model=DeptModel, auth=auth)
 
-    async def get_dept_by_id(self, id: int) -> Optional[DeptModel]:
+    async def get_by_id_crud(self, id: int) -> Optional[DeptModel]:
         """
         根据id获取部门信息
         
@@ -33,7 +33,7 @@ class DeptCRUD(CRUDBase[DeptModel, DeptCreateSchema, DeptUpdateSchema]):
                 obj.parent_name = parent.name
         return obj
 
-    async def get_dept_list(self, search: Dict = None, order_by: List[Dict[str, str]] = None) -> Sequence[DeptModel]:
+    async def get_list_crud(self, search: Dict = None, order_by: List[Dict[str, str]] = None) -> Sequence[DeptModel]:
         """
         获取部门列表
         
@@ -51,7 +51,7 @@ class DeptCRUD(CRUDBase[DeptModel, DeptCreateSchema, DeptUpdateSchema]):
                     obj.parent_name = parent_map.get(obj.parent_id)
         return obj_list
 
-    async def set_dept_available(self, ids: List[int], available: bool) -> None:
+    async def set_available_crud(self, ids: List[int], available: bool) -> None:
         """
         批量设置部门可用状态
         
@@ -60,7 +60,7 @@ class DeptCRUD(CRUDBase[DeptModel, DeptCreateSchema, DeptUpdateSchema]):
         """
         await self.set(ids=ids, available=available)
 
-    async def get_dept_name(self, id: int) -> Optional[str]:
+    async def get_name_crud(self, id: int) -> Optional[str]:
         """
         根据id获取部门名称
         """

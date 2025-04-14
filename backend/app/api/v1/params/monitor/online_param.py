@@ -2,9 +2,6 @@
 
 from typing import Optional
 from fastapi import Query
-from datetime import datetime
-
-from app.core.validator import DateTimeStr
 
 
 class OnlineQueryParams:

@@ -20,20 +20,20 @@ class RoleService:
     """角色模块服务层"""
 
     @classmethod
-    async def get_role_detail(cls, auth: AuthSchema, id: int) -> Dict:
+    async def get_role_detail_service(cls, auth: AuthSchema, id: int) -> Dict:
         """获取角色详情"""
-        role = await RoleCRUD(auth).get_role_by_id(id=id)
+        role = await RoleCRUD(auth).get_by_id_crud(id=id)
         return RoleOutSchema.model_validate(role).model_dump()
 
     @classmethod
-    async def get_role_list(cls, auth: AuthSchema, search: RoleQueryParams, order_by: List[Dict[str, str]] = None) -> List[Dict]:
+    async def get_role_list_service(cls, auth: AuthSchema, search: RoleQueryParams, order_by: List[Dict[str, str]] = None) -> List[Dict]:
         """获取角色列表"""
         order_by = order_by if order_by else [{"order": "asc"}]
-        role_list = await RoleCRUD(auth).get_role_list(search=search.__dict__, order_by=order_by)
+        role_list = await RoleCRUD(auth).get_list_crud(search=search.__dict__, order_by=order_by)
         return [RoleOutSchema.model_validate(role).model_dump() for role in role_list]
 
     @classmethod
-    async def create_role(cls, auth: AuthSchema, data: RoleCreateSchema) -> Dict:
+    async def create_role_service(cls, auth: AuthSchema, data: RoleCreateSchema) -> Dict:
         """创建角色"""
         role = await RoleCRUD(auth).get(name=data.name)
         if role:
@@ -42,9 +42,9 @@ class RoleService:
         return RoleOutSchema.model_validate(new_role).model_dump()
 
     @classmethod
-    async def update_role(cls, auth: AuthSchema, data: RoleUpdateSchema) -> Dict:
+    async def update_role_service(cls, auth: AuthSchema, data: RoleUpdateSchema) -> Dict:
         """更新角色"""
-        role = await RoleCRUD(auth).get_role_by_id(id=data.id)
+        role = await RoleCRUD(auth).get_by_id_crud(id=data.id)
         if not role:
             raise CustomException(msg='更新失败，该角色不存在')
         exist_role = await RoleCRUD(auth).get(name=data.name)
@@ -54,35 +54,35 @@ class RoleService:
         return RoleOutSchema.model_validate(updated_role).model_dump()
 
     @classmethod
-    async def delete_role(cls, auth: AuthSchema, id: int) -> None:
+    async def delete_role_service(cls, auth: AuthSchema, id: int) -> None:
         """删除角色"""
-        role = await RoleCRUD(auth).get_role_by_id(id=id)
+        role = await RoleCRUD(auth).get_by_id_crud(id=id)
         if not role:
             raise CustomException(msg='删除失败，该角色不存在')
         await RoleCRUD(auth).delete(ids=[id])
 
     @classmethod
-    async def set_role_permission(cls, auth: AuthSchema, data: RolePermissionSettingSchema) -> None:
+    async def set_role_permission_service(cls, auth: AuthSchema, data: RolePermissionSettingSchema) -> None:
         """设置角色权限"""
         # 设置角色菜单权限
-        await RoleCRUD(auth).set_role_menus(role_ids=data.role_ids, menu_ids=data.menu_ids)
+        await RoleCRUD(auth).set_role_menus_crud(role_ids=data.role_ids, menu_ids=data.menu_ids)
         
         # 设置数据权限范围
-        await RoleCRUD(auth).set_role_data_scope(role_ids=data.role_ids, data_scope=data.data_scope)
+        await RoleCRUD(auth).set_role_data_scope_crud(role_ids=data.role_ids, data_scope=data.data_scope)
         
         # 设置自定义数据权限部门
         if data.data_scope == 5 and data.dept_ids:
-            await RoleCRUD(auth).set_role_depts(role_ids=data.role_ids, dept_ids=data.dept_ids)
+            await RoleCRUD(auth).set_role_depts_crud(role_ids=data.role_ids, dept_ids=data.dept_ids)
         else:
-            await RoleCRUD(auth).set_role_depts(role_ids=data.role_ids, dept_ids=[])
+            await RoleCRUD(auth).set_role_depts_crud(role_ids=data.role_ids, dept_ids=[])
 
     @classmethod
-    async def set_role_available(cls, auth: AuthSchema, data: BatchSetAvailable) -> None:
+    async def set_role_available_service(cls, auth: AuthSchema, data: BatchSetAvailable) -> None:
         """设置角色可用状态"""
-        await RoleCRUD(auth).set_role_available(ids=data.ids, available=data.available)
+        await RoleCRUD(auth).set_available_crud(ids=data.ids, available=data.available)
 
     @classmethod
-    async def export_role_list(cls, role_list: List[Dict[str, Any]]) -> bytes:
+    async def export_role_list_service(cls, role_list: List[Dict[str, Any]]) -> bytes:
         """导出角色列表"""
         # 字段映射配置
         mapping_dict = {
@@ -113,10 +113,5 @@ class RoleService:
             item['available'] = '正常' if item.get('available') else '停用'
             item['data_scope'] = data_scope_map.get(item.get('data_scope'))
 
-        # 转换为中文键
-        # new_data = [
-        #     {mapping_dict.get(key): value for key, value in item.items() if mapping_dict.get(key)} 
-        #     for item in data
-        # ]
-
         return ExcelUtil.export_list2excel(list_data=role_list, mapping_dict=mapping_dict)
+        
