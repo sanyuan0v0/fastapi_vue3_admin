@@ -3,7 +3,7 @@
       <img src="./mkdocs/docs/resources/images/logo.png" height="150" alt="logo"/>
    </p>
       <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Fastapi-Vue3-Admin v1.0.0</h1>
-      <h4 align="center">A rapid web application development framework for front-end and back-end separation based on Fastapi-Vue3-Admin</h4>
+      <h4 align="center">A fast development framework for Web + Mini Programs + H5 applications based on the separation of front-end and back-end in Fastapi-Vue-Admin.</h4>
    <p align="center">
       <a href="https://gitee.com/tao__tao/fastapi_vue3_admin.git">
          <img src="https://gitee.com/tao__tao/fastapi_vue3_admin/badge/star.svg?theme=dark">
@@ -25,7 +25,7 @@ English | [Chinese](./README.md)
 
 ## 📚 Project Introduction
 
-**Fastapi-Vue3-Admin** is a fully open-source rapid development platform that provides free usage. It combines modern, high-performance technology stacks to help developers quickly build high-quality backend systems. The project directory structure is as follows:
+**Fastapi-Vue3-Admin** is a fully open-source modern rapid development platform designed to help developers efficiently build high-quality backend systems. The project integrates the high-performance backend framework FastAPI and the powerful ORM library SQLAlchemy, along with the frontend technology stack Vue3, Vite6, Ant Design Vue, and the mobile development framework UniApp and its component library uView-plus, providing developers with an out-of-the-box solution. The project directory structure is as follows:
 
 ```sh
 fastapi_vue_admin
@@ -33,6 +33,7 @@ fastapi_vue_admin
 ├─ frontend       # Frontend project
 ├─ devops         # Deployment project
 ├─ mkdocs         # Documentation project
+├─ uni-app        # Uni-app project
 ├─ README.en.md   # English documentation
 └─ README.md      # Chinese documentation
 ```
@@ -49,6 +50,13 @@ fastapi_vue_admin
   - **Ant Design Vue**:An enterprise-level UI component library.
   - **TypeScript**:Static type checking.
   - **Vite**:A fast build tool.
+
+- **App**:
+  - **Vue3**: A progressive JavaScript framework for building user interfaces.
+  - **Vite**: A fast frontend build tool that supports hot reloading.
+  - **Pinia**: A state management library for Vue3 that provides a rich set of components.
+  - **UniApp**: A cross-platform application development framework that supports multi-terminal development.
+  - **uView-plus**: A Vue3-based UI component library that provides a rich set of components.
 
 - **Authentication**:OAuth2 using hashed passwords and JWT Bearer tokens.
 - **Authorization Architecture**:Designed based on RBAC, supporting dynamic permission menus, button-level permission control, and data-level permission control.
@@ -94,6 +102,10 @@ If you find the project helpful, please give it a star!
   - **API Management**:Maintains system APIs, such as API addresses and request methods.
   - **Documentation Management**:Maintains system API documentation, supports online API calls.
 
+- **App**
+  - **home**：Application home page.
+  - **work**：Application work page.
+  - **me**：Application me page.
 
 ## 🍪  Account Information
 
@@ -117,6 +129,8 @@ If you find the project helpful, please give it a star!
 | Database   | PostgreSQL | 14（Recommended latest version）|
 | Database   | MongoDB    | 8.0（Recommended latest version）|
 | Middleware   | Redis      | 7.0 Recommended latest version|
+| App       | uni-app    | 3.0.0 |
+| App       | uview-plus | ^3.3.74 |
 
 ### Get the Code
 
@@ -184,6 +198,27 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
    npm run build
    ```
 
+### App
+
+1. Install dependencies
+
+   ```shell
+   cd frontend
+   npm install
+   ```
+
+2. Run the frontend
+
+   ```shell
+   npm run dev:h5
+   ```
+
+3. Build the frontend
+
+   ```shell
+   npm run build
+   ```
+
 ### Access the Project
 
 - Frontend URL: <http://127.0.0.1:5180>
@@ -228,6 +263,17 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
         <td><img src="./mkdocs/docs/resources/images/help.png"/>Help</td>
         <td><img src="./mkdocs/docs/resources/images/dict.png"/>Dict</td>
    </tr>
+   <tr>
+        <td><img src="./mkdocs/docs/resources/images/app-login.png"/>app-login</td>
+        <td><img src="./mkdocs/docs/resources/images/app-home.png"/>app-home</td>
+   </tr>
+   <tr>
+        <td><img src="./mkdocs/docs/resources/images/app-work.png"/>app-work</td>
+        <td><img src="./mkdocs/docs/resources/images/app-me.png"/>app-me</td>
+   </tr>
+   <tr>
+        <td><img src="./mkdocs/docs/resources/images/app-userinfo.png"/>app-userinfo</td>
+   </tr>
 </table>
 
 ## ✨ Special Thanks
@@ -241,6 +287,9 @@ Thank you to the following projects for their contributions and support, which h
 - [Vue-FastAPI-Admin Project](https://gitee.com/mizhexiaoxiao/vue-fastapi-admin)
 - [RuoYi-Vue3-FastAPI Project](https://gitee.com/insistence2022/RuoYi-Vue3-FastAPI)
 - [APScheduler Project](https://github.com/agronholm/apscheduler)
+- [Vite Project](https://github.com/vitejs/vite)
+- [UniApp Project](https://github.com/dcloudio/uni-app)
+- [uView-plus Project](https://uiadmin.net/uview-plus)
 
 ## 🎨 WeChat Group
 

@@ -3,7 +3,7 @@
       <img src="./resources/images/logo.png" height="150" alt="logo"/>
    </p>
       <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Fastapi-Vue3-Admin v1.0.0</h1>
-      <h4 align="center">基于Fastapi-Vue-Admi前后端分离的快速开发框架</h4>
+      <h4 align="center">基于Fastapi-Vue-Admin前后端分离的Web+小程序+H5应用快速开发框架</h4>
    <p align="center">
       <a href="https://gitee.com/tao__tao/fastapi_vue3_admin.git">
          <img src="https://gitee.com/tao__tao/fastapi_vue3_admin/badge/star.svg?theme=dark">
@@ -23,7 +23,7 @@
 
 ## 📚 项目介绍
 
-**Fastapi-Vue3-Admin** 是一套完全开源的快速开发平台，提供免费使用。它结合了现代、高性能的技术栈，旨在帮助开发者快速搭建高质量的中后台系统。项目目录结构如下：
+**Fastapi-Vue3-Admin** 是一套完全开源的现代化快速开发平台，旨在帮助开发者高效搭建高质量的中后台系统。项目结合了高性能后端框架 FastAPI 和强大的 ORM 库 SQLAlchemy，以及前端技术栈 Vue3、Vite6、Ant Design Vue 和移动端开发框架 UniApp 及其组件库 uView-plus，为开发者提供了开箱即用的解决方案。项目目录结构如下：
 
 ```sh
 my_demo_project/fastapi_project
@@ -257,6 +257,26 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
 
 ![在线文档](./resources/images/help.png)
 
+### app登录
+
+![app登录](./resources/images/app-login.png)
+
+### app首页
+
+![app首页](./resources/images/app-home.png)
+
+### app工作台
+
+![app工作台](./resources/images/app-work.png)
+
+### app个人中心
+
+![app个人中心](./resources/images/app-me.png)
+
+### app个人主页
+
+![app个人主页](./resources/images/app-userinfo.png)
+
 ## ✨ 特别鸣谢
 
 感谢以下项目的贡献和支持，使本项目得以顺利完成：
@@ -268,3 +288,20 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
 - [Vue-FastAPI-Admin 项目](https://gitee.com/mizhexiaoxiao/vue-fastapi-admin)
 - [RuoYi-Vue3-FastAPI 项目](https://gitee.com/insistence2022/RuoYi-Vue3-FastAPI)
 - [APScheduler 项目](https://github.com/agronholm/apscheduler)
+- [Vite 项目](https://github.com/vitejs/vite)
+- [UniApp 项目](https://github.com/dcloudio/uni-app)
+- [uView-plus 项目](https://uiadmin.net/uview-plus)
+
+## 🎨 微信群
+
+在下方为群二维码，可以用于技术交流，也可以一起讨论在项目使用过程中遇到的各种问题。真心希望大家一起优化该项目，积极讨论，让我们一起抱团取暖！
+
+### 群二维码
+
+<table>
+    <tr>
+      <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/mkdocs/docs/resources/images/微信.jpg"/></td>
+      <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/mkdocs/docs/resources/images/微信群.jpg"/></td>
+      <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/mkdocs/docs/resources/images/wechatPay.jpg"/></td>
+    </tr>
+</table>
