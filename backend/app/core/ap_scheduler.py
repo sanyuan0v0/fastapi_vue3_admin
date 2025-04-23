@@ -36,6 +36,7 @@ job_stores = {
     'default': MemoryJobStore(),
     'redis': RedisJobStore(
         **dict(
+            password=settings.REDIS_PASSWORD,
             host=settings.REDIS_HOST,
             port=settings.REDIS_PORT,
             db=settings.REDIS_DB_NAME,
