@@ -1,7 +1,5 @@
 <template>
   <div>
-    <!-- 页面头部 -->
-    <page-header />
 
     <!-- 搜索表单 -->
     <div class="table-search-wrapper">
@@ -129,7 +127,6 @@ import type { TableColumnsType } from 'ant-design-vue';
 import { SearchOutlined, DownOutlined, DownloadOutlined } from '@ant-design/icons-vue';
 import { message, Modal } from 'ant-design-vue';
 import type { searchDataType, tableDataType, creatorType } from './types'
-import PageHeader from '@/components/PageHeader.vue';
 import { getLogList, deleteLog, exportLog } from '@/api/system/log'
 import SelectorModal from './SelectorModal.vue'
 import XLSX from 'xlsx';

@@ -41,6 +41,7 @@
               <MenuUnfoldOutlined v-else />
             </a-button>
             
+            <topCrumb></topCrumb>
           </div>
 
           <!-- 右侧工具栏 -->
@@ -126,7 +127,7 @@
             </a-dropdown>
           </div>
       </a-layout-header>
-      
+      <topTags></topTags>
       <!-- 主内容区 -->
       <a-layout-content class="layout-content">
         <router-view v-slot="{ Component, route }">
@@ -166,6 +167,10 @@ import {
 import { useUserStore } from "@/store/index";
 import { logout } from '@/api/system/auth';
 import { useConfigStore, useNoticeStore } from "@/store/index";
+
+import topTags from '@/components/TopTags/index.vue';
+import topCrumb from '@/components/TopCrumb/index.vue';
+
 
 const userStore = useUserStore();
 
@@ -215,6 +220,22 @@ const handleLogout = async () => {
   }
 };
 
+  // 设置展开的菜单
+  const findParentPath = (menus: any[], targetPath: string, parentPath: string[] = []): string[] => {
+    for (const menu of menus) {
+      if (menu.key === targetPath) {
+        return parentPath;
+      }
+      if (menu.children?.length) {
+        const result = findParentPath(menu.children, targetPath, [...parentPath, menu.key]);
+        if (result.length) {
+          return result;
+        }
+      }
+    }
+    return [];
+  };
+  
 // 处理菜单点击
 const handleMenuClick: MenuProps['onClick'] = (menuInfo) => {
   menuState.openKeys = menuInfo.keyPath.slice(0, -1) as string[];
@@ -228,7 +249,8 @@ watch(() => route.path, (newPath) => {
     menuState.openKeys = [];
     menuState.selectedKeys = [];
   } else {
-    menuState.selectedKeys = [newPath];
+  menuState.openKeys = findParentPath(menuState.menus, newPath);
+  menuState.selectedKeys = [newPath];
   }
 });
 
@@ -266,22 +288,6 @@ const initMenu = () => {
   // 设置当前选中的菜单
   const currentPath = route.path;
   menuState.selectedKeys = [currentPath];
-  
-  // 设置展开的菜单
-  const findParentPath = (menus: any[], targetPath: string, parentPath: string[] = []): string[] => {
-    for (const menu of menus) {
-      if (menu.key === targetPath) {
-        return parentPath;
-      }
-      if (menu.children?.length) {
-        const result = findParentPath(menu.children, targetPath, [...parentPath, menu.key]);
-        if (result.length) {
-          return result;
-        }
-      }
-    }
-    return [];
-  };
   
   menuState.openKeys = findParentPath(menuState.menus, currentPath);
 };

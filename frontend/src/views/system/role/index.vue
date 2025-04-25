@@ -1,7 +1,5 @@
 <template>
   <div>
-    <!-- 页面头部 -->
-    <page-header />
 
     <!-- 表格搜索 -->
     <div class="table-search-wrapper">
@@ -189,7 +187,6 @@ import { Table, message, Modal } from 'ant-design-vue';
 import type { TableColumnsType, MenuProps } from 'ant-design-vue';
 import { PlusOutlined, DownOutlined, CheckOutlined, StopOutlined } from '@ant-design/icons-vue';
 import { cloneDeep, isEmpty } from '@/utils/util';
-import PageHeader from '@/components/PageHeader.vue';
 import PermissionDrawer from './PermissionDrawer.vue'
 import type { searchDataType, tableDataType } from './types'
 import { getRoleList, createRole, updateRole, deleteRole, batchAvailableRole, exportRole } from '@/api/system/role'
@@ -332,7 +329,7 @@ const loadingData = () => {
     params['name'] = queryState.name
   }
   if (queryState.available) {
-    params['available'] = queryState.available == "true" ? true : false;
+    params['available'] = queryState.available == 1 ? true : false;
   }
   params['page_no'] = pagination.current
   params['page_size'] = pagination.pageSize

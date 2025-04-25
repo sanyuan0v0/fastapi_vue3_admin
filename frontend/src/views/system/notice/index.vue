@@ -1,7 +1,5 @@
 <template>
     <div>
-        <!-- 页面头部 -->
-        <page-header />
 
         <!-- 搜索表单 -->
         <div class="table-search-wrapper">
@@ -202,7 +200,6 @@ import { Table, message, Modal } from 'ant-design-vue';
 import type { TableColumnsType, MenuProps } from 'ant-design-vue';
 import { PlusOutlined, DownOutlined, CheckOutlined, StopOutlined } from '@ant-design/icons-vue';
 import { cloneDeep, isEmpty } from '@/utils/util';
-import PageHeader from '@/components/PageHeader.vue';
 import { getNoticeList, createNotice, updateNotice, deleteNotice, batchAvailableNotice, exportNotice } from '@/api/system/notice'
 import type { searchDataType, tableDataType } from './types'
 import { useDictStore } from "@/store/index";
@@ -345,7 +342,7 @@ const loadingData = () => {
         params['notice_title'] = queryState.notice_title
     }
     if (queryState.available) {
-        params['available'] = queryState.available == true ? true : false;
+        params['available'] = queryState.available == 1 ? true : false;
     }
     params['page_no'] = pagination.current
     params['page_size'] = pagination.pageSize

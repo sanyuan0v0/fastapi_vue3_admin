@@ -1,7 +1,5 @@
 <template>
   <div>
-    <!-- 页面头部 -->
-    <page-header />
 
     <!-- 搜索表单 -->
     <div class="tree-search-wrapper">
@@ -254,7 +252,6 @@ import type { MenuProps, TableColumnsType } from 'ant-design-vue';
 import { PlusOutlined, DownOutlined, CheckOutlined, StopOutlined } from '@ant-design/icons-vue';
 import { listToTree, cloneDeep, isEmpty } from '@/utils/util';
 import { getDeptList, createDept, updateDept, deleteDept, batchAvailableDept } from '@/api/system/dept';
-import PageHeader from '@/components/PageHeader.vue'
 import type { searchDataType, tableDataType } from './types';
 
 // 响应式数据
@@ -378,7 +375,7 @@ const loadingData = () => {
     params['name'] = queryState.name;
   }
   if (queryState.available) {
-    params['available'] = queryState.available === "true" ? true : false;
+    params['available'] = queryState.available === 1 ? true : false;
   }
 
   getDeptList(params).then(response => {

@@ -1,7 +1,5 @@
 <template>
 
-  <!-- 页面头部 -->
-  <page-header />
 
   <div class="app-container">
     <a-tabs>
@@ -169,7 +167,6 @@ import { message, Modal } from 'ant-design-vue';
 import { getCacheInfo, getCacheNames, getCacheKeys, getCacheValue, deleteCacheName, deleteCacheKey, deleteCacheAll } from "@/api/monitor/cache";
 import * as echarts from 'echarts';
 import type { CacheInfo, CacheForm, CacheMonitor, RedisInfo } from './types';
-import PageHeader from '@/components/PageHeader.vue';
 
 // 响应式状态定义
 const cacheNames = ref<CacheInfo[]>([]);

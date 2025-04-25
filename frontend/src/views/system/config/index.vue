@@ -1,7 +1,5 @@
 <template>
   <div>
-    <!-- 页面头部 -->
-    <page-header />
 
     <!-- 配置项编辑区域 -->
     <div class="config-edit-wrapper">
@@ -130,7 +128,6 @@ import { reactive, ref, onMounted } from 'vue';
 import { message } from 'ant-design-vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import { getConfigInfo, updateConfig, uploadFile } from '@/api/system/config';
-import PageHeader from '@/components/PageHeader.vue';
 import type { tableDataType } from './types';
 
 // 配置数据

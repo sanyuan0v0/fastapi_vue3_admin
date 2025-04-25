@@ -1,7 +1,5 @@
 <template>
     <div>
-        <!-- 页面头部 -->
-        <page-header />
 
         <!-- 搜索表单 -->
         <div class="table-search-wrapper">
@@ -171,7 +169,6 @@ import { Table, message, Modal } from 'ant-design-vue';
 import type { TableColumnsType, MenuProps } from 'ant-design-vue';
 import { PlusOutlined, DownOutlined, CheckOutlined, StopOutlined } from '@ant-design/icons-vue';
 import { cloneDeep, isEmpty } from '@/utils/util';
-import PageHeader from '@/components/PageHeader.vue';
 import { getDictTypeList,getDictTypeDetail,createDictType,updateDictType,deleteDictType,exportDictType,getDictDataList,getDictDataDetail,createDictData,updateDictData,deleteDictData,exportDictData,getDictTypeOption,getDictDataByType } from '@/api/system/dict'
 import type { searchDataType, tableDictType } from './types'
 
@@ -298,7 +295,7 @@ const loadingData = () => {
         params['dict_type'] = queryState.dict_type
     }
     if (queryState.available) {
-        params['available'] = queryState.available == true ? true : false;
+        params['available'] = queryState.available == 1 ? true : false;
     }
     params['page_no'] = pagination.current
     params['page_size'] = pagination.pageSize
