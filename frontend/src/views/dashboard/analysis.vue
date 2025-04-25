@@ -1,5 +1,4 @@
 <template>
-  <page-header />
     <!-- 分析页 -->
     <div style="padding: 15px 0;">
       <a-row :gutter="24">
@@ -304,7 +303,6 @@
 import { ref, reactive } from 'vue';
 import { InfoCircleOutlined, CaretUpOutlined, CaretDownOutlined, EllipsisOutlined } from '@ant-design/icons-vue';
 import { getRangeDate } from '@/utils/util'
-import PageHeader from '@/components/PageHeader.vue'
 
 const loading = ref(true);
 

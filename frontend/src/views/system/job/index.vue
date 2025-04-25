@@ -1,7 +1,5 @@
 <template>
     <div>
-        <!-- 页面头部 -->
-        <page-header />
 
         <!-- 搜索表单 -->
         <div class="table-search-wrapper">
@@ -363,7 +361,6 @@ import { Table, message, Modal } from 'ant-design-vue';
 import type { TableColumnsType } from 'ant-design-vue';
 import { PlusOutlined, DownOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import { cloneDeep, isEmpty } from '@/utils/util';
-import PageHeader from '@/components/PageHeader.vue';
 import IntervalTab from '@/components/IntervalTab.vue';
 import { getJobList, createJob, updateJob, deleteJob, exportJob, clearJob, OptionJob } from '@/api/system/job'
 import type { searchType, tableJobType } from './types'

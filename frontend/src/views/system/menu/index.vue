@@ -1,7 +1,5 @@
 <template>
   <div>
-    <!-- 页面头部 -->
-    <page-header />
 
     <!-- 搜索表单 -->
     <div class="table-search-wrapper">
@@ -357,7 +355,6 @@ import type { TableColumnsType, MenuProps } from 'ant-design-vue';
 import { PlusOutlined, DownOutlined, CheckOutlined, StopOutlined, ClearOutlined } from '@ant-design/icons-vue';
 import { listToTree, cloneDeep, isEmpty } from '@/utils/util';
 import axios from "axios"
-import PageHeader from '@/components/PageHeader.vue';
 import { getMenuList, createMenu, updateMenu, deleteMenu, batchAvailableMenu } from '@/api/system/menu'
 import type { searchDataType, tableDataType } from './types'
 
