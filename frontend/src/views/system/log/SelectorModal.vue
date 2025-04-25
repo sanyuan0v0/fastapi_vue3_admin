@@ -108,9 +108,9 @@ const loadingData = () => {
   if (queryState.name) {
     params['name'] = queryState.name
   }
-  if (queryState.available) {
-    params['available'] = queryState.available == "true" ? true : false;
-  }
+  if (queryState.available !== null && queryState.available !== undefined) {
+        params['available'] = queryState.available;
+    }
   params['page_no'] = pagination.current
   params['page_size'] = pagination.pageSize
 
@@ -135,7 +135,7 @@ const resetFields = () => {
   Object.keys(queryState).forEach((key: string) => {
     delete queryState[key];
   });
-  queryState.available = "true"
+  queryState.available = true;
   pagination.current = 1;
   loadingData();
 }
@@ -179,7 +179,7 @@ const handleModalCancel = () => {
   Object.keys(queryState).forEach((key: string) => {
     delete queryState[key];
   });
-  queryState.available = "true"
+  queryState.available = true;
   pagination.current = 1;
   pagination.pageSize = pagination.defaultPageSize;
   selectedRowKeys.value = [];

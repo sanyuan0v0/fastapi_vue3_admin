@@ -1,7 +1,7 @@
 export interface searchDataType {
     username?: string
     name?: string
-    available?: number
+    available?: boolean;
     dept_id?: number;
 }
 

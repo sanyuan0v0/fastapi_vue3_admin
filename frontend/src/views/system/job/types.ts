@@ -1,6 +1,6 @@
 export interface searchType {
     name?: string
-    status?: number
+    status?: boolean
     date_range?: [string, string];
 }
 

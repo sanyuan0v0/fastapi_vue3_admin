@@ -14,8 +14,8 @@
                         <a-col flex="0 1 450px">
                             <a-form-item name="status" label="状态" style="max-width: 300px;">
                                 <a-select v-model:value="queryState.status" placeholder="全部" allowClear>
-                                    <a-select-option value="1">启用</a-select-option>
-                                    <a-select-option value="0">停用</a-select-option>
+                                    <a-select-option value="true">启用</a-select-option>
+                                    <a-select-option value="false">停用</a-select-option>
                                 </a-select>
                             </a-form-item>
                         </a-col>
@@ -88,7 +88,7 @@
                         <template v-if="column.dataIndex === 'coalesce'">
                             <span>
                                 <a-badge :status="record.coalesce ? 'processing' : 'error'"
-                                    :text="record.status ? '是' : '否'" />
+                                    :text="record.coalesce ? '是' : '否'" />
                             </span>
                         </template>
                         <template v-if="column.dataIndex === 'operation'">
@@ -321,10 +321,10 @@
                             <a-date-picker v-model:value="updateState.end_date" show-time format="YYYY-MM-DD HH:mm:ss"
                                 value-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束日期" style="width: 100%" />
                         </a-form-item>
-                        <a-form-item name="coalesce" label="是否并行" :rules="[{ required: true, message: '请选择是否合并运行' }]">
+                        <a-form-item name="coalesce" label="是否并行" :rules="[{ required: true, message: '请选择是否并行' }]">
                             <a-radio-group v-model:value="updateState.coalesce">
-                                <a-radio :value="true">启用</a-radio>
-                                <a-radio :value="false">停用</a-radio>
+                                <a-radio :value="true">是</a-radio>
+                                <a-radio :value="false">否</a-radio>
                             </a-radio-group>
                         </a-form-item>
                         <a-form-item name="max_instances" label="最大实例数"
@@ -563,8 +563,8 @@ const loadingData = () => {
         params['start_time'] = `${queryState.date_range[0]} 00:00:00`;
         params['end_time'] = `${queryState.date_range[1]} 23:59:59`;
     }
-    if (queryState.status) {
-        params['status'] = queryState.status == 1 ? true : false;
+    if (queryState.status !== null && queryState.status !== undefined) {
+        params['status'] = queryState.status;
     }
     params['page_no'] = pagination.current
     params['page_size'] = pagination.pageSize

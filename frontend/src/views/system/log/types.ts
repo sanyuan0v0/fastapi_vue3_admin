@@ -24,7 +24,7 @@ export interface tableDataType {
 
 export interface searchCreatorDataType {
     name?: string;
-    available?: string;
+    available?: boolean;
 }
 
 export interface creatorType {
