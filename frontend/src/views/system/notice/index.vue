@@ -345,7 +345,7 @@ const loadingData = () => {
         params['notice_title'] = queryState.notice_title
     }
     if (queryState.available) {
-        params['available'] = queryState.available == true ? true : false;
+        params['available'] = queryState.available == 1 ? true : false;
     }
     params['page_no'] = pagination.current
     params['page_size'] = pagination.pageSize

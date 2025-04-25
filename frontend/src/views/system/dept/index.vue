@@ -378,7 +378,7 @@ const loadingData = () => {
     params['name'] = queryState.name;
   }
   if (queryState.available) {
-    params['available'] = queryState.available === "true" ? true : false;
+    params['available'] = queryState.available === 1 ? true : false;
   }
 
   getDeptList(params).then(response => {

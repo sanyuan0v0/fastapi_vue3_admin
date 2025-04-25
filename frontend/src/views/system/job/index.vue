@@ -567,7 +567,7 @@ const loadingData = () => {
         params['end_time'] = `${queryState.date_range[1]} 23:59:59`;
     }
     if (queryState.status) {
-        params['status'] = queryState.status == true ? true : false;
+        params['status'] = queryState.status == 1 ? true : false;
     }
     params['page_no'] = pagination.current
     params['page_size'] = pagination.pageSize

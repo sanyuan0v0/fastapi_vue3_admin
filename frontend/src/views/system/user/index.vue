@@ -562,7 +562,7 @@ const loadingData = () => {
     params['name'] = queryState.name
   }
   if (queryState.available) {
-    params['available'] = queryState.available == "true" ? true : false;
+    params['available'] = queryState.available == 1 ? true : false;
   }
   if (queryState.dept_id) {
     params['dept_id'] = queryState.dept_id; // 添加 dept_id 参数
