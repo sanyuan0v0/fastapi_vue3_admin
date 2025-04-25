@@ -430,7 +430,7 @@ const loadingData = () => {
         queryState.dict_type = Array.isArray(route.query.dict_type) ? route.query.dict_type[0] : route.query.dict_type
     }
     if (queryState.available) {
-        params['available'] = queryState.available == true ? true : false;
+        params['available'] = queryState.available == 1 ? true : false;
     }
     params['page_no'] = pagination.current
     params['page_size'] = pagination.pageSize

@@ -1,6 +1,6 @@
 export interface searchDataType {
     name?: string
-    available?: string
+    available?: number
 }
 
 export interface tableDataType {
