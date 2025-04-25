@@ -1,7 +1,5 @@
 <template>
   <div>
-    <!-- 页面头部 -->
-    <page-header />
 
     <!-- 表格搜索区域 -->
     <div class="table-search-wrapper">
@@ -366,7 +364,6 @@ import { Table, message, Modal } from 'ant-design-vue';
 import type { TableColumnsType, MenuProps } from 'ant-design-vue';
 import { CarryOutOutlined, SmileTwoTone, PlusOutlined, DownOutlined, UploadOutlined, DownloadOutlined, CheckOutlined, StopOutlined, SearchOutlined } from '@ant-design/icons-vue';
 import { isEmpty, listToTree } from '@/utils/util';
-import PageHeader from '@/components/PageHeader.vue';
 import { getDeptList } from '@/api/system/dept'
 import { getUserList, createUser, updateUser, deleteUser, batchAvailableUser, exportUser, downloadTemplate, importUser } from '@/api/system/user'
 import SelectorModal from './SelectorModal.vue'

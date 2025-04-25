@@ -1,6 +1,4 @@
 <template>
-  <!-- 页面头部 -->
-  <page-header />
 
   <!-- 搜索表单 -->
   <div class="table-search-wrapper">
@@ -71,7 +69,6 @@ import { DeleteOutlined } from '@ant-design/icons-vue';
 import { Modal, message } from 'ant-design-vue';
 import { getOnlineList, deleteOnline} from "@/api/monitor/online";
 import type { QueryState, OnlineUser } from './types';
-import PageHeader from '@/components/PageHeader.vue';
 
 const onlineList = ref<OnlineUser[]>([]);
 const loading = ref(false);

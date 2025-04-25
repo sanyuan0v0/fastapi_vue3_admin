@@ -1,5 +1,4 @@
 <template>
-  <page-header />
   <div class="container">
     <div class="page-header-content" style="display: flex; justify-content: space-between; padding-bottom: 20px;">
       <a-row align="middle">
@@ -119,7 +118,6 @@
 
 <script lang="ts" setup>
 import { ref, reactive } from 'vue';
-import PageHeader from '@/components/PageHeader.vue'
 import { timeFix } from '@/utils/util';
 import { PlusOutlined, UserOutlined } from '@ant-design/icons-vue';
 import { useUserStore } from "@/store/index";
