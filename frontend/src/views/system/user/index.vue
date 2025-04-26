@@ -1,30 +1,25 @@
 <template>
   <div>
 
+
     <!-- 表格搜索区域 -->
     <div class="table-search-wrapper">
       <a-card :bordered="false">
         <a-form :model="queryState" @finish="onFinish">
-          <a-row>
-            <a-col flex="0 1 450px">
-              <a-form-item name="username" label="用户名" style="max-width: 300px;">
-                <a-input v-model:value="queryState['username']" placeholder="请输入用户名" allowClear></a-input>
-              </a-form-item>
-            </a-col>
-            <a-col flex="0 1 450px">
-              <a-form-item name="name" label="姓名" style="max-width: 300px;">
-                <a-input v-model:value="queryState['name']" placeholder="请输入姓名" allowClear></a-input>
-              </a-form-item>
-            </a-col>
-            <a-col flex="0 1 450px">
-              <a-form-item name="available" label="状态" style="max-width: 300px;">
-                <a-select v-model:value="queryState['available']" placeholder="全部" allowClear>
-                  <a-select-option value="true">启用</a-select-option>
-                  <a-select-option value="false">停用</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-          </a-row>
+          <a-flex wrap="wrap" gap="small">
+            <a-form-item name="username" label="用户名" style="max-width: 300px;">
+              <a-input v-model:value="queryState['username']" placeholder="请输入用户名" allowClear></a-input>
+            </a-form-item>
+            <a-form-item name="name" label="姓名" style="max-width: 300px;">
+              <a-input v-model:value="queryState['name']" placeholder="请输入姓名" allowClear></a-input>
+            </a-form-item>
+            <a-form-item name="available" label="状态" style="max-width: 300px;">
+              <a-select v-model:value="queryState['available']" placeholder="全部" allowClear>
+                <a-select-option value="1">启用</a-select-option>
+                <a-select-option value="0">停用</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-flex>
           <a-row>
             <a-col>
               <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
@@ -37,10 +32,9 @@
 
     <!-- 表格区域 -->
     <div class="table-wrapper">
-      <a-card title="用户管理" 
-        :bordered="false" 
-        :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-        :bodyStyle="{ padding: '0px 24px', minHeight: 'calc(100vh - 400px)' }">
+      <a-card title="用户管理" :bordered="false" :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
+        
+      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 360px)' }">
         <template #extra>
           <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')" style="margin-right: 10px;">
             新建
@@ -72,68 +66,60 @@
         <a-row :gutter="16">
           <!-- 左侧部门树 -->
           <a-col :span="4">
-              <a-tree ref="deptTree" v-if="deptTreeData.length" 
-                :tree-data="deptTreeData" 
-                :show-line="true"
-                :defaultExpandAll="true" 
-                :field-names="{ children: 'children', title: 'name', key: 'id' }"
-                :selected-keys="selectedKeys" 
-                @select="onSelectDept">
-              </a-tree>
+            <a-tree ref="deptTree" v-if="deptTreeData.length" :tree-data="deptTreeData" :show-line="true"
+              :defaultExpandAll="true" :field-names="{ children: 'children', title: 'name', key: 'id' }"
+              :selected-keys="selectedKeys" @select="onSelectDept">
+            </a-tree>
           </a-col>
 
           <!-- 右侧用户列表 -->
           <a-col :span="20">
-              <a-table :rowKey="record => record.id" 
-                :columns="columns" 
-                :data-source="dataSource"
-                :row-selection="rowSelection" 
-                :loading="tableLoading" 
-                @change="handleTableChange" 
-                :scroll="{ x: 400 }"
-                :pagination="pagination" 
-                :style="{ minHeight: '420px' }">
-                <template #bodyCell="{ column, record, index }">
-                  <template v-if="column.dataIndex === 'index'">
-                    <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
-                  </template>
-                  <template v-if="column.dataIndex === 'dept'">
-                    <span>{{ record.dept_name }}</span>
-                  </template>
-                  <template v-if="column.dataIndex === 'roles'">
-                    <span>{{ record.roleNames }}</span>
-                  </template>
-                  <template v-if="column.dataIndex === 'positions'">
-                    <span>{{ record.positionNames }}</span>
-                  </template>
-                  <template v-if="column.dataIndex === 'gender'">
-                    <a-tag :color="dictStore.getDictLabel(DictDataStore['sys_user_sex'],record.gender).css_class">
-                      {{ dictStore.getDictLabel(DictDataStore['sys_user_sex'],record.gender).dict_label }}
-                    </a-tag>
-                  </template>
-                  <template v-if="column.dataIndex === 'available'">
-                    <span>
-                      <a-badge :status="record.available ? 'processing' : 'error'"
-                        :text="record.available ? '启用' : '停用'" />
-                    </span>
-                  </template>
-                  <template v-if="column.dataIndex === 'is_superuser'">
-                    <span>
-                      <a-badge :status="record.is_superuser ? 'processing' : 'error'"
-                        :text="record.is_superuser ? '是' : '否'" />
-                    </span>
-                  </template>
-                  <template v-if="column.dataIndex === 'operation'">
-                    <a-space size="middle">
-                      <a v-on:click="modalHandle('view', index)">查看</a>
-                      <a v-on:click="modalHandle('update', index)">修改</a>
-                      <a-popconfirm title="确定删除吗？" ok-text="确定" cancel-text="取消" @confirm="deleteRow(record)">
-                        <a style="color: red;">删除</a>
-                      </a-popconfirm>
-                    </a-space>
-                  </template>
+            <a-table :rowKey="record => record.id" :columns="columns" :data-source="dataSource"
+              :row-selection="rowSelection" :loading="tableLoading" @change="handleTableChange" :scroll="{ x: 400 }"
+              :pagination="pagination" 
+                    :style="{ minHeight: 'calc(100vh - 420px)' }"
+                    >
+              <template #bodyCell="{ column, record, index }">
+                <template v-if="column.dataIndex === 'index'">
+                  <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
                 </template>
-              </a-table>
+                <template v-if="column.dataIndex === 'dept'">
+                  <span>{{ record.dept_name }}</span>
+                </template>
+                <template v-if="column.dataIndex === 'roles'">
+                  <span>{{ record.roleNames }}</span>
+                </template>
+                <template v-if="column.dataIndex === 'positions'">
+                  <span>{{ record.positionNames }}</span>
+                </template>
+                <template v-if="column.dataIndex === 'gender'">
+                  <a-tag :color="dictStore.getDictLabel(DictDataStore['sys_user_sex'], record.gender).css_class">
+                    {{ dictStore.getDictLabel(DictDataStore['sys_user_sex'], record.gender).dict_label }}
+                  </a-tag>
+                </template>
+                <template v-if="column.dataIndex === 'available'">
+                  <span>
+                    <a-badge :status="record.available ? 'processing' : 'error'"
+                      :text="record.available ? '启用' : '停用'" />
+                  </span>
+                </template>
+                <template v-if="column.dataIndex === 'is_superuser'">
+                  <span>
+                    <a-badge :status="record.is_superuser ? 'processing' : 'error'"
+                      :text="record.is_superuser ? '是' : '否'" />
+                  </span>
+                </template>
+                <template v-if="column.dataIndex === 'operation'">
+                  <a-space size="middle">
+                    <a v-on:click="modalHandle('view', index)">查看</a>
+                    <a v-on:click="modalHandle('update', index)">修改</a>
+                    <a-popconfirm title="确定删除吗？" ok-text="确定" cancel-text="取消" @confirm="deleteRow(record)">
+                      <a style="color: red;">删除</a>
+                    </a-popconfirm>
+                  </a-space>
+                </template>
+              </template>
+            </a-table>
           </a-col>
         </a-row>
       </a-card>

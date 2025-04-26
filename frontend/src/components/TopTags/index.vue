@@ -19,7 +19,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from "vue-router";
-
 interface Pane {
     title: string;
     path: string;
@@ -84,6 +83,7 @@ watch(() => route.path, getRoute);
 :deep(.ant-tabs-nav) {
     will-change: transform;
     backface-visibility: hidden;
+    margin: 0;
 }
 
 :deep(.ant-tabs-tab) {

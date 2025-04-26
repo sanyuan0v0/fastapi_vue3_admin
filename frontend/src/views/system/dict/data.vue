@@ -1,12 +1,13 @@
 <template>
     <div>
 
+
         <!-- 搜索表单 -->
         <div class="table-search-wrapper">
             <a-card :bordered="false">
                 <a-form :model="queryState" @finish="onFinish">
-                    <a-row>
-                        <a-col flex="0 1 450px">
+                    
+                    <a-flex wrap="wrap" gap="small">
                             <a-form-item name="dict_type" label="字典" style="max-width: 300px;">
                                 <a-select v-model:value="queryState.dict_type" placeholder="请选择字典名称" allowClear @click="loadDictTypes">
                                     <a-select-option v-for="item in dictTypeOptions" :key="item.dict_type" :value="item.dict_type">
@@ -14,22 +15,17 @@
                                     </a-select-option>
                                 </a-select>
                             </a-form-item>
-                        </a-col>
-                        <a-col flex="0 1 450px">
                             <a-form-item name="dict_name" label="标签" style="max-width: 300px;">
                                 <a-input v-model:value="queryState.dict_label" placeholder="请输入字典数据标签"
                                     allowClear></a-input>
                             </a-form-item>
-                        </a-col>
-                        <a-col flex="0 1 450px">
                             <a-form-item name="available" label="状态" style="max-width: 300px;">
                                 <a-select v-model:value="queryState.available" placeholder="全部" allowClear>
                                     <a-select-option value="true">启用</a-select-option>
                                     <a-select-option value="false">停用</a-select-option>
                                 </a-select>
                             </a-form-item>
-                        </a-col>
-                    </a-row>
+                    </a-flex>
                     <a-row>
                         <a-col>
                             <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
@@ -42,10 +38,10 @@
 
         <!-- 表格区域 -->
         <div class="table-wrapper">
-            <a-card title="数据字典列表" 
-                :bordered="false" 
+            <a-card title="数据字典列表"
+                :bordered="false"
                 :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-                :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 400px)' }">
+      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 360px)' }">
                 <template #extra>
                     <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')"
                         style="margin-right: 10px;">新建</a-button>
@@ -53,15 +49,15 @@
                         style="margin-right: 10px;">导出
                     </a-button>
                 </template>
-                <a-table :rowKey="record => record.id" 
-                    :columns="columns" 
+                <a-table :rowKey="record => record.id"
+                    :columns="columns"
                     :data-source="dataSource"
-                    :row-selection="rowSelection" 
-                    :loading="tableLoading" 
+                    :row-selection="rowSelection"
+                    :loading="tableLoading"
                     @change="handleTableChange"
-                    :scroll="{ x: 400 }" 
+                    :scroll="{ x: 400 }"
                     :pagination="pagination"
-                    :style="{ minHeight: '420px' }"
+                    :style="{ minHeight: 'calc(100vh - 420px)' }"
                     >
                     <template #bodyCell="{ column, record, index }">
                         <template v-if="column.dataIndex === 'index'">
