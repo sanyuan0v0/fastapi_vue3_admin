@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from typing import Any, Optional
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator, validator
 
 from app.core.base_schema import BaseSchema
 from app.core.validator import DateTimeStr
+from app.core.logger import logger
 
 class DeptCreateSchema(BaseModel):
     """部门创建模型"""
@@ -14,12 +15,12 @@ class DeptCreateSchema(BaseModel):
     parent_id: Optional[int] = Field(default=None, ge=0, description="父部门ID")
     description: Optional[str] = Field(default=None, max_length=500, description="备注说明")
 
-    @classmethod
     @model_validator(mode='after')
-    def validate_fields(cls, data):
-        if not data.name or len(data.name.strip()) == 0:
+    def validate_fields(self):
+        if not self.name or len(self.name.strip()) == 0:
             raise ValueError("部门名称不能为空")
-        return data
+        self.name = self.name.replace(" ", "")
+        return self
 
 
 class DeptUpdateSchema(DeptCreateSchema):
