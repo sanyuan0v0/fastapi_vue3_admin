@@ -1,6 +1,7 @@
 .venv
 .vscode
 .idea
+.dev
 .chat
 .DS_Store
 __pycache__
@@ -21,3 +22,5 @@ mkdocs/__pycache__
 mkdocs/site
 
 .history
+backend/app/config/.env.dev
+backend/app/config/.env.dev1
