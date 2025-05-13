@@ -1,32 +1,28 @@
 <template>
     <div>
 
+
         <!-- 搜索表单 -->
         <div class="table-search-wrapper">
             <a-card :bordered="false">
                 <a-form :model="queryState" @finish="onFinish">
-                    <a-row>
-                        <a-col flex="0 1 450px">
+                    
+                    <a-flex wrap="wrap" gap="small">
                             <a-form-item name="dict_name" label="名称" style="max-width: 300px;">
                                 <a-input v-model:value="queryState.dict_name" placeholder="请输入字典名称"
                                     allowClear></a-input>
                             </a-form-item>
-                        </a-col>
-                        <a-col flex="0 1 450px">
                             <a-form-item name="dict_type" label="类型" style="max-width: 300px;">
                                 <a-input v-model:value="queryState.dict_type" placeholder="请输入字典类型"
                                     allowClear></a-input>
                             </a-form-item>
-                        </a-col>
-                        <a-col flex="0 1 450px">
                             <a-form-item name="available" label="状态" style="max-width: 300px;">
                                 <a-select v-model:value="queryState.available" placeholder="全部" allowClear>
-                                    <a-select-option value="1">启用</a-select-option>
-                                    <a-select-option value="0">停用</a-select-option>
+                                    <a-select-option value="true">启用</a-select-option>
+                                    <a-select-option value="false">停用</a-select-option>
                                 </a-select>
                             </a-form-item>
-                        </a-col>
-                    </a-row>
+                    </a-flex>
                     <a-row>
                         <a-col>
                             <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
@@ -39,10 +35,10 @@
 
         <!-- 表格区域 -->
         <div class="table-wrapper">
-            <a-card title="字典类型列表" 
-                :bordered="false" 
+            <a-card title="字典类型列表"
+                :bordered="false"
                 :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-                :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 400px)' }">
+      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 360px)' }">
                 <template #extra>
                     <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')"
                         style="margin-right: 10px;">新建</a-button>
@@ -50,15 +46,14 @@
                         style="margin-right: 10px;">导出
                     </a-button>
                 </template>
-                <a-table :rowKey="record => record.id" 
-                    :columns="columns" 
+                <a-table :rowKey="record => record.id"
+                    :columns="columns"
                     :data-source="dataSource"
-                    :row-selection="rowSelection" 
-                    :loading="tableLoading" 
+                    :row-selection="rowSelection"
+                    :loading="tableLoading"
                     @change="handleTableChange"
-                    :scroll="{ x: 400, y: 370 }" 
                     :pagination="pagination"
-                    :style="{ minHeight: '400px' }"
+                    :style="{ minHeight: 'calc(100vh - 420px)' }"
                     >
                     <template #bodyCell="{ column, record, index }">
                         <template v-if="column.dataIndex === 'index'">
@@ -294,8 +289,8 @@ const loadingData = () => {
     if (queryState.dict_type) {
         params['dict_type'] = queryState.dict_type
     }
-    if (queryState.available) {
-        params['available'] = queryState.available == 1 ? true : false;
+    if (queryState.available !== null && queryState.available !== undefined) {
+        params['available'] = queryState.available;
     }
     params['page_no'] = pagination.current
     params['page_size'] = pagination.pageSize

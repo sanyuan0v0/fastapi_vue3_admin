@@ -1,13 +1,13 @@
 export interface searchDataType {
     dict_name?: string
     dict_type?: string
-    available?: number
+    available?: boolean;
 }
 
 export interface searchDictDataType {
     dict_label?: string
     dict_type?: string
-    available?: number
+    available?: boolean;
 }
 
 export interface tableDictType {

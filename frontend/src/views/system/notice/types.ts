@@ -1,6 +1,6 @@
 export interface searchDataType {
     notice_title?: string
-    available?: number
+    available?: boolean;
 }
 
 export interface tableDataType {

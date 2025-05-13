@@ -1,25 +1,22 @@
 <template>
   <div>
 
+
     <!-- 搜索表单 -->
     <div class="table-search-wrapper">
       <a-card :bordered="false">
         <a-form :model="queryState" @finish="onFinish">
-          <a-row>
-            <a-col flex="0 1 450px">
+          <a-flex wrap="wrap" gap="small">
               <a-form-item name="name" label="名称" style="max-width: 300px;">
                 <a-input v-model:value="queryState.name" placeholder="请输入名称" allowClear></a-input>
               </a-form-item>
-            </a-col>
-            <a-col flex="0 1 450px">
               <a-form-item name="available" label="状态" style="max-width: 300px;">
                 <a-select v-model:value="queryState.available" placeholder="全部" allowClear>
-                  <a-select-option value="1">启用</a-select-option>
-                  <a-select-option value="0">停用</a-select-option>
+                  <a-select-option value="true">启用</a-select-option>
+                  <a-select-option value="false">停用</a-select-option>
                 </a-select>
               </a-form-item>
-            </a-col>
-          </a-row>
+          </a-flex>
           <a-row>
             <a-col>
               <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
@@ -32,10 +29,10 @@
 
     <!-- 表格区域 -->
     <div class="table-wrapper">
-      <a-card title="菜单列表" 
-        :bordered="false" 
+      <a-card title="菜单列表"
+        :bordered="false"
         :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-        :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 400px)' }">
+      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 360px)' }">
         <template #extra>
           <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')"
             style="margin-right: 10px;">新建</a-button>
@@ -56,16 +53,16 @@
           </a-dropdown>
         </template>
         <a-table v-if="dataSource"
-          :defaultExpandAllRows="true" 
-          :rowKey="record => record.id" 
-          :columns="columns" 
+          :defaultExpandAllRows="true"
+          :rowKey="record => record.id"
+          :columns="columns"
           :data-source="dataSource"
-          :loading="tableLoading" 
+          :loading="tableLoading"
           :scroll="{ x: 500, y: 'calc(100vh - 450px)' }"
-          :row-selection="rowSelection" 
-          :pagination="false" 
-          :style="{ minHeight: '420px' }"
-        >
+          :row-selection="rowSelection"
+          :pagination="false"
+                    :style="{ minHeight: 'calc(100vh - 420px)' }"
+                    >
           <template #bodyCell="{ column, record }">
             <template v-if="column.dataIndex === 'type'">
               <a-tag :color="record.type === 1 ? 'blue' : (record.type === 2 ? 'green' : 'orange')">
@@ -525,8 +522,8 @@ const loadingData = () => {
   if (queryState.name) {
     params['name'] = queryState.name
   }
-  if (queryState.available) {
-    params['available'] = queryState.available == 1 ? true : false;
+  if (queryState.available !== null && queryState.available !== undefined) {
+    params['available'] = queryState.available;
   }
 
   getMenuList(params).then(response => {
