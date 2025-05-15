@@ -7,11 +7,11 @@
             <a-card :bordered="false">
                 <a-form :model="queryState" @finish="onFinish">
                     <a-flex wrap="wrap" gap="small">
-                            <a-form-item name="name" label="名称" style="max-width: 300px;">
+                            <a-form-item name="name" label="名称" >
                                 <a-input v-model:value="queryState.name" placeholder="请输入任务名称" allowClear></a-input>
                             </a-form-item>
-                            <a-form-item name="status" label="状态" style="max-width: 300px;">
-                                <a-select v-model:value="queryState.status" placeholder="全部" allowClear>
+                            <a-form-item name="status" label="状态" >
+                                <a-select v-model:value="queryState.status" placeholder="请选择状态" allowClear>
                                                     <a-select-option value="true">启用</a-select-option>
                 <a-select-option value="false">停用</a-select-option>
                                 </a-select>

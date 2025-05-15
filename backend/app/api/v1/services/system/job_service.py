@@ -24,6 +24,8 @@ class JobService:
     
     @classmethod
     async def get_job_list_service(cls, auth: AuthSchema, search: JobQueryParams = None, order_by: List[Dict[str, str]] = None) -> List[Dict]:
+        if order_by:
+            order_by = eval(order_by)
         obj_list = await JobCRUD(auth).get_obj_list_crud(search=search.__dict__, order_by=order_by)
         return [JobOutSchema.model_validate(obj).model_dump() for obj in obj_list]
     

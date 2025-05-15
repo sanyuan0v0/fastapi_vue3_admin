@@ -23,6 +23,8 @@ class NoticeService:
     
     @classmethod
     async def get_notice_list_service(cls, auth: AuthSchema, search: NoticeQueryParams = None, order_by: List[Dict[str, str]] = None) -> List[Dict]:
+        if order_by:
+            order_by = eval(order_by)
         config_obj_list = await NoticeCRUD(auth).get_list_crud(search=search.__dict__, order_by=order_by)
         return [NoticeOutSchema.model_validate(config_obj).model_dump() for config_obj in config_obj_list]
     

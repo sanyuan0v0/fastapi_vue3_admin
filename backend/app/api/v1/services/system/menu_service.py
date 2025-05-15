@@ -33,7 +33,10 @@ class MenuService:
 
     @classmethod
     async def get_menu_list_service(cls, auth: AuthSchema, search: MenuQueryParams, order_by: List[Dict] = None) -> List[Dict]:
-        order_by = order_by if order_by else [{"order": "asc"}]
+        if order_by:
+            order_by = eval(order_by)
+        else:
+            order_by = [{"order": "asc"}]
         menu_list = await MenuCRUD(auth).get_list_crud(search=search.__dict__, order_by=order_by)
         menu_dict_list = [MenuOutSchema.model_validate(menu).model_dump() for menu in menu_list]
         return menu_dict_list

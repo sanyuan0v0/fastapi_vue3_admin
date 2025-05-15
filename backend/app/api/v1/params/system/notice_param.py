@@ -8,7 +8,7 @@ class NoticeQueryParams:
 
     def __init__(
             self,
-            notice_title: Optional[str] = Query(None, description="公告标题", min_length=2, max_length=20),
+            notice_title: Optional[str] = Query(None, description="公告标题"),
             available: Optional[bool] = Query(None, description="是否可用"),
             creator: Optional[int] = Query(None, description="创建人"),
     ) -> None:
