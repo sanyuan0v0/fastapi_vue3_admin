@@ -28,7 +28,10 @@ class OperationLogService:
     @classmethod
     async def get_log_list_service(cls, auth: AuthSchema, search: OperationLogQueryParams, order_by: List[Dict] = None) -> List[Dict]:
         """获取日志列表"""
-        order_by = order_by if order_by else [{"created_at": "desc"}]
+        if order_by:
+            order_by = eval(order_by)
+        else:
+            order_by = [{"created_at": "desc"}]
         log_list = await OperationLogCRUD(auth).get_list_crud(search=search.__dict__, order_by=order_by)
         log_dict_list = [OperationLogOutSchema.model_validate(log).model_dump() for log in log_list]
         return log_dict_list

@@ -47,7 +47,10 @@ class DeptService:
         :param order_by: 排序参数
         :return: 部门列表对象
         """
-        order_by = order_by if order_by else [{"order": "asc"}]
+        if order_by:
+            order_by = eval(order_by)
+        else:
+            order_by = [{"order": "asc"}]
         dept_list = await DeptCRUD(auth).get_list_crud(search=search.__dict__, order_by=order_by)
         return [DeptOutSchema.model_validate(dept).model_dump() for dept in dept_list]
 

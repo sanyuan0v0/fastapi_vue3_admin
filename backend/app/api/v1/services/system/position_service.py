@@ -26,7 +26,10 @@ class PositionService:
     @classmethod
     async def get_position_list_service(cls, auth: AuthSchema, search: PositionQueryParams, order_by: List[Dict] = None) -> List[Dict]:
         """获取岗位列表"""
-        order_by = order_by if order_by else [{"order": "asc"}]
+        if order_by:
+            order_by = eval(order_by)
+        else:
+            order_by = [{"order": "asc"}]
         position_list = await PositionCRUD(auth).get_list_crud(search=search.__dict__, order_by=order_by)
         return [PositionOutSchema.model_validate(position).model_dump() for position in position_list]
 

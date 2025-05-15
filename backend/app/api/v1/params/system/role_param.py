@@ -10,7 +10,7 @@ class RoleQueryParams:
 
     def __init__(
             self,
-            name: Optional[str] = Query(None, description="角色名称", min_length=2, max_length=20),
+            name: Optional[str] = Query(None, description="角色名称"),
             available: Optional[bool] = Query(None, description="是否可用"),
             creator: Optional[int] = Query(None, description="创建人"),
             start_time: Optional[str] = Query(None, description="开始时间", example="2023-01-01 00:00:00"),

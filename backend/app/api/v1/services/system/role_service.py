@@ -28,7 +28,10 @@ class RoleService:
     @classmethod
     async def get_role_list_service(cls, auth: AuthSchema, search: RoleQueryParams, order_by: List[Dict[str, str]] = None) -> List[Dict]:
         """获取角色列表"""
-        order_by = order_by if order_by else [{"order": "asc"}]
+        if order_by:
+            order_by = eval(order_by)
+        else:
+            order_by = [{"order": "asc"}]
         role_list = await RoleCRUD(auth).get_list_crud(search=search.__dict__, order_by=order_by)
         return [RoleOutSchema.model_validate(role).model_dump() for role in role_list]
 

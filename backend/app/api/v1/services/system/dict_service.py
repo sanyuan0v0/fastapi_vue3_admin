@@ -28,6 +28,8 @@ class DictTypeService:
     
     @classmethod
     async def get_obj_list_service(cls, auth: AuthSchema, search: DictTypeQueryParams = None, order_by: List[Dict[str, str]] = None) -> List[Dict]:
+        if order_by:
+            order_by = eval(order_by)
         if search:
             obj_list = await DictTypeCRUD(auth).get_obj_list_crud(search=search.__dict__, order_by=order_by)
         obj_list = await DictTypeCRUD(auth).get_obj_list_crud()
@@ -168,6 +170,8 @@ class DictDataService:
     
     @classmethod
     async def get_obj_list_service(cls, auth: AuthSchema, search: DictDataQueryParams = None, order_by: List[Dict[str, str]] = None) -> List[Dict]:
+        if order_by:
+            order_by = eval(order_by)
         obj_list = await DictDataCRUD(auth).get_obj_list_crud(search=search.__dict__, order_by=order_by)
         return [DictDataOutSchema.model_validate(obj).model_dump() for obj in obj_list]
 

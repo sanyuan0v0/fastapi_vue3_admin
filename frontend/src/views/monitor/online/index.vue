@@ -7,13 +7,13 @@
       <a-form :model="queryState" @finish="handleQuery">
         
         <a-flex wrap="wrap" gap="small">
-            <a-form-item name="ipaddr" label="主机" style="max-width: 300px;">
+            <a-form-item name="ipaddr" label="主机" >
               <a-input v-model:value="queryState.ipaddr" placeholder="请输入主机地址" allowClear></a-input>
             </a-form-item>
-            <a-form-item name="user_name" label="用户名" style="max-width: 300px;">
+            <a-form-item name="user_name" label="用户名" >
               <a-input v-model:value="queryState.name" placeholder="请输入登陆用户名称" allowClear></a-input>
             </a-form-item>
-            <a-form-item name="login_location" label="登陆地点" style="max-width: 300px;">
+            <a-form-item name="login_location" label="登陆地点" >
               <a-input v-model:value="queryState.login_location" placeholder="请输入登陆地点" allowClear></a-input>
             </a-form-item>
 

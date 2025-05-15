@@ -7,16 +7,16 @@
       <a-card :bordered="false">
         <a-form :model="queryState" @finish="onFinish">
           <a-flex wrap="wrap" gap="small">
-            <a-form-item name="username" label="用户名" style="max-width: 300px;">
-              <a-input v-model:value="queryState['username']" placeholder="请输入用户名" allowClear></a-input>
+            <a-form-item name="username" label="账号" >
+              <a-input v-model:value="queryState.username" placeholder="请输入账号" allowClear></a-input>
             </a-form-item>
-            <a-form-item name="name" label="姓名" style="max-width: 300px;">
-              <a-input v-model:value="queryState['name']" placeholder="请输入姓名" allowClear></a-input>
+            <a-form-item name="name" label="用户名" >
+              <a-input v-model:value="queryState.name" placeholder="请输入用户名" allowClear></a-input>
             </a-form-item>
-            <a-form-item name="available" label="状态" style="max-width: 300px;">
-              <a-select v-model:value="queryState['available']" placeholder="全部" allowClear>
-                <a-select-option value="1">启用</a-select-option>
-                <a-select-option value="0">停用</a-select-option>
+            <a-form-item name="available" label="状态" >
+              <a-select v-model:value="queryState.available" placeholder="请选择状态" min-width="300px" allowClear>
+                <a-select-option value="true">启用</a-select-option>
+                <a-select-option value="false">停用</a-select-option>
               </a-select>
             </a-form-item>
           </a-flex>
@@ -139,8 +139,8 @@
               bordered>
               <a-descriptions-item label="序号">{{ (pagination.current - 1) * pagination.pageSize + detailState.index + 1
                 }}</a-descriptions-item>
-              <a-descriptions-item label="用户名">{{ detailState.username }}</a-descriptions-item>
-              <a-descriptions-item label="姓名">{{ detailState.name }}</a-descriptions-item>
+              <a-descriptions-item label="账号">{{ detailState.username }}</a-descriptions-item>
+              <a-descriptions-item label="用户名">{{ detailState.name }}</a-descriptions-item>
               <a-descriptions-item label="性别">
                 {{ dictStore.getDictLabel(DictDataStore['sys_user_sex'],detailState.gender).dict_label }}
               </a-descriptions-item>
@@ -168,11 +168,11 @@
         </div>
         <div v-else-if="modalTitle === 'create'">
           <a-form ref="createForm" :model="createState" v-bind="{ labelCol: { span: 5 }, wrapperCol: { span: 15 } }">
-            <a-form-item name="username" label="用户名" :rules="[{ required: true, message: '请输入用户名' }]">
-              <a-input v-model:value="createState.username" placeholder="请输入用户名" allowClear></a-input>
+            <a-form-item name="username" label="账号" :rules="[{ required: true, message: '请输入账号' }]">
+              <a-input v-model:value="createState.username" placeholder="请输入账号" allowClear></a-input>
             </a-form-item>
-            <a-form-item name="name" label="姓名" :rules="[{ required: true, message: '请输入姓名' }]">
-              <a-input v-model:value="createState.name" placeholder="请输入姓名" allowClear></a-input>
+            <a-form-item name="name" label="用户名" :rules="[{ required: true, message: '请输入用户名' }]">
+              <a-input v-model:value="createState.name" placeholder="请输入用户名" allowClear></a-input>
             </a-form-item>
             <a-form-item name="dept_id" label="部门" :rules="[{ required: true, message: '请选择部门' }]">
               <a-tree-select v-model:value="createState.dept_id"
@@ -231,11 +231,11 @@
         </div>
         <div v-else>
           <a-form ref="updateForm" :model="updateState" v-bind="{ labelCol: { span: 5 }, wrapperCol: { span: 15 } }">
-            <a-form-item name="username" label="用户名" :rules="[{ required: true, message: '请输入用户名' }]">
-              <a-input v-model:value="updateState.username" placeholder="请输入用户名" allowClear></a-input>
+            <a-form-item name="username" label="账号" :rules="[{ required: true, message: '请输入账号账号' }]">
+              <a-input v-model:value="updateState.username" placeholder="请输入账号" allowClear></a-input>
             </a-form-item>
-            <a-form-item name="name" label="姓名" :rules="[{ required: true, message: '请输入姓名' }]">
-              <a-input v-model:value="updateState.name" placeholder="请输入姓名" allowClear></a-input>
+            <a-form-item name="name" label="用户名" :rules="[{ required: true, message: '请输入用户名' }]">
+              <a-input v-model:value="updateState.name" placeholder="请输入用户名" allowClear></a-input>
             </a-form-item>
             <a-form-item name="dept_id" label="部门" :rules="[{ required: true, message: '请选择部门' }]">
               <a-tree-select v-model:value="updateState.dept_id"
@@ -331,7 +331,7 @@
             <ul>
               <li>仅支持 xls、xlsx 格式文件</li>
               <li>文件大小不能超过 5MB</li>
-              <li>必填项：用户名、姓名、性别</li>
+              <li>必填项：账号、用户名、性别</li>
               <li>选填项：邮箱、手机号、部门、角色、岗位等</li>
             </ul>
           </div>
@@ -440,14 +440,14 @@ const columns = reactive<TableColumnsType>([
     width: 80
   },
   {
-    title: '用户名',
+    title: '账号',
     dataIndex: 'username',
     ellipsis: true,
     align: 'center',
     width: 100
   },
   {
-    title: '姓名',
+    title: '用户名',
     dataIndex: 'name',
     ellipsis: true,
     align: 'center',

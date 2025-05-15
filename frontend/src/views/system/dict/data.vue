@@ -8,19 +8,19 @@
                 <a-form :model="queryState" @finish="onFinish">
                     
                     <a-flex wrap="wrap" gap="small">
-                            <a-form-item name="dict_type" label="字典" style="max-width: 300px;">
+                            <a-form-item name="dict_type" label="字典" >
                                 <a-select v-model:value="queryState.dict_type" placeholder="请选择字典名称" allowClear @click="loadDictTypes">
                                     <a-select-option v-for="item in dictTypeOptions" :key="item.dict_type" :value="item.dict_type">
                                         {{ item.dict_name }}
                                     </a-select-option>
                                 </a-select>
                             </a-form-item>
-                            <a-form-item name="dict_name" label="标签" style="max-width: 300px;">
+                            <a-form-item name="dict_name" label="标签" >
                                 <a-input v-model:value="queryState.dict_label" placeholder="请输入字典数据标签"
                                     allowClear></a-input>
                             </a-form-item>
-                            <a-form-item name="available" label="状态" style="max-width: 300px;">
-                                <a-select v-model:value="queryState.available" placeholder="全部" allowClear>
+                            <a-form-item name="available" label="状态" >
+                                <a-select v-model:value="queryState.available" placeholder="请选择状态" allowClear>
                                     <a-select-option value="true">启用</a-select-option>
                                     <a-select-option value="false">停用</a-select-option>
                                 </a-select>

@@ -50,6 +50,8 @@ class UserService:
 
     @classmethod
     async def get_user_list_service(cls, auth: AuthSchema, search: UserQueryParams, order_by: List[Dict]= None) -> List[Dict]:
+        if order_by:
+            order_by = eval(order_by)
         user_list = await UserCRUD(auth).get_list_crud(search=search.__dict__, order_by=order_by)
         user_dict_list = []
         for user in user_list:

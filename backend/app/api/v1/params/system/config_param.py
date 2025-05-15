@@ -9,7 +9,7 @@ class ConfigQueryParams:
 
     def __init__(
             self,
-            title: Optional[str] = Query(None, description="网站标题", min_length=2, max_length=50),
+            title: Optional[str] = Query(None, description="网站标题"),
     ) -> None:
         super().__init__()
         

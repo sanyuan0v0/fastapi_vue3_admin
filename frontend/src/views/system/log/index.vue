@@ -7,10 +7,10 @@
       <a-card :bordered="false">
         <a-form :model="queryState" @finish="onFinish">
           <a-flex wrap="wrap" gap="small">
-              <a-form-item name="request_path" label="请求路径" style="max-width: 300px;">
+              <a-form-item name="request_path" label="请求路径" >
                 <a-input v-model:value="queryState.request_path" placeholder="请输入请求路径" allowClear></a-input>
               </a-form-item>
-              <a-form-item name="creator" label="创建人" style="max-width: 300px;">
+              <a-form-item name="creator" label="创建人" >
                 <a-select v-model:value="queryState.creator_name" placeholder="请选择创建人" :open="false"
                   @click="selectModalHandle">
                   <template #suffixIcon>

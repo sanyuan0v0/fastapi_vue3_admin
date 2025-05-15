@@ -11,13 +11,13 @@
         <a-form :model="queryState" @finish="onFinish">
           <a-row>
             <a-col flex="0 1 450px">
-              <a-form-item name="creator_name" label="姓名" style="max-width: 300px;">
+              <a-form-item name="creator_name" label="姓名" >
                 <a-input v-model:value="queryState.name" placeholder="请输入姓名" allowClear></a-input>
               </a-form-item>
             </a-col>
             <a-col flex="0 1 450px">
-              <a-form-item name="available" label="状态" style="max-width: 300px;">
-                <a-select v-model:value="queryState.available" placeholder="全部" allowClear>
+              <a-form-item name="available" label="状态" >
+                <a-select v-model:value="queryState.available" placeholder="请选择状态" allowClear>
                   <a-select-option value="true">启用</a-select-option>
                   <a-select-option value="false">停用</a-select-option>
                 </a-select>
