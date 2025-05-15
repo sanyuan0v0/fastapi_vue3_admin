@@ -23,20 +23,22 @@ router = APIRouter(route_class=OperationLogRoute)
 
 @router.get("/list", summary="查询菜单", description="查询菜单")
 async def get_obj_list_controller(
-    page: PaginationQueryParams = Depends(),
-    search: MenuQueryParams = Depends(),
-    auth: AuthSchema = Depends(AuthPermission(permissions=["system:menu:query"]))
+        page: PaginationQueryParams = Depends(),
+        search: MenuQueryParams = Depends(),
+        auth: AuthSchema = Depends(AuthPermission(permissions=["system:menu:query"]))
 ) -> JSONResponse:
     result_dict_list = await MenuService.get_menu_list_service(search=search, auth=auth)
-    result_dict = await PaginationService.get_page_obj(data_list= result_dict_list, page_no= page.page_no, page_size = page.page_size)
+    menu_items = await MenuService.convert_to_menu(result_dict_list)
+    result_dict = await PaginationService.get_page_obj(data_list=menu_items, page_no=page.page_no,
+                                                       page_size=page.page_size)
     logger.info(f"{auth.user.name} 查询菜单成功")
     return SuccessResponse(data=result_dict, msg="查询菜单成功")
 
 
 @router.get("/detail", summary="查询菜单详情", description="查询菜单详情")
 async def get_obj_detail_controller(
-    id: int = Query(..., description="菜单ID"),
-    auth: AuthSchema = Depends(AuthPermission(permissions=["system:menu:query"]))
+        id: int = Query(..., description="菜单ID"),
+        auth: AuthSchema = Depends(AuthPermission(permissions=["system:menu:query"]))
 ) -> JSONResponse:
     result_dict = await MenuService.get_menu_detail_service(id=id, auth=auth)
     logger.info(f"{auth.user.name} 查询菜单情成功 {id}")

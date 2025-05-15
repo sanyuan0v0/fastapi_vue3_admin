@@ -211,7 +211,7 @@ const onMenuSelectChange = (selectingRowKeys: permissionMenuType['id'][]) => {
 const menuRowSelection = computed(() => {
     return {
         selectedRowKeys: permissionState.value.menu_ids,
-        checkStrictly: true,
+        checkStrictly: false,
         onChange: onMenuSelectChange
     }
 });

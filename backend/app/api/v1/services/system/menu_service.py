@@ -38,6 +38,27 @@ class MenuService:
         menu_dict_list = [MenuOutSchema.model_validate(menu).model_dump() for menu in menu_list]
         return menu_dict_list
 
+    @staticmethod
+    async def convert_to_menu(menu_list):
+        menu_dict = {}
+        result = []
+
+        for menu in menu_list:
+            if isinstance(menu, dict):
+                menu_dict[menu['id']] = menu
+                menu['key']=menu['id']
+        for menu in menu_list:
+            if isinstance(menu, dict):
+                parent_id = menu.get('parent_id')
+                if parent_id is None or parent_id not in menu_dict:
+                    result.append(menu)
+                else:
+                    parent_menu = menu_dict[parent_id]
+                    if 'children' not in parent_menu:
+                        parent_menu['children'] = []
+                    parent_menu['children'].append(menu)
+        return result
+
     @classmethod
     async def create_menu_service(cls, auth: AuthSchema, data: MenuCreateSchema) -> Dict:
         menu = await MenuCRUD(auth).get(name=data.name)
