@@ -4,7 +4,6 @@ from typing import Dict
 @unique
 class EnvironmentEnum(str, Enum):
     DEV = "dev"
-    TEST = "test"
     PROD = "prod"
 
 

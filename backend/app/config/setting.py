@@ -370,8 +370,7 @@ def get_settings() -> Settings:
     if env not in [e.value for e in EnvironmentEnum]:
         raise ValueError(f"无效的环境配置: {env}")
     
-    current_dir = Path(__file__).parent
-    env_file = current_dir / f".env.{env}"
+    env_file = Path(__file__).parent.parent.parent / "env" / f".env.{env}"
 
     if not env_file.exists():
         raise FileNotFoundError(f"环境配置文件不存在: {env_file}")

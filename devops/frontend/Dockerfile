@@ -1,0 +1,20 @@
+# 使用官方的 Python 3.10 镜像作为基础镜像
+FROM nginx:latest
+
+# 使用 LABEL 替代 MAINTAINER
+LABEL maintainer="948080782@qq.com"
+
+# 设置时区
+ENV TZ Asia/Shanghai
+
+# 设置容器内工作目录
+WORKDIR /home
+
+# 将当前主机目录全部文件复制至容器工作目录
+COPY /home/fastapi_vue3_admin/devops/frontend/dist /usr/share/nginx/html
+
+# 用本地的nginx配置文件覆盖镜像的Nginx配置
+COPY /home/fastapi_vue3_admin/devops/frontend/nginx.conf /etc/nginx/nginx.conf
+
+# 暴露端口
+EXPOSE 80

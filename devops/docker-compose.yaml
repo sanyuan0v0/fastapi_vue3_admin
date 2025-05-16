@@ -1,106 +1,96 @@
-version: "3.10.11"
+version: "3.0"
 
 # 应用服务
 services:
-  # 前端服务
-  frontend:
-    container_name: frontend
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
+  # 数据库服务
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - TZ=Asia/Shanghai
     ports:
-      - "80:80"
-    depends_on:
-      - backend
+      - "3306:3306"
+    volumes:
+      - /home/mysql/data:/var/lib/mysql 
+      - /home/mysql/conf:/etc/mysql/conf
+      - /home/mysql/logs:/logs
+      - /etc/localtime:/etc/localtime:ro 
+      # 让容器的时钟与宿主机时钟同步，避免时间的问题，ro(read only)，表示只读。
     networks:
-      - app-network
+      - mysql_network
 
+  # redis服务
+  redis:
+    container_name: redis
+    image: redis:6
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - /home/redis/redis.conf:/etc/redis/redis.conf:rw
+      - /home/redis/data:/data:rw
+      - /home/redis/logs:/logs:rw
+    command: redis-server /etc/redis/redis.conf
+    networks:
+      - redis_network
+  
   # 后端服务
   backend:
     # 容器名称
     container_name: backend
     # 构建镜像
     build:
-      context: .
-      dockerfile: build/Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
     # 端口映射
     ports:
       - "8000:8000"
-    environment:
-      - MYSQL_HOST=mysql
-      - MYSQL_PORT=3306
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=123456
-      - MYSQL_DATABASE=fastapi_admin
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - MONGODB_URL=mongodb://mongodb:27017/
+    volumes:
+      - /home/backend/static:/home/backend/static
+      - /home/backend/logs:/home/backend/logs
+      - /home/backend/env:/home/backend/env
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - backend-network
+    restart: always
     depends_on:
       - mysql
       - redis
-      - mongodb
-    networks:
-      - app-network
-    restart: always
-
-  # 数据库服务
-  mysql:
-    container_name: mysql
-    image: mysql:8.0
-    environment:
-      - MYSQL_ROOT_PASSWORD=123456
-      - MYSQL_DATABASE=fastapi_admin
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - app-network
-
-  # redis服务
-  redis:
-    container_name: redis
-    image: redis:latest
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - app-network
-
-  # mongodb服务
-  mongodb:
-    container_name: mongodb
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
-    networks:
-      - app-network
-
-  # nginx服务
-  nginx:
+  
+  # 前端服务nginx服务
+  frontend:
     container_name: nginx
-    restart: always
     image: "nginx:latest"
+    restart: always
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - "80:80"
     volumes:
-      - ./nginx:/etc/nginx/conf.d
+      - /home/frontend/nginx/conf:/etc/nginx/conf
+      - /home/frontend/nginx/dist:/usr/share/nginx/html
     networks:
-      - web_network
+      - frontend_network
     depends_on:
-      - flask_api
+      - backend
 
 # 网络
 networks:
-  db_network:
+  mysql_network:
     driver: bridge
-  web_network:
+    name: mysql_network
+  redis_network:
     driver: bridge
-  app-network:
+    name: redis_network
+  frontend_network:
     driver: bridge
+    name: frontend_network
+  backend-network:
+    driver: bridge
+    name: backend-network
 
 # 文件挂载
 volumes:
