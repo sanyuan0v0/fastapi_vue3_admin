@@ -11,10 +11,10 @@ ENV TZ Asia/Shanghai
 WORKDIR /home
 
 # 将当前主机目录全部文件复制至容器工作目录
-COPY /home/fastapi_vue3_admin/backend .
+COPY ../backend .
 
 # 安装依赖
-RUN pip install --no-cache-dir -r ./backend/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip install --no-cache-dir -r ./requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 # 运行应用
 CMD ["python", "main.py", "run", "--env=prod"]
