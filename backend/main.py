@@ -43,7 +43,7 @@ def create_app() -> FastAPI:
 
 
 @shell_app.command()
-def run(env: EnvironmentEnum = typer.Option(EnvironmentEnum.DEV, "--env", help="运行环境 (dev, test, prod)")):
+def run(env: EnvironmentEnum = typer.Option(EnvironmentEnum.DEV, "--env", help="运行环境 (dev, prod)")):
     typer.echo("项目启动中..")
     # 设置环境变量
     os.environ["ENVIRONMENT"] = env.value
