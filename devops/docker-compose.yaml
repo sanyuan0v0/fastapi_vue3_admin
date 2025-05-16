@@ -1,4 +1,4 @@
-version: "3.0"
+version: "3.10"
 
 # 应用服务
 services:
@@ -42,11 +42,11 @@ services:
     container_name: backend
     # 构建镜像
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: devops/backend/Dockerfile
     # 端口映射
     ports:
-      - "8000:8000"
+      - "8001:8001"
     volumes:
       - /home/backend/static:/home/backend/static
       - /home/backend/logs:/home/backend/logs

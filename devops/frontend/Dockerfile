@@ -11,10 +11,10 @@ ENV TZ Asia/Shanghai
 WORKDIR /home
 
 # 将当前主机目录全部文件复制至容器工作目录
-COPY /home/fastapi_vue3_admin/devops/frontend/dist /usr/share/nginx/html
+COPY ./dist /usr/share/nginx/html
 
 # 用本地的nginx配置文件覆盖镜像的Nginx配置
-COPY /home/fastapi_vue3_admin/devops/frontend/nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx.conf /etc/nginx/nginx.conf
 
 # 暴露端口
 EXPOSE 80
