@@ -1,5 +1,3 @@
-version: "3.10"
-
 # 应用服务
 services:
   # 数据库服务
@@ -13,9 +11,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - /home/mysql/data:/var/lib/mysql 
-      - /home/mysql/conf:/etc/mysql/conf
-      - /home/mysql/logs:/logs
+      - /home/mysql/data:/var/lib/mysql
       - /etc/localtime:/etc/localtime:ro 
       # 让容器的时钟与宿主机时钟同步，避免时间的问题，ro(read only)，表示只读。
     networks:
@@ -29,9 +25,8 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - /home/redis/redis.conf:/etc/redis/redis.conf:rw
-      - /home/redis/data:/data:rw
-      - /home/redis/logs:/logs:rw
+      - /home/redis/redis.conf:/etc/redis/redis.conf
+      - /home/redis/data:/data
     command: redis-server /etc/redis/redis.conf
     networks:
       - redis_network
@@ -42,8 +37,8 @@ services:
     container_name: backend
     # 构建镜像
     build:
-      context: ..
-      dockerfile: devops/backend/Dockerfile
+      context: .
+      dockerfile: Dockerfile.backend
     # 端口映射
     ports:
       - "8001:8001"
@@ -65,8 +60,8 @@ services:
     image: "nginx:latest"
     restart: always
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.frontend
     ports:
       - "80:80"
     volumes:
