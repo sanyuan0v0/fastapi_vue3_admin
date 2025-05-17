@@ -33,8 +33,6 @@ nav:
   - 开发指南:
     - 后端开发: doc/backend.md
     - 前端开发: doc/frontend.md
-  - 部署指南:
-    - 本地部署: doc/build.md
   - 文档指南:
     - 文档开发: doc/mkdocs.md
 
