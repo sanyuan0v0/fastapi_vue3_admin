@@ -225,6 +225,24 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
 - Username: `admin` Password: `123456`
 - API URL: <http://127.0.0.1:8000/api/v1/docs>
 
+### Docker Deployment
+
+- cd fastapi_vue3_amdin/frontend
+- npm run build （Ensure the dist directory exists; otherwise, errors will occur during execution）
+- cd fastapi_vue3_amdin
+- docker compose up -d
+- Notes：
+- In the frontend .env.production file, change VITE_API_BASE_URL to the public IP address.
+- In the backend .env.prod file, set MYSQL_HOST and REDIS_HOST to private IP addresses.
+- Common Issues：
+- Backend fails to start: Usually because the initialization script was not executed. The script directory is backend/sql/mysql_xxx.sql. Another possibility is that the MySQL or Redis services are not running and need to be started manually.
+- Deployment Order：
+- 1. Start MySQL and Redis services
+- 2. Execute database initialization scripts.
+- 3. Start the backend service.
+- 4. Start the frontend service.
+- Access URL:Public IP address on port 80; login with username admin and password 123456.
+
 ## 🔧 Module Showcase
 
 <table>

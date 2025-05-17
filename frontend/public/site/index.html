@@ -226,24 +226,6 @@
     
     
       <li class="md-tabs__item">
-        <a href="doc/build.html" class="md-tabs__link">
-          
-  
-  部署指南
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
         <a href="doc/mkdocs.html" class="md-tabs__link">
           
   
@@ -442,6 +424,15 @@
   <a href="#_10" class="md-nav__link">
     <span class="md-ellipsis">
       访问项目
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      docker 部署
     </span>
   </a>
   
@@ -829,7 +820,7 @@
             
   
   <span class="md-ellipsis">
-    部署指南
+    文档指南
     
   </span>
   
@@ -839,74 +830,6 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            部署指南
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="doc/build.html" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    本地部署
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
-        
-          
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    文档指南
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             文档指南
           </label>
@@ -1051,6 +974,15 @@
   <a href="#_10" class="md-nav__link">
     <span class="md-ellipsis">
       访问项目
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      docker 部署
     </span>
   </a>
   
@@ -1577,6 +1509,41 @@
 <li>前端地址：<a href="http://127.0.0.1:5180">http://127.0.0.1:5180</a></li>
 <li>账号：<code>admin</code> 密码：<code>123456</code></li>
 <li>接口地址：<a href="http://127.0.0.1:8000/api/v1/docs">http://127.0.0.1:8000/api/v1/docs</a></li>
+</ul>
+<h3 id="docker">docker 部署</h3>
+<ul>
+<li>cd fastapi_vue3_amdin/frontend</li>
+<li>npm run build （保证dist前端打包内容存在，否则运行会报错）</li>
+<li>cd fastapi_vue3_amdin</li>
+<li>docker compose up -d</li>
+<li>注意事项：</li>
+<li>前端.env.production 中 VITE_API_BASE_URL需要修改为公网地址</li>
+<li>后端.env.prod 中 MYSQL_HOST、REDIS_HOST需要改为私网地址</li>
+<li>遇到问题：</li>
+<li>后端启动报错：一般是由于初始化脚本没有执行，脚本目录：backend/sql/mysql_xxx.sql</li>
+<li>还有可能是因为mysql、redis中间件没有启动，需要手动启动</li>
+<li>部署顺序：</li>
+<li>
+<ol>
+<li>启动mysql、redis中间件</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>执行初始化脚本</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>启动后端服务</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>启动前端服务</li>
+</ol>
+</li>
+<li>访问地址：公网地址，80端口；登录admin/123456</li>
 </ul>
 <h2 id="_11">🔧 模块展示</h2>
 <h3 id="_12">登陆</h3>

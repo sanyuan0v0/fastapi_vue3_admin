@@ -1,5 +1,5 @@
 # 使用官方的 Python 3.10 镜像作为基础镜像
-FROM nginx:latest
+FROM python:3.10
 
 # 使用 LABEL 替代 MAINTAINER
 LABEL maintainer="948080782@qq.com"
@@ -11,10 +11,13 @@ ENV TZ Asia/Shanghai
 WORKDIR /home
 
 # 将当前主机目录全部文件复制至容器工作目录
-COPY ./frontend/dist /usr/share/nginx/html
+COPY backend/requirements.txt .
 
-# 用本地的nginx配置文件覆盖镜像的Nginx配置
-COPY ./nginx.conf /etc/nginx/nginx.conf
+# 安装依赖
+RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# 运行应用
+CMD ["python", "main.py", "run", "--env=prod"]
 
 # 暴露端口
-EXPOSE 80
+EXPOSE 8001

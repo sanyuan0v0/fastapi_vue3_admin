@@ -183,6 +183,25 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
 - 账号：`admin` 密码：`123456`
 - 接口地址：<http://127.0.0.1:8000/api/v1/docs>
 
+### docker 部署
+
+- cd fastapi_vue3_amdin/frontend
+- npm run build （保证dist前端打包内容存在，否则运行会报错）
+- cd fastapi_vue3_amdin
+- docker compose up -d
+- 注意事项：
+- 前端.env.production 中 VITE_API_BASE_URL需要修改为公网地址
+- 后端.env.prod 中 MYSQL_HOST、REDIS_HOST需要改为私网地址
+- 遇到问题：
+- 后端启动报错：一般是由于初始化脚本没有执行，脚本目录：backend/sql/mysql_xxx.sql
+- 还有可能是因为mysql、redis中间件没有启动，需要手动启动
+- 部署顺序：
+- 1. 启动mysql、redis中间件
+- 2. 执行初始化脚本
+- 3. 启动后端服务
+- 4. 启动前端服务
+- 访问地址：公网地址，80端口；登录admin/123456
+  
 ## 🔧 模块展示
 
 ### 登陆
