@@ -79,15 +79,9 @@ class DemoEnvMiddleware(BaseHTTPMiddleware):
         if settings.DEMO_ENABLE and request.method != "GET":
             path = request.scope.get("path")
             if path in settings.DEMO_BLACK_LIST_PATH:
-                return ErrorResponse(
-                    msg="演示环境,该接口已被禁用",
-                    status=status.HTTP_403_FORBIDDEN
-                )
+                return ErrorResponse(msg="演示环境，禁止操作",)
             elif path not in settings.DEMO_WHITE_LIST_PATH:
-                return ErrorResponse(
-                    msg="演示环境,禁止修改操作",
-                    status=status.HTTP_403_FORBIDDEN
-                )
+                return ErrorResponse(msg="演示环境，禁止操作",)
 
         return await call_next(request)
 

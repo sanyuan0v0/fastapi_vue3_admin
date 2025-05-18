@@ -92,6 +92,7 @@
               <a-tag :color="getRequestMethodColor(detailState.request_method)">{{ detailState.request_method }}</a-tag>
             </a-descriptions-item>
             <a-descriptions-item label="IP地址">{{ detailState.request_ip }}</a-descriptions-item>
+            <a-descriptions-item label="登录地址">{{ detailState.login_location }}</a-descriptions-item>
             <a-descriptions-item label="浏览器">{{ detailState.request_browser }}</a-descriptions-item>
             <a-descriptions-item label="系统">{{ detailState.request_os }}</a-descriptions-item>
             <a-descriptions-item label="响应码" :span="2">
@@ -102,6 +103,7 @@
             <a-descriptions-item label="返回信息" :span="2">
               <div class="scrollable-content">{{ detailState.response_json }}</div>
             </a-descriptions-item>
+            <a-descriptions-item label="处理时间" :span="2">{{ detailState.process_time }} </a-descriptions-item>
             <a-descriptions-item label="创建人">{{ detailState.creator ? detailState.creator.name : '-' }}</a-descriptions-item>
             <a-descriptions-item label="创建时间">{{ detailState.created_at }}</a-descriptions-item>
             <a-descriptions-item label="修改时间">{{ detailState.updated_at }}</a-descriptions-item>
@@ -161,7 +163,7 @@ const columns: TableColumnsType = [
     dataIndex: 'request_method',
     ellipsis: true,
     // align: 'center',
-    width: 120
+    width: 80
   },
   {
     title: 'IP地址',
@@ -171,22 +173,36 @@ const columns: TableColumnsType = [
     width: 100
   },
   {
+    title: '登录地点',
+    dataIndex: 'login_location',
+    ellipsis: true,
+    // align: 'center',
+    width: 120
+  },
+  {
     title: '浏览器',
     dataIndex: 'request_browser',
     ellipsis: true,
     // align: 'center',
-    width: 120
+    width: 80
   },
   {
     title: '系统',
     dataIndex: 'request_os',
     ellipsis: true,
     // align: 'center',
-    width: 120
+    width: 80
   },
   {
     title: '响应码',
     dataIndex: 'response_code',
+    ellipsis: true,
+    // align: 'center',
+    width: 80
+  },
+  {
+    title: '处理时间',
+    dataIndex: 'process_time',
     ellipsis: true,
     // align: 'center',
     width: 120

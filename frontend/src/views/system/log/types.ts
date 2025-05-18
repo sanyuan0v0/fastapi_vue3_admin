@@ -11,11 +11,13 @@ export interface tableDataType {
     request_path?: string;
     request_method?: string;
     request_ip?: string;
+    login_location?: string;
     request_browser?: string;
     request_os?: string;
     response_code?: number;
     request_payload?: string;
     response_json?: string;
+    process_time?: number;
     description?: string;
     creator?: creatorType;
     created_at?: string;

@@ -36,7 +36,7 @@ class IpLocalUtil:
             return "未知"
             
         # 内网IP直接返回
-        if ip == '127.0.0.1' or ip.startswith('192.168.') or ip.startswith('10.') or ip.startswith('172.'):
+        if ip == '127.0.0.1' or ip == 'localhost':
             return '内网IP'
             
         try:
@@ -46,25 +46,25 @@ class IpLocalUtil:
                 timeout=5
             )
             if ip_result.status_code == 200:
-                data = ip_result.json().get('data', {})
-                prov = data.get('prov', '')
-                city = data.get('city', '')
-                if prov or city:
-                    return f'{prov}-{city}'
-                    
-            # 备用淘宝API
-            response = requests.get(
-                f"http://ip.taobao.com/service/getIpInfo.php?ip={ip}",
-                timeout=5
-            )
-            if response.status_code == 200:
-                data = response.json().get('data', {})
-                country = data.get('country', '')
-                region = data.get('region', '') 
-                city = data.get('city', '')
-                return f"{country}{region}{city}"
                 
+                data = ip_result.json().get('data', {})
+                # "continent": "亚洲",
+                # "country": "中国",
+                # "zipcode": "710061",
+                # "owner": "中国移动",
+                # "isp": "中国移动",
+                # "adcode": "610113",
+                # "prov": "陕西省",
+                # "city": "西安市",
+                # "district": "雁塔区"
+                country = data.get('country', '未知国家')
+                owner = data.get('owner', '未知运营商')
+                prov = data.get('prov', '未知省份')
+                city = data.get('city', '未知城市')
+                district = data.get('district', '未知地区')
+
+                return f'【{owner}】-{country}-{prov}-{city}-{district}'
+
         except Exception as e:
             logger.error(f"获取IP归属地失败: {e}")
-            
-        return "未知"
+            return "未知"

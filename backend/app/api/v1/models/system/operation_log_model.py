@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from sqlalchemy import Column, ForeignKey, String, Integer, Text, DateTime
+from sqlalchemy import Column, ForeignKey, String, Integer, Text, DateTime, Float
 from sqlalchemy.orm import relationship
 
 from app.core.base_model import ModelBase
@@ -17,10 +17,12 @@ class OperationLogModel(ModelBase):
     request_method = Column(String(10), nullable=True, comment="请求方式", index=True)
     request_payload = Column(Text, nullable=True, comment="请求体")
     request_ip = Column(String(50), nullable=True, comment="请求IP地址")
+    login_location=Column(String(255), nullable=True, comment="登录位置")
     request_os = Column(String(64), nullable=True, comment="操作系统")
     request_browser = Column(String(64), nullable=True, comment="浏览器")
     response_code = Column(Integer, nullable=True, comment="响应状态码")
     response_json = Column(Text, nullable=True, comment="响应体")
+    process_time = Column(Float, nullable=True, comment="处理时间")
     
     # 审计字段
     description = Column(Text, nullable=True, comment="备注说明")

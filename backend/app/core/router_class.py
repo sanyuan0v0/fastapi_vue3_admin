@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import time
 from typing import Any, Callable, Coroutine
 from fastapi import Request, Response
 from fastapi.routing import APIRoute
@@ -10,6 +11,7 @@ from app.api.v1.schemas.system.operation_log_schema import OperationLogCreateSch
 from app.api.v1.services.system.operation_log_service import OperationLogService
 from app.core.database import session_connect
 from app.config.setting import settings
+from app.utils.ip_local_util import IpLocalUtil
 
 """
 在 FastAPI 中，route_class 参数用于自定义路由的行为。
@@ -23,6 +25,7 @@ class OperationLogRoute(APIRoute):
         original_route_handler = super().get_route_handler()
 
         async def custom_route_handler(request: Request) -> Response:
+            start_time = time.time()
             # 请求前的处理
             response: Response = await original_route_handler(request)
             
@@ -53,22 +56,31 @@ class OperationLogRoute(APIRoute):
                 payload = str(oper_param)
             
             response_data = response.body if "application/json" in response.headers.get("Content-Type", "") else b"{}"
-            
+            process_time = time.time() - start_time
+
             async with session_connect() as session:
                 async with session.begin():
                     auth = AuthSchema(db=session)
                     # 获取当前用户ID,如果是登录接口则为空
-                    current_user_id = request.scope.get("user_id") if "user_id" in request.scope else None
-
+                    login_location = None
+                    current_user_id = None
+                    if "user_id" in request.scope:
+                        current_user_id = request.scope.get("user_id")
+                    if request.url.path == '/api/v1/system/auth/login':
+                        # 只有登录的才会获取登录地址
+                        login_location = IpLocalUtil.get_ip_location(request.client.host)
+                    
                     await OperationLogService.create_log_service(data=OperationLogCreateSchema(
                         request_path = request.url.path,
                         request_method = request.method,
                         request_payload = payload,
                         request_ip = request.client.host,
+                        login_location=login_location,
                         request_os = user_agent.os.family,
                         request_browser = user_agent.browser.family,
                         response_code = response.status_code,
                         response_json = response_data.decode(),
+                        process_time = process_time,
                         description = route.summary,
                         creator_id = current_user_id
                     ), auth = auth) 

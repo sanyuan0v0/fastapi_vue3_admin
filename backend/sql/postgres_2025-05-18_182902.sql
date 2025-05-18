@@ -1016,10 +1016,12 @@ CREATE TABLE public.system_operation_log (
     request_method character varying(10),
     request_payload text,
     request_ip character varying(50),
+    login_location character varying(255),
     request_os character varying(64),
     request_browser character varying(64),
     response_code integer,
     response_json text,
+    process_time double precision,
     description text,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
@@ -1072,6 +1074,13 @@ COMMENT ON COLUMN public.system_operation_log.request_ip IS '请求IP地址';
 
 
 --
+-- Name: COLUMN system_operation_log.login_location; Type: COMMENT; Schema: public; Owner: tao
+--
+
+COMMENT ON COLUMN public.system_operation_log.login_location IS '登录位置';
+
+
+--
 -- Name: COLUMN system_operation_log.request_os; Type: COMMENT; Schema: public; Owner: tao
 --
 
@@ -1097,6 +1106,13 @@ COMMENT ON COLUMN public.system_operation_log.response_code IS '响应状态码'
 --
 
 COMMENT ON COLUMN public.system_operation_log.response_json IS '响应体';
+
+
+--
+-- Name: COLUMN system_operation_log.process_time; Type: COMMENT; Schema: public; Owner: tao
+--
+
+COMMENT ON COLUMN public.system_operation_log.process_time IS '处理时间';
 
 
 --
@@ -1744,7 +1760,7 @@ ALTER TABLE ONLY public.system_users ALTER COLUMN id SET DEFAULT nextval('public
 --
 
 COPY public.system_config (id, title, favicon, logo, background, copyright, keep_record, help_url, privacy_url, clause_url, code_url, description, created_at, updated_at, creator_id) FROM stdin;
-1	FastAPI Vue Admin	http://localhost:8000/api/v1/static/image/favicon.ico	http://localhost:8000/api/v1/static/image/logo.png	http://localhost:8000/api/v1/static/image/background.png	Copyright © 2021-2025 fastapi-vue-admin.com 版权所有	晋ICP备18005113号-3	https://gitee.com/tao__tao/fastapi_vue3_admin.git	https://gitee.com/tao__tao/fastapi_vue3_admin/blob/master/LICENSE	https://gitee.com/tao__tao/fastapi_vue3_admin/blob/master/LICENSE	https://gitee.com/tao__tao/fastapi_vue3_admin.git	FastAPI Vue Admin 是完全开源的权限管理系统	2025-04-15 19:03:45.917465	2025-04-15 19:03:45.917466	1
+1	FastAPI Vue Admin	http://8.137.99.5:8001/api/v1/static/image/favicon.ico	http://8.137.99.5:8001/api/v1/static/image/logo.png	http://8.137.99.5:8001/api/v1/static/image/background.png	Copyright © 2021-2025 fastapi-vue-admin.com 版权所有	晋ICP备18005113号-3	https://gitee.com/tao__tao/fastapi_vue3_admin.git	https://gitee.com/tao__tao/fastapi_vue3_admin/blob/master/LICENSE	https://gitee.com/tao__tao/fastapi_vue3_admin/blob/master/LICENSE	https://gitee.com/tao__tao/fastapi_vue3_admin.git	FastAPI Vue Admin 是完全开源的权限管理系统	2025-05-18 18:28:07.914297	2025-05-18 18:28:07.914298	1
 \.
 
 
@@ -1753,17 +1769,17 @@ COPY public.system_config (id, title, favicon, logo, background, copyright, keep
 --
 
 COPY public.system_dept (id, name, "order", parent_id, available, description, created_at, updated_at) FROM stdin;
-1	集团总公司	1	\N	t	集团总公司	2025-04-15 19:03:45.888171	2025-04-15 19:03:45.888175
-2	西安分公司	1	1	t	西安分公司	2025-04-15 19:03:45.888175	2025-04-15 19:03:45.888176
-3	深圳分公司	2	1	t	深圳分公司	2025-04-15 19:03:45.888176	2025-04-15 19:03:45.888177
-4	开发组	1	2	t	开发组	2025-04-15 19:03:45.888177	2025-04-15 19:03:45.888177
-5	测试组	2	2	t	测试组	2025-04-15 19:03:45.888178	2025-04-15 19:03:45.888178
-6	演示组	3	2	t	演示组	2025-04-15 19:03:45.888179	2025-04-15 19:03:45.888179
-7	销售部	1	3	t	销售部	2025-04-15 19:03:45.888179	2025-04-15 19:03:45.88818
-8	市场部	2	3	t	市场部	2025-04-15 19:03:45.88818	2025-04-15 19:03:45.88818
-9	财务部	3	3	t	财务部	2025-04-15 19:03:45.888181	2025-04-15 19:03:45.888181
-10	研发部	4	3	t	研发部	2025-04-15 19:03:45.888181	2025-04-15 19:03:45.888182
-11	运维部	5	3	t	研发部	2025-04-15 19:03:45.888182	2025-04-15 19:03:45.888182
+1	集团总公司	1	\N	t	集团总公司	2025-05-18 18:28:07.885848	2025-05-18 18:28:07.885852
+2	西安分公司	1	1	t	西安分公司	2025-05-18 18:28:07.885853	2025-05-18 18:28:07.885853
+3	深圳分公司	2	1	t	深圳分公司	2025-05-18 18:28:07.885854	2025-05-18 18:28:07.885854
+4	开发组	1	2	t	开发组	2025-05-18 18:28:07.885854	2025-05-18 18:28:07.885855
+5	测试组	2	2	t	测试组	2025-05-18 18:28:07.885855	2025-05-18 18:28:07.885855
+6	演示组	3	2	t	演示组	2025-05-18 18:28:07.885856	2025-05-18 18:28:07.885856
+7	销售部	1	3	t	销售部	2025-05-18 18:28:07.885856	2025-05-18 18:28:07.885857
+8	市场部	2	3	t	市场部	2025-05-18 18:28:07.885857	2025-05-18 18:28:07.885857
+9	财务部	3	3	t	财务部	2025-05-18 18:28:07.885858	2025-05-18 18:28:07.885858
+10	研发部	4	3	t	研发部	2025-05-18 18:28:07.885859	2025-05-18 18:28:07.885859
+11	运维部	5	3	t	研发部	2025-05-18 18:28:07.885859	2025-05-18 18:28:07.88586
 \.
 
 
@@ -1772,48 +1788,48 @@ COPY public.system_dept (id, name, "order", parent_id, available, description, c
 --
 
 COPY public.system_dict_data (id, dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, available, description, created_at, updated_at, creator_id) FROM stdin;
-1	1	男	0	sys_user_sex	blue	\N	t	t	性别男	2025-04-15 19:03:45.922912	2025-04-15 19:03:45.922913	1
-2	2	女	1	sys_user_sex	pink	\N	f	t	性别女	2025-04-15 19:03:45.922913	2025-04-15 19:03:45.922914	1
-3	3	未知	2	sys_user_sex	red	\N	f	t	性别未知	2025-04-15 19:03:45.922914	2025-04-15 19:03:45.922915	1
-4	4	显示	0	sys_show_hide	btn btn-success btn-xs	primary	t	t	显示菜单	2025-04-15 19:03:45.922915	2025-04-15 19:03:45.922915	1
-5	2	隐藏	1	sys_show_hide		danger	f	t	隐藏菜单	2025-04-15 19:03:45.922916	2025-04-15 19:03:45.922916	1
-6	1	正常	0	sys_normal_disable		primary	t	t	正常状态	2025-04-15 19:03:45.922917	2025-04-15 19:03:45.922917	1
-7	2	停用	1	sys_normal_disable		danger	f	t	停用状态	2025-04-15 19:03:45.922917	2025-04-15 19:03:45.922918	1
-8	1	正常	0	sys_job_status		primary	t	t	正常状态	2025-04-15 19:03:45.922918	2025-04-15 19:03:45.922918	1
-9	2	暂停	1	sys_job_status		danger	f	t	停用状态	2025-04-15 19:03:45.922919	2025-04-15 19:03:45.922919	1
-10	1	默认(Memory)	default	sys_job_group		\N	t	t	默认分组	2025-04-15 19:03:45.92292	2025-04-15 19:03:45.92292	1
-11	2	数据库	sqlalchemy	sys_job_group		\N	f	t	数据库分组	2025-04-15 19:03:45.92292	2025-04-15 19:03:45.922921	1
-12	3	redis	redis	sys_job_group		\N	f	t	reids分组	2025-04-15 19:03:45.922921	2025-04-15 19:03:45.922921	1
-13	1	默认	default	sys_job_executor		\N	f	t	线程池	2025-04-15 19:03:45.922922	2025-04-15 19:03:45.922922	1
-14	2	进程池	processpool	sys_job_executor		\N	f	t	进程池	2025-04-15 19:03:45.922922	2025-04-15 19:03:45.922923	1
-15	1	是	true	sys_yes_no		primary	t	t	系统默认是	2025-04-15 19:03:45.922923	2025-04-15 19:03:45.922923	1
-16	2	否	false	sys_yes_no		danger	f	t	系统默认否	2025-04-15 19:03:45.922924	2025-04-15 19:03:45.922924	1
-17	1	通知	1	sys_notice_type	blue	warning	t	t	通知	2025-04-15 19:03:45.922924	2025-04-15 19:03:45.922925	1
-18	2	公告	2	sys_notice_type	orange	success	f	t	公告	2025-04-15 19:03:45.922925	2025-04-15 19:03:45.922926	1
-19	1	正常	0	sys_notice_status		primary	t	t	正常状态	2025-04-15 19:03:45.922926	2025-04-15 19:03:45.922926	1
-20	2	关闭	1	sys_notice_status		danger	f	t	关闭状态	2025-04-15 19:03:45.922927	2025-04-15 19:03:45.922927	1
-21	99	其他	0	sys_oper_type		info	f	t	其他操作	2025-04-15 19:03:45.922927	2025-04-15 19:03:45.922928	1
-22	1	新增	1	sys_oper_type		info	f	t	新增操作	2025-04-15 19:03:45.922928	2025-04-15 19:03:45.922928	1
-23	2	修改	2	sys_oper_type		info	f	t	修改操作	2025-04-15 19:03:45.922929	2025-04-15 19:03:45.922929	1
-24	3	删除	3	sys_oper_type		danger	f	t	删除操作	2025-04-15 19:03:45.922929	2025-04-15 19:03:45.92293	1
-25	4	授权	4	sys_oper_type		primary	f	t	授权操作	2025-04-15 19:03:45.92293	2025-04-15 19:03:45.92293	1
-26	5	导出	5	sys_oper_type		warning	f	t	导出操作	2025-04-15 19:03:45.922931	2025-04-15 19:03:45.922931	1
-27	6	导入	6	sys_oper_type		warning	f	t	导入操作	2025-04-15 19:03:45.922932	2025-04-15 19:03:45.922932	1
-28	7	强退	7	sys_oper_type		danger	f	t	强退操作	2025-04-15 19:03:45.922932	2025-04-15 19:03:45.922933	1
-29	8	生成代码	8	sys_oper_type		warning	f	t	生成操作	2025-04-15 19:03:45.922933	2025-04-15 19:03:45.922933	1
-30	9	清空数据	9	sys_oper_type		danger	f	t	清空操作	2025-04-15 19:03:45.922934	2025-04-15 19:03:45.922934	1
-31	1	成功	0	sys_common_status		primary	f	t	正常状态	2025-04-15 19:03:45.922934	2025-04-15 19:03:45.922935	1
-32	2	失败	1	sys_common_status		danger	f	t	停用状态	2025-04-15 19:03:45.922935	2025-04-15 19:03:45.922935	1
-33	1	初始化演示函数	scheduler_test.job	sys_job_function		\N	t	t	演示函数	2025-04-15 19:03:45.922936	2025-04-15 19:03:45.922936	1
-34	1	指定日期(date)	date	sys_job_trigger		\N	t	t	指定日期任务触发器	2025-04-15 19:03:45.922936	2025-04-15 19:03:45.922937	1
-35	2	间隔触发器(interval)	interval	sys_job_trigger		\N	f	t	间隔触发器任务触发器	2025-04-15 19:03:45.922937	2025-04-15 19:03:45.922937	1
-36	3	cron表达式	cron	sys_job_trigger		\N	f	t	间隔触发器任务触发器	2025-04-15 19:03:45.922938	2025-04-15 19:03:45.922938	1
-37	1	默认(default)	default	sys_dictdata_list_class		\N	t	t	默认表格回显样式	2025-04-15 19:03:45.922938	2025-04-15 19:03:45.922939	1
-38	2	主要(primary)	primary	sys_dictdata_list_class		\N	f	t	主要表格回显样式	2025-04-15 19:03:45.922939	2025-04-15 19:03:45.92294	1
-39	3	成功(success)	success	sys_dictdata_list_class		\N	f	t	成功表格回显样式	2025-04-15 19:03:45.92294	2025-04-15 19:03:45.92294	1
-40	4	信息(info)	info	sys_dictdata_list_class		\N	f	t	信息表格回显样式	2025-04-15 19:03:45.922941	2025-04-15 19:03:45.922941	1
-41	5	警告(warning)	warning	sys_dictdata_list_class		\N	f	t	警告表格回显样式	2025-04-15 19:03:45.922941	2025-04-15 19:03:45.922942	1
-42	6	危险(danger)	danger	sys_dictdata_list_class		\N	f	t	危险表格回显样式	2025-04-15 19:03:45.922942	2025-04-15 19:03:45.922942	1
+1	1	男	0	sys_user_sex	blue	\N	t	t	性别男	2025-05-18 18:28:07.919332	2025-05-18 18:28:07.919333	1
+2	2	女	1	sys_user_sex	pink	\N	f	t	性别女	2025-05-18 18:28:07.919333	2025-05-18 18:28:07.919333	1
+3	3	未知	2	sys_user_sex	red	\N	f	t	性别未知	2025-05-18 18:28:07.919334	2025-05-18 18:28:07.919334	1
+4	4	显示	0	sys_show_hide	btn btn-success btn-xs	primary	t	t	显示菜单	2025-05-18 18:28:07.919335	2025-05-18 18:28:07.919335	1
+5	2	隐藏	1	sys_show_hide		danger	f	t	隐藏菜单	2025-05-18 18:28:07.919335	2025-05-18 18:28:07.919336	1
+6	1	正常	0	sys_normal_disable		primary	t	t	正常状态	2025-05-18 18:28:07.919336	2025-05-18 18:28:07.919336	1
+7	2	停用	1	sys_normal_disable		danger	f	t	停用状态	2025-05-18 18:28:07.919337	2025-05-18 18:28:07.919337	1
+8	1	正常	0	sys_job_status		primary	t	t	正常状态	2025-05-18 18:28:07.919337	2025-05-18 18:28:07.919337	1
+9	2	暂停	1	sys_job_status		danger	f	t	停用状态	2025-05-18 18:28:07.919338	2025-05-18 18:28:07.919338	1
+10	1	默认(Memory)	default	sys_job_group		\N	t	t	默认分组	2025-05-18 18:28:07.919338	2025-05-18 18:28:07.919339	1
+11	2	数据库	sqlalchemy	sys_job_group		\N	f	t	数据库分组	2025-05-18 18:28:07.919339	2025-05-18 18:28:07.919339	1
+12	3	redis	redis	sys_job_group		\N	f	t	reids分组	2025-05-18 18:28:07.91934	2025-05-18 18:28:07.91934	1
+13	1	默认	default	sys_job_executor		\N	f	t	线程池	2025-05-18 18:28:07.91934	2025-05-18 18:28:07.919341	1
+14	2	进程池	processpool	sys_job_executor		\N	f	t	进程池	2025-05-18 18:28:07.919341	2025-05-18 18:28:07.919341	1
+15	1	是	true	sys_yes_no		primary	t	t	系统默认是	2025-05-18 18:28:07.919342	2025-05-18 18:28:07.919342	1
+16	2	否	false	sys_yes_no		danger	f	t	系统默认否	2025-05-18 18:28:07.919342	2025-05-18 18:28:07.919343	1
+17	1	通知	1	sys_notice_type	blue	warning	t	t	通知	2025-05-18 18:28:07.919343	2025-05-18 18:28:07.919343	1
+18	2	公告	2	sys_notice_type	orange	success	f	t	公告	2025-05-18 18:28:07.919344	2025-05-18 18:28:07.919344	1
+19	1	正常	0	sys_notice_status		primary	t	t	正常状态	2025-05-18 18:28:07.919344	2025-05-18 18:28:07.919345	1
+20	2	关闭	1	sys_notice_status		danger	f	t	关闭状态	2025-05-18 18:28:07.919345	2025-05-18 18:28:07.919345	1
+21	99	其他	0	sys_oper_type		info	f	t	其他操作	2025-05-18 18:28:07.919346	2025-05-18 18:28:07.919346	1
+22	1	新增	1	sys_oper_type		info	f	t	新增操作	2025-05-18 18:28:07.919346	2025-05-18 18:28:07.919347	1
+23	2	修改	2	sys_oper_type		info	f	t	修改操作	2025-05-18 18:28:07.919347	2025-05-18 18:28:07.919347	1
+24	3	删除	3	sys_oper_type		danger	f	t	删除操作	2025-05-18 18:28:07.919348	2025-05-18 18:28:07.919348	1
+25	4	授权	4	sys_oper_type		primary	f	t	授权操作	2025-05-18 18:28:07.919348	2025-05-18 18:28:07.919349	1
+26	5	导出	5	sys_oper_type		warning	f	t	导出操作	2025-05-18 18:28:07.919349	2025-05-18 18:28:07.919349	1
+27	6	导入	6	sys_oper_type		warning	f	t	导入操作	2025-05-18 18:28:07.91935	2025-05-18 18:28:07.91935	1
+28	7	强退	7	sys_oper_type		danger	f	t	强退操作	2025-05-18 18:28:07.91935	2025-05-18 18:28:07.91935	1
+29	8	生成代码	8	sys_oper_type		warning	f	t	生成操作	2025-05-18 18:28:07.919351	2025-05-18 18:28:07.919351	1
+30	9	清空数据	9	sys_oper_type		danger	f	t	清空操作	2025-05-18 18:28:07.919351	2025-05-18 18:28:07.919352	1
+31	1	成功	0	sys_common_status		primary	f	t	正常状态	2025-05-18 18:28:07.919352	2025-05-18 18:28:07.919352	1
+32	2	失败	1	sys_common_status		danger	f	t	停用状态	2025-05-18 18:28:07.919353	2025-05-18 18:28:07.919353	1
+33	1	初始化演示函数	scheduler_test.job	sys_job_function		\N	t	t	演示函数	2025-05-18 18:28:07.919353	2025-05-18 18:28:07.919354	1
+34	1	指定日期(date)	date	sys_job_trigger		\N	t	t	指定日期任务触发器	2025-05-18 18:28:07.919354	2025-05-18 18:28:07.919354	1
+35	2	间隔触发器(interval)	interval	sys_job_trigger		\N	f	t	间隔触发器任务触发器	2025-05-18 18:28:07.919355	2025-05-18 18:28:07.919355	1
+36	3	cron表达式	cron	sys_job_trigger		\N	f	t	间隔触发器任务触发器	2025-05-18 18:28:07.919355	2025-05-18 18:28:07.919356	1
+37	1	默认(default)	default	sys_dictdata_list_class		\N	t	t	默认表格回显样式	2025-05-18 18:28:07.919356	2025-05-18 18:28:07.919356	1
+38	2	主要(primary)	primary	sys_dictdata_list_class		\N	f	t	主要表格回显样式	2025-05-18 18:28:07.919357	2025-05-18 18:28:07.919357	1
+39	3	成功(success)	success	sys_dictdata_list_class		\N	f	t	成功表格回显样式	2025-05-18 18:28:07.919357	2025-05-18 18:28:07.919358	1
+40	4	信息(info)	info	sys_dictdata_list_class		\N	f	t	信息表格回显样式	2025-05-18 18:28:07.919358	2025-05-18 18:28:07.919358	1
+41	5	警告(warning)	warning	sys_dictdata_list_class		\N	f	t	警告表格回显样式	2025-05-18 18:28:07.919358	2025-05-18 18:28:07.919359	1
+42	6	危险(danger)	danger	sys_dictdata_list_class		\N	f	t	危险表格回显样式	2025-05-18 18:28:07.919359	2025-05-18 18:28:07.919359	1
 \.
 
 
@@ -1822,20 +1838,20 @@ COPY public.system_dict_data (id, dict_sort, dict_label, dict_value, dict_type, 
 --
 
 COPY public.system_dict_type (id, dict_name, dict_type, available, description, created_at, updated_at, creator_id) FROM stdin;
-1	用户性别	sys_user_sex	t	用户性别列表	2025-04-15 19:03:45.919629	2025-04-15 19:03:45.91963	1
-2	菜单状态	sys_show_hide	t	菜单状态列表	2025-04-15 19:03:45.91963	2025-04-15 19:03:45.919631	1
-3	系统开关	sys_normal_disable	t	系统开关列表	2025-04-15 19:03:45.919631	2025-04-15 19:03:45.919632	1
-4	任务状态	sys_job_status	t	任务状态列表	2025-04-15 19:03:45.919632	2025-04-15 19:03:45.919632	1
-5	任务分组	sys_job_group	t	任务分组列表	2025-04-15 19:03:45.919633	2025-04-15 19:03:45.919633	1
-6	任务执行器	sys_job_executor	t	任务执行器列表	2025-04-15 19:03:45.919634	2025-04-15 19:03:45.919634	1
-7	系统是否	sys_yes_no	t	系统是否列表	2025-04-15 19:03:45.919634	2025-04-15 19:03:45.919635	1
-8	通知类型	sys_notice_type	t	通知类型列表	2025-04-15 19:03:45.919635	2025-04-15 19:03:45.919636	1
-9	通知状态	sys_notice_status	t	通知状态列表	2025-04-15 19:03:45.919636	2025-04-15 19:03:45.919636	1
-10	操作类型	sys_oper_type	t	操作类型列表	2025-04-15 19:03:45.919637	2025-04-15 19:03:45.919637	1
-11	系统状态	sys_common_status	t	登录状态列表	2025-04-15 19:03:45.919637	2025-04-15 19:03:45.919638	1
-12	任务函数	sys_job_function	t	任务函数列表	2025-04-15 19:03:45.919638	2025-04-15 19:03:45.919638	1
-13	任务触发器	sys_job_trigger	t	任务触发器列表	2025-04-15 19:03:45.919639	2025-04-15 19:03:45.919639	1
-14	字典配置表格回显样式	sys_dictdata_list_class	t	字典配置表格回显样式列表	2025-04-15 19:03:45.91964	2025-04-15 19:03:45.91964	1
+1	用户性别	sys_user_sex	t	用户性别列表	2025-05-18 18:28:07.916168	2025-05-18 18:28:07.916169	1
+2	菜单状态	sys_show_hide	t	菜单状态列表	2025-05-18 18:28:07.916169	2025-05-18 18:28:07.91617	1
+3	系统开关	sys_normal_disable	t	系统开关列表	2025-05-18 18:28:07.91617	2025-05-18 18:28:07.91617	1
+4	任务状态	sys_job_status	t	任务状态列表	2025-05-18 18:28:07.916171	2025-05-18 18:28:07.916171	1
+5	任务分组	sys_job_group	t	任务分组列表	2025-05-18 18:28:07.916171	2025-05-18 18:28:07.916172	1
+6	任务执行器	sys_job_executor	t	任务执行器列表	2025-05-18 18:28:07.916172	2025-05-18 18:28:07.916172	1
+7	系统是否	sys_yes_no	t	系统是否列表	2025-05-18 18:28:07.916173	2025-05-18 18:28:07.916173	1
+8	通知类型	sys_notice_type	t	通知类型列表	2025-05-18 18:28:07.916173	2025-05-18 18:28:07.916174	1
+9	通知状态	sys_notice_status	t	通知状态列表	2025-05-18 18:28:07.916174	2025-05-18 18:28:07.916174	1
+10	操作类型	sys_oper_type	t	操作类型列表	2025-05-18 18:28:07.916175	2025-05-18 18:28:07.916175	1
+11	系统状态	sys_common_status	t	登录状态列表	2025-05-18 18:28:07.916175	2025-05-18 18:28:07.916175	1
+12	任务函数	sys_job_function	t	任务函数列表	2025-05-18 18:28:07.916176	2025-05-18 18:28:07.916176	1
+13	任务触发器	sys_job_trigger	t	任务触发器列表	2025-05-18 18:28:07.916176	2025-05-18 18:28:07.916177	1
+14	字典配置表格回显样式	sys_dictdata_list_class	t	字典配置表格回显样式列表	2025-05-18 18:28:07.916177	2025-05-18 18:28:07.916177	1
 \.
 
 
@@ -1844,9 +1860,9 @@ COPY public.system_dict_type (id, dict_name, dict_type, available, description, 
 --
 
 COPY public.system_job (id, name, jobstore, executor, trigger, trigger_args, func, args, kwargs, "coalesce", max_instances, start_date, end_date, status, message, description, created_at, updated_at, creator_id) FROM stdin;
-1	系统默认（无参）	default	default	cron	0 0 12 * * ?	scheduler_test.job	\N	\N	f	1	\N	\N	f	\N	\N	2025-04-15 19:03:45.925718	2025-04-15 19:03:45.925719	1
-2	系统默认（有参）	default	default	cron	0 0 12 * * ?	scheduler_test.job	test	\N	f	1	\N	\N	f	\N	\N	2025-04-15 19:03:45.92572	2025-04-15 19:03:45.92572	1
-3	系统默认（多参）	default	default	cron	0 0 12 * * ?	scheduler_test.job	new	{"test": 111}	f	1	\N	\N	f	\N	\N	2025-04-15 19:03:45.92572	2025-04-15 19:03:45.925721	1
+1	系统默认（无参）	default	default	cron	0 0 12 * * ?	scheduler_test.job	\N	\N	f	1	\N	\N	f	\N	\N	2025-05-18 18:28:07.921962	2025-05-18 18:28:07.921963	1
+2	系统默认（有参）	default	default	cron	0 0 12 * * ?	scheduler_test.job	test	\N	f	1	\N	\N	f	\N	\N	2025-05-18 18:28:07.921963	2025-05-18 18:28:07.921963	1
+3	系统默认（多参）	default	default	cron	0 0 12 * * ?	scheduler_test.job	new	{"test": 111}	f	1	\N	\N	f	\N	\N	2025-05-18 18:28:07.921964	2025-05-18 18:28:07.921964	1
 \.
 
 
@@ -1855,79 +1871,79 @@ COPY public.system_job (id, name, jobstore, executor, trigger, trigger_args, fun
 --
 
 COPY public.system_menu (id, name, type, "order", permission, available, icon, route_name, route_path, component_path, redirect, hidden, cache, parent_id, description, created_at, updated_at) FROM stdin;
-1	仪表盘	1	1		t	DashboardOutlined	Dashboard	/dashboard	\N	/dashboard/workplace	f	t	\N	初始化数据	2025-04-15 19:03:45.894563	2025-04-15 19:03:45.894565
-2	系统管理	1	2	\N	t	SettingOutlined	System	/system	\N	/system/menu	f	t	\N	初始化数据	2025-04-15 19:03:45.894566	2025-04-15 19:03:45.894566
-3	菜单管理	2	1	system:menu:query	t	\N	Menu	/system/menu	system/menu/index	\N	f	t	2	初始化数据	2025-04-15 19:03:45.894567	2025-04-15 19:03:45.894567
-4	部门管理	2	2	system:dept:query	t	\N	Dept	/system/dept	system/dept/index	\N	f	t	2	初始化数据	2025-04-15 19:03:45.894568	2025-04-15 19:03:45.894568
-5	岗位管理	2	3	system:position:query	t	\N	Position	/system/position	system/position/index	\N	f	t	2	初始化数据	2025-04-15 19:03:45.894568	2025-04-15 19:03:45.894569
-6	角色管理	2	4	system:role:query	t	\N	Role	/system/role	system/role/index	\N	f	t	2	初始化数据	2025-04-15 19:03:45.894569	2025-04-15 19:03:45.894569
-7	用户管理	2	5	system:user:query	t	\N	User	/system/user	system/user/index	\N	f	t	2	初始化数据	2025-04-15 19:03:45.89457	2025-04-15 19:03:45.89457
-8	日志管理	2	6	system:log:query	t	\N	Log	/system/log	system/log/index	\N	f	t	2	初始化数据	2025-04-15 19:03:45.894571	2025-04-15 19:03:45.894571
-9	创建菜单	3	1	system:menu:create	t	\N	\N	\N	\N	\N	f	t	3	初始化数据	2025-04-15 19:03:45.894572	2025-04-15 19:03:45.894572
-10	修改菜单	3	2	system:menu:update	t	\N	\N	\N	\N	\N	f	t	3	初始化数据	2025-04-15 19:03:45.894572	2025-04-15 19:03:45.894573
-11	删除菜单	3	3	system:menu:delete	t	\N	\N	\N	\N	\N	f	t	3	初始化数据	2025-04-15 19:03:45.894573	2025-04-15 19:03:45.894573
-12	批量修改菜单状态	3	4	system:menu:patch	t	\N	\N	\N	\N	\N	f	t	3	初始化数据	2025-04-15 19:03:45.894574	2025-04-15 19:03:45.894574
-13	创建部门	3	1	system:dept:create	t	\N	\N	\N	\N	\N	f	t	4	初始化数据	2025-04-15 19:03:45.894575	2025-04-15 19:03:45.894575
-14	修改部门	3	2	system:dept:update	t	\N	\N	\N	\N	\N	f	t	4	初始化数据	2025-04-15 19:03:45.894575	2025-04-15 19:03:45.894576
-15	删除部门	3	3	system:dept:delete	t	\N	\N	\N	\N	\N	f	t	4	初始化数据	2025-04-15 19:03:45.894576	2025-04-15 19:03:45.894576
-16	批量修改部门状态	3	4	system:dept:patch	t	\N	\N	\N	\N	\N	f	t	4	初始化数据	2025-04-15 19:03:45.894577	2025-04-15 19:03:45.894577
-17	创建岗位	3	1	system:position:create	t	\N	\N	\N	\N	\N	f	t	5	初始化数据	2025-04-15 19:03:45.894577	2025-04-15 19:03:45.894578
-18	修改岗位	3	2	system:position:update	t	\N	\N	\N	\N	\N	f	t	5	初始化数据	2025-04-15 19:03:45.894578	2025-04-15 19:03:45.894578
-19	删除岗位	3	3	system:position:delete	t	\N	\N	\N	\N	\N	f	t	5	初始化数据	2025-04-15 19:03:45.894579	2025-04-15 19:03:45.894579
-20	批量修改岗位状态	3	4	system:position:patch	t	\N	\N	\N	\N	\N	f	t	5	初始化数据	2025-04-15 19:03:45.89458	2025-04-15 19:03:45.89458
-21	岗位导出	3	5	system:position:export	t	\N	\N	\N	\N	\N	f	t	5	初始化数据	2025-04-15 19:03:45.89458	2025-04-15 19:03:45.894581
-22	创建角色	3	1	system:role:create	t	\N	\N	\N	\N	\N	f	t	6	初始化数据	2025-04-15 19:03:45.894581	2025-04-15 19:03:45.894581
-23	修改角色	3	2	system:role:update	t	\N	\N	\N	\N	\N	f	t	6	初始化数据	2025-04-15 19:03:45.894582	2025-04-15 19:03:45.894582
-24	删除角色	3	3	system:role:delete	t	\N	\N	\N	\N	\N	f	t	6	初始化数据	2025-04-15 19:03:45.894582	2025-04-15 19:03:45.894583
-25	批量修改角色状态	3	4	system:role:patch	t	\N	\N	\N	\N	\N	f	t	6	初始化数据	2025-04-15 19:03:45.894583	2025-04-15 19:03:45.894583
-26	设置角色权限	3	5	system:role:permission	t	\N	\N	\N	\N	\N	f	t	6	初始化数据	2025-04-15 19:03:45.894584	2025-04-15 19:03:45.894584
-27	角色导出	3	6	system:role:export	t	\N	\N	\N	\N	\N	f	t	6	初始化数据	2025-04-15 19:03:45.894585	2025-04-15 19:03:45.894585
-28	创建用户	3	1	system:user:create	t	\N	\N	\N	\N	\N	f	t	7	初始化数据	2025-04-15 19:03:45.894585	2025-04-15 19:03:45.894586
-29	修改用户	3	2	system:user:update	t	\N	\N	\N	\N	\N	f	t	7	初始化数据	2025-04-15 19:03:45.894586	2025-04-15 19:03:45.894586
-30	删除用户	3	3	system:user:delete	t	\N	\N	\N	\N	\N	f	t	7	初始化数据	2025-04-15 19:03:45.894587	2025-04-15 19:03:45.894587
-31	批量修改用户状态	3	4	system:user:patch	t	\N	\N	\N	\N	\N	f	t	7	初始化数据	2025-04-15 19:03:45.894588	2025-04-15 19:03:45.894588
-32	导出用户	3	5	system:user:export	t	\N	\N	\N	\N	\N	f	t	7	初始化数据	2025-04-15 19:03:45.894588	2025-04-15 19:03:45.894589
-33	导入用户	3	6	system:user:import	t	\N	\N	\N	\N	\N	f	t	7	初始化数据	2025-04-15 19:03:45.894589	2025-04-15 19:03:45.894589
-34	日志删除	3	1	system:operation_log:delete	t	\N	\N	\N	\N	\N	f	t	8	初始化数据	2025-04-15 19:03:45.89459	2025-04-15 19:03:45.89459
-35	日志导出	3	2	system:operation_log:export	t	\N	\N	\N	\N	\N	f	t	8	初始化数据	2025-04-15 19:03:45.89459	2025-04-15 19:03:45.894591
-36	监控管理	1	3	\N	t	MonitorOutlined	Monitor	/monitor	\N	/monitor/online	f	t	\N	初始化数据	2025-04-15 19:03:45.894591	2025-04-15 19:03:45.894591
-37	在线用户	2	1	monitor:online:query	t	\N	MonitorOnline	/monitor/online	monitor/online/index	\N	f	t	36	初始化数据	2025-04-15 19:03:45.894592	2025-04-15 19:03:45.894592
-38	在线用户强制下线	3	1	monitor:online:delete	t	\N	\N	\N	\N	\N	f	t	37	初始化数据	2025-04-15 19:03:45.894592	2025-04-15 19:03:45.894593
-39	服务器监控	2	2	monitor:server:query	t	\N	MonitorServer	/monitor/server	monitor/server/index	\N	f	t	36	初始化数据	2025-04-15 19:03:45.894593	2025-04-15 19:03:45.894593
-40	缓存监控	2	3	monitor:cache:query	t	\N	MonitorCache	/monitor/cache	monitor/cache/index	\N	f	t	36	初始化数据	2025-04-15 19:03:45.894594	2025-04-15 19:03:45.894594
-41	清除缓存	3	1	monitor:cache:delete	t	\N	\N	\N	\N	\N	f	t	40	初始化数据	2025-04-15 19:03:45.894595	2025-04-15 19:03:45.894595
-42	公共模块	1	4	\N	t	ApiOutlined	Common	/common	\N	/common/docs	f	t	\N	初始化数据	2025-04-15 19:03:45.894595	2025-04-15 19:03:45.894596
-43	接口管理	2	1	common:docs:query	t	\N	Docs	/common/docs	common/docs/index	\N	f	t	42	初始化数据	2025-04-15 19:03:45.894596	2025-04-15 19:03:45.894596
-44	文档管理	2	2	common:redoc:query	t	\N	Redoc	/common/redoc	common/redoc/index	\N	f	t	42	初始化数据	2025-04-15 19:03:45.894597	2025-04-15 19:03:45.894597
-45	公告管理	2	7	system:notice:query	t	\N	Notice	/system/notice	system/notice/index	\N	f	t	2	初始化数据	2025-04-15 19:03:45.894597	2025-04-15 19:03:45.894598
-46	公告创建	3	1	system:notice:create	t	\N	\N	\N	\N	\N	f	t	45	初始化数据	2025-04-15 19:03:45.894598	2025-04-15 19:03:45.894598
-47	公告修改	3	2	system:notice:update	t	\N	\N	\N	\N	\N	f	t	45	初始化数据	2025-04-15 19:03:45.894599	2025-04-15 19:03:45.894599
-48	公告删除	3	3	system:notice:delete	t	\N	\N	\N	\N	\N	f	t	45	初始化数据	2025-04-15 19:03:45.8946	2025-04-15 19:03:45.8946
-49	公告导出	3	4	system:notice:export	t	\N	\N	\N	\N	\N	f	t	45	初始化数据	2025-04-15 19:03:45.8946	2025-04-15 19:03:45.894601
-50	公告批量修改状态	3	5	system:notice:patch	t	\N	\N	\N	\N	\N	f	t	45	初始化数据	2025-04-15 19:03:45.894601	2025-04-15 19:03:45.894601
-51	配置管理	2	8	system:config:query	t	\N	Config	/system/config	system/config/index	\N	f	t	2	初始化数据	2025-04-15 19:03:45.894602	2025-04-15 19:03:45.894602
-52	创建配置	3	1	system:config:create	t	\N	\N	\N	\N	\N	f	t	51	初始化数据	2025-04-15 19:03:45.894602	2025-04-15 19:03:45.894603
-53	修改配置	3	2	system:config:update	t	\N	\N	\N	\N	\N	f	t	51	初始化数据	2025-04-15 19:03:45.894603	2025-04-15 19:03:45.894603
-54	删除配置	3	3	system:config:delete	t	\N	\N	\N	\N	\N	f	t	51	初始化数据	2025-04-15 19:03:45.894604	2025-04-15 19:03:45.894604
-55	批量更新配置	3	4	system:config:update	t	\N	\N	\N	\N	\N	f	t	51	初始化数据	2025-04-15 19:03:45.894604	2025-04-15 19:03:45.894605
-56	文件上传	3	5	system:config:upload	t	\N	\N	\N	\N	\N	f	t	51	初始化数据	2025-04-15 19:03:45.894605	2025-04-15 19:03:45.894605
-57	字典管理	2	9	system:dict_type:query	t	\N	Dict	/system/dict	system/dict/index	\N	f	t	2	初始化数据	2025-04-15 19:03:45.894606	2025-04-15 19:03:45.894606
-58	创建字典类型	3	1	system:dict_type:create	t	\N	\N	\N	\N	\N	f	t	57	初始化数据	2025-04-15 19:03:45.894606	2025-04-15 19:03:45.894607
-59	修改字典类型	3	2	system:dict_type:update	t	\N	\N	\N	\N	\N	f	t	57	初始化数据	2025-04-15 19:03:45.894607	2025-04-15 19:03:45.894607
-60	删除字典类型	3	3	system:dict_type:delete	t	\N	\N	\N	\N	\N	f	t	57	初始化数据	2025-04-15 19:03:45.894608	2025-04-15 19:03:45.894608
-61	导出字典类型	3	4	system:dict_type:export	t	\N	\N	\N	\N	\N	f	t	57	初始化数据	2025-04-15 19:03:45.894609	2025-04-15 19:03:45.894609
-62	字典数据	2	10	system:dict_data:query	t	\N	DictData	/system/dict_data	system/dict/data	\N	t	t	2	初始化数据	2025-04-15 19:03:45.894609	2025-04-15 19:03:45.89461
-63	创建字典数据	3	1	system:dict_data:create	t	\N	\N	\N	\N	\N	f	t	62	初始化数据	2025-04-15 19:03:45.89461	2025-04-15 19:03:45.89461
-64	修改字典数据	3	2	system:dict_data:update	t	\N	\N	\N	\N	\N	f	t	62	初始化数据	2025-04-15 19:03:45.894611	2025-04-15 19:03:45.894611
-65	删除字典数据	3	3	system:dict_data:delete	t	\N	\N	\N	\N	\N	f	t	62	初始化数据	2025-04-15 19:03:45.894611	2025-04-15 19:03:45.894612
-66	导出字典数据	3	4	system:dict_data:export	t	\N	\N	\N	\N	\N	f	t	62	初始化数据	2025-04-15 19:03:45.894612	2025-04-15 19:03:45.894612
-67	任务管理	2	11	system:job:query	t	\N	Job	/system/job	system/job/index	\N	f	t	2	初始化数据	2025-04-15 19:03:45.894613	2025-04-15 19:03:45.894613
-68	创建任务	3	1	system:job:create	t	\N	\N	\N	\N	\N	f	t	67	初始化数据	2025-04-15 19:03:45.894614	2025-04-15 19:03:45.894614
-69	修改和操作任务	3	2	system:job:update	t	\N	\N	\N	\N	\N	f	t	67	初始化数据	2025-04-15 19:03:45.894614	2025-04-15 19:03:45.894615
-70	删除和清除任务	3	3	system:job:delete	t	\N	\N	\N	\N	\N	f	t	67	初始化数据	2025-04-15 19:03:45.894615	2025-04-15 19:03:45.894615
-71	导出定时任务	3	4	system:job:export	t	\N	\N	\N	\N	\N	f	t	67	初始化数据	2025-04-15 19:03:45.894616	2025-04-15 19:03:45.894616
-72	工作台	2	1	dashboard:workplace:query	t		Workplace	/dashboard/workplace	dashboard/workplace	\N	f	t	1	初始化数据	2025-04-15 19:03:45.894616	2025-04-15 19:03:45.894617
-73	分析页	2	2	dashboard:analysis:query	t		Analysis	/dashboard/analysis	dashboard/analysis	\N	f	t	1	初始化数据	2025-04-15 19:03:45.894618	2025-04-15 19:03:45.894619
+1	仪表盘	1	1		t	DashboardOutlined	Dashboard	/dashboard	\N	/dashboard/workplace	f	t	\N	初始化数据	2025-05-18 18:28:07.892792	2025-05-18 18:28:07.892796
+2	系统管理	1	2	\N	t	SettingOutlined	System	/system	\N	/system/menu	f	t	\N	初始化数据	2025-05-18 18:28:07.892797	2025-05-18 18:28:07.892797
+3	菜单管理	2	1	system:menu:query	t	\N	Menu	/system/menu	system/menu/index	\N	f	t	2	初始化数据	2025-05-18 18:28:07.892798	2025-05-18 18:28:07.892798
+4	部门管理	2	2	system:dept:query	t	\N	Dept	/system/dept	system/dept/index	\N	f	t	2	初始化数据	2025-05-18 18:28:07.892798	2025-05-18 18:28:07.892799
+5	岗位管理	2	3	system:position:query	t	\N	Position	/system/position	system/position/index	\N	f	t	2	初始化数据	2025-05-18 18:28:07.892799	2025-05-18 18:28:07.892799
+6	角色管理	2	4	system:role:query	t	\N	Role	/system/role	system/role/index	\N	f	t	2	初始化数据	2025-05-18 18:28:07.8928	2025-05-18 18:28:07.8928
+7	用户管理	2	5	system:user:query	t	\N	User	/system/user	system/user/index	\N	f	t	2	初始化数据	2025-05-18 18:28:07.892801	2025-05-18 18:28:07.892801
+8	日志管理	2	6	system:log:query	t	\N	Log	/system/log	system/log/index	\N	f	t	2	初始化数据	2025-05-18 18:28:07.892801	2025-05-18 18:28:07.892802
+9	创建菜单	3	1	system:menu:create	t	\N	\N	\N	\N	\N	f	t	3	初始化数据	2025-05-18 18:28:07.892802	2025-05-18 18:28:07.892802
+10	修改菜单	3	2	system:menu:update	t	\N	\N	\N	\N	\N	f	t	3	初始化数据	2025-05-18 18:28:07.892803	2025-05-18 18:28:07.892803
+11	删除菜单	3	3	system:menu:delete	t	\N	\N	\N	\N	\N	f	t	3	初始化数据	2025-05-18 18:28:07.892803	2025-05-18 18:28:07.892804
+12	批量修改菜单状态	3	4	system:menu:patch	t	\N	\N	\N	\N	\N	f	t	3	初始化数据	2025-05-18 18:28:07.892804	2025-05-18 18:28:07.892804
+13	创建部门	3	1	system:dept:create	t	\N	\N	\N	\N	\N	f	t	4	初始化数据	2025-05-18 18:28:07.892805	2025-05-18 18:28:07.892805
+14	修改部门	3	2	system:dept:update	t	\N	\N	\N	\N	\N	f	t	4	初始化数据	2025-05-18 18:28:07.892806	2025-05-18 18:28:07.892806
+15	删除部门	3	3	system:dept:delete	t	\N	\N	\N	\N	\N	f	t	4	初始化数据	2025-05-18 18:28:07.892806	2025-05-18 18:28:07.892807
+16	批量修改部门状态	3	4	system:dept:patch	t	\N	\N	\N	\N	\N	f	t	4	初始化数据	2025-05-18 18:28:07.892807	2025-05-18 18:28:07.892807
+17	创建岗位	3	1	system:position:create	t	\N	\N	\N	\N	\N	f	t	5	初始化数据	2025-05-18 18:28:07.892808	2025-05-18 18:28:07.892808
+18	修改岗位	3	2	system:position:update	t	\N	\N	\N	\N	\N	f	t	5	初始化数据	2025-05-18 18:28:07.892808	2025-05-18 18:28:07.892809
+19	删除岗位	3	3	system:position:delete	t	\N	\N	\N	\N	\N	f	t	5	初始化数据	2025-05-18 18:28:07.892809	2025-05-18 18:28:07.89281
+20	批量修改岗位状态	3	4	system:position:patch	t	\N	\N	\N	\N	\N	f	t	5	初始化数据	2025-05-18 18:28:07.89281	2025-05-18 18:28:07.89281
+21	岗位导出	3	5	system:position:export	t	\N	\N	\N	\N	\N	f	t	5	初始化数据	2025-05-18 18:28:07.892811	2025-05-18 18:28:07.892811
+22	创建角色	3	1	system:role:create	t	\N	\N	\N	\N	\N	f	t	6	初始化数据	2025-05-18 18:28:07.892811	2025-05-18 18:28:07.892812
+23	修改角色	3	2	system:role:update	t	\N	\N	\N	\N	\N	f	t	6	初始化数据	2025-05-18 18:28:07.892812	2025-05-18 18:28:07.892812
+24	删除角色	3	3	system:role:delete	t	\N	\N	\N	\N	\N	f	t	6	初始化数据	2025-05-18 18:28:07.892813	2025-05-18 18:28:07.892813
+25	批量修改角色状态	3	4	system:role:patch	t	\N	\N	\N	\N	\N	f	t	6	初始化数据	2025-05-18 18:28:07.892813	2025-05-18 18:28:07.892814
+26	设置角色权限	3	5	system:role:permission	t	\N	\N	\N	\N	\N	f	t	6	初始化数据	2025-05-18 18:28:07.892814	2025-05-18 18:28:07.892814
+27	角色导出	3	6	system:role:export	t	\N	\N	\N	\N	\N	f	t	6	初始化数据	2025-05-18 18:28:07.892815	2025-05-18 18:28:07.892815
+28	创建用户	3	1	system:user:create	t	\N	\N	\N	\N	\N	f	t	7	初始化数据	2025-05-18 18:28:07.892816	2025-05-18 18:28:07.892816
+29	修改用户	3	2	system:user:update	t	\N	\N	\N	\N	\N	f	t	7	初始化数据	2025-05-18 18:28:07.892816	2025-05-18 18:28:07.892817
+30	删除用户	3	3	system:user:delete	t	\N	\N	\N	\N	\N	f	t	7	初始化数据	2025-05-18 18:28:07.892817	2025-05-18 18:28:07.892817
+31	批量修改用户状态	3	4	system:user:patch	t	\N	\N	\N	\N	\N	f	t	7	初始化数据	2025-05-18 18:28:07.892818	2025-05-18 18:28:07.892818
+32	导出用户	3	5	system:user:export	t	\N	\N	\N	\N	\N	f	t	7	初始化数据	2025-05-18 18:28:07.892818	2025-05-18 18:28:07.892819
+33	导入用户	3	6	system:user:import	t	\N	\N	\N	\N	\N	f	t	7	初始化数据	2025-05-18 18:28:07.892819	2025-05-18 18:28:07.892819
+34	日志删除	3	1	system:operation_log:delete	t	\N	\N	\N	\N	\N	f	t	8	初始化数据	2025-05-18 18:28:07.89282	2025-05-18 18:28:07.89282
+35	日志导出	3	2	system:operation_log:export	t	\N	\N	\N	\N	\N	f	t	8	初始化数据	2025-05-18 18:28:07.892821	2025-05-18 18:28:07.892821
+36	监控管理	1	3	\N	t	MonitorOutlined	Monitor	/monitor	\N	/monitor/online	f	t	\N	初始化数据	2025-05-18 18:28:07.892821	2025-05-18 18:28:07.892822
+37	在线用户	2	1	monitor:online:query	t	\N	MonitorOnline	/monitor/online	monitor/online/index	\N	f	t	36	初始化数据	2025-05-18 18:28:07.892822	2025-05-18 18:28:07.892822
+38	在线用户强制下线	3	1	monitor:online:delete	t	\N	\N	\N	\N	\N	f	t	37	初始化数据	2025-05-18 18:28:07.892823	2025-05-18 18:28:07.892823
+39	服务器监控	2	2	monitor:server:query	t	\N	MonitorServer	/monitor/server	monitor/server/index	\N	f	t	36	初始化数据	2025-05-18 18:28:07.892823	2025-05-18 18:28:07.892824
+40	缓存监控	2	3	monitor:cache:query	t	\N	MonitorCache	/monitor/cache	monitor/cache/index	\N	f	t	36	初始化数据	2025-05-18 18:28:07.892824	2025-05-18 18:28:07.892824
+41	清除缓存	3	1	monitor:cache:delete	t	\N	\N	\N	\N	\N	f	t	40	初始化数据	2025-05-18 18:28:07.892825	2025-05-18 18:28:07.892825
+42	公共模块	1	4	\N	t	ApiOutlined	Common	/common	\N	/common/docs	f	t	\N	初始化数据	2025-05-18 18:28:07.892826	2025-05-18 18:28:07.892826
+43	接口管理	2	1	common:docs:query	t	\N	Docs	/common/docs	common/docs/index	\N	f	t	42	初始化数据	2025-05-18 18:28:07.892826	2025-05-18 18:28:07.892827
+44	文档管理	2	2	common:redoc:query	t	\N	Redoc	/common/redoc	common/redoc/index	\N	f	t	42	初始化数据	2025-05-18 18:28:07.892827	2025-05-18 18:28:07.892827
+45	公告管理	2	7	system:notice:query	t	\N	Notice	/system/notice	system/notice/index	\N	f	t	2	初始化数据	2025-05-18 18:28:07.892828	2025-05-18 18:28:07.892828
+46	公告创建	3	1	system:notice:create	t	\N	\N	\N	\N	\N	f	t	45	初始化数据	2025-05-18 18:28:07.892828	2025-05-18 18:28:07.892829
+47	公告修改	3	2	system:notice:update	t	\N	\N	\N	\N	\N	f	t	45	初始化数据	2025-05-18 18:28:07.892829	2025-05-18 18:28:07.892829
+48	公告删除	3	3	system:notice:delete	t	\N	\N	\N	\N	\N	f	t	45	初始化数据	2025-05-18 18:28:07.89283	2025-05-18 18:28:07.89283
+49	公告导出	3	4	system:notice:export	t	\N	\N	\N	\N	\N	f	t	45	初始化数据	2025-05-18 18:28:07.89283	2025-05-18 18:28:07.892831
+50	公告批量修改状态	3	5	system:notice:patch	t	\N	\N	\N	\N	\N	f	t	45	初始化数据	2025-05-18 18:28:07.892831	2025-05-18 18:28:07.892831
+51	配置管理	2	8	system:config:query	t	\N	Config	/system/config	system/config/index	\N	f	t	2	初始化数据	2025-05-18 18:28:07.892832	2025-05-18 18:28:07.892832
+52	创建配置	3	1	system:config:create	t	\N	\N	\N	\N	\N	f	t	51	初始化数据	2025-05-18 18:28:07.892832	2025-05-18 18:28:07.892833
+53	修改配置	3	2	system:config:update	t	\N	\N	\N	\N	\N	f	t	51	初始化数据	2025-05-18 18:28:07.892833	2025-05-18 18:28:07.892833
+54	删除配置	3	3	system:config:delete	t	\N	\N	\N	\N	\N	f	t	51	初始化数据	2025-05-18 18:28:07.892834	2025-05-18 18:28:07.892834
+55	批量更新配置	3	4	system:config:update	t	\N	\N	\N	\N	\N	f	t	51	初始化数据	2025-05-18 18:28:07.892835	2025-05-18 18:28:07.892835
+56	文件上传	3	5	system:config:upload	t	\N	\N	\N	\N	\N	f	t	51	初始化数据	2025-05-18 18:28:07.892835	2025-05-18 18:28:07.892836
+57	字典管理	2	9	system:dict_type:query	t	\N	Dict	/system/dict	system/dict/index	\N	f	t	2	初始化数据	2025-05-18 18:28:07.892836	2025-05-18 18:28:07.892836
+58	创建字典类型	3	1	system:dict_type:create	t	\N	\N	\N	\N	\N	f	t	57	初始化数据	2025-05-18 18:28:07.892837	2025-05-18 18:28:07.892837
+59	修改字典类型	3	2	system:dict_type:update	t	\N	\N	\N	\N	\N	f	t	57	初始化数据	2025-05-18 18:28:07.892837	2025-05-18 18:28:07.892838
+60	删除字典类型	3	3	system:dict_type:delete	t	\N	\N	\N	\N	\N	f	t	57	初始化数据	2025-05-18 18:28:07.892838	2025-05-18 18:28:07.892838
+61	导出字典类型	3	4	system:dict_type:export	t	\N	\N	\N	\N	\N	f	t	57	初始化数据	2025-05-18 18:28:07.892839	2025-05-18 18:28:07.892839
+62	字典数据	2	10	system:dict_data:query	t	\N	DictData	/system/dict_data	system/dict/data	\N	t	t	2	初始化数据	2025-05-18 18:28:07.892839	2025-05-18 18:28:07.89284
+63	创建字典数据	3	1	system:dict_data:create	t	\N	\N	\N	\N	\N	f	t	62	初始化数据	2025-05-18 18:28:07.89284	2025-05-18 18:28:07.89284
+64	修改字典数据	3	2	system:dict_data:update	t	\N	\N	\N	\N	\N	f	t	62	初始化数据	2025-05-18 18:28:07.892841	2025-05-18 18:28:07.892841
+65	删除字典数据	3	3	system:dict_data:delete	t	\N	\N	\N	\N	\N	f	t	62	初始化数据	2025-05-18 18:28:07.892841	2025-05-18 18:28:07.892842
+66	导出字典数据	3	4	system:dict_data:export	t	\N	\N	\N	\N	\N	f	t	62	初始化数据	2025-05-18 18:28:07.892842	2025-05-18 18:28:07.892842
+67	任务管理	2	11	system:job:query	t	\N	Job	/system/job	system/job/index	\N	f	t	2	初始化数据	2025-05-18 18:28:07.892843	2025-05-18 18:28:07.892843
+68	创建任务	3	1	system:job:create	t	\N	\N	\N	\N	\N	f	t	67	初始化数据	2025-05-18 18:28:07.892844	2025-05-18 18:28:07.892844
+69	修改和操作任务	3	2	system:job:update	t	\N	\N	\N	\N	\N	f	t	67	初始化数据	2025-05-18 18:28:07.892844	2025-05-18 18:28:07.892845
+70	删除和清除任务	3	3	system:job:delete	t	\N	\N	\N	\N	\N	f	t	67	初始化数据	2025-05-18 18:28:07.892845	2025-05-18 18:28:07.892845
+71	导出定时任务	3	4	system:job:export	t	\N	\N	\N	\N	\N	f	t	67	初始化数据	2025-05-18 18:28:07.892846	2025-05-18 18:28:07.892846
+72	工作台	2	1	dashboard:workplace:query	t		Workplace	/dashboard/workplace	dashboard/workplace	\N	f	t	1	初始化数据	2025-05-18 18:28:07.892846	2025-05-18 18:28:07.892847
+73	分析页	2	2	dashboard:analysis:query	t		Analysis	/dashboard/analysis	dashboard/analysis	\N	f	t	1	初始化数据	2025-05-18 18:28:07.892847	2025-05-18 18:28:07.892847
 \.
 
 
@@ -1936,10 +1952,10 @@ COPY public.system_menu (id, name, type, "order", permission, available, icon, r
 --
 
 COPY public.system_notice (id, notice_title, notice_type, notice_content, available, description, created_at, updated_at, creator_id) FROM stdin;
-1	系统更新	1	2099年9月9日，晚上12:00，系统更新	t	系统更新	2025-04-15 19:03:45.915217	2025-04-15 19:03:45.915219	1
-2	系统维护	2	2099年9月9日，晚上12:00，系统维护	t	系统维护	2025-04-15 19:03:45.91522	2025-04-15 19:03:45.91522	1
-3	系统更新完成	1	2099年9月9日，晚上12:00，系统更新完成	f	系统更新完成	2025-04-15 19:03:45.915221	2025-04-15 19:03:45.915221	1
-4	系统维护完成	2	2099年9月9日，晚上12:00，系统维护完成	f	系统维护完成	2025-04-15 19:03:45.915221	2025-04-15 19:03:45.915222	1
+1	系统更新	1	2099年9月9日，晚上12:00，系统更新	t	系统更新	2025-05-18 18:28:07.912395	2025-05-18 18:28:07.912398	1
+2	系统维护	2	2099年9月9日，晚上12:00，系统维护	t	系统维护	2025-05-18 18:28:07.912398	2025-05-18 18:28:07.912399	1
+3	系统更新完成	1	2099年9月9日，晚上12:00，系统更新完成	f	系统更新完成	2025-05-18 18:28:07.912399	2025-05-18 18:28:07.9124	1
+4	系统维护完成	2	2099年9月9日，晚上12:00，系统维护完成	f	系统维护完成	2025-05-18 18:28:07.9124	2025-05-18 18:28:07.9124	1
 \.
 
 
@@ -1947,7 +1963,7 @@ COPY public.system_notice (id, notice_title, notice_type, notice_content, availa
 -- Data for Name: system_operation_log; Type: TABLE DATA; Schema: public; Owner: tao
 --
 
-COPY public.system_operation_log (id, request_path, request_method, request_payload, request_ip, request_os, request_browser, response_code, response_json, description, created_at, updated_at, creator_id) FROM stdin;
+COPY public.system_operation_log (id, request_path, request_method, request_payload, request_ip, login_location, request_os, request_browser, response_code, response_json, process_time, description, created_at, updated_at, creator_id) FROM stdin;
 \.
 
 
@@ -1956,13 +1972,13 @@ COPY public.system_operation_log (id, request_path, request_method, request_payl
 --
 
 COPY public.system_position (id, name, "order", available, description, created_at, updated_at, creator_id) FROM stdin;
-1	董事长岗	1	t	董事长岗位	2025-04-15 19:03:45.901163	2025-04-15 19:03:45.901164	1
-2	运营岗	2	t	运营岗位	2025-04-15 19:03:45.901165	2025-04-15 19:03:45.901165	1
-3	销售岗	3	t	销售岗	2025-04-15 19:03:45.901166	2025-04-15 19:03:45.901166	1
-4	人事行政岗	4	t	人事行政岗	2025-04-15 19:03:45.901167	2025-04-15 19:03:45.901167	1
-5	开发岗	5	t	开发岗	2025-04-15 19:03:45.901168	2025-04-15 19:03:45.901168	1
-6	测试岗	6	t	测试岗	2025-04-15 19:03:45.901169	2025-04-15 19:03:45.901169	1
-7	演示岗	7	t	演示岗	2025-04-15 19:03:45.90117	2025-04-15 19:03:45.90117	1
+1	董事长岗	1	t	董事长岗位	2025-05-18 18:28:07.89892	2025-05-18 18:28:07.898921	1
+2	运营岗	2	t	运营岗位	2025-05-18 18:28:07.898921	2025-05-18 18:28:07.898922	1
+3	销售岗	3	t	销售岗	2025-05-18 18:28:07.898922	2025-05-18 18:28:07.898922	1
+4	人事行政岗	4	t	人事行政岗	2025-05-18 18:28:07.898923	2025-05-18 18:28:07.898923	1
+5	开发岗	5	t	开发岗	2025-05-18 18:28:07.898923	2025-05-18 18:28:07.898924	1
+6	测试岗	6	t	测试岗	2025-05-18 18:28:07.898924	2025-05-18 18:28:07.898924	1
+7	演示岗	7	t	演示岗	2025-05-18 18:28:07.898925	2025-05-18 18:28:07.898925	1
 \.
 
 
@@ -1971,8 +1987,8 @@ COPY public.system_position (id, name, "order", available, description, created_
 --
 
 COPY public.system_role (id, name, "order", data_scope, available, description, created_at, updated_at, creator_id) FROM stdin;
-1	管理员角色	1	4	t	管理员	2025-04-15 19:03:45.905282	2025-04-15 19:03:45.905283	1
-2	演示角色	2	5	t	演示角色	2025-04-15 19:03:45.905284	2025-04-15 19:03:45.905284	1
+1	管理员角色	1	4	t	管理员	2025-05-18 18:28:07.902325	2025-05-18 18:28:07.902326	1
+2	演示角色	2	5	t	演示角色	2025-05-18 18:28:07.902327	2025-05-18 18:28:07.902327	1
 \.
 
 
@@ -2096,8 +2112,8 @@ COPY public.system_user_roles (user_id, role_id) FROM stdin;
 --
 
 COPY public.system_users (id, username, password, name, mobile, email, gender, avatar, available, is_superuser, last_login, dept_id, description, created_at, updated_at, creator_id) FROM stdin;
-1	admin	$2b$12$e2IJgS/cvHgJ0H3G7Xa08OXoXnk6N/NX3IZRtubBDElA0VLZhkNOa	管理员	15382112222	admin@qq.com	0	https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png	t	t	\N	1	超级管理员	2025-04-15 19:03:45.898902	2025-04-15 19:03:45.898904	\N
-2	demo	$2b$12$e2IJgS/cvHgJ0H3G7Xa08OXoXnk6N/NX3IZRtubBDElA0VLZhkNOa	演示用户	15382112121	demo@qq.com	1	https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png	t	f	\N	6	演示用户	2025-04-15 19:03:45.898904	2025-04-15 19:03:45.898905	1
+1	admin	$2b$12$e2IJgS/cvHgJ0H3G7Xa08OXoXnk6N/NX3IZRtubBDElA0VLZhkNOa	管理员	15382112222	admin@qq.com	0	https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png	t	t	\N	1	超级管理员	2025-05-18 18:28:07.896901	2025-05-18 18:28:07.896902	\N
+2	demo	$2b$12$e2IJgS/cvHgJ0H3G7Xa08OXoXnk6N/NX3IZRtubBDElA0VLZhkNOa	演示用户	15382112121	demo@qq.com	1	https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png	t	f	\N	6	演示用户	2025-05-18 18:28:07.896903	2025-05-18 18:28:07.896903	1
 \.
 
 
