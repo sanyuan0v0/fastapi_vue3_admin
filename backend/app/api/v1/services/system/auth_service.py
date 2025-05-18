@@ -84,7 +84,7 @@ class LoginService:
         # 创建token
         token = await cls.create_token_service(redis=redis, username=user.username)
         user_agent = parse(request.headers.get("user-agent"))
-        
+        login_location = await IpLocalUtil.get_ip_location(request.client.host)
         # 缓存中构建在线用户信息
         await RedisCURD(redis).set(
             key=f"{RedisInitKeyConfig.ONLINE_USER.key}:{user.username}",
@@ -94,7 +94,7 @@ class LoginService:
                 name=user.name,
                 user_name=user.username,
                 ipaddr=request.client.host,
-                login_location=IpLocalUtil.get_ip_location(request.client.host),
+                login_location=login_location,
                 os=user_agent.os.family,
                 browser = user_agent.browser.family,
                 login_time=user.last_login
