@@ -2,6 +2,7 @@
 
 import re
 import requests
+import httpx
 
 from app.core.logger import logger
 
@@ -42,31 +43,25 @@ class IpLocalUtil:
             return '内网IP'
             
         try:
-            # 优先使用百度API
-            ip_result = requests.get(
-                f'https://qifu-api.baidubce.com/ip/geo/v1/district?ip={ip}',
-                timeout=5
-            )
-            result = ip_result.json()
-            if result['code']== 'Success':
-                
-                data = result['data']
-                logger.info(f"获取IP归属地成功: {data}")
-                # "continent": "亚洲",
-                # "country": "中国",
-                # "zipcode": "710061",
-                # "owner": "中国移动",
-                # "isp": "中国移动",
-                # "adcode": "610113",
-                # "prov": "陕西省",
-                # "city": "西安市",
-                # "district": "雁塔区"
-                country = data['country']
-                owner = data['owner']
-                prov = data['prov']
-                city = data['city']
-                district = data['district']
-                return f'【{owner}】-{country}-{prov}-{city}-{district}'
+            # 百度API失败，使用其他API
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    f'https://qifu-api.baidubce.com/ip/geo/v1/district?ip={ip}',
+                    timeout=5
+                )
+                if response.status_code == 200:
+                    data = response.json().get('data', {})
+                    return f"【{data.get('owner','')}】-{data.get('country','')}-{data.get('prov','')}-{data.get('city','')}-{data.get('district','')}"
+
+            # 使用ip-api.com API获取IP归属地信息
+            # async with httpx.AsyncClient() as client:
+            #     response = await client.get(
+            #         f'http://ip-api.com/json/{ip}?lang=zh-CN',
+            #         timeout=10
+            #     )
+            #     if response.status_code == 200:
+            #         result = response.json()
+            #         return f"【{result.get('isp','')}】-{result.get('country','')}-{result.get('regionName','')}-{result.get('city','')}"
 
         except Exception as e:
             logger.error(f"获取IP归属地失败: {e}")
