@@ -70,9 +70,9 @@ class OperationLogRoute(APIRoute):
                     if request.url.path == '/api/v1/system/auth/login':
                         # 只有登录的才会获取登录地址
                         if request.client.host == '36.163.173.156':
-                            logger.info(request.client.host, '等于 36.163.173.156')
+                            logger.info(f'{request.client.host} 等于 36.163.173.156')
                         else:
-                            logger.error(request.client.host, '不等于 36.163.173.156')
+                            logger.error(f'{request.client.host} 不等于 36.163.173.156')
                         login_location = IpLocalUtil.get_ip_location(request.client.host)
 
                     await OperationLogService.create_log_service(data=OperationLogCreateSchema(
