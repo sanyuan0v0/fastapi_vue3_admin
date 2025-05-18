@@ -68,7 +68,7 @@ class OperationLogRoute(APIRoute):
                         current_user_id = request.scope.get("user_id")
                     if request.url.path == '/api/v1/system/auth/login':
                         # 只有登录的才会获取登录地址
-                        login_location = IpLocalUtil.get_ip_location(str(request.client.host))
+                        login_location = IpLocalUtil.get_ip_location(request.client.host)
                     
                     await OperationLogService.create_log_service(data=OperationLogCreateSchema(
                         request_path = request.url.path,

@@ -94,7 +94,7 @@ class LoginService:
                 name=user.name,
                 user_name=user.username,
                 ipaddr=request.client.host,
-                login_location=IpLocalUtil.get_ip_location(str(request.client.host)),
+                login_location=IpLocalUtil.get_ip_location(request.client.host),
                 os=user_agent.os.family,
                 browser = user_agent.browser.family,
                 login_time=user.last_login

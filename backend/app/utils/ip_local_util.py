@@ -35,7 +35,7 @@ class IpLocalUtil:
             logger.error(f"IP格式不合法: {ip}")
             return "未知"
         
-        logger.info(f"获取IP归属地: {ip}")
+        logger.info(f"获取IP归属地: {ip}, 类型: {type(ip)}")
 
         # 内网IP直接返回
         if ip == '127.0.0.1' or ip == 'localhost':
@@ -50,6 +50,7 @@ class IpLocalUtil:
             if ip_result.status_code == 200:
                 
                 data = ip_result.json().get('data', {})
+                logger.info(f"获取IP归属地成功: {data}")
                 # "continent": "亚洲",
                 # "country": "中国",
                 # "zipcode": "710061",
