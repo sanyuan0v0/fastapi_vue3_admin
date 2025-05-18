@@ -23,7 +23,7 @@ class IpLocalUtil:
         return bool(re.match(ip_pattern, ip))
 
     @classmethod
-    def get_ip_location(cls, ip: str) -> str:
+    async def get_ip_location(cls, ip: str) -> str:
         """
         获取IP归属地信息
         
@@ -47,9 +47,10 @@ class IpLocalUtil:
                 f'https://qifu-api.baidubce.com/ip/geo/v1/district?ip={ip}',
                 timeout=5
             )
-            if ip_result.status_code == 200:
+            result = ip_result.json()
+            if result['code']== 'Success':
                 
-                data = ip_result.json().get('data', {})
+                data = result['data']
                 logger.info(f"获取IP归属地成功: {data}")
                 # "continent": "亚洲",
                 # "country": "中国",
@@ -60,12 +61,11 @@ class IpLocalUtil:
                 # "prov": "陕西省",
                 # "city": "西安市",
                 # "district": "雁塔区"
-                country = data.get('country', '未知国家')
-                owner = data.get('owner', '未知运营商')
-                prov = data.get('prov', '未知省份')
-                city = data.get('city', '未知城市')
-                district = data.get('district', '未知地区')
-
+                country = data['country']
+                owner = data['owner']
+                prov = data['prov']
+                city = data['city']
+                district = data['district']
                 return f'【{owner}】-{country}-{prov}-{city}-{district}'
 
         except Exception as e:
