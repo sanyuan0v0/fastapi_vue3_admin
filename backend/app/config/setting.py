@@ -172,11 +172,12 @@ class Settings(BaseSettings):
     # ================================================= #
     # ***************** 演示模型配置 ***************** #
     # ================================================= #
-    DEMO_ENABLE: bool = False            # 是否开启演示模式
+    DEMO_ENABLE: bool            # 是否开启演示模式
     DEMO_WHITE_LIST_PATH: List[str] = [  # 演示白名单
-        "/system/auth/login",
-        "/system/auth/token/refresh",
-        "/system/auth/captcha/get"
+        "/api/v1/system/auth/login",
+        "/api/v1/system/auth/token/refresh",
+        "/api/v1/system/auth/captcha/get",
+        "/api/v1/system/auth/logout",
     ]
     DEMO_BLACK_LIST_PATH: List[str] = [  # 演示黑名单
         "/auth/login"

@@ -372,11 +372,8 @@ const onInfoFormFinish = async (values: any) => {
     
     await userStore.getUserInfo;
   } catch (error) {
-    console.error('更新基本信息失败:', error);
-    message.error({
-      content: '更新基本信息失败',
-      icon: h(CloseCircleOutlined, { style: "color: #ff4d4f" })
-    });
+    console.error(error);
+    
   } finally {
     infoSubmitting.value = false;
   }
