@@ -12,6 +12,7 @@ from app.api.v1.services.system.operation_log_service import OperationLogService
 from app.core.database import session_connect
 from app.config.setting import settings
 from app.utils.ip_local_util import IpLocalUtil
+from app.core.logger import logger
 
 """
 在 FastAPI 中，route_class 参数用于自定义路由的行为。
@@ -69,9 +70,9 @@ class OperationLogRoute(APIRoute):
                     if request.url.path == '/api/v1/system/auth/login':
                         # 只有登录的才会获取登录地址
                         if request.client.host == '36.163.173.156':
-                            print(request.client.host, '等于 36.163.173.156')
+                            logger.info(request.client.host, '等于 36.163.173.156')
                         else:
-                            print(request.client.host, '不等于 36.163.173.156')
+                            logger.error(request.client.host, '不等于 36.163.173.156')
                         login_location = IpLocalUtil.get_ip_location(request.client.host)
 
                     await OperationLogService.create_log_service(data=OperationLogCreateSchema(
