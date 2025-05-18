@@ -34,7 +34,9 @@ class IpLocalUtil:
         if not cls.is_valid_ip(ip):
             logger.error(f"IP格式不合法: {ip}")
             return "未知"
-            
+        
+        logger.info(f"获取IP归属地: {ip}")
+
         # 内网IP直接返回
         if ip == '127.0.0.1' or ip == 'localhost':
             return '内网IP'
