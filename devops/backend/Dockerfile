@@ -11,7 +11,7 @@ ENV TZ Asia/Shanghai
 WORKDIR /home
 
 # 将当前主机目录全部文件复制至容器工作目录
-COPY backend/requirements.txt .
+COPY ./backend/requirements.txt .
 
 # 安装依赖
 RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
