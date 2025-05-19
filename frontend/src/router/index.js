@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from "vue-router";
 import storage from "store";
 
 import BasicLayout from "@/layouts/basicLayout.vue";
-import Login from "@/views/system/auth/login.vue";
 import { listToTree } from "@/utils/util";
 import { useUserStore } from "@/store/index";
 
@@ -34,7 +33,9 @@ export const generator = (routers) => {
 
 
 const routes = [
-  { path: "/login", name: "Login", component: Login },
+  { path: "/login", 
+    name: "Login", 
+    component: () => import("../views/system/auth/login.vue"), },
   {
     path: "/403",
     name: "403",
