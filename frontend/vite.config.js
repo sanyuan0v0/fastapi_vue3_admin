@@ -37,5 +37,17 @@ export default defineConfig(({ command, mode }) => {
       },
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
     },
+    build: {
+      chunkSizeWarningLimit: 1600, // 打包文件大小限制
+      rollupOptions: { // 打包配置
+        output: { // 
+          manualChunks(id) { // 手动分包
+            if (id.includes('node_modules')) {
+              return id.toString().split('node_modules/')[1].split('/')[0].toString(); // 根据node_modules中的包名进行分包
+            }
+          }
+        }
+      }
+    },
   };
 });
