@@ -39,10 +39,11 @@ redis_config = {
     'db': settings.REDIS_DB_NAME,
 }
 
-if settings.REDIS_PASSWORD and ':' in settings.REDIS_PASSWORD:
+if settings.REDIS_PASSWORD:
     username, password = settings.REDIS_PASSWORD.split(':', 1)
     redis_config['username'] = username
-    redis_config['password'] = password
+    if settings.REDIS_USER:
+        redis_config['username'] = settings.REDIS_USER
 else:
     redis_config['password'] = settings.REDIS_PASSWORD
 

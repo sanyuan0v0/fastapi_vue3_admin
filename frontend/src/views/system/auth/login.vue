@@ -16,7 +16,7 @@
             <a-tab-pane :key="1" tab="账户密码登录">
               <a-form :model="loginForm" @finish="onFinish">
                 <a-form-item name="username" :rules="[{ required: true, message: '用户名是必填项！' }]">
-                  <a-input v-model:value="loginForm.username" placeholder="用户名: admin or test or demo">
+                  <a-input v-model:value="loginForm.username" placeholder="用户名: admin or demo">
                     <template #prefix>
                       <UserOutlined />
                     </template>
