@@ -302,5 +302,29 @@
   {
     "role_id": 2,
     "menu_id": 3
+  },
+  {
+    "role_id": 2,
+    "menu_id": 45
+  },
+  {
+    "role_id": 2,
+    "menu_id": 51
+  },
+  {
+    "role_id": 2,
+    "menu_id": 57
+  },
+  {
+    "role_id": 2,
+    "menu_id": 62
+  },
+  {
+    "role_id": 2,
+    "menu_id": 72
+  },
+  {
+    "role_id": 2,
+    "menu_id": 73
   }
 ]
