@@ -29,10 +29,15 @@ class CustomException(Exception):
         :param status_code: HTTP状态码
         :param data: 附加数据
         """
+        super().__init__(msg)  # 调用父类初始化方法
         self.status_code = status_code
         self.code = code
         self.msg = msg
         self.data = data
+
+    def __str__(self) -> str:
+        """返回异常消息"""
+        return self.msg
 
 
 async def CustomExceptionHandler(request: Request, exc: CustomException) -> JSONResponse:
