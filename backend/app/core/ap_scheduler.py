@@ -32,16 +32,23 @@ from app.api.v1.cruds.system.job_crud import JobCRUD
 from app.api.v1.models.system.job_model import JobModel
 
 # job 存储
+# 处理Redis 5.0+ ACL格式的用户名:密码
+redis_config = {
+    'host': settings.REDIS_HOST,
+    'port': settings.REDIS_PORT,
+    'db': settings.REDIS_DB_NAME,
+}
+
+if settings.REDIS_PASSWORD and ':' in settings.REDIS_PASSWORD:
+    username, password = settings.REDIS_PASSWORD.split(':', 1)
+    redis_config['username'] = username
+    redis_config['password'] = password
+else:
+    redis_config['password'] = settings.REDIS_PASSWORD
+
 job_stores = {
     'default': MemoryJobStore(),
-    'redis': RedisJobStore(
-        **dict(
-            password=settings.REDIS_PASSWORD,
-            host=settings.REDIS_HOST,
-            port=settings.REDIS_PORT,
-            db=settings.REDIS_DB_NAME,
-        )
-    ),
+    'redis': RedisJobStore(**redis_config),
 }
 # 配置执行器
 executors = {'default': AsyncIOExecutor(), 'processpool': ProcessPoolExecutor(5)}
