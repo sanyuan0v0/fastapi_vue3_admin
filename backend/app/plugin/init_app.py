@@ -44,11 +44,25 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     """
     logger.info(settings.BANNER + '\n' + f'{settings.TITLE} 服务开始启动...')
     await import_modules_async(modules=settings.EVENT_LIST, desc="全局事件", app=app, status=True)
-    async with async_session() as session:
-        await ConfigService().init_config_service(redis=app.state.redis, db=session)
-        logger.info("初始化系统配置完成...")
-        await DictDataService().init_dict_service(redis=app.state.redis, db=session)
-        logger.info('初始化数据字典完成...')
+    
+    # 添加MySQL连接重试逻辑
+    max_retries = 5
+    retry_delay = 3  # 秒
+    for attempt in range(max_retries):
+        try:
+            async with async_session() as session:
+                await ConfigService().init_config_service(redis=app.state.redis, db=session)
+                logger.info("初始化系统配置完成...")
+                await DictDataService().init_dict_service(redis=app.state.redis, db=session)
+                logger.info('初始化数据字典完成...')
+            break
+        except Exception as e:
+            if attempt == max_retries - 1:
+                logger.error(f'连接MySQL失败，已达到最大重试次数({max_retries})')
+                raise
+            logger.warning(f'连接MySQL失败，将在{retry_delay}秒后重试... (尝试 {attempt + 1}/{max_retries})')
+            await asyncio.sleep(retry_delay)
+
     await SchedulerUtil.init_system_scheduler()
     logger.info(f'{settings.TITLE} 服务成功启动...')
 

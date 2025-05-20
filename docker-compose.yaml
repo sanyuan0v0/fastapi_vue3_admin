@@ -16,7 +16,7 @@ services:
       - ./devops/mysql/conf:/etc/mysql/conf.d
       - ./devops/mysql/logs:/logs 
     networks:
-      - mysql_network
+      - fastapi_vue3_admin_network
 
   # redis服务
   redis:
@@ -31,7 +31,7 @@ services:
       - ./devops/redis/conf/redis.conf:/etc/redis/redis.conf
       - ./devops/redis/data:/data
     networks:
-      - redis_network
+      - fastapi_vue3_admin_network
     command: redis-server /etc/redis/redis.conf
     
   # 后端服务
@@ -48,7 +48,7 @@ services:
     volumes:
       - ./backend:/home
     networks:
-      - backend-network
+      - fastapi_vue3_admin_network
     depends_on:
       - mysql
       - redis
@@ -66,17 +66,11 @@ services:
       - ./devops/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./frontend/dist:/usr/share/nginx/html
     networks:
-      - frontend_network
+      - fastapi_vue3_admin_network
     depends_on:
       - backend
 
 # 网络
 networks:
-  mysql_network:
-    driver: bridge
-  redis_network:
-    driver: bridge
-  frontend_network:
-    driver: bridge
-  backend-network:
+  fastapi_vue3_admin_network:
     driver: bridge

@@ -134,6 +134,7 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: int
     REDIS_DB_NAME: int
+    REDIS_USER: str
     REDIS_PASSWORD: str
 
     # ================================================= #
@@ -289,10 +290,7 @@ class Settings(BaseSettings):
     @property
     def REDIS_URI(self) -> RedisDsn:
         """获取Redis连接"""
-        if settings.REDIS_PASSWORD is None:
-            return f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB_NAME}"
-        else:
-            return f"redis://{settings.REDIS_PASSWORD}@{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB_NAME}"
+        return f"redis://{settings.REDIS_USER}:{self.REDIS_PASSWORD}@{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB_NAME}"
     
     @property
     def FASTAPI_CONFIG(self) -> Dict[str, Union[str, bool, None]]:
