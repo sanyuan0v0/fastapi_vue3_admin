@@ -292,7 +292,7 @@ class Settings(BaseSettings):
         if settings.REDIS_PASSWORD is None:
             return f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB_NAME}"
         else:
-            return f"redis://:{settings.REDIS_PASSWORD}@{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB_NAME}"
+            return f"redis://{settings.REDIS_PASSWORD}@{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB_NAME}"
     
     @property
     def FASTAPI_CONFIG(self) -> Dict[str, Union[str, bool, None]]:
