@@ -155,16 +155,7 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
 
 3. 创建名为`fastapi_vue_admin`的数据库
 
-4. 初始化数据库数据
-
-   ```shell
-   # 进入后端根目录 backend 下运行
-   # 运行命令后会自动生成数据库内的表和数据
-   # 如已初始化数据库数据，此命令可不执行
-   python3 main.py init
-   ```
-
-5. 启动
+4. 启动
 
    ```shell
    # 进入后端根目录 backend 下运行

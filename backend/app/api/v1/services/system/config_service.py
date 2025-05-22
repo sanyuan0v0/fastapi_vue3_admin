@@ -42,7 +42,6 @@ class ConfigService:
             await RedisCURD(redis).set(
                     key=redis_key,
                     value=value,
-                    expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
                 )
             logger.info(f"更新系统配置成功: {new_obj_dict}")
             return True
@@ -78,7 +77,6 @@ class ConfigService:
             await RedisCURD(redis).set(
                     key=redis_key,
                     value=value,
-                    expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
                 )
             return value
         except Exception as e:

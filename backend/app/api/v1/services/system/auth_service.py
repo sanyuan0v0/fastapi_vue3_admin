@@ -98,8 +98,7 @@ class LoginService:
                 os=user_agent.os.family,
                 browser = user_agent.browser.family,
                 login_time=user.last_login
-            ).model_dump_json(),
-            expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
+            ).model_dump_json()
         )
 
         return user

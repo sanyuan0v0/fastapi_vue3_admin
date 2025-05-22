@@ -40,9 +40,13 @@ async_session = async_sessionmaker(
 
 def session_connect() -> AsyncSession:
     """获取数据库会话"""
-    if not settings.SQL_DB_ENABLE:
-        raise CustomException(msg="请先开启数据库连接", data="请启用 app/config/setting.py: SQL_DB_ENABLE")
-    return async_session()
+    try:
+        if not settings.SQL_DB_ENABLE:
+            raise CustomException(msg="请先开启数据库连接", data="请启用 app/config/setting.py: SQL_DB_ENABLE")
+        return async_session()
+    except Exception as e:
+        logger.error(f"数据库连接失败: {e}")
+        raise CustomException(msg=f"数据库连接失败: {e}")
 
 
 async def redis_connect(app: FastAPI, status: bool) -> aioredis.Redis:
@@ -63,7 +67,7 @@ async def redis_connect(app: FastAPI, status: bool) -> aioredis.Redis:
             )
             app.state.redis = rd
             if await rd.ping():
-                logger.info("Redis连接成功")
+                logger.info("Redis连接成功...")
                 return rd
             raise CustomException(msg="Redis连接失败")
         except aioredis.AuthenticationError as e:

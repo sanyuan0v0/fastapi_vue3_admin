@@ -155,16 +155,7 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
 
 3. Create a database named `fastapi_vue_admin`
 
-4. Initialize database data
-
-   ```shell
-   # Run in the root directory of the backend project (backend)
-   # This command will automatically generate tables and data in the database
-   # If the database has already been initialized, this command can be skipped
-   python3 main.py init
-   ```
-
-5. Start the backend
+4. Start the backend
 
    ```shell
    # Run in the root directory of the backend project (backend)

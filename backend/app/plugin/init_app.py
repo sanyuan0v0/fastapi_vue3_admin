@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import asyncio
 from typing import Any, AsyncGenerator
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -34,8 +35,8 @@ from app.core.exceptions import (
 )
 from app.api.v1.services.system.config_service import ConfigService
 from app.api.v1.services.system.dict_service import DictDataService
-from app.core.database import async_session
-
+from app.core.database import session_connect
+from app.scripts.initialize import InitializeData
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
@@ -43,28 +44,27 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     自定义生命周期
     """
     logger.info(settings.BANNER + '\n' + f'{settings.TITLE} 服务开始启动...')
-    await import_modules_async(modules=settings.EVENT_LIST, desc="全局事件", app=app, status=True)
     
-    # 添加MySQL连接重试逻辑
-    max_retries = 5
-    retry_delay = 3  # 秒
-    for attempt in range(max_retries):
-        try:
-            async with async_session() as session:
+    try:
+        async with session_connect() as session:
+            async with session.begin():
+                logger.info("数据库连接成功...")
+                await InitializeData().init_db(db=session)
+                logger.info("初始化数据完成...")
+                await import_modules_async(modules=settings.EVENT_LIST, desc="全局事件", app=app, status=True)
                 await ConfigService().init_config_service(redis=app.state.redis, db=session)
                 logger.info("初始化系统配置完成...")
                 await DictDataService().init_dict_service(redis=app.state.redis, db=session)
                 logger.info('初始化数据字典完成...')
-            break
-        except Exception as e:
-            if attempt == max_retries - 1:
-                logger.error(f'连接MySQL失败，已达到最大重试次数({max_retries})')
-                raise
-            logger.warning(f'连接MySQL失败，将在{retry_delay}秒后重试... (尝试 {attempt + 1}/{max_retries})')
-            await asyncio.sleep(retry_delay)
+                await SchedulerUtil.init_system_scheduler(db=session)
+                logger.info('初始化定时任务完成...')
+                await session.commit()
 
-    await SchedulerUtil.init_system_scheduler()
-    logger.info(f'{settings.TITLE} 服务成功启动...')
+        logger.info(f'{settings.TITLE} 服务成功启动...')
+    except Exception as e:
+        await session.rollback()
+        logger.error(f'{settings.TITLE} 服务启动失败: {str(e)}')
+        raise e
 
     yield
 
