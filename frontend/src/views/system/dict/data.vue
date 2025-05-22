@@ -444,6 +444,13 @@ const loadingData = () => {
 // 生命周期钩子
 onMounted(async () => {
     await getOptions();
+    // 加载字典类型选项
+    await loadDictTypes(); // 确保 dictTypeOptions 已经加载
+
+    const routeDictType = route.query.dict_type;
+    if (routeDictType && !queryState.dict_type) {
+    queryState.dict_type = Array.isArray(routeDictType) ? routeDictType[0] : routeDictType;
+    }
     loadingData();
 });
 

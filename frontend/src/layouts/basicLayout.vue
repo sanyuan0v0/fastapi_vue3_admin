@@ -156,9 +156,8 @@ import {
   BulbOutlined,
   BulbFilled
 } from '@ant-design/icons-vue';
-import { useUserStore } from "@/store/index";
+import { useUserStore, useNoticeStore, useDictStore, useConfigStore } from "@/store/index";
 import { logout } from '@/api/system/auth';
-import { useConfigStore, useNoticeStore } from "@/store/index";
 
 const userStore = useUserStore();
 
@@ -198,10 +197,17 @@ const handleUserMenuClick: MenuProps['onClick'] = ({ key }) => {
 // 处理退出登录
 const handleLogout = async () => {
   try {
+    // 清空 Pinia 状态
+    
     await logout({ token: storage.get('Access-Token') });
+    
+    // 重置 store 状态
+    userStore.$reset();
+
     storage.remove('Access-Token');
     storage.remove('Refresh-Token');
     await userStore.clearUserInfo;
+    // 强制刷新页面
     router.push('/login');
   } catch (error) {
     console.error('退出登录失败:', error);
