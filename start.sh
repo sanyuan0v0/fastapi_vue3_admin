@@ -58,8 +58,11 @@ else
     echo "✨ 代码未变更，跳过构建步骤。"
 fi
 
+# 第七步：启动容器
+echo -e "\n🔍 第七步：启动容器"
+echo "🚀 正在启动容器..."
 docker compose up -d || { echo "❌ 容器启动失败"; exit 1; }
-echo "🚀 服务已成功启动。"
+echo "✅ 服务已成功启动。"
 
 # 部署完成提示
 echo -e "\n🎉 部署流程已完成！"
