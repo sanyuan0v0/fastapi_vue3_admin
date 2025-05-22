@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
-from typing import Dict
+from typing import Dict, Union
 
 from aioredis import Redis
 from fastapi import UploadFile
@@ -66,7 +66,7 @@ class ConfigService:
         ).model_dump()
     
     @classmethod
-    async def init_config_service(cls, redis: Redis, db: AsyncSession)-> None:
+    async def init_config_service(cls, redis: Redis, db: AsyncSession) -> Union[str, None]:
         auth = AuthSchema(db=db)
         config_obj = await ConfigCRUD(auth).get_crud(id=1)
         config_obj_dict = ConfigOutSchema.model_validate(config_obj).model_dump()
@@ -80,16 +80,20 @@ class ConfigService:
                     value=value,
                     expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
                 )
+            return value
         except Exception as e:
             logger.error(f"初始化系统配置失败: {e}")
             raise CustomException(msg="初始化系统配置失败")
 
     @classmethod
-    async def get_init_config_service(cls, redis: Redis) -> Dict:
+    async def get_init_config_service(cls, redis: Redis, db: AsyncSession) -> Dict:
         """获取系统配置"""
         redis_key = f"{RedisInitKeyConfig.System_Config.key}:{'init_system_config'}"
-        config_obj_list_dict = await RedisCURD(redis).get(redis_key)
-        if not config_obj_list_dict:
-            raise CustomException(msg="系统配置不存在")
-        return json.loads(config_obj_list_dict)
+        config_obj_str = await RedisCURD(redis).get(redis_key)
+        if not config_obj_str:
+            # 如果Redis中没有数据，则从数据库中获取
+            config_obj_str = await cls.init_config_service(redis=redis, db=db)
+            if not config_obj_str:
+                raise CustomException(msg="系统配置不存在")
+        return json.loads(config_obj_str)
     
