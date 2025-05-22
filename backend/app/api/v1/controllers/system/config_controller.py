@@ -5,12 +5,14 @@ from fastapi.responses import JSONResponse
 from aioredis import Redis
 
 from app.common.response import SuccessResponse
-from app.core.dependencies import AuthPermission, redis_getter
+from app.core.dependencies import AuthPermission, redis_getter, db_getter
 from app.core.router_class import OperationLogRoute
 from app.core.logger import logger
 from app.api.v1.schemas.system.auth_schema import AuthSchema
 from app.api.v1.schemas.system.config_schema import ConfigUpdateSchema
 from app.api.v1.services.system.config_service import ConfigService
+
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 router = APIRouter(route_class=OperationLogRoute)
@@ -48,8 +50,9 @@ async def upload_file_controller(
 
 @router.get("/init", summary="获取初始化配置", description="获取初始化配置")
 async def get_init_config_controller(
-    redis: Redis = Depends(redis_getter)
+    redis: Redis = Depends(redis_getter),
+    db: AsyncSession = Depends(db_getter)
 ) -> JSONResponse:
-    result_dict = await ConfigService.get_init_config_service(redis=redis)
+    result_dict = await ConfigService.get_init_config_service(redis=redis, db=db)
     logger.info(f"获取初始化配置成功 {result_dict}")
     return SuccessResponse(data=result_dict, msg="获取初始化配置成功")

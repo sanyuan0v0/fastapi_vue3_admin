@@ -40,12 +40,9 @@ redis_config = {
 }
 
 if settings.REDIS_PASSWORD:
-    username, password = settings.REDIS_PASSWORD.split(':', 1)
-    redis_config['username'] = username
-    if settings.REDIS_USER:
-        redis_config['username'] = settings.REDIS_USER
-else:
     redis_config['password'] = settings.REDIS_PASSWORD
+if settings.REDIS_USER:
+    redis_config['username'] = settings.REDIS_USER
 
 job_stores = {
     'default': MemoryJobStore(),
@@ -74,7 +71,6 @@ class SchedulerUtil:
 
     @classmethod
     def scheduler_event_listener(cls, event: JobEvent | JobExecutionEvent):
-        logger.info(f"定时任务事件: {event}")
         event_type = event.__class__.__name__
         status = True
         exception_info = ''
@@ -90,28 +86,23 @@ class SchedulerUtil:
                 # JobCRUD(AuthSchema(db=session)).set_obj_field_crud(ids=[job_id], status=status, message=job_message)
 
     @classmethod
-    async def init_system_scheduler(cls):
+    async def init_system_scheduler(cls, db):
         """
         应用启动时初始化定时任务
 
         :return:
         """
-        logger.info('开始启动定时任务...')
-        
         scheduler.add_listener(cls.scheduler_event_listener, EVENT_ALL)
         scheduler.start()
-        async with session_connect() as session:
-            async with session.begin():
-                auth = AuthSchema(db=session)
-                job_list = await JobCRUD(auth).get_obj_list_crud()
-                ids = []
-                for item in job_list:
-                    ids.append(item.id)
-                    cls.remove_job(job_id=item.id)  # 删除旧任务
-                    cls.add_job(item)
-                await JobCRUD(auth).set_obj_field_crud(ids=ids, status=True)  # 添加新任务
-        
-        logger.info('系统初始定时任务加载成功')
+
+        auth = AuthSchema(db=db)
+        job_list = await JobCRUD(auth).get_obj_list_crud()
+        ids = []
+        for item in job_list:
+            ids.append(item.id)
+            cls.remove_job(job_id=item.id)  # 删除旧任务
+            cls.add_job(item)
+        await JobCRUD(auth).set_obj_field_crud(ids=ids, status=True)  # 添加新任务
 
     @classmethod
     async def close_system_scheduler(cls):
@@ -155,7 +146,6 @@ class SchedulerUtil:
             module_path, func_name = job_info.func.rsplit('.', 1)
             module_path = "app.module_task." + module_path
             module = importlib.import_module(module_path)
-            logger.info(f"导入模块: {module_path}, 函数名: {func_name}")
             job_func = getattr(module, func_name)
             
             # 2. 确定执行器

@@ -30,9 +30,11 @@ class DictTypeService:
     async def get_obj_list_service(cls, auth: AuthSchema, search: DictTypeQueryParams = None, order_by: List[Dict[str, str]] = None) -> List[Dict]:
         if order_by:
             order_by = eval(order_by)
+        obj_list = None
         if search:
             obj_list = await DictTypeCRUD(auth).get_obj_list_crud(search=search.__dict__, order_by=order_by)
-        obj_list = await DictTypeCRUD(auth).get_obj_list_crud()
+        else:
+            obj_list = await DictTypeCRUD(auth).get_obj_list_crud()
         return [DictTypeOutSchema.model_validate(obj).model_dump() for obj in obj_list]
     
     @classmethod
@@ -50,7 +52,6 @@ class DictTypeService:
             await RedisCURD(redis).set(
                     key=redis_key,
                     value="",
-                    expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
                 )
             logger.info(f"创建字典类型成功: {new_obj_dict}")
         except Exception as e:
@@ -105,7 +106,6 @@ class DictTypeService:
             await RedisCURD(redis).set(
                     key=redis_key,
                     value=value,
-                    expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
                 )
             logger.info(f"更新字典类型成功并刷新缓存: {new_obj_dict}")
         except Exception as e:
@@ -201,7 +201,6 @@ class DictDataService:
                 await RedisCURD(redis).set(
                         key=redis_key,
                         value=value,
-                        expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
                     )
             except Exception as e:
                 logger.error(f"初始化字典数据失败: {e}")
@@ -244,7 +243,6 @@ class DictDataService:
             await RedisCURD(redis).set(
                     key=redis_key,
                     value=value,
-                    expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
                 )
             logger.info(f"创建字典数据写入缓存成功: {obj}")
         except Exception as e:
@@ -283,7 +281,6 @@ class DictDataService:
                     await RedisCURD(redis).set(
                             key=redis_key,
                             value=value,
-                            expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
                         )
                 except Exception as e:
                     logger.error(f"更新字典数据状态时刷新缓存失败: {e}")
@@ -299,7 +296,6 @@ class DictDataService:
             await RedisCURD(redis).set(
                     key=redis_key,
                     value=value,
-                    expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
                 )
             logger.info(f"更新字典数据写入缓存成功: {obj}")
         except Exception as e:

@@ -62,7 +62,6 @@ fastapi_project/backend
 
 ```sh
 # 方式一：
-python main.py init   # 初始化数据
 python main.py run    # 启动服务
 # 方式二：
 uvicorn main:create_app --host 0.0.0.0 --port 8000 --factory --workers 4

@@ -27,6 +27,6 @@ aioredis==2.0.1     # redis 异步操作数据库
 aiosqlite==0.17.0   # sqlite 异步操作数据库
 asyncmy==0.2.9      # mysql 异步操作数据库：基于 mysqlclient：asyncmy 是 mysqlclient 的异步版本，mysqlclient 是一个 C 语言编写的 MySQL 客户端，性能较高。性能：asyncmy 通常在性能上优于 aiomysql，特别是在高并发和大数据量的场景下。
 motor==3.6.0        # mongodb 驱动
-asyncpg==0.30.0     # postgresql 异步操作数据库基于 psycopg2：asyncpg 是 psycopg2 的异步版本，psycopg2 是一个 pure-Python PostgreSQL 数据库适配器。性能：asyncpg 通常在性能上优于 psycopg2，特别是在高并发和大数据量的场景下。
+# asyncpg==0.30.0     # postgresql 异步操作数据库基于 psycopg2：asyncpg 是 psycopg2 的异步版本，psycopg2 是一个 pure-Python PostgreSQL 数据库适配器。性能：asyncpg 通常在性能上优于 psycopg2，特别是在高并发和大数据量的场景下。
 # aiomysql==0.2.0 # mysql 异步操作数据库基于 pymysql：aiomysql 是 pymysql 的异步版本，pymysql 是一个纯 Python 实现的 MySQL 客户端。成熟度：aiomysql 相对较为成熟，社区支持较好，文档也比较完善。
 requests==2.32.3

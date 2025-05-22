@@ -56,20 +56,6 @@ def run(env: EnvironmentEnum = typer.Option(EnvironmentEnum.DEV, "--env", help="
     )
 
 @shell_app.command()
-def init(env: EnvironmentEnum = typer.Option(EnvironmentEnum.DEV, "--env", help="运行环境 (dev, test, prod)")):
-    typer.echo("项目初始化中...")
-    import asyncio
-    from app.scripts.initialize import InitializeData
-    # 设置环境变量
-    os.environ["ENVIRONMENT"] = env.value
-    # 初始化数据
-    data = InitializeData()
-    # 使用asyncio.run来运行异步函数，
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(data.run())
-    # asyncio.run(data.run())
-
-@shell_app.command()
 def revision(message: str, env: EnvironmentEnum = typer.Option(EnvironmentEnum.DEV, "--env", help="运行环境 (dev, test, prod)")):
     """
     生成新的 Al
@@ -96,7 +82,6 @@ if __name__ == '__main__':
     # 方式二：
     # python main.py run    # 启动服务
     # python3 main.py run --env=dev(不加默认为dev)
-    # python main.py init   # 初始化数据
     # 方式三：(linux部署使用)
     # gunicorn -c gunicorn.py main:create_app
 

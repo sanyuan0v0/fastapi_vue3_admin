@@ -38,6 +38,7 @@ export const useNoticeStore = defineStore("notice", {
       this.isNoticeLoaded = false;
     },
   },
+  persist: true
 });
 
 export const useUserStore = defineStore("user", {
@@ -72,6 +73,7 @@ export const useUserStore = defineStore("user", {
       this.hasGetRoute = false;
     },
   },
+  persist: true // 当前 store 启用了持久化
 });
 
 export const useConfigStore = defineStore("config", {
@@ -96,6 +98,7 @@ export const useConfigStore = defineStore("config", {
       return this.configData[key] || null;
     },
   },
+  persist: true
 });
 
 export const useDictStore = defineStore('dict', {
