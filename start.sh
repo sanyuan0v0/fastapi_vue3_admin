@@ -4,67 +4,127 @@
 PROJECT_NAME="fastapi_vue3_admin"
 WORK_DIR="/home"
 GIT_REPO="https://gitee.com/tao__tao/fastapi_vue3_admin.git"
+VERSION_TAG=$(date +%Y%m%d%H%M%S)
+IMAGE_NAME="fastapi_vue3_admin:${VERSION_TAG}"
+FRONTEND_URL="http://8.137.99.5:80"
+BACKEND_DOC_URL="http://8.137.99.5:8001/api/v1/docs"
 
-# 第一步：设置工作目录
-echo "🔍 第一步：设置工作目录"
-echo "⏳ 正在切换到工作目录 ${WORK_DIR} ..."
-cd "${WORK_DIR}" || { echo "❌ 无法切换到 ${WORK_DIR} 目录"; exit 1; }
+# 打印带时间戳的日志
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
+}
 
-# 第二步：清理旧项目文件夹（如果存在）
-echo -e "\n🔍 第二步：清理旧项目文件夹（如存在）"
-echo "⏳ 正在检查是否存在旧项目 ${PROJECT_NAME}/ ..."
-if [ -d "${PROJECT_NAME}/" ]; then
-    echo "🗑️ 正在删除旧项目文件夹 ${PROJECT_NAME}/ ..."
-    rm -rf "${PROJECT_NAME}/" || { echo "❌ 删除旧项目文件夹失败"; exit 1; }
-    echo "✅ 旧项目文件夹已成功删除。"
-else
-    echo "✨ 未找到旧项目文件夹，跳过删除步骤。"
-fi
+# 检查权限
+check_permissions() {
+    log "🔍 第一步：检查权限..."
+    [ "$(id -u)" = "0" ] || { log "❌ 需要 root 权限"; exit 1; }
+    log "✅ 权限检查通过"
+}
 
-# 第三步：克隆项目仓库
-echo -e "\n🔍 第三步：克隆项目代码库"
-echo "📥 正在克隆项目代码库 ..."
-git clone "${GIT_REPO}" || { echo "❌ 项目克隆失败"; exit 1; }
-echo "✅ 项目克隆成功。"
+# 检查依赖
+check_dependencies() {
+    log "🔍 第二步：检查系统依赖..."
+    for cmd in git docker node npm; do
+        command -v $cmd &> /dev/null || { log "❌ $cmd 未安装"; exit 1; }
+        log "🎉 $cmd 已安装 - $($cmd -v)"
+    done
+    log "✅ 所有依赖检查通过"
+}
 
-# 第四步：进入项目根目录
-echo -e "\n🔍 第四步：进入项目根目录"
-echo "📁 正在进入项目目录 ${PROJECT_NAME} ..."
-cd "${PROJECT_NAME}" || { echo "❌ 无法进入项目目录"; exit 1; }
+# 更新代码
+update_code() {
+    log "🔍 第三步：检查项目代码..."
+    cd "${WORK_DIR}" || { log "❌ 无法进入工作目录：${WORK_DIR}"; exit 1; }
+    if [ -d "${PROJECT_NAME}/" ]; then
+        log "🔄 项目已存在，开始更新代码"
+        cd "${PROJECT_NAME}" || { log "❌ 无法进入项目目录：${PROJECT_NAME}"; exit 1; }
+        git fetch origin master || { log "❌ 拉取更新失败"; exit 1; }
+        git reset --hard origin/master || { log "❌ 重置代码失败"; exit 1; }
+        log "✅ 代码更新成功"
+    else
+        log "📥 项目不存在，开始克隆代码"
+        git clone "${GIT_REPO}" || { log "❌ 项目克隆失败：${GIT_REPO}"; exit 1; }
+        cd "${PROJECT_NAME}" || { log "❌ 无法进入项目目录：${PROJECT_NAME}"; exit 1; }
+        log "✅ 代码克隆成功"
+    fi
+}
 
-# 第五步：停止并删除正在运行的容器
-echo -e "\n🔍 第五步：停止并删除现有容器"
-echo "🛑 正在停止并删除现有容器 ..."
-docker compose kill || { echo "⚠️ 停止容器失败，可能没有运行的容器"; }
-docker compose rm -f || { echo "⚠️ 删除容器失败，可能没有容器可删除"; }
-echo "✅ 容器已停止并删除。"
+# 构建前端
+build_frontend() {
+    # 如果是首次克隆项目，或者检测到前端代码变更，则构建前端
+    if [ ! -d "frontend/dist" ] || [ "$(git diff --name-only HEAD~1 HEAD)" ]; then
+        log "🚀 检测到前端代码变更或首次克隆，开始构建前端..."
+        cd frontend || { log "❌ 无法进入前端目录"; exit 1; }
+        # 清理旧依赖
+        if [ -d "node_modules" ] || [ -f "package-lock.json" ]; then
+            log "🧹 清理旧的node_modules和package-lock.json..."
+            rm -rf node_modules package-lock.json
+        fi
+        npm install || { log "❌ 前端依赖安装失败"; exit 1; }
+        npm run build || { log "❌ 前端工程打包失败"; exit 1; }
+        log "✅ 前端工程打包成功"
+        cd .. || { log "❌ 无法返回项目根目录"; exit 1; }
+    else
+        log "⚠️ 未检测到前端代码变更且非首次克隆，跳过前端构建"
+    fi
+}
 
-# 第六步：打包前端项目
-echo -e "\n🔍 第六步: 打包前端工程"
-echo "📦 正在检查前端是否需要重新构建..."
+# 停止并删除容器
+stop_and_remove_containers() {
+    log "🗑️ 停止并删除现有容器..."
+    [ -f "docker-compose.yaml" ] || { log "❌ docker-compose.yaml 文件未找到"; exit 1; }
+    docker compose kill
+    docker compose rm -f
+    log "✅ 容器已停止并删除"
+}
 
-# 检查是否需要重新构建
-if [ ! -d "frontend/dist" ] || [ "$(git diff --name-only HEAD~1 HEAD)" ]; then
-    echo "🔧 检测到代码变更，正在安装前端依赖并构建..."
-    cd frontend || { echo "❌ 无法进入前端目录"; exit 1; }
-    npm install || { echo "❌ 前端依赖安装失败"; exit 1; }
-    npm run build || { echo "❌ 前端工程打包失败"; exit 1; }
-    echo "✅ 前端工程打包成功。"
-    cd .. || { echo "❌ 无法返回项目根目录"; exit 1; }
-    
-    echo "🏗️ 正在构建镜像..."
-    docker compose build || { echo "❌ 镜像构建失败"; exit 1; }
-else
-    echo "✨ 代码未变更，跳过构建步骤。"
-fi
+# 构建镜像
+build_image() {
+    log "🚀 开始构建Docker镜像..."
+    docker compose build --build-arg VERSION_TAG=${VERSION_TAG} || { log "❌ 镜像构建失败"; exit 1; }
+    log "✅  Docker镜像构建成功"
+}
 
-# 第七步：启动容器
-echo -e "\n🔍 第七步：启动容器"
-echo "🚀 正在启动容器..."
-docker compose up -d || { echo "❌ 容器启动失败"; exit 1; }
-echo "✅ 服务已成功启动。"
+# 启动容器
+start_containers() {
+    log "🚀 启动容器..."
+    docker compose up -d || { log "❌ 容器启动失败"; exit 1; }
+    log "✅  容器启动成功"
+}
 
-# 部署完成提示
-echo -e "\n🎉 部署流程已完成！"
-echo "前端访问地址: http://8.137.99.5:80"
-echo "后端API文档: http://8.137.99.5:8001/api/v1/docs"
+# 健康检查
+health_check() {
+    log "⏱️ 等待服务启动..."
+    sleep 10
+    log "🔍 进行健康检查..."
+    curl --output /dev/null --silent --head --fail "${FRONTEND_URL}" || { log "❌ 前端服务健康检查失败"; exit 1; }
+    curl --output /dev/null --silent --head --fail "${BACKEND_DOC_URL}" || { log "❌ 后端服务健康检查失败"; exit 1; }
+    log "✅ 服务健康检查通过"
+}
+
+# 清理旧镜像
+cleanup_old_images() {
+    log "🗑️ 清理24小时前的旧镜像..."
+    docker image prune -f --filter "until=24h"
+    log "✅ 旧镜像清理完成"
+}
+
+# 主函数
+main() {
+    log "🚀 开始部署流程"
+    check_permissions
+    check_dependencies
+    update_code
+    stop_and_remove_containers
+    build_frontend
+    build_image
+    start_containers
+    health_check
+    cleanup_old_images
+    log "🎉 部署完成"
+    echo "🌐 前端地址: ${FRONTEND_URL}"
+    echo "📚 API文档: ${BACKEND_DOC_URL}"
+}
+
+main
+trap 'log "⚠️ 脚本中断"; exit 1' INT TERM
