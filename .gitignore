@@ -24,5 +24,4 @@ mkdocs/site
 devops/frontend/dist
 
 .history
-backend/app/config/.env.dev
-backend/app/config/.env.dev1
+
