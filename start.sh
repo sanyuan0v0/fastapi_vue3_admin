@@ -55,12 +55,7 @@ build_frontend() {
     if [ ! -d "frontend/dist" ] || [ "$(git diff --name-only HEAD~1 HEAD)" ]; then
         log "🚀 检测到前端代码变更或首次克隆，开始构建前端..."
         cd frontend || { log "❌ 无法进入前端目录"; exit 1; }
-        # 清理旧依赖
-        if [ -d "node_modules" ] || [ -f "package-lock.json" ]; then
-            log "🧹 清理旧的node_modules和package-lock.json..."
-            rm -rf node_modules package-lock.json
-        fi
-        npm install || { log "❌ 前端依赖安装失败"; exit 1; }
+        npm install --omit=optional --verbose || { log "❌ 前端依赖安装失败"; exit 1; }
         npm run build || { log "❌ 前端工程打包失败"; exit 1; }
         log "✅ 前端工程打包成功"
         cd .. || { log "❌ 无法返回项目根目录"; exit 1; }
