@@ -154,6 +154,8 @@ or
 git clone https://github.com/1014TaoTao/fastapi_vue3_admin.git
 ```
 
+---
+
 ### Local Backend Startup
 
 ```sh

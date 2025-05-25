@@ -12,14 +12,11 @@ backend/logs
 backend/venv
 backend/__pycache__
 backend/dev_sql.db
+backend/site/*
 
 frontend/build
 frontend/node_modules
 frontend/__pycache__
-
-mkdocs/venv
-mkdocs/__pycache__
-mkdocs/site
 
 devops/frontend/dist
 
