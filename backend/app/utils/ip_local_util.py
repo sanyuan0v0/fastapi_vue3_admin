@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import requests
 import httpx
 
 from app.core.logger import logger
@@ -36,8 +35,6 @@ class IpLocalUtil:
             logger.error(f"IP格式不合法: {ip}")
             return "未知"
         
-        logger.info(f"获取IP归属地: {ip}, 类型: {type(ip)}")
-
         # 内网IP直接返回
         if ip == '127.0.0.1' or ip == 'localhost':
             return '内网IP'

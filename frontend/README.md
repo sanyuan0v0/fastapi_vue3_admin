@@ -1,11 +1,4 @@
-# 前端介绍
-
-这是一个基于Vue3的Vite项目，使用Vue3、Vite、TypeScript、Vuex、Vue-router、Ant-Design-Vue、Axios等框架。
-
-- npm init vue@latest   创建项目
-- cd frontend           进入项目
-- npm install           安装依赖
-- npm run dev           启动项目
+# frontend
 
 ## 项目结构
 
@@ -34,34 +27,15 @@ fastapi_project/frontend
 
 ```
 
-## 项目配置
-
-查看 [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## 项目启动
-
-### 初始化依赖
+## 快速开始
 
 ```sh
+# 进入前端工程目录
+cd frontend
+# 安装依赖
 npm install
-```
-
-### 启动开发环境
-
-```sh
+# 启动前端服务
 npm run dev
-```
-
-### 构建项目
-
-```sh
+# 构建前端, 生成 `frontend/dist` 目录
 npm run build
-```
-
-### 项目检查
-
-```sh
-[ESLint](https://eslint.org/)
-
-npm run lint
 ```

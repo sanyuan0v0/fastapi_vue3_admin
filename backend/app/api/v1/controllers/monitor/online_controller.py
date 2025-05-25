@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from typing import Optional
 from fastapi import APIRouter, Body, Depends
 from fastapi.responses import JSONResponse
 from aioredis import Redis
@@ -43,11 +44,11 @@ async def get_online_list_controller(
     description="强制下线"
 )
 async def delete__online_controller(
+    session_id: str = Body(..., description="会话编号"),
     redis: Redis = Depends(redis_getter),
-    username: str = Body(..., description="用户"),
 )->JSONResponse:
-    delete_online_result = await OnlineService.delete_online_service(redis=redis, username=username)
-    if delete_online_result:
+    is_ok = await OnlineService.delete_online_service(redis=redis, session_id=session_id)
+    if is_ok:
         logger.info("强制下线成功")
         return SuccessResponse(msg="强制下线成功")
     else:

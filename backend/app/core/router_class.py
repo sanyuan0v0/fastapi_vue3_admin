@@ -82,7 +82,7 @@ class OperationLogRoute(APIRoute):
                         response_code = response.status_code,
                         response_json = response_data.decode(),
                         process_time = process_time,
-                        description = route.summary,
+                        description = f"{request.scope.get('session_id')}_{route.summary}",
                         creator_id = current_user_id
                     ), auth = auth) 
             

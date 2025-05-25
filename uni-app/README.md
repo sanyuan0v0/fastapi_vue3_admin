@@ -1,4 +1,6 @@
-# frontend
+# uni-app
+
+## 目录结构
 
 ```sh
 uni-app/
@@ -25,25 +27,21 @@ uni-app/
 └─ README.md            # 文档说明
 ```
 
-## 项目初始化
+## 快速开始
 
 ```sh
+# 进入移动工程目录
+cd uni-app
+# 安装依赖
 npm install
-```
-
-### 项目启动
-
-```sh
+# 启动小程序
 npm run dev:h5
-```
-
-### 项目构建
-
-```sh
+# 构建, 生成 `uni-app/dist` 目录
 npm run build
 ```
 
-### 注意
+
+## 注意
 
 在sass1.8.0以上版本报错Deprecation Warning: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0. 因为新版本Sass的@use语法较为激进，如果升级为@use将会是破坏式更新，所以推荐将sass固定在以下版本结局报警。
 "uview-plus": "^3.3.74", 版本不要升级

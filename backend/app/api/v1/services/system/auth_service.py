@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import json
+import uuid
 from typing import Dict, Union, NewType
 from fastapi import Request
 from aioredis import Redis
@@ -41,7 +43,7 @@ class LoginService:
     """登录认证服务"""
 
     @classmethod
-    async def authenticate_user_service(cls, request: Request, redis: Redis, login_form: CustomOAuth2PasswordRequestForm, db: AsyncSession) -> UserModel:
+    async def authenticate_user_service(cls, request: Request, redis: Redis, login_form: CustomOAuth2PasswordRequestForm, db: AsyncSession) -> JWTOutSchema:
         """
         用户认证
         
@@ -72,39 +74,22 @@ class LoginService:
             raise CustomException(msg="用户不存在")
 
         if not PwdUtil.verify_password(plain_password=login_form.password, password_hash=user.password):
-            logger.warning(f'用户 {login_form.username} 密码错误')
-            raise CustomException(msg="密码错误")
+            logger.warning(f'用户密码错误')
+            raise CustomException(msg="用户密码错误")
 
         if not user.available:
             raise CustomException(msg="用户已被停用")
-
+        
         # 更新最后登录时间
         user = await UserCRUD(auth).update_last_login_crud(id=user.id)
-        
-        # 创建token
-        token = await cls.create_token_service(redis=redis, username=user.username)
-        user_agent = parse(request.headers.get("user-agent"))
-        login_location = await IpLocalUtil.get_ip_location(request.client.host)
-        # 缓存中构建在线用户信息
-        await RedisCURD(redis).set(
-            key=f"{RedisInitKeyConfig.ONLINE_USER.key}:{user.username}",
-            value=OnlineOutSchema(
-                session_id=token.access_token,
-                user_id=user.id, 
-                name=user.name,
-                user_name=user.username,
-                ipaddr=request.client.host,
-                login_location=login_location,
-                os=user_agent.os.family,
-                browser = user_agent.browser.family,
-                login_time=user.last_login
-            ).model_dump_json()
-        )
 
-        return user
+        # 创建token
+        token = await cls.create_token_service(request=request, redis=redis, user=user)
+
+        return token
 
     @classmethod
-    async def create_token_service(cls, redis: Redis, username: str) -> JWTOutSchema:
+    async def create_token_service(cls, request: Request, redis: Redis, user: UserModel) -> JWTOutSchema:
         """
         创建访问令牌和刷新令牌
         
@@ -115,34 +100,47 @@ class LoginService:
         Returns:
             JWTOutSchema: 包含访问令牌和刷新令牌的响应对象
         """
+        # 生成会话编号
+        session_id = str(uuid.uuid4())
+        user_agent = parse(request.headers.get("user-agent"))
+        login_location = await IpLocalUtil.get_ip_location(request.client.host)
+        
         access_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         refresh_expires = timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES)
         
         now = datetime.now()
+        session_info=OnlineOutSchema(
+            session_id=session_id,
+            user_id=user.id, 
+            name=user.name,
+            user_name=user.username,
+            ipaddr=request.client.host,
+            login_location=login_location,
+            os=user_agent.os.family,
+            browser = user_agent.browser.family,
+            login_time=user.last_login.isoformat() if isinstance(user.last_login, datetime) else str(user.last_login),
+        ).model_dump_json()
+
         access_token = create_access_token(payload=JWTPayloadSchema(
-            sub=username,
+            sub=session_info,
             is_refresh=False,
             exp=now + access_expires,
         ))
         refresh_token = create_access_token(payload=JWTPayloadSchema(
-            sub=username,
+            sub=session_info,
             is_refresh=True,
             exp=now + refresh_expires,
         ))
 
-        # 清除该用户之前的token
-        await RedisCURD(redis).delete(f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}')
-        await RedisCURD(redis).delete(f'{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}')
-        
         # 设置新的token
         await RedisCURD(redis).set(
-            key=f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}',
+            key=f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{session_id}',
             value=access_token,
             expire=int(access_expires.total_seconds())
         )
 
         await RedisCURD(redis).set(
-            key=f'{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}',
+            key=f'{RedisInitKeyConfig.REFRESH_TOKEN.key}:{session_id}',
             value=refresh_token,
             expire=int(refresh_expires.total_seconds())
         )
@@ -155,7 +153,7 @@ class LoginService:
         )
 
     @classmethod
-    async def refresh_token_service(cls, redis: Redis, refresh_token: RefreshTokenPayloadSchema) -> JWTOutSchema:
+    async def refresh_token_service(cls, db: AsyncSession, redis: Redis, request: Request, refresh_token: RefreshTokenPayloadSchema) -> JWTOutSchema:
         """
         刷新访问令牌
         
@@ -168,11 +166,60 @@ class LoginService:
         Raises:
             CustomException: 刷新令牌无效时抛出异常
         """
-        token_payload: JWTPayloadSchema = decode_access_token(refresh_token.refresh_token)
+        token_payload: JWTPayloadSchema = decode_access_token(token = refresh_token.refresh_token)
         if not token_payload.is_refresh:
-            raise CustomException(msg="非法凭证")
+            raise CustomException(msg="非法凭证，请传入刷新令牌")
+        
+        # 去 Redis 查完整信息
+        session_info = json.loads(token_payload.sub)
+        session_id = session_info.get("session_id")
+        user_id = session_info.get("user_id")
 
-        return await cls.create_token_service(redis=redis, username=token_payload.sub)
+        if not session_id or not user_id:
+            raise CustomException(msg="非法凭证，无法获取会话编号或用户ID")
+
+        # 用户认证
+        auth = AuthSchema(db=db)
+        user = await UserCRUD(auth).get_by_id_crud(id=user_id)
+
+        # 设置新的 token
+        access_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        refresh_expires = timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES)
+        now = datetime.now()
+
+        session_info_json = json.dumps(session_info)
+
+        access_token = create_access_token(payload=JWTPayloadSchema(
+            sub=session_info_json,
+            is_refresh=False,
+            exp=now + access_expires,
+        ))
+
+        refresh_token_new = create_access_token(payload=JWTPayloadSchema(
+            sub=session_info_json,
+            is_refresh=True,
+            exp=now + refresh_expires,
+        ))
+        
+        # 覆盖写入 Redis
+        await RedisCURD(redis).set(
+            key=f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{session_id}',
+            value=access_token,
+            expire=int(access_expires.total_seconds())
+        )
+
+        await RedisCURD(redis).set(
+            key=f'{RedisInitKeyConfig.REFRESH_TOKEN.key}:{session_id}',
+            value=refresh_token_new,
+            expire=int(refresh_expires.total_seconds())
+        )
+
+        return JWTOutSchema(
+            access_token=access_token,
+            refresh_token=refresh_token_new,
+            expires_in=access_expires.total_seconds(),
+            token_type=settings.TOKEN_TYPE
+        )
 
     @classmethod
     async def logout_services_service(cls, redis: Redis, token: LogoutPayloadSchema) -> bool:
@@ -186,15 +233,19 @@ class LoginService:
         Returns:
             bool: 退出成功返回True
         """
-        payload: JWTPayloadSchema = decode_access_token(token.token)
-        username: str = payload.sub
+        payload: JWTPayloadSchema = decode_access_token(token=token.token)
+        session_info = json.loads(payload.sub)
+        session_id = session_info.get("session_id")
         
-        # 删除Redis中的在线用户、访问令牌、刷新令牌
-        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.ONLINE_USER.key}:{username}")
-        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}")
-        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}")
+        if not session_id:
+            raise CustomException(msg="非法token，无法获取会话编号")
 
-        logger.info(f"用户退出登录成功,会话账号:{username}")
+        # 删除Redis中的在线用户、访问令牌、刷新令牌
+        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:{session_id}")
+        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.REFRESH_TOKEN.key}:{session_id}")
+        
+        logger.info(f"用户退出登录成功,会话编号:{session_id}")
+
         return True
 
 

@@ -33,8 +33,7 @@
         <!-- 表格区域 -->
         <div class="table-wrapper">
             <a-card title="定时任务列表" :bordered="false" :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-                
-      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 360px)' }">
+                :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 360px)' }">
                 <template #extra>
                     <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')"
                         style="margin-right: 10px;">新建</a-button>
@@ -455,7 +454,7 @@ const columns: TableColumnsType = [
         title: '存储器',
         dataIndex: 'jobstore',
         ellipsis: true,
-        width: 100,
+        // width: 100,
     },
     {
         title: '执行器',

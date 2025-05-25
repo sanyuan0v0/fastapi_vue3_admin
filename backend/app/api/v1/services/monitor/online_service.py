@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
-from typing import Dict, List
+from typing import Dict, List, Optional
 from aioredis import Redis
 
 from app.common.enums import RedisInitKeyConfig
@@ -9,72 +9,66 @@ from app.core.exceptions import CustomException
 from app.api.v1.params.monitor.online_param import OnlineQueryParams
 from app.api.v1.schemas.monitor.online_schema import OnlineOutSchema
 from app.core.redis_crud import RedisCURD
+from app.core.security import decode_access_token
+from app.core.logger import logger
 
 class OnlineService:
     """在线用户管理模块服务层"""
 
     @classmethod
-    async def get_online_list_service(cls, redis: Redis, search: OnlineQueryParams) -> List[Dict]:
-        """获取在线用户列表信息"""
-        # 获取所有在线用户信息
-        token_keys = await RedisCURD(redis).get_keys(f'{RedisInitKeyConfig.ONLINE_USER.key}*')
-        if not token_keys:
-            return []
-            
-        # 批量获取在线用户信息
-        online_values = await RedisCURD(redis).mget(*token_keys)
-        online_list = []
-        
-        for online_value in online_values:
-            # 将字符串解析为字典
-            online_data = json.loads(online_value)
-            online_info = OnlineOutSchema(
-                session_id=online_data['session_id'],
-                user_id=online_data['user_id'],
-                name=online_data['name'], 
-                user_name=online_data['user_name'], 
-                ipaddr=online_data['ipaddr'],
-                login_location=online_data['login_location'],
-                os=online_data['os'],
-                browser=online_data['browser'],
-                login_time=online_data['login_time']
-            ).model_dump(mode='json')  # 添加mode='json'参数以序列化datetime
-            
-            if cls._match_search_conditions(online_info, search):
-                online_list.append(online_info)
-        
-        return online_list
+    async def get_online_list_service(cls, redis: Redis, search: Optional[OnlineQueryParams] = None) ->  List[Dict]:
+        """
+        获取在线用户列表信息（支持分页和搜索）
+        """
+
+        keys = await RedisCURD(redis).get_keys(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:*")
+        tokens = await RedisCURD(redis).mget(*keys)
+
+        online_users = []
+        for token in tokens:
+            if not token:
+                continue
+            try:
+                payload = decode_access_token(token=token)
+                session_info = json.loads(payload.sub)  
+                if cls._match_search_conditions(session_info, search):
+                    online_users.append(session_info)
+            except Exception as e:
+                logger.error(f"解析在线用户数据失败: {e}")
+                continue
+
+        return online_users
+
 
     @classmethod
-    async def delete_online_service(cls, redis: Redis, username: str) -> bool:
+    async def delete_online_service(cls, redis: Redis, session_id: str) -> bool:
         """强制下线在线用户"""
-        if not username:
-            raise CustomException(msg='传入username不能为空')
-            
-        # 批量删除token
+        # 删除 token
+        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:{session_id}")
+        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.REFRESH_TOKEN.key}:{session_id}")
 
-        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.ONLINE_USER.key}:{username}")
-        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:{username}")
-        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.REFRESH_TOKEN.key}:{username}")
+
+        logger.info(f"强制下线用户会话: {session_id}")
         return True
     
     @staticmethod
-    def _match_search_conditions(online_info: Dict, search: OnlineQueryParams) -> bool:
+    def _match_search_conditions(online_info: Dict, search: Optional[OnlineQueryParams]) -> bool:
         """检查是否匹配搜索条件"""
-        # 根据params中的定义,需要进行模糊匹配
-        if search.name:
-            search_name = search.name[1].strip('%')  # 去掉like和%
-            if search_name not in online_info['name']:
+        if not search:
+            return True
+
+        if search.name and search.name[1]:
+            keyword = search.name[1].strip('%')
+            if keyword.lower() not in online_info.get("name", "").lower():
                 return False
-                
-        if search.login_location:
-            search_location = search.login_location[1].strip('%')
-            if search_location not in online_info['login_location']:
+
+        if search.ipaddr and search.ipaddr[1]:
+            if online_info.get("ipaddr") != search.ipaddr[1]:
                 return False
-                
-        # ipaddr是精确匹配
-        if search.ipaddr:
-            if online_info['ipaddr'] != search.ipaddr[1]:  # 取eq后面的值
+
+        if search.login_location and search.login_location[1]:
+            keyword = search.login_location[1].strip('%')
+            if keyword.lower() not in online_info.get("login_location", "").lower():
                 return False
-                
+
         return True
