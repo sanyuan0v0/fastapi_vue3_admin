@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import json
 from aioredis import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import AsyncGenerator, Optional
@@ -13,7 +14,8 @@ from app.core.database import session_connect
 from app.core.logger import logger
 from app.api.v1.cruds.system.user_crud import UserCRUD
 from app.api.v1.schemas.system.auth_schema import AuthSchema
-
+from app.core.redis_crud import RedisCURD
+from app.common.enums import RedisInitKeyConfig
 
 async def db_getter() -> AsyncGenerator[AsyncSession, None]:
     """获取数据库会话连接"""
@@ -57,7 +59,12 @@ async def get_current_user(
     if not payload or not hasattr(payload, 'is_refresh') or payload.is_refresh:
         raise CustomException(msg="非法凭证", status_code=401)
         
-    username = payload.sub
+    online_user_info = payload.sub
+    # 从Redis中获取用户信息
+    user_info = json.loads(online_user_info)  # 确保是字典类型
+    username = user_info.get("user_name")
+    if not username:
+        raise CustomException(msg="用户信息不完整")
         
     auth = AuthSchema(db=db)
     
@@ -69,6 +76,7 @@ async def get_current_user(
         raise CustomException(msg="用户已被停用")
     
     # 设置请求上下文
+    request.scope["session_id"] = user_info.get("session_id")
     request.scope["user_id"] = user.id
     request.scope["user_username"] = user.username
     

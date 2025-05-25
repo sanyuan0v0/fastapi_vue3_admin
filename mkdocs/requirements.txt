@@ -1,4 +1,0 @@
-mkdocs
-mkdocs-material #  安装主题
-mkdocs-minify-plugin # 插件
-mkdocs-git-revision-date-localized-plugin

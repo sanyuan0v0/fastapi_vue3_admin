@@ -39,9 +39,9 @@ async def login_for_access_token_controller(
     login_form: CustomOAuth2PasswordRequestForm = Depends(),
     db: AsyncSession = Depends(db_getter),
 ) -> Union[JSONResponse, Dict]:
-    user = await LoginService.authenticate_user_service(request=request, redis=redis, login_form=login_form, db=db)
-    login_token = await LoginService.create_token_service(redis=redis, username=user.username)
-    logger.info(f"用户{user.username}登录成功")
+    login_token = await LoginService.authenticate_user_service(request=request, redis=redis, login_form=login_form, db=db)
+
+    logger.info(f"用户{login_form.username}登录成功")
 
     # 如果是文档请求，则不记录日志:http://localhost:8000/api/v1/docs
     if settings.DOCS_URL in request.headers.get("referer", ""):
@@ -51,11 +51,13 @@ async def login_for_access_token_controller(
 
 @router.post("/token/refresh", summary="刷新token", description="刷新token", response_model=JWTOutSchema, dependencies=[Depends(get_current_user)])
 async def get_new_token_controller(
+    request: Request,
     payload: RefreshTokenPayloadSchema,
+    db: AsyncSession = Depends(db_getter),
     redis: Redis = Depends(redis_getter) 
 ) -> JSONResponse:
     # 解析当前的访问Token以获取用户名
-    new_token = await LoginService.refresh_token_service(redis=redis, refresh_token=payload)
+    new_token = await LoginService.refresh_token_service(db=db, request=request, redis=redis, refresh_token=payload)
     token_dict = new_token.model_dump()
     logger.info(f"刷新token成功: {token_dict}")
     return SuccessResponse(data=token_dict, msg="刷新成功")

@@ -97,8 +97,8 @@ def decode_access_token(token: str) -> JWTPayloadSchema:
             algorithms=[settings.ALGORITHM]
         )
 
-        username = payload.get("sub")
-        if not username:
+        online_user_info = payload.get("sub")
+        if not online_user_info:
             raise CustomException(msg="无效认证,请重新登录", status_code=403)
 
         return JWTPayloadSchema(**payload)

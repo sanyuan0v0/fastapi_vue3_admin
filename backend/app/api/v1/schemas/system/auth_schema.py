@@ -20,14 +20,14 @@ class AuthSchema(BaseModel):
 
 class JWTPayloadSchema(BaseModel):
     """JWT载荷模型"""
-    sub: str = Field(..., description='用户ID')
+    sub: str = Field(..., description='用户登录信息')
     is_refresh: bool = Field(default=False, description='是否刷新token')
     exp: Union[datetime, int] = Field(..., description='过期时间')
 
     @model_validator(mode='after')
     def validate_fields(cls, data):
         if not data.sub or len(data.sub.strip()) == 0:
-            raise ValueError("用户ID不能为空")
+            raise ValueError("会话编号不能为空")
         return data
 
 

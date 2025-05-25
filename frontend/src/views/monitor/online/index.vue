@@ -136,13 +136,13 @@ const resetQuery = () => {
 };
 
 const handleForceLogout = (row: OnlineUser) => {
-  if (!row?.user_name) return;
+  if (!row?.session_id) return;
   Modal.confirm({
     title: '确认提示',
     content: `是否确认强退名称为"${row.user_name}"的用户?`,
     async onOk() {
       try {
-        await deleteOnline(row.user_name);
+        await deleteOnline(row.session_id);
         await getList();
         message.success('强退成功');
       } catch (error) {

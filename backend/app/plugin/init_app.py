@@ -10,6 +10,7 @@ from fastapi.openapi.docs import (
     get_swagger_ui_html,
     get_swagger_ui_oauth2_redirect_html
 )
+from sqlalchemy import text
 
 from app.config.setting import settings
 from app.api.v1.urls.system_url import SystemApiRouter
@@ -35,7 +36,7 @@ from app.core.exceptions import (
 )
 from app.api.v1.services.system.config_service import ConfigService
 from app.api.v1.services.system.dict_service import DictDataService
-from app.core.database import session_connect
+from app.core.database import session_connect, test_db_connection
 from app.scripts.initialize import InitializeData
 
 @asynccontextmanager
@@ -48,6 +49,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     try:
         async with session_connect() as session:
             async with session.begin():
+                # 测试数据库连接
+                await test_db_connection(session)
                 logger.info("数据库连接成功...")
                 await InitializeData().init_db(db=session)
                 logger.info("初始化数据完成...")
@@ -65,7 +68,6 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
         await session.rollback()
         logger.error(f'{settings.TITLE} 服务启动失败: {str(e)}')
         raise e
-
     yield
 
     await import_modules_async(modules=settings.EVENT_LIST, desc="全局事件", app=app, status=False)

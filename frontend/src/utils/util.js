@@ -105,19 +105,40 @@ export function save_token(access_token, refresh_token, expires_in) {
   storage.set("Refresh-Token", refresh_token);
 }
 
+// export function listToTree(list) {
+//   let resultList = list.filter((item) => {
+//     let children = list.filter((child) => {
+//       return item.id === child.parent_id;
+//     });
+//     if (children.length > 0) {
+//       item.children = children;
+//     }
+//     return item.parent_id === null;
+//   });
+//   return cloneDeep(resultList);
+// }
 export function listToTree(list) {
-  let resultList = list.filter((item) => {
-    let children = list.filter((child) => {
-      return item.id === child.parent_id;
-    });
-    if (children.length > 0) {
-      item.children = children;
-    }
-    return item.parent_id === null;
-  });
-  return cloneDeep(resultList);
-}
+  const map = {};
+  // 创建映射表，保留每个节点的 parent_id 等原始字段
+  list.forEach(item => map[item.id] = { ...item });
 
+  const tree = [];
+  list.forEach(item => {
+    const parentId = item.parent_id;
+    if (parentId && map[parentId]) {
+      // 将当前节点加入其父节点的 children 数组中
+      if (!map[parentId].children) {
+        map[parentId].children = [];
+      }
+      map[parentId].children.push(map[item.id]);
+    } else if (parentId === null || parentId === undefined) {
+      // 根节点
+      tree.push(map[item.id]);
+    }
+  });
+
+  return tree;
+}
 export function cloneDeep(obj) {
   return JSON.parse(JSON.stringify(obj));
 }

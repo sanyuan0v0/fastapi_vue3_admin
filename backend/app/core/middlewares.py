@@ -56,6 +56,7 @@ class RequestLogMiddleware(BaseHTTPMiddleware):
             response.headers["X-Process-Time"] = str(process_time)
             
             logger.info(
+                f"会话ID: {request.scope.get('session_id')}, "
                 f"响应状态: {response.status_code}, "
                 f"响应内容长度: {response.headers.get('content-length', '0')}, "
                 f"处理时间: {process_time}s"
