@@ -5,7 +5,6 @@ PROJECT_NAME="fastapi_vue3_admin"
 WORK_DIR="/home"
 GIT_REPO="https://gitee.com/tao__tao/fastapi_vue3_admin.git"
 WEB_URL="http://8.137.99.5:80"
-API_URL="http://8.137.99.5:8001/api/v1/docs"
 
 # 打印带时间戳的日志
 log() {
@@ -47,9 +46,17 @@ update_code() {
     fi
 }
 
+# 停止并删除容器
+stop_and_remove_containers() {
+    log "==========🗑️ 第四五步：停止并删除现有容器...=========="
+    [ -f "docker-compose.yaml" ] || { log "❌ docker-compose.yaml 文件未找到"; exit 1; }
+    docker compose down
+    log "✅ 容器已停止并删除"
+}
+
 # 构建前端
 build_frontend() {
-    log "==========🔍 第四步：开始构建前端代码...=========="
+    log "==========🔍 第五步：开始构建前端代码...=========="
     # 如果是首次克隆项目，或者检测到前端代码变更，则构建前端
     if [ ! -d "frontend/dist" ] || [ "$(git diff --name-only HEAD~1 HEAD -- frontend/)" ]; then
         log "🚀 检测到前端代码变更或首次克隆，开始构建前端..."
@@ -61,14 +68,6 @@ build_frontend() {
     else
         log "⚠️ 未检测到前端代码变更且非首次克隆，跳过前端构建"
     fi
-}
-
-# 停止并删除容器
-stop_and_remove_containers() {
-    log "==========🗑️ 第五步：停止并删除现有容器...=========="
-    [ -f "docker-compose.yaml" ] || { log "❌ docker-compose.yaml 文件未找到"; exit 1; }
-    docker compose down
-    log "✅ 容器已停止并删除"
 }
 
 # 构建镜像
@@ -90,8 +89,6 @@ health_check() {
     log "==========🔍 第八步：进行健康检查...==========🗑️ "
     sleep 10  # 等待容器启动
     curl --output /dev/null --silent --head --fail "${WEB_URL}" || { log "❌ 前端服务健康检查失败"; exit 1; }
-    sleep 10  # 等待容器启动
-    curl --output /dev/null --silent --head --fail "${API_URL}" || { log "❌ 后端服务健康检查失败"; exit 1; }
     log "✅ 服务健康检查通过"
 }
 
@@ -115,7 +112,6 @@ main() {
     health_check
     cleanup_old_images
     log "==========🎉 【部署完成】访问地址: ${WEB_URL}=========="
-    log "==========🎉 【API文档】访问地址: ${API_URL}=========="
 }
 
 main
