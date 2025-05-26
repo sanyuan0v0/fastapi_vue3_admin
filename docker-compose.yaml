@@ -13,7 +13,7 @@ services:
       - "3306:3306"
     volumes:
       - ./devops/mysql/data:/var/lib/mysql
-      - ./devops/mysql/conf:/etc/mysql
+      - ./devops/mysql/conf:/etc/mysql/conf.d
       - ./devops/mysql/logs:/var/log/mysql
     networks:
       - app_network
