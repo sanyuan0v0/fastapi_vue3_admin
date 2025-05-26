@@ -28,7 +28,6 @@ fastapi_project/backend
 ├─ static                  # 项目静态文件
 ├─ main.py                 # 项目启动文件
 ├─ alembic.ini             # alembic配置文件
-├─ gunicorn.py             # gunicorn配置文件
 ├─ requirements.txt        # 项目依赖文件
 ├─ mkdocs.yml              # mkdocs配置文件
 ├─ dev_sql.db              # 项目数据库文件
