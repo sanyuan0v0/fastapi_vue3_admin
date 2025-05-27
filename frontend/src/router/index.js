@@ -32,6 +32,25 @@ export const generator = (routers) => {
 };
 
 
+const rootRouter = {
+  path: "/",
+  name: "Index",
+  redirect: "/dashboard",
+  component: BasicLayout,
+  children: [
+    {
+      path: "/profile",
+      name: "Profile",
+      meta: {
+        title: "个人中心",
+        keepAlive: true,
+      },
+      component: () => import("../views/current/profile.vue"),
+    },
+  ],
+};
+
+
 const routes = [
   { path: "/login", 
     name: "Login", 
@@ -60,25 +79,11 @@ const routes = [
     meta: { title: "404" },
     component: () => import("../views/exception/404.vue"),
   },
+  {
+    ...rootRouter,
+  },
 ];
 
-const rootRouter = {
-  path: "/",
-  name: "Index",
-  redirect: "/dashboard",
-  component: BasicLayout,
-  children: [
-    {
-      path: "/profile",
-      name: "Profile",
-      meta: {
-        title: "个人中心",
-        keepAlive: true,
-      },
-      component: () => import("../views/current/profile.vue"),
-    },
-  ],
-};
 
 const router = createRouter({
   history: createWebHistory(),

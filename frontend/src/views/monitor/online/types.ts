@@ -1,4 +1,4 @@
-export interface QueryState {
+export interface searchType {
     ipaddr?: string;
     name?: string;
     login_location?: string;

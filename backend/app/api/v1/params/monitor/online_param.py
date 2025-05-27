@@ -18,6 +18,6 @@ class OnlineQueryParams:
         # 模糊查询字段
         self.name = ("like", f"%{name}%") if name else None
         self.login_location = ("like", f"%{login_location}%") if login_location else None
+        self.ipaddr = ("like", f"%{ipaddr}%") if ipaddr else None
 
-        # 精确查询字段
-        self.ipaddr = ("eq", ipaddr) if ipaddr else None
+        

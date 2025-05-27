@@ -7,8 +7,10 @@ services:
     restart: always
     environment:
       TZ: "Asia/Shanghai"
-      MYSQL_ROOT_PASSWORD: "123456"
-      MYSQL_DATABASE: "fastapi_vue3_admin"
+      MYSQL_ROOT_PASSWORD: "管理员密码"
+      MYSQL_DATABASE: "生产环境数据库"
+      MYSQL_USER: "生产环境数据库"
+      MYSQL_PASSWORD: "生产环境数据库密码"
     ports:
       - "3306:3306"
     volumes:
@@ -41,7 +43,7 @@ services:
     build:
       context: ./
       dockerfile: ./devops/backend/Dockerfile
-    image: backend:latest # 构建镜像名称
+    image: backend:latest
     restart: always
     environment:
       TZ: "Asia/Shanghai"

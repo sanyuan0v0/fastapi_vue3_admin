@@ -4,7 +4,7 @@
   <!-- 搜索表单 -->
   <div class="table-search-wrapper">
     <a-card :bordered="false">
-      <a-form :model="queryState" @finish="handleQuery">
+      <a-form :model="queryState" @finish="onFinish">
         
         <a-flex wrap="wrap" gap="small">
             <a-form-item name="ipaddr" label="主机" >
@@ -36,8 +36,9 @@
       <a-table
         :rowKey="record => record.session_id"
         :columns="columns"
-        :data-source="tableData"
+        :data-source="dataSource"
         :loading="loading"
+        @change="handlePageChange"
         :scroll="{ x: 400 }"
         :pagination="pagination"
                     :style="{ minHeight: 'calc(100vh - 420px)' }"
@@ -62,22 +63,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import { DeleteOutlined } from '@ant-design/icons-vue';
 import { Modal, message } from 'ant-design-vue';
 import { getOnlineList, deleteOnline} from "@/api/monitor/online";
-import type { QueryState, OnlineUser } from './types';
+import type { searchType, OnlineUser } from './types';
 
-const onlineList = ref<OnlineUser[]>([]);
+const dataSource = ref<OnlineUser[]>([]);
 const loading = ref(false);
-const total = ref(0);
-const pageNum = ref(1);
-const pageSize = ref(10);
-
-const queryState = ref<QueryState>({
-  ipaddr: undefined,
-  name: undefined
-});
+const queryState = reactive<searchType>({});
 
 const columns = [
   { title: '会话编号', dataIndex: 'session_id', key: 'sessionId', ellipsis: true },
@@ -96,43 +90,54 @@ const pagination = reactive({
   pageSize: 10,
   defaultPageSize: 10,
   showSizeChanger: true,
-  total: onlineList.value.length,
+  total: dataSource.value.length,
   showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条 / 总共 ${total} 条`
 })
 
-const tableData = computed(() => {
-  if (!onlineList.value) return [];
-  const start = (pageNum.value - 1) * pageSize.value;
-  return onlineList.value.slice(start, start + pageSize.value);
-});
+const onFinish = () => {
+  pagination.current = 1;
+  loadingData();
+};
 
-const getList = async () => {
-  try {
-    loading.value = true;
-    const response = await getOnlineList(queryState.value);
-    onlineList.value = response?.data?.data?.items || [];
-    total.value = response?.data?.data?.total || 0;
-  } catch (error) {
-    message.error('获取数据失败');
-    onlineList.value = [];
-    total.value = 0;
-  } finally {
-    loading.value = false;
+const loadingData = async () => {
+  loading.value = true;
+
+  let params = {};
+
+  if (queryState.ipaddr) {
+    params['ipaddr'] = queryState.ipaddr
   }
-};
 
-const handleQuery = () => {
-  pageNum.value = 1;
-  getList();
-};
+  if (queryState.name) {
+    params['name'] = queryState.name
+  }
 
+  if (queryState.login_location) {
+    params['login_location'] = queryState.login_location
+  }
+
+  params['page_no'] = pagination.current;
+  params['page_size'] = pagination.pageSize;
+
+  getOnlineList(params).then(response => {
+    const result = response.data;
+    dataSource.value = result.data.items;
+    pagination.total = result.data.total;
+    pagination.current = result.data.page_no;
+    pagination.pageSize = result.data.page_size;
+  }).catch(error => {
+    console.log(error);
+  }).finally(() => {
+    loading.value = false;
+  });
+};
 
 const resetQuery = () => {
-  Object.keys(queryState.value).forEach((key: string) => {
-    delete queryState.value[key];
+  Object.keys(queryState).forEach((key: string) => {
+    delete queryState[key];
   });
   pagination.current = 1;
-  getList();
+  loadingData();
 };
 
 const handleForceLogout = (row: OnlineUser) => {
@@ -143,7 +148,7 @@ const handleForceLogout = (row: OnlineUser) => {
     async onOk() {
       try {
         await deleteOnline(row.session_id);
-        await getList();
+        await loadingData();
         message.success('强退成功');
       } catch (error) {
         message.error('强退失败');
@@ -152,19 +157,15 @@ const handleForceLogout = (row: OnlineUser) => {
   });
 };
 
-const handlePageChange = (page: number, size: number) => {
-  pageNum.value = page;
-  pageSize.value = size;
+const handlePageChange = (values: any) => {
+  pagination.current = values.current;
+  pagination.pageSize = values.pageSize;
+  loadingData();
 };
 
-const handlePageSizeChange = (current: number, size: number) => {
-  pageSize.value = size;
-  pageNum.value = 1;
-};
 
-onMounted(() => {
-  getList();
-});
+onMounted(() => loadingData());
+
 </script>
 
 <style lang="scss" scoped>
