@@ -21,3 +21,6 @@ frontend/__pycache__
 devops/frontend/dist
 
 .history
+.env.prod
+.env.production
+docker-compose.prod.yaml
