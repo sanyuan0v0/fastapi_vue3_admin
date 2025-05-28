@@ -37,7 +37,7 @@ class OnlineService:
                 logger.error(f"解析在线用户数据失败: {e}")
                 continue
 
-        return online_users
+        return online_users.sort(key=lambda x: x.get('login_time'), reverse=False)
 
 
     @classmethod
@@ -63,7 +63,8 @@ class OnlineService:
                 return False
 
         if search.ipaddr and search.ipaddr[1]:
-            if online_info.get("ipaddr") != search.ipaddr[1]:
+            keyword = search.ipaddr[1].strip('%')
+            if keyword not in online_info.get("ipaddr", ""):
                 return False
 
         if search.login_location and search.login_location[1]:
