@@ -24,3 +24,6 @@ devops/frontend/dist
 .env.prod
 .env.production
 docker-compose.prod.yaml
+docker-compose.yaml
+backend/env/.env.prod
+frontend/.env.production

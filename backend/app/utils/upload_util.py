@@ -106,15 +106,14 @@ class UploadUtil:
             raise CustomException(msg='文件类型或大小不合法')
             
         try:
-            # 构建相对路径: content_type/年/月/日
-            relative_path = Path(file.content_type).joinpath(datetime.now().strftime("%Y/%m/%d"))
             # 构建完整的目录路径
-            dir_path = settings.UPLOAD_FILE_PATH.joinpath(relative_path)
+            dir_path = settings.UPLOAD_FILE_PATH.joinpath(datetime.now().strftime("%Y/%m/%d"))
             dir_path.mkdir(parents=True, exist_ok=True)
             
             # 生成文件名并保存
             filename = cls.generate_file_name(file.filename)
             filepath = dir_path / filename
+            filepath.mkdir(parents=True, exist_ok=True)
 
             # 分块写入文件
             chunk_size = 8 * 1024 * 1024  # 8MB chunks
