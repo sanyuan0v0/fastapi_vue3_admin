@@ -7,13 +7,15 @@ services:
     restart: always
     environment:
       TZ: "Asia/Shanghai"
-      MYSQL_ROOT_PASSWORD: "FastApi123abc"
-      MYSQL_DATABASE: "fastapi_vue3_admin"
+      MYSQL_ROOT_PASSWORD: "管理员密码"
+      MYSQL_DATABASE: "生产环境数据库"
+      MYSQL_USER: "生产环境数据库"
+      MYSQL_PASSWORD: "生产环境数据库密码"
     ports:
       - "3306:3306"
     volumes:
       - ./devops/mysql/data:/var/lib/mysql
-      - ./devops/mysql/conf:/etc/mysql
+      - ./devops/mysql/conf:/etc/mysql/conf.d
       - ./devops/mysql/logs:/var/log/mysql
     networks:
       - app_network
@@ -28,10 +30,10 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ./devops/redis/conf:/etc/redis
+      - ./devops/redis/conf/redis.conf:/etc/redis/redis.conf
       - ./devops/redis/data:/data
       - ./devops/redis/logs:/var/log/redis
-    command: redis-server /etc/redis/redis.conf --requirepass FastApi123abc
+    command: redis-server /etc/redis/redis.conf
     networks:
       - app_network
     
@@ -41,7 +43,7 @@ services:
     build:
       context: ./
       dockerfile: ./devops/backend/Dockerfile
-    image: backend:latest # 构建镜像名称
+    image: backend:latest
     restart: always
     environment:
       TZ: "Asia/Shanghai"
