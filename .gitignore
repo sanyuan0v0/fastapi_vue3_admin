@@ -27,3 +27,5 @@ docker-compose.prod.yaml
 docker-compose.yaml
 backend/env/.env.prod
 frontend/.env.production
+
+prod/
