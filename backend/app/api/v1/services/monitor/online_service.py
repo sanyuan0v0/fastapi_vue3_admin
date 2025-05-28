@@ -37,7 +37,7 @@ class OnlineService:
                 logger.error(f"解析在线用户数据失败: {e}")
                 continue
 
-        return online_users.sort(key=lambda x: x.get('login_time'), reverse=False)
+        return online_users
 
 
     @classmethod
