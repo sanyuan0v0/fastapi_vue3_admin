@@ -173,7 +173,6 @@ const init = async (record: tableDataType) => {
 
     } catch (error) {
         console.error('获取权限数据失败:', error);
-        message.error('获取权限数据失败');
     } finally {
         tableLoading.value = false;
     }
@@ -197,7 +196,6 @@ const handleDrawerSave = () => {
         emit('event');
     }).catch(error => {
         console.error('保存权限失败:', error);
-        message.error('保存权限失败');
         drawerSaving.value = false;
     })
 }

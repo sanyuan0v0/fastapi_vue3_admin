@@ -903,7 +903,7 @@ const customRequest = ({ file, onSuccess, onError, onProgress }: any) => {
       fileItem.percent = 100;
       upload.isUploading = false;
       upload.open = false;
-      message.success('用户导入成功');
+      message.success(response.data.msg);
       onSuccess(response);
       loadingData(); // 刷新数据
     })

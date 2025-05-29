@@ -121,7 +121,7 @@ fastapi_vue3_admin
 
 ## 🍪 Demo Environment
 
-- **Demo URL**: <http://8.137.99.5>
+- **Demo URL**: <http://service.fastapiadmin.com>
 - **Admin Account**: `admin` / Password: `123456`
 - **Demo Account**: `demo` / Password: `123456`
 
@@ -219,7 +219,7 @@ npm run build
 
 - Frontend Address: <http://127.0.0.1:5180>
 - Mini Program Address: <http://127.0.0.1:5181>
-- API Address: <http://127.0.0.1:8080/api/v1/docs>
+- API Address: <http://127.0.0.1:8001/api/v1/docs>
 - Admin Account: `admin` Password: `123456`
 - Demo Account: `demo` Password: `123456`
 

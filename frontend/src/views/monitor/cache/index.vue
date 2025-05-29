@@ -207,16 +207,11 @@ const getCacheNameList = () => {
   loading.value = true;
   getCacheNames()
     .then(({ data: result }) => {
-      if (result.status_code === 200) {
-        cacheNames.value = result.data || [];
-        resetCacheForm();
-      } else {
-        message.error(result.msg)
-      }
+      cacheNames.value = result.data || [];
+      resetCacheForm();
     })
     .catch(error => {
       console.error('获取缓存列表出错:', error);
-      message.error('获取缓存列表失败');
     })
     .finally(() => {
       loading.value = false;
@@ -226,7 +221,6 @@ const getCacheNameList = () => {
 // 刷新缓存列表
 const refreshCacheNames = () => {
   getCacheNameList();
-  message.success('刷新缓存列表成功');
 };
 
 // 清理缓存名称
@@ -236,17 +230,11 @@ const handleClearCacheName = (row: CacheInfo) => {
     content: `确定要清理缓存名称[${row.cache_name}]吗？`,
     onOk() {
       deleteCacheName(row.cache_name)
-        .then(({ data: result }) => {
-          if (result.status_code === 200) {
-            message.success(result.msg);
-            getCacheNameList();
-          } else {
-            message.error(result.msg)
-          }
+        .then(() => {
+          getCacheNameList();
         })
         .catch(error => {
           console.error('清理缓存失败:', error);
-          message.error('清理缓存失败');
         });
     }
   });
@@ -260,22 +248,16 @@ const getCacheKeyList = (row?: CacheInfo) => {
   subLoading.value = true;
   getCacheKeys(cacheName)
     .then(({ data: result }) => {
-      if (result.status_code === 200) {
-        cacheKeys.value = result.data || [];
-        nowCacheName.value = cacheName;
-        cacheForm.value = {
-          cache_name: cacheName,
-          cache_key: '',
-          cache_value: ''
-        };
-        message.success(result.msg);
-      } else {
-        message.error(result.msg)
-      }
+      cacheKeys.value = result.data || [];
+      nowCacheName.value = cacheName;
+      cacheForm.value = {
+        cache_name: cacheName,
+        cache_key: '',
+        cache_value: ''
+      };
     })
     .catch(error => {
       console.error('获取缓存键名列表失败:', error);
-      message.error('获取缓存键名列表失败');
     })
     .finally(() => {
       subLoading.value = false;
@@ -285,7 +267,6 @@ const getCacheKeyList = (row?: CacheInfo) => {
 // 刷新键名列表
 const refreshCacheKeys = () => {
   getCacheKeyList();
-  message.success('刷新键名列表成功');
 };
 
 // 清理缓存键名
@@ -296,16 +277,10 @@ const handleClearCacheKey = (cacheKey: string) => {
     onOk() {
       deleteCacheKey(cacheKey)
         .then(({ data: result }) => {
-          if (result.status_code === 200) {
-            message.success(result.msg);
-            getCacheKeyList();
-          } else {
-            message.error(result.msg)
-          }
+          getCacheKeyList();
         })
         .catch(error => {
           console.error('清理缓存键名失败:', error);
-          message.error('清理缓存键名失败');
         });
     }
   });
@@ -315,16 +290,10 @@ const handleClearCacheKey = (cacheKey: string) => {
 const handleCacheValue = (cacheKey: string) => {
   getCacheValue(nowCacheName.value, cacheKey)
     .then(({ data: result }) => {
-      if (result.status_code === 200) {
-        cacheForm.value = result.data;
-        message.success(result.msg);
-      } else {
-        message.error(result.msg)
-      }
+      cacheForm.value = result.data;
     })
     .catch(error => {
       console.error('获取缓存内容失败:', error);
-      message.error('获取缓存内容失败');
     });
 };
 
@@ -335,17 +304,11 @@ const handleClearCacheAll = () => {
     content: '确定要清理全部缓存吗？',
     onOk() {
       deleteCacheAll()
-        .then(({ data: result }) => {
-          if (result.status_code === 200) {
-            message.success(result.msg);
-            getCacheNameList();
-          } else {
-            message.error(result.msg)
-          }
+        .then(() => {
+          getCacheNameList();
         })
         .catch(error => {
           console.error('清理全部缓存失败:', error);
-          message.error('清理全部缓存失败');
         });
     }
   });
@@ -355,20 +318,15 @@ const handleClearCacheAll = () => {
 const getInfo = () => {
   getCacheInfo()
     .then(({ data: result }) => {
-      if (result.status_code === 200) {
-        cache.value = result.data || {
+      cache.value = result.data || {
           info: {},
           command_stats: [],
           dbSize: 0
         };
         initCharts();
-        message.success(result.msg || '获取缓存监控数据成功');
-      } else {
-        message.error(result.msg || '获取缓存监控数据失败');
-      }
     })
     .catch(error => {
-      message.error('获取缓存监控数据失败:', error);
+      console.error('获取缓存监控数据失败:', error);
     });
 };
 

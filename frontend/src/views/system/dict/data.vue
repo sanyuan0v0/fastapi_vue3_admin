@@ -401,10 +401,8 @@ const loadDictTypes = () => {
     getDictTypeOptionselect().then(response => {
         const result = response.data;
         dictTypeOptions.value = result.data;
-        message.success(result.msg);
     }).catch(error => {
         console.log(error);
-        message.error('获取字典类型失败');
     });
 }
 

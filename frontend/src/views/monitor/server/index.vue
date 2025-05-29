@@ -301,8 +301,7 @@ async function getList() {
     const response = await getServer();
     server.value = response.data.data;
   } catch (error) {
-    message.error('获取服务器信息失败');
-    console.error(error);
+    console.error('获取服务器信息失败:', error);
   } finally {
     loading.value = false;
   }

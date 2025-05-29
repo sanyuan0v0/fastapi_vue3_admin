@@ -64,16 +64,16 @@ async def get_current_user(
     user_info = json.loads(online_user_info)  # 确保是字典类型
     username = user_info.get("user_name")
     if not username:
-        raise CustomException(msg="用户信息不完整")
+        raise CustomException(msg="认证已失效", status_code=403)
         
     auth = AuthSchema(db=db)
     
     # 获取用户信息
     user = await UserCRUD(auth).get_by_username_crud(username=username)
     if not user:
-        raise CustomException(msg="用户不存在")
+        raise CustomException(msg="用户不存在", status_code=403)
     if not user.available:
-        raise CustomException(msg="用户已被停用")
+        raise CustomException(msg="用户已被停用", status_code=403)
     
     # 设置请求上下文
     request.scope["session_id"] = user_info.get("session_id")
