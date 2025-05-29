@@ -149,9 +149,8 @@ const handleForceLogout = (row: OnlineUser) => {
       try {
         await deleteOnline(row.session_id);
         await loadingData();
-        message.success('强退成功');
       } catch (error) {
-        message.error('强退失败');
+        console.error('强退失败:', error);
       }
     }
   });

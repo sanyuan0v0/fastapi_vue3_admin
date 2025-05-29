@@ -234,7 +234,7 @@ const handleModalSubmit = () => {
       forgetPassword(forgetPasswordForm)
         .then(response => {
           if (response.data.status_code === 200) {
-            message.success('密码重置成功');
+            message.success(response.data.msg);
             modalVisible.value = false;
           }
         })
@@ -245,7 +245,7 @@ const handleModalSubmit = () => {
       registerUser({ ...registerForm })
         .then(response => {
           if (response.data.status_code === 200) {
-            message.success('注册成功');
+            message.success(response.data.msg);
             modalVisible.value = false;
           }
         })

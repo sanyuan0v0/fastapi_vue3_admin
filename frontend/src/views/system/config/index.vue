@@ -172,7 +172,6 @@ const loadConfigData = async () => {
     }
   } catch (error) {
     console.error('加载配置数据失败:', error);
-    message.error('加载配置数据失败');
   }
 };
 
@@ -209,11 +208,9 @@ const handleUpload = async (options: any, type: string) => {
     }
 
     onSuccess(response, file);
-    message.success('上传成功');
   } catch (error) {
     onError(error);
     console.error('上传失败:', error);
-    message.error('上传失败');
   }
 };
 
@@ -222,11 +219,9 @@ const handleSave = async () => {
   try {
     // 调用更新配置接口
     await updateConfig(configData);
-    message.success('配置保存成功');
     window.location.reload();
   } catch (error) {
     console.error('保存配置失败:', error);
-    message.error('配置保存失败');
   }
 };
 
