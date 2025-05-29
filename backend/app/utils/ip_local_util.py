@@ -41,24 +41,24 @@ class IpLocalUtil:
             
         try:
             # 百度API失败，使用其他API
-            # async with httpx.AsyncClient() as client:
-            #     response = await client.get(
-            #         f'https://qifu-api.baidubce.com/ip/geo/v1/district?ip={ip}',
-            #         timeout=5
-            #     )
-            #     if response.status_code == 200:
-            #         data = response.json().get('data', {})
-            #         return f"【{data.get('owner','')}】-{data.get('country','')}-{data.get('prov','')}-{data.get('city','')}-{data.get('district','')}"
-
-            # 使用ip-api.com API获取IP归属地信息
             async with httpx.AsyncClient() as client:
                 response = await client.get(
-                    f'http://ip-api.com/json/{ip}?lang=zh-CN',
+                    f'https://qifu-api.baidubce.com/ip/geo/v1/district?ip={ip}',
                     timeout=10
                 )
                 if response.status_code == 200:
-                    result = response.json()
-                    return f"{result.get('country','')}-{result.get('regionName','')}-{result.get('city','')}"
+                    data = response.json().get('data', {})
+                    return f"【{data.get('owner','')}】-{data.get('country','')}-{data.get('prov','')}-{data.get('city','')}-{data.get('district','')}"
+
+            # 使用ip-api.com API获取IP归属地信息
+            # async with httpx.AsyncClient() as client:
+            #     response = await client.get(
+            #         f'http://ip-api.com/json/{ip}?lang=zh-CN',
+            #         timeout=10
+            #     )
+            #     if response.status_code == 200:
+            #         result = response.json()
+            #         return f"{result.get('country','')}-{result.get('regionName','')}-{result.get('city','')}"
 
         except Exception as e:
             logger.error(f"获取IP归属地失败: {e}")
