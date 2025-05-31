@@ -16,7 +16,7 @@
             <a-tab-pane :key="1" tab="账户密码登录">
               <a-form :model="loginForm" @finish="onFinish">
                 <a-form-item name="username" :rules="[{ required: true, message: '用户名是必填项！' }]">
-                  <a-input v-model:value="loginForm.username" placeholder="用户名: admin or demo">
+                  <a-input v-model:value="loginForm.username" placeholder="用户名: admin or demo" allow-clear>
                     <template #prefix>
                       <UserOutlined />
                     </template>
@@ -24,7 +24,7 @@
                 </a-form-item>
 
                 <a-form-item name="password" :rules="[{ required: true, message: '密码是必填项！' }]">
-                  <a-input-password v-model:value="loginForm.password" placeholder="密码: gitee 或 github 查看">
+                  <a-input-password v-model:value="loginForm.password" placeholder="密码: gitee 或 github 查看" allow-clear>
                     <template #prefix>
                       <LockOutlined />
                     </template>
@@ -32,7 +32,7 @@
                 </a-form-item>
 
                 <a-form-item v-if="captchaState.enable" name="captcha" :rules="[{ required: true, message: '验证码是必填项！' }]">
-                  <a-input v-model:value="loginForm.captcha" placeholder="验证码">
+                  <a-input v-model:value="loginForm.captcha" placeholder="验证码" allow-clear>
                     <template #addonAfter>
                       <div class="login-form-captcha" @click="requestCaptcha">
                         <a-image :src="captchaState.img_base" :preview="false" />
@@ -91,7 +91,7 @@
       <a-modal 
         v-model:open="modalVisible" 
         :title="modalType === 'forgetPassword' ? '忘记密码' : '用户注册'" 
-        @ok="handleModalSubmit" 
+        @ok="onSubmit" 
         :confirmLoading="modalLoading">
 
         <!-- 忘记密码表单 -->
@@ -104,13 +104,13 @@
           new_password: [{ required: true, message: '请输入新密码!', min: 6 }]
         }">
           <a-form-item label="用户名" name="username">
-            <a-input v-model:value="forgetPasswordForm.username" placeholder="请输入用户名" />
+            <a-input v-model:value="forgetPasswordForm.username" placeholder="请输入用户名" allow-clear/>
           </a-form-item>
           <a-form-item label="手机号" name="mobile">
-            <a-input v-model:value="forgetPasswordForm.mobile" placeholder="请输入手机号" />
+            <a-input v-model:value="forgetPasswordForm.mobile" placeholder="请输入手机号" allow-clear/>
           </a-form-item>
           <a-form-item label="新密码" name="new_password">
-            <a-input-password v-model:value="forgetPasswordForm.new_password" placeholder="请输入新密码" />
+            <a-input-password v-model:value="forgetPasswordForm.new_password" placeholder="请输入新密码" allow-clear/>
           </a-form-item>
         </a-form>
 
@@ -119,33 +119,26 @@
           :model="registerForm" 
           ref="registerFormRef" 
           :rules="{
-          username: [{ required: true, message: '请输入用户名!', min: 3 }],
-          name: [{ required: true, message: '请输入名称!' }],
+          name: [{ required: true, message: '请输入用户名!', min: 2 }],
+          username: [{ required: true, message: '请输入用户名!', min: 4 }],
           password: [{ required: true, message: '请输入密码!', min: 6 }],
-          mobile: [{ pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号!' }],
-          email: [{ type: 'email', message: '请输入正确的邮箱格式!' }]
+          mobile: [{ required: true, pattern: /^1[3-9]\d{9}$/, message: '请输入手机号!' }],
         }">
-        <a-form-item label="用户名" name="username">
-          <a-input v-model:value="registerForm.username" placeholder="请输入用户名" />
-        </a-form-item>
-        <a-form-item label="名称" name="name">
-          <a-input v-model:value="registerForm.name" placeholder="请输入名称" />
-        </a-form-item>
-        <a-form-item label="密码" name="password">
-          <a-input-password v-model:value="registerForm.password" placeholder="请输入密码" />
-        </a-form-item>
-        <a-form-item label="手机号" name="mobile">
-          <a-input v-model:value="registerForm.mobile" placeholder="请输入手机号" />
-        </a-form-item>
-        <a-form-item label="邮箱" name="email">
-          <a-input v-model:value="registerForm.email" placeholder="请输入邮箱" />
-        </a-form-item>
-        <a-form-item label="性别" name="gender">
-          <a-radio-group v-model:value="registerForm.gender">
-            <a-radio :value="1">男</a-radio>
-            <a-radio :value="2">女</a-radio>
-          </a-radio-group>
-        </a-form-item>
+          <a-form-item label="姓名" name="name">
+            <a-input v-model:value="registerForm.name" placeholder="请输入用户名" allow-clear/>
+          </a-form-item>
+          <a-form-item label="账号" name="username">
+            <a-input v-model:value="registerForm.username" placeholder="请输入用户名" allow-clear/>
+          </a-form-item>
+          <a-form-item label="手机号" name="mobile">
+            <a-input v-model:value="registerForm.mobile" placeholder="请输入手机号" allow-clear/>
+          </a-form-item>
+          <a-form-item label="密码" name="password">
+            <a-input-password v-model:value="registerForm.password" placeholder="请输入密码" allow-clear/>
+          </a-form-item>
+          <a-form-item label="备注" name="description">
+            <a-textarea v-model:value="registerForm.description" placeholder="请输入备注信息" :rows="4" :maxlength="250" showCount allow-clear/>
+          </a-form-item>
         </a-form>
       </a-modal>
     </div>
@@ -158,11 +151,13 @@ import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { UserOutlined, LockOutlined, createFromIconfontCN } from '@ant-design/icons-vue';
 import { save_token } from "@/utils/util"
-import { message } from 'ant-design-vue';
+import { message, Form } from 'ant-design-vue';
 import { login, getCaptcha } from "@/api/system/auth"
 import { registerUser, forgetPassword } from "@/api/system/user"
 import type { LoginForm, CaptchaState, ForgetPasswordForm, RegisterForm } from './types'
 import { useConfigStore } from "@/store/index";
+
+const useForm = Form.useForm;
 
 const router = useRouter();
 const loginFlag = ref(false);
@@ -203,8 +198,9 @@ const registerForm = reactive<RegisterForm>({
   name: '',
   password: '',
   mobile: '',
-  email: '',
-  gender: 1
+  // email: '',
+  // gender: 1
+  description: ''
 });
 
 const loginForm = reactive<LoginForm>({
@@ -226,31 +222,38 @@ const showModal = (type: 'forgetPassword' | 'register') => {
   modalVisible.value = true;
 };
 
-const handleModalSubmit = () => {
+const onSubmit = async () => {
   modalLoading.value = true;
-  
-  if (modalType.value === 'forgetPassword') {
-    forgetPasswordFormRef.value.validate().then(() => {
-      forgetPassword(forgetPasswordForm)
-        .then(response => {
-          if (response.data.status_code === 200) {
-            message.success(response.data.msg);
-            modalVisible.value = false;
-          }
-        })
-        .finally(() => modalLoading.value = false);
-    });
-  } else {
-    registerFormRef.value.validate().then(() => {
-      registerUser({ ...registerForm })
-        .then(response => {
-          if (response.data.status_code === 200) {
-            message.success(response.data.msg);
-            modalVisible.value = false;
-          }
-        })
-        .finally(() => modalLoading.value = false);
-    });
+  try {
+    if (modalType.value === 'forgetPassword') {
+      // 验证忘记密码表单
+      if (!forgetPasswordFormRef.value) {
+        message.error('表单引用未正确初始化');
+        return;
+      }
+      await forgetPasswordFormRef.value.validate();
+      const response = await forgetPassword({ ...forgetPasswordForm });
+      message.success(response.data.msg);
+      Object.keys(forgetPasswordForm).forEach(key => delete forgetPasswordForm[key]);
+      modalVisible.value = false;
+    } else {
+      
+      // 验证注册表单
+      if (!registerFormRef.value) {
+        message.error('表单引用未正确初始化');
+        return;
+      }
+      await registerFormRef.value.validate();
+      const response = await registerUser({ ...registerForm });
+      message.success(response.data.msg);
+      Object.keys(registerForm).forEach(key => delete registerForm[key]);
+      modalVisible.value = false;
+    }
+  } catch (error) {
+    console.error('操作出错:', error);
+  } finally {
+    // 无论成功或失败，都关闭加载状态
+    modalLoading.value = false;
   }
 };
 
@@ -274,18 +277,12 @@ const onFinish = (values: LoginForm) => {
     .finally(() => loginFlag.value = false);
 };
 
-const requestCaptcha = () => {
-  getCaptcha()
-    .then(response => {
-      const { status_code, data } = response.data;
-      if (status_code === 200) {
-        captchaState.key = data.key;
-        captchaState.img_base = data.img_base;
-      } else {
-        captchaState.enable = false;
-      }
-    })
-    .catch(() => captchaState.enable = false);
+const requestCaptcha = async () => {
+  const response = await getCaptcha();
+  const { data } = response.data;
+  captchaState.enable = data.enable;
+  captchaState.key = data.key;
+  captchaState.img_base = data.img_base;
 };
 
 const configStore = useConfigStore();
@@ -322,6 +319,8 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-height: 0; // 允许容器高度收缩
+  overflow-y: auto; // 当内容超出时显示垂直滚动条
 
   .desc {
     text-align: center;

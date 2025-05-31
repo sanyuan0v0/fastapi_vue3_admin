@@ -13,8 +13,19 @@ log() {
 # 检查权限
 check_permissions() {
     log "==========🔍 第一步：检查权限...=========="
-    [ "$(id -u)" = "0" ] || { log "❌ 需要 root 权限"; exit 1; }
-    log "✅ 权限检查通过"
+    # 检查脚本文件是否有执行权限
+    if [ ! -x "$0" ]; then
+        log "⚠️ 当前脚本没有执行权限，尝试添加执行权限..."
+        chmod +x "$0"
+        if [ $? -eq 0 ]; then
+            log "✅ 已成功为脚本添加执行权限"
+        else
+            log "❌ 为脚本添加执行权限失败"
+            exit 1
+        fi
+    else
+        log "✅ 脚本已有执行权限"
+    fi
 }
 
 # 检查依赖
@@ -79,7 +90,7 @@ build_image() {
 # 启动容器
 start_containers() {
     log "==========🚀 第七步：启动容器...==========🗑️ "
-    docker compose up -d || { log "❌ 容器启动失败"; exit 1; }
+    docker compose up -d --force-recreate || { log "❌ 容器启动失败"; exit 1; }
     log "✅  容器启动成功"
 }
 

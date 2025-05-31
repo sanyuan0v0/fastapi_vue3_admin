@@ -4,26 +4,20 @@
   <!-- 搜索表单 -->
   <div class="table-search-wrapper">
     <a-card :bordered="false">
-      <a-form :model="queryState" @finish="onFinish">
-        
-        <a-flex wrap="wrap" gap="small">
+      <a-form :model="queryState" @finish="onFinish" >
+        <a-flex wrap="wrap" gap="middle">
             <a-form-item name="ipaddr" label="主机" >
-              <a-input v-model:value="queryState.ipaddr" placeholder="请输入主机地址" allowClear></a-input>
+              <a-input v-model:value="queryState.ipaddr" placeholder="请输入主机地址" allowClear style="width: 200px;"></a-input>
             </a-form-item>
             <a-form-item name="user_name" label="用户名" >
-              <a-input v-model:value="queryState.name" placeholder="请输入登陆用户名称" allowClear></a-input>
+              <a-input v-model:value="queryState.name" placeholder="请输入登陆用户名称" allowClear style="width: 200px;"></a-input>
             </a-form-item>
             <a-form-item name="login_location" label="登陆地点" >
-              <a-input v-model:value="queryState.login_location" placeholder="请输入登陆地点" allowClear></a-input>
+              <a-input v-model:value="queryState.login_location" placeholder="请输入登陆地点" allowClear style="width: 200px;"></a-input>
             </a-form-item>
-
-        </a-flex>
-        <a-row>
-          <a-col>
             <a-button type="primary" html-type="submit" :loading="loading">查询</a-button>
-            <a-button style="margin: 0 8px" @click="resetQuery">重置</a-button>
-          </a-col>
-        </a-row>
+            <a-button @click="resetQuery">重置</a-button>
+        </a-flex>
       </a-form>
     </a-card>
   </div>
@@ -74,13 +68,12 @@ const loading = ref(false);
 const queryState = reactive<searchType>({});
 
 const columns = [
-  { title: '会话编号', dataIndex: 'session_id', key: 'sessionId', ellipsis: true },
-  { title: '登录名称', dataIndex: 'name', key: 'name', align: 'center', ellipsis: true },
-  { title: '用户账号', dataIndex: 'user_name', key: 'userName', align: 'center', ellipsis: true },
-  { title: '主机', dataIndex: 'ipaddr', key: 'ipaddr', align: 'center', ellipsis: true },
+  { title: '会话编号', width: 320, dataIndex: 'session_id', key: 'sessionId', ellipsis: true },
+  { title: '登录名称', width: 80, dataIndex: 'name', key: 'name', align: 'center', ellipsis: true },
+  { title: '用户账号', width: 80, dataIndex: 'user_name', key: 'userName', align: 'center', ellipsis: true },
+  { title: '主机', width: 100, dataIndex: 'ipaddr', key: 'ipaddr', align: 'center', ellipsis: true },
   { title: '登录地点', dataIndex: 'login_location', key: 'loginLocation', align: 'center', ellipsis: true },
   { title: '操作系统', dataIndex: 'os', key: 'os', align: 'center', ellipsis: true },
-  { title: '浏览器', dataIndex: 'browser', key: 'browser', align: 'center', ellipsis: true },
   { title: '登录时间', dataIndex: 'login_time', key: 'loginTime', align: 'center', ellipsis: true, width: 180 },
   { title: '操作', dataIndex: 'operation', key: 'operation', align: 'center', width: 120 }
 ];

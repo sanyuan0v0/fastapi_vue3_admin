@@ -169,24 +169,16 @@ async def export_data_list_controller(
         }
     )
 
-@router.get('/type/data',  summary="获取字典类型", description="获取字典类型", dependencies=[Depends(AuthPermission(permissions=["system:dict_data:query"]))])
-async def query_system_dict_type_options_controller(
-    redis: Redis = Depends(redis_getter)
-):
-    result = await DictDataService.get_init_dict_service(redis=redis)
-    logger.info(f"获取初始化字典数据成功 {result}")
-    return SuccessResponse(data=result, msg="获取初始字典数据成功")
-
-@router.get('/data/type/{dict_type}', summary="根据字典类型获取数据", description="根据字典类型获取数据", dependencies=[Depends(AuthPermission(permissions=["system:dict_data:query"]))])
-async def query_system_dict_type_data_controller(
+@router.get('/data/info/{dict_type}', summary="根据字典类型获取数据", description="根据字典类型获取数据")
+async def get_init_dict_data_controller(
     dict_type: str,
     redis: Redis = Depends(redis_getter)
 ):
     # 获取全量数据
-    dict_data_query_result = await DictDataService.query_init_dict_service(
+    dict_data_query_result = await DictDataService.get_init_dict_service(
         redis=redis, dict_type=dict_type
     )
-    logger.info(f"获取字典数据：{dict_data_query_result}")
+    logger.info(f"获取初始化字典数据成功：{dict_data_query_result}")
 
-    return SuccessResponse(data=json.loads(dict_data_query_result), msg="获取字典数据成功")
+    return SuccessResponse(data=json.loads(dict_data_query_result), msg="获取初始化字典数据成功")
 

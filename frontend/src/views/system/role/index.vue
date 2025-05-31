@@ -6,24 +6,19 @@
     <div class="table-search-wrapper">
       <a-card :bordered="false">
         <a-form :model="queryState" @finish="onFinish">
-          <a-flex wrap="wrap" gap="small">
+          <a-flex wrap="wrap" gap="middle">
               <a-form-item name="name" label="名称" >
-                <a-input v-model:value="queryState.name" placeholder="请输入名称" allowClear></a-input>
+                <a-input v-model:value="queryState.name" placeholder="请输入名称" allowClear style="width: 200px;"></a-input>
               </a-form-item>
               <a-form-item name="available" label="状态" >
-                <a-select v-model:value="queryState.available" placeholder="请选择状态" allowClear>
+                <a-select v-model:value="queryState.available" placeholder="请选择状态" allowClear style="width: 200px;">
                   <a-select-option value="true">启用</a-select-option>
                   <a-select-option value="false">停用</a-select-option>
                 </a-select>
               </a-form-item>
-
-          </a-flex>
-          <a-row>
-            <a-col>
               <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
               <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
-            </a-col>
-          </a-row>
+          </a-flex>
         </a-form>
       </a-card>
     </div>
@@ -33,7 +28,7 @@
       <a-card title="角色列表"
         :bordered="false"
         :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 360px)' }">
+        :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 330px)' }">
         <template #extra>
           <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')"
             style="margin-right: 10px;">
@@ -67,7 +62,7 @@
           @change="handleTableChange"
           :scroll="{ x: 400 }"
           :pagination="pagination"
-                    :style="{ minHeight: 'calc(100vh - 420px)' }"
+                    :style="{ minHeight: 'calc(100vh - 400px)' }"
                     >
           <template #bodyCell="{ column, record, index }">
             <template v-if="column.dataIndex === 'index'">

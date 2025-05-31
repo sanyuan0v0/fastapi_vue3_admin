@@ -14,16 +14,19 @@
                 </a-avatar>
                 <div class="avatar-upload-overlay">
                   <a-upload
-                    name="file"
+                    name="avatar"
+                    v-model:file-list="fileList"
+                    list-type="picture-card"
                     :show-upload-list="false"
-                    :headers="uploadHeaders"
-                    action="/api/v1/system/user/current/avatar/upload"
-                    @change="avatarHandleChange"
-                  >
-                    <a-button type="link">
-                      <template #icon><UploadOutlined /></template>
-                      更换头像
-                    </a-button>
+                    :before-upload="beforeUpload"
+                    :custom-request="(options) => handleUpload(options)"
+                  >                    
+                    <div>
+                      <loading-outlined v-if="loading"></loading-outlined>
+                      <plus-outlined v-else></plus-outlined>
+                      <!-- <UploadOutlined /> -->
+                      <div style="margin-top: 8px">上传头像</div>
+                    </div>
                   </a-upload>
                 </div>
               </div>
@@ -133,7 +136,6 @@
                         <a-form-item
                           label="性别"
                           name="gender"
-                          :rules="[{ required: true, message: '请选择性别' }]"
                         >
                           <a-radio-group v-model:value="infoFormState.gender" class="gender-group">
                                 <a-radio v-for="item in DictDataStore['sys_user_sex']" :value="item.dict_value">
@@ -284,8 +286,7 @@
 <script lang="ts" setup>
 import PageHeader from '@/components/PageHeader.vue';
 import { ref, reactive, onMounted, h, watch, computed } from 'vue';
-import { message } from 'ant-design-vue';
-import type { UploadChangeParam } from "ant-design-vue";
+import { message, UploadProps } from 'ant-design-vue';
 import { 
   UserOutlined, 
   LockOutlined,
@@ -300,22 +301,28 @@ import {
   SaveOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
-  ClockCircleOutlined
+  ClockCircleOutlined,
+  PlusOutlined,
+  LoadingOutlined
 } from '@ant-design/icons-vue';
 import { useUserStore } from "@/store/index";
 import storage from 'store';
-import { updateCurrentUserInfo, changeCurrentUserPassword, avatarHandleChange } from '@/api/system/user';
+import { updateCurrentUserInfo, changeCurrentUserPassword, uploadCurrentUserAvatar } from '@/api/system/user';
 import type { InfoFormState, PasswordFormState } from './types';
 import { useDictStore } from "@/store/index";
+import { logout } from '@/api/system/auth';
+import { useRouter } from "vue-router";
+
+const loading = ref<boolean>(false);
 
 const dictStore = useDictStore();
 
 const DictDataStore = computed(() => {
-    return dictStore.dictObj;
+  return dictStore.dictObj;
 })
 
 const getOptions = async () => {
-    const dictOptions = await dictStore.setDict(['sys_user_sex'])
+    const dictOptions = await dictStore.getDict(['sys_user_sex'])
     return dictOptions
 }
 
@@ -344,9 +351,6 @@ const passwordFormState = reactive<PasswordFormState>({
   repeatPassword: ''
 });
 
-// 上传头像配置
-const token = storage.get('Access-Token');
-const uploadHeaders = token ? { Authorization: 'Bearer ' + token } : {};
 
 // 监听selectedKeys变化
 watch(selectedKeys, (newVal) => {
@@ -365,11 +369,7 @@ const onInfoFormFinish = async (values: any) => {
     infoSubmitting.value = true;
     values.avatar = infoFormState.avatar;
     const response = await updateCurrentUserInfo(values);
-    message.success({
-      content: response.data.msg,
-      icon: h(CheckCircleOutlined, { style: "color: #52c41a" })
-    });
-    
+    message.success(response.data.msg);
     await userStore.getUserInfo;
   } catch (error) {
     console.error(error);
@@ -378,6 +378,9 @@ const onInfoFormFinish = async (values: any) => {
     infoSubmitting.value = false;
   }
 };
+
+// 路由相关
+const router = useRouter();
 
 // 密码表单提交
 const onPasswordFormFinish = async (values: any) => {
@@ -397,45 +400,64 @@ const onPasswordFormFinish = async (values: any) => {
     };
     
     const response = await changeCurrentUserPassword(data);
-    message.success({
-      content: response.data.msg,
-      icon: h(CheckCircleOutlined, { style: "color: #52c41a" })
-    });
-    initPasswordForm();
+    message.success(response.data.msg);
+    
+    await logout({ token: storage.get('Access-Token') });
+    
+    // 重置 store 状态
+    userStore.$reset();
+
+    storage.remove('Access-Token');
+    storage.remove('Refresh-Token');
+    await userStore.clearUserInfo;
+    // 强制刷新页面
+    router.push('/login');
   } catch (error) {
-    console.error('修改密码失败:', error);
-    message.error({
-      content: '修改密码失败',
-      icon: h(CloseCircleOutlined, { style: "color: #ff4d4f" })
-    });
+    console.error('修改密码失败',error);
   } finally {
     passwordChanging.value = false;
   }
 };
 
+// 图片上传前的校验
+const beforeUpload = (file: File) => {
+  const isImage = file.type.startsWith('image/');
+  if (!isImage) {
+    message.error('只能上传图片文件！');
+  }
+  return isImage;
+};
+
+const fileList = ref<any[]>([]);
 // 头像上传处理
-const avatarHandleChange = (info: UploadChangeParam) => {
-  if (info.file.status === 'done') {
-    const response = info.file.response;
-    const apiUrl = import.meta.env.VITE_API_BASE_URL + import.meta.env.VITE_APP_BASE_API
-    const newAvatar = apiUrl + '/' + response.data.file_path;
-    infoFormState.avatar = newAvatar;
-    message.success({
-      content: '上传成功',
-      icon: h(CheckCircleOutlined, { style: "color: #52c41a" })
-    });
-  } else if (info.file.status === 'error') {
-    message.error({
-      content: '上传失败',
-      icon: h(CloseCircleOutlined, { style: "color: #ff4d4f" })
-    });
+const handleUpload = async (options: any) => {
+  const { file, onSuccess, onError } = options;
+  loading.value = true; // 开始上传，显示加载状态
+
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await uploadCurrentUserAvatar(formData);
+    const fileUrl = response.data.data.file_url;
+    infoFormState.avatar = fileUrl;
+    fileList.value = [{ url: fileUrl }];
+    
+    message.success(response.data.msg);
+
+    onSuccess(response, file);
+  } catch (error) {
+    onError(error);
+    console.error('上传失败:', error);
+  } finally {
+    loading.value = false; // 上传结束，隐藏加载状态
   }
 };
+
 
 // 初始化表单
 const initInfoForm = () => {
   const basicInfo = userStore.basicInfo;
-  console.log("basicInfo", basicInfo);
   Object.assign(infoFormState, {
     name: basicInfo.name,
     gender: basicInfo.gender,

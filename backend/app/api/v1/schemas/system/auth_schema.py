@@ -55,5 +55,6 @@ class CaptchaOutSchema(BaseModel):
     """验证码响应模型"""
     model_config = ConfigDict(from_attributes=True)
 
+    enable: bool = Field(default=True, description='是否启用验证码')
     key: str = Field(..., min_length=1, description='验证码唯一标识')
     img_base: str = Field(..., min_length=1, description='Base64编码的验证码图片')

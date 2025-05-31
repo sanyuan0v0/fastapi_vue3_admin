@@ -22,6 +22,11 @@ class NoticeService:
         return NoticeOutSchema.model_validate(config_obj).model_dump()
     
     @classmethod
+    async def get_notice_list_available_service(cls, auth: AuthSchema) -> List[Dict]:
+        config_obj_list = await NoticeCRUD(auth).get_list_crud(search={'available': True})
+        return [NoticeOutSchema.model_validate(config_obj).model_dump() for config_obj in config_obj_list]
+
+    @classmethod
     async def get_notice_list_service(cls, auth: AuthSchema, search: NoticeQueryParams = None, order_by: List[Dict[str, str]] = None) -> List[Dict]:
         if order_by:
             order_by = eval(order_by)

@@ -6,32 +6,27 @@
         <div class="table-search-wrapper">
             <a-card :bordered="false">
                 <a-form :model="queryState" @finish="onFinish">
-                    
-                    <a-flex wrap="wrap" gap="small">
-                            <a-form-item name="dict_type" label="字典" >
-                                <a-select v-model:value="queryState.dict_type" placeholder="请选择字典名称" allowClear @click="loadDictTypes">
-                                    <a-select-option v-for="item in dictTypeOptions" :key="item.dict_type" :value="item.dict_type">
-                                        {{ item.dict_name }}
-                                    </a-select-option>
-                                </a-select>
-                            </a-form-item>
-                            <a-form-item name="dict_name" label="标签" >
-                                <a-input v-model:value="queryState.dict_label" placeholder="请输入字典数据标签"
-                                    allowClear></a-input>
-                            </a-form-item>
-                            <a-form-item name="available" label="状态" >
-                                <a-select v-model:value="queryState.available" placeholder="请选择状态" allowClear>
-                                    <a-select-option value="true">启用</a-select-option>
-                                    <a-select-option value="false">停用</a-select-option>
-                                </a-select>
-                            </a-form-item>
+                    <a-flex wrap="wrap" gap="middle">
+                        <a-form-item name="dict_type" label="字典" >
+                            <a-select v-model:value="queryState.dict_type" placeholder="请选择字典名称" allowClear @click="loadDictTypes" style="width: 200px;">
+                                <a-select-option v-for="item in dictTypeOptions" :key="item.dict_type" :value="item.dict_type">
+                                    {{ item.dict_name }}
+                                </a-select-option>
+                            </a-select>
+                        </a-form-item>
+                        <a-form-item name="dict_name" label="标签" >
+                            <a-input v-model:value="queryState.dict_label" placeholder="请输入字典数据标签"
+                                allowClear style="width: 200px;"></a-input>
+                        </a-form-item>
+                        <a-form-item name="available" label="状态" >
+                            <a-select v-model:value="queryState.available" placeholder="请选择状态" allowClear style="width: 200px;">
+                                <a-select-option value="true">启用</a-select-option>
+                                <a-select-option value="false">停用</a-select-option>
+                            </a-select>
+                        </a-form-item>
+                        <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
+                        <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
                     </a-flex>
-                    <a-row>
-                        <a-col>
-                            <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
-                            <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
-                        </a-col>
-                    </a-row>
                 </a-form>
             </a-card>
         </div>
@@ -41,7 +36,7 @@
             <a-card title="数据字典列表"
                 :bordered="false"
                 :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 360px)' }">
+                :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 330px)' }">
                 <template #extra>
                     <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')"
                         style="margin-right: 10px;">新建</a-button>
@@ -55,9 +50,9 @@
                     :row-selection="rowSelection"
                     :loading="tableLoading"
                     @change="handleTableChange"
-                    :scroll="{ x: 400 }"
                     :pagination="pagination"
-                    :style="{ minHeight: 'calc(100vh - 420px)' }"
+                    :scroll="{ x: 500, y: 'calc(100vh - 440px)' }"
+                    :style="{ minHeight: 'calc(100vh - 400px)' }"
                     >
                     <template #bodyCell="{ column, record, index }">
                         <template v-if="column.dataIndex === 'index'">
@@ -133,10 +128,10 @@
                     <a-form ref="createForm" :model="createState"
                         v-bind="{ labelCol: { span: 5 }, wrapperCol: { span: 15 } }">
                         <a-form-item name="dict_type" label="字典类型">
-                            <a-input v-model:value="createState.dict_type" placeholder="请输入字典类型" :disabled="true"></a-input>
+                            <a-input v-model:value="createState.dict_type" placeholder="请输入字典类型" :disabled="true" ></a-input>
                         </a-form-item>
                         <a-form-item name="dict_sort" label="字典排序" :rules="[{ required: true, message: '请输入字典排序', pattern: /^[0-9]*$/ }]">
-                            <a-input-number v-model:value="createState.dict_sort" placeholder="请输入字典排序" :min="1" :precision="0" style="width: 100%"/>
+                            <a-input-number v-model:value="createState.dict_sort" placeholder="请输入字典排序" :min="1" :precision="0" style="width: 100%" allow-clear/>
                         </a-form-item>
                         <a-form-item name="dict_label" label="字典标签" :rules="[{ required: true, message: '请输入字典标签' }]">
                             <a-input v-model:value="createState.dict_label" placeholder="请输入字典标签" allowClear></a-input>
@@ -179,7 +174,7 @@
                             <a-input v-model:value="updateState.dict_type" placeholder="请输入字典类型" :disabled="true"></a-input>
                         </a-form-item>
                         <a-form-item name="dict_sort" label="字典排序" :rules="[{ required: true, message: '请输入字典排序', pattern: /^[0-9]*$/ }]">
-                            <a-input-number v-model:value="updateState.dict_sort" placeholder="请输入字典排序" :min="1" :precision="0" style="width: 100%"/>
+                            <a-input-number v-model:value="updateState.dict_sort" placeholder="请输入字典排序" :min="1" :precision="0" style="width: 100%" allow-clear/>
                         </a-form-item>
                         <a-form-item name="dict_label" label="字典标签" :rules="[{ required: true, message: '请输入字典标签' }]">
                             <a-input v-model:value="updateState.dict_label" placeholder="请输入字典标签" allowClear></a-input>
@@ -227,7 +222,7 @@ import { Table, message, Modal } from 'ant-design-vue';
 import type { TableColumnsType, MenuProps } from 'ant-design-vue';
 import { PlusOutlined, DownOutlined, CheckOutlined, StopOutlined } from '@ant-design/icons-vue';
 import { cloneDeep, isEmpty } from '@/utils/util';
-import { getDictTypeOptionselect, getDictTypeList,getDictTypeDetail,createDictType,updateDictType,deleteDictType,exportDictType,getDictDataList,getDictDataDetail,createDictData,updateDictData,deleteDictData,exportDictData,getDictTypeOption,getDictDataByType } from '@/api/system/dict'
+import { getDictTypeOptionselect, getDictTypeList,getDictTypeDetail,createDictType,updateDictType,deleteDictType,exportDictType,getDictDataList,getDictDataDetail,createDictData,updateDictData,deleteDictData,exportDictData } from '@/api/system/dict'
 import type { searchDictDataType, tableDictDataType } from './types'
 import { useDictStore } from "@/store/index";
 
@@ -238,7 +233,7 @@ const DictDataStore = computed(() => {
 })
 
 const getOptions = async () => {
-    const dictOptions = await dictStore.setDict(['sys_dictdata_list_class'])
+    const dictOptions = await dictStore.getDict(['sys_dictdata_list_class'])
     return dictOptions
 }
 

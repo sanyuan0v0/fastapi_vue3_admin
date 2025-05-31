@@ -34,6 +34,7 @@ async def mongo_getter(request: Request) -> AsyncIOMotorDatabase:
 async def get_current_user(
     request: Request,
     token: str = Depends(OAuth2Schema),
+    redis: Redis = Depends(redis_getter), 
     db: AsyncSession = Depends(db_getter)
 ) -> AuthSchema:
     """
@@ -62,12 +63,20 @@ async def get_current_user(
     online_user_info = payload.sub
     # 从Redis中获取用户信息
     user_info = json.loads(online_user_info)  # 确保是字典类型
+    
+    session_id = user_info.get("session_id")
+    if not session_id:
+        raise CustomException(msg="认证已失效", status_code=403)
+
+    # 检查用户是否在线
+    online_ok = await RedisCURD(redis).exists(key=f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{session_id}')
+    if not online_ok:
+        raise CustomException(msg="认证已失效", status_code=403)
+
+    auth = AuthSchema(db=db)
     username = user_info.get("user_name")
     if not username:
         raise CustomException(msg="认证已失效", status_code=403)
-        
-    auth = AuthSchema(db=db)
-    
     # 获取用户信息
     user = await UserCRUD(auth).get_by_username_crud(username=username)
     if not user:
@@ -76,7 +85,6 @@ async def get_current_user(
         raise CustomException(msg="用户已被停用", status_code=403)
     
     # 设置请求上下文
-    request.scope["session_id"] = user_info.get("session_id")
     request.scope["user_id"] = user.id
     request.scope["user_username"] = user.username
     

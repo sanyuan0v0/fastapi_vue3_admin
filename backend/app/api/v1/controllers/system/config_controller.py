@@ -18,7 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 router = APIRouter(route_class=OperationLogRoute)
 
 
-@router.get("/info", summary="获取配置", description="获取配置")
+@router.get("/list", summary="获取配置", description="获取配置")
 async def get_obj_list_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:config:query"]))
 ) -> JSONResponse:
@@ -48,11 +48,11 @@ async def upload_file_controller(
     return SuccessResponse(data=result_str, msg='上传文件成功')
 
 
-@router.get("/init", summary="获取初始化配置", description="获取初始化配置")
+@router.get("/info", summary="获取初始化缓存系统配置", description="获取初始化缓存系统配置")
 async def get_init_config_controller(
     redis: Redis = Depends(redis_getter),
     db: AsyncSession = Depends(db_getter)
 ) -> JSONResponse:
     result_dict = await ConfigService.get_init_config_service(redis=redis, db=db)
-    logger.info(f"获取初始化配置成功 {result_dict}")
-    return SuccessResponse(data=result_dict, msg="获取初始化配置成功")
+    logger.info(f"获取初始化缓存系统配置成功 {result_dict}")
+    return SuccessResponse(data=result_dict, msg="获取初始化缓存系统配置成功")

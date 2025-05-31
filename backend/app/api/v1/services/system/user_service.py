@@ -170,8 +170,10 @@ class UserService:
         user = await UserCRUD(auth).get_by_id_crud(id=auth.user.id)
         if not user:
             raise CustomException(msg="用户不存在")
-        dept = await DeptCRUD(auth).get_by_id_crud(id=user.dept_id)
-        user.dept_name = dept.name if dept else None
+        # 获取部门名称
+        if user.dept_id:
+            dept = await DeptCRUD(auth).get_by_id_crud(id=user.dept_id)
+            user.dept_name = dept.name if dept else None
         user_dict = UserOutSchema.model_validate(user).model_dump()
 
         # 获取菜单权限
@@ -244,18 +246,21 @@ class UserService:
     async def register_user_service(cls, auth: AuthSchema, data: UserRegisterSchema) -> Dict:
         """用户注册"""
         # 检查用户名是否存在
-        user = await UserCRUD(auth).get_by_username_crud(username=data.username)
-        if user:
-            raise CustomException(msg='注册失败，用户名已存在')
+        username_ok = await UserCRUD(auth).get_by_username_crud(username=data.username)
+        mobile_ok = await UserCRUD(auth).get_by_mobile_crud(mobile=data.mobile)
+        if username_ok or mobile_ok:
+            raise CustomException(msg='账号已存在')
 
         data.password = PwdUtil.set_password_hash(password=data.password)
+        data.name = data.username
+        data.creator_id = 1
         dict_data = data.model_dump(exclude_unset=True)
-        dict_data['creator_id'] = data.creator_id
-        dict_data['dept_id'] = data.dept_id
-        dict_data['description'] = data.description
+        # dict_data['creator_id'] = data.creator_id
+        # dict_data['dept_id'] = data.dept_id
+        # dict_data['description'] = data.description
         result = await UserCRUD(auth).create(data=dict_data)
         await UserCRUD(auth).set_user_roles_crud(user_ids=[result.id], role_ids=data.role_ids)
-        await UserCRUD(auth).set_user_positions_crud(user_ids=[result.id], position_ids=data.position_ids)
+        # await UserCRUD(auth).set_user_positions_crud(user_ids=[result.id], position_ids=data.position_ids)
         return UserOutSchema.model_validate(result).model_dump()
 
     @classmethod

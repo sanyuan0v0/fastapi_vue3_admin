@@ -1,31 +1,27 @@
 <template>
     <div>
-
-
         <!-- 搜索表单 -->
         <div class="table-search-wrapper">
             <a-card :bordered="false">
                 <a-form :model="queryState" @finish="onFinish">
-                    <a-flex wrap="wrap" gap="small">
-                            <a-form-item name="name" label="名称" >
-                                <a-input v-model:value="queryState.name" placeholder="请输入任务名称" allowClear></a-input>
-                            </a-form-item>
-                            <a-form-item name="status" label="状态" >
-                                <a-select v-model:value="queryState.status" placeholder="请选择状态" allowClear>
-                                                    <a-select-option value="true">启用</a-select-option>
-                <a-select-option value="false">停用</a-select-option>
-                                </a-select>
-                            </a-form-item>
-                            <a-form-item name="date-range-picker" label="创建日期" style="max-width: 350px;">
-                                <a-range-picker v-model:value="queryState.date_range" value-format="YYYY-MM-DD" />
-                            </a-form-item>
+                    <a-flex wrap="wrap" gap="middle">
+                        <a-form-item name="name" label="名称">
+                            <a-input v-model:value="queryState.name" placeholder="请输入任务名称" allowClear
+                                style="width: 200px;"></a-input>
+                        </a-form-item>
+                        <a-form-item name="status" label="状态">
+                            <a-select v-model:value="queryState.status" placeholder="请选择状态" allowClear
+                                style="width: 200px;">
+                                <a-select-option value="true">启用</a-select-option>
+                                <a-select-option value="false">停用</a-select-option>
+                            </a-select>
+                        </a-form-item>
+                        <a-form-item name="date-range-picker" label="创建日期" style="max-width: 350px;">
+                            <a-range-picker v-model:value="queryState.date_range" value-format="YYYY-MM-DD" />
+                        </a-form-item>
+                        <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
+                        <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
                     </a-flex>
-                    <a-row>
-                        <a-col>
-                            <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
-                            <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
-                        </a-col>
-                    </a-row>
                 </a-form>
             </a-card>
         </div>
@@ -33,7 +29,7 @@
         <!-- 表格区域 -->
         <div class="table-wrapper">
             <a-card title="定时任务列表" :bordered="false" :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-                :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 360px)' }">
+                :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 330px)' }">
                 <template #extra>
                     <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')"
                         style="margin-right: 10px;">新建</a-button>
@@ -46,9 +42,8 @@
                 </template>
                 <a-table :rowKey="record => record.id" :columns="columns" :data-source="dataSource"
                     :row-selection="rowSelection" :loading="tableLoading" @change="handleTableChange"
-                    :scroll="{ x: 400 }" :pagination="pagination" 
-                    :style="{ minHeight: 'calc(100vh - 420px)' }"
-                    >
+                    :pagination="pagination" :scroll="{ x: 500, y: 'calc(100vh - 440px)' }"
+                    :style="{ minHeight: 'calc(100vh - 400px)' }">
                     <template #bodyCell="{ column, record, index }">
                         <template v-if="column.dataIndex === 'index'">
                             <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
@@ -66,20 +61,18 @@
                         </template>
                         <template v-if="column.dataIndex === 'executor'">
                             <span>
-                                {{ dictStore.getDictLabel(DictDataStore['sys_job_executor'],record.executor).dict_label }}
-                                <!-- {{ DictDataStore['sys_job_executor'].find(item => item.dict_value === record.executor)?.dict_label || record.executor }} -->
+                                {{ dictStore.getDictLabel(DictDataStore['sys_job_executor'],record.executor).dict_label
+                                }}
                             </span>
                         </template>
                         <template v-if="column.dataIndex === 'func'">
                             <span>
                                 {{ dictStore.getDictLabel(DictDataStore['sys_job_function'],record.func).dict_label }}
-                                <!-- {{ DictDataStore['sys_job_function'].find(item => item.dict_value === record.func)?.dict_label || record.func }} -->
                             </span>
                         </template>
                         <template v-if="column.dataIndex === 'trigger'">
                             <span>
                                 {{ dictStore.getDictLabel(DictDataStore['sys_job_trigger'],record.trigger).dict_label }}
-                                <!-- {{ DictDataStore['sys_job_trigger'].find(item => item.dict_value === record.trigger)?.dict_label || record.trigger }} -->
                             </span>
                         </template>
                         <template v-if="column.dataIndex === 'coalesce'">
@@ -131,10 +124,13 @@
                                 detailState.index + 1 }}</a-descriptions-item>
                             <a-descriptions-item label="任务名称">{{ detailState.name }}</a-descriptions-item>
                             <a-descriptions-item label="任务函数">
-                                {{ dictStore.getDictLabel(DictDataStore['sys_job_function'],detailState.func).dict_label }}
+                                {{ dictStore.getDictLabel(DictDataStore['sys_job_function'],detailState.func).dict_label
+                                }}
                             </a-descriptions-item>
                             <a-descriptions-item label="触发器">
-                                {{ dictStore.getDictLabel(DictDataStore['sys_job_trigger'],detailState.trigger).dict_label }}
+                                {{
+                                dictStore.getDictLabel(DictDataStore['sys_job_trigger'],detailState.trigger).dict_label
+                                }}
                             </a-descriptions-item>
                             <a-descriptions-item label="位置参数">{{ detailState.args }}</a-descriptions-item>
                             <a-descriptions-item label="关键字参数">{{ detailState.kwargs }}</a-descriptions-item>
@@ -144,10 +140,14 @@
                             </a-descriptions-item>
                             <a-descriptions-item label="最大实例数">{{ detailState.max_instances }}</a-descriptions-item>
                             <a-descriptions-item label="任务存储">
-                                {{ dictStore.getDictLabel(DictDataStore['sys_job_group'],detailState.jobstore).dict_label }}
+                                {{
+                                dictStore.getDictLabel(DictDataStore['sys_job_group'],detailState.jobstore).dict_label
+                                }}
                             </a-descriptions-item>
                             <a-descriptions-item label="任务执行器">
-                                {{ dictStore.getDictLabel(DictDataStore['sys_job_executor'],detailState.executor).dict_label }}
+                                {{
+                                dictStore.getDictLabel(DictDataStore['sys_job_executor'],detailState.executor).dict_label
+                                }}
                             </a-descriptions-item>
                             <a-descriptions-item label="触发器参数">{{ detailState.trigger_args }}</a-descriptions-item>
                             <a-descriptions-item label="开始时间">{{ detailState.start_date }}</a-descriptions-item>
@@ -167,172 +167,278 @@
                     </a-spin>
                 </div>
                 <div v-else-if="modalTitle === 'create'">
-                    <a-form ref="createForm" :model="createState"
-                        v-bind="{ labelCol: { span: 5 }, wrapperCol: { span: 15 } }">
-                        <a-form-item name="name" label="任务名称" :rules="[{ required: true, message: '请输入任务名称' }]">
-                            <a-input v-model:value="createState.name" placeholder="请输入任务名称" allowClear></a-input>
-                        </a-form-item>
-                        <a-form-item name="jobstore" label="任务存储器" :rules="[{ required: true, message: '请选择任务存储' }]">
-                            <a-select v-model:value="createState.jobstore" placeholder="请选择任务存储" allowClear>
-                                <a-select-option v-for="item in DictDataStore['sys_job_group']" :key="item.id" :value="item.dict_value">
-                                    {{ item.dict_label }}
-                                </a-select-option>
-                            </a-select>
-                        </a-form-item>
-                        <a-form-item name="executor" label="任务执行器" :rules="[{ required: true, message: '请选择任务执行器' }]">
-                            <a-select v-model:value="createState.executor" placeholder="请选择任务执行器" allowClear >
-                                <a-select-option v-for="item in DictDataStore['sys_job_executor']" :key="item.id" :value="item.dict_value">
-                                    {{ item.dict_label }}
-                                </a-select-option>
-                            </a-select>
-                        </a-form-item>
-                        <a-form-item name="func" label="任务函数"
-                            :rules="[{ required: true, message: '请输入任务函数 module.function' }]">
-                            <a-select v-model:value="createState.func" placeholder="请选择任务函数 module.function" allowClear>
-                                <a-select-option v-for="item in DictDataStore['sys_job_function']" :key="item.id" :value="item.dict_value">
-                                    {{ item.dict_label }}
-                                </a-select-option>
-                            </a-select>
-                        </a-form-item>
-                        <a-form-item name="args" label="位置参数" :rules="[{ required: false, message: '请输入位置参数' }]">
-                            <a-input v-model:value="createState.args" placeholder="请输入位置参数" allowClear></a-input>
-                        </a-form-item>
-                        <a-form-item name="kwargs" label="关键字参数" :rules="[{ required: false, message: '请输入关键字参数' }]">
-                            <a-input v-model:value="createState.kwargs" placeholder="请输入关键字参数" allowClear></a-input>
-                        </a-form-item>
-                        <a-form-item name="trigger" label="任务触发器" :rules="[{ required: true, message: '请选择触发器' }]">
-                            <a-select v-model:value="createState.trigger" placeholder="请选择触发器" allowClear >
-                                <a-select-option v-for="item in DictDataStore['sys_job_trigger']" :key="item.id" :value="item.dict_value">
-                                    {{ item.dict_label }}
-                                </a-select-option>
-                            </a-select>
-                        </a-form-item>
-                        <a-form-item v-if="createState.trigger === 'date'" name="trigger_args" label="运行日期"
-                            :rules="[{ required: true, message: '请选择运行日期' }]">
-                            <a-date-picker v-model:value="createState.trigger_args" show-time
-                                format="YYYY-MM-DD HH:mm:ss" value-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择运行日期"
-                                style="width: 100%" />
-                        </a-form-item>
-                        <a-form-item v-else-if="createState.trigger === 'interval'" name="trigger_args" label="间隔时间"
-                            :rules="[{ required: true, message: '请输入间隔时间' }]">
-                            <a-input v-model:value="createState.trigger_args" placeholder="请输入 秒-分-时-天-周 (* * * * 1)"
-                                allowClear @click="openIntervalTabHandle('create')" />
-
-                        </a-form-item>
-                        <a-form-item v-else-if="createState.trigger === 'cron'" name="trigger_args" label="Cron表达式"
-                            :rules="[{ required: true, message: '请输入Cron表达式' }]">
-                            <a-input v-model:value="createState.trigger_args" placeholder="请输入 Cron表达式(*/3 * * * *)"
-                                @click="handleShowCron" allowClear readonly>
-                            </a-input>
-                        </a-form-item>
-                        <a-form-item v-if="createState.trigger && createState.trigger != 'date'" name="start_date"
-                            label="开始日期" :rules="[{ required: false, message: '请选择开始日期' }]">
-                            <a-date-picker v-model:value="createState.start_date" show-time format="YYYY-MM-DD HH:mm:ss"
-                                value-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始日期" style="width: 100%" />
-                        </a-form-item>
-                        <a-form-item v-if="createState.trigger && createState.trigger != 'date'" name="end_date"
-                            label="结束日期" :rules="[{ required: false, message: '请选择结束日期' }]">
-                            <a-date-picker v-model:value="createState.end_date" show-time format="YYYY-MM-DD HH:mm:ss"
-                                value-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束日期" style="width: 100%" />
-                        </a-form-item>
-                        <a-form-item name="coalesce" label="是否并行" :rules="[{ required: true, message: '请选择是否并行' }]">
-                            <a-radio-group v-model:value="createState.coalesce">
-                                <a-radio :value="true">是</a-radio>
-                                <a-radio :value="false">否</a-radio>
-                            </a-radio-group>
-                        </a-form-item>
-                        <a-form-item name="max_instances" label="最大实例数"
-                            :rules="[{ required: true, message: '请输入最大实例数' }]">
-                            <a-input-number v-model:value="createState.max_instances" :min="1" placeholder="请输入最大实例数"
-                                style="width: 100%" />
-                        </a-form-item>
-                        <a-form-item name="description" label="备注">
-                            <a-textarea v-model:value="createState.description" placeholder="请输入备注" :rows="4"
-                                allowClear />
-                        </a-form-item>
+                    <a-form ref="createForm" :model="createState" v-bind="{ labelCol: { span: 8 }, wrapperCol: { span: 12 } }">
+                        <a-row>
+                            <!-- 任务名称和任务存储器 -->
+                            <a-col :span="12">
+                                <a-form-item name="name" label="任务名称" :rules="[{ required: true, message: '请输入任务名称' }]">
+                                    <a-input v-model:value="createState.name" placeholder="请输入任务名称"
+                                        allowClear></a-input>
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item name="jobstore" label="任务存储器"
+                                    :rules="[{ required: true, message: '请选择任务存储' }]">
+                                    <a-select v-model:value="createState.jobstore" placeholder="请选择任务存储" allowClear>
+                                        <a-select-option v-for="item in DictDataStore['sys_job_group']" :key="item.id"
+                                            :value="item.dict_value">
+                                            {{ item.dict_label }}
+                                        </a-select-option>
+                                    </a-select>
+                                </a-form-item>
+                            </a-col>
+                            <!-- 任务执行器和任务函数 -->
+                            <a-col :span="12">
+                                <a-form-item name="executor" label="任务执行器"
+                                    :rules="[{ required: true, message: '请选择任务执行器' }]">
+                                    <a-select v-model:value="createState.executor" placeholder="请选择任务执行器" allowClear>
+                                        <a-select-option v-for="item in DictDataStore['sys_job_executor']"
+                                            :key="item.id" :value="item.dict_value">
+                                            {{ item.dict_label }}
+                                        </a-select-option>
+                                    </a-select>
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item name="func" label="任务函数"
+                                    :rules="[{ required: true, message: '请输入任务函数 module.function' }]">
+                                    <a-select v-model:value="createState.func" placeholder="请选择任务函数 module.function"
+                                        allowClear>
+                                        <a-select-option v-for="item in DictDataStore['sys_job_function']"
+                                            :key="item.id" :value="item.dict_value">
+                                            {{ item.dict_label }}
+                                        </a-select-option>
+                                    </a-select>
+                                </a-form-item>
+                            </a-col>
+                            <!-- 位置参数和关键字参数 -->
+                            <a-col :span="12">
+                                <a-form-item name="args" label="位置参数"
+                                    :rules="[{ required: false, message: '请输入位置参数' }]">
+                                    <a-input v-model:value="createState.args" placeholder="请输入位置参数"
+                                        allowClear></a-input>
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item name="kwargs" label="关键字参数"
+                                    :rules="[{ required: false, message: '请输入关键字参数' }]">
+                                    <a-input v-model:value="createState.kwargs" placeholder="请输入关键字参数"
+                                        allowClear></a-input>
+                                </a-form-item>
+                            </a-col>
+                            <!-- 是否并行和最大实例数 -->
+                            <a-col :span="12">
+                                <a-form-item name="coalesce" label="是否并行"
+                                    :rules="[{ required: true, message: '请选择是否并行' }]">
+                                    <a-radio-group v-model:value="createState.coalesce">
+                                        <a-radio :value="true">是</a-radio>
+                                        <a-radio :value="false">否</a-radio>
+                                    </a-radio-group>
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item name="max_instances" label="最大实例数"
+                                    :rules="[{ required: true, message: '请输入最大实例数' }]">
+                                    <a-input-number v-model:value="createState.max_instances" :min="1"
+                                        placeholder="请输入最大实例数" style="width: 100%" />
+                                </a-form-item>
+                            </a-col>
+                            <!-- 任务触发器 -->
+                            <a-col :span="12">
+                                <a-form-item name="trigger" label="任务触发器"
+                                    :rules="[{ required: true, message: '请选择触发器' }]">
+                                    <a-select v-model:value="createState.trigger" placeholder="请选择触发器" allowClear>
+                                        <a-select-option v-for="item in DictDataStore['sys_job_trigger']" :key="item.id"
+                                            :value="item.dict_value">
+                                            {{ item.dict_label }}
+                                        </a-select-option>
+                                    </a-select>
+                                </a-form-item>
+                            </a-col>
+                            <!-- 运行日期、间隔时间或 Cron 表达式 -->
+                            <a-col :span="12">
+                                <a-form-item v-if="createState.trigger === 'date'" name="trigger_args" label="运行日期"
+                                    :rules="[{ required: true, message: '请选择运行日期' }]">
+                                    <a-date-picker v-model:value="createState.trigger_args" show-time
+                                        format="YYYY-MM-DD HH:mm:ss" value-format="YYYY-MM-DD HH:mm:ss"
+                                        placeholder="请选择运行日期" style="width: 100%" />
+                                </a-form-item>
+                                <a-form-item v-else-if="createState.trigger === 'interval'" name="trigger_args"
+                                    label="间隔时间" :rules="[{ required: true, message: '请输入间隔时间' }]">
+                                    <a-input v-model:value="createState.trigger_args"
+                                        placeholder="请输入 秒-分-时-天-周 (* * * * 1)" allowClear
+                                        @click="openIntervalTabHandle('create')" />
+                                </a-form-item>
+                                <a-form-item v-else-if="createState.trigger === 'cron'" name="trigger_args"
+                                    label="Cron表达式" :rules="[{ required: true, message: '请输入Cron表达式' }]">
+                                    <a-input v-model:value="createState.trigger_args"
+                                        placeholder="请输入 Cron表达式(*/3 * * * *)" @click="handleShowCron" allowClear
+                                        readonly>
+                                    </a-input>
+                                </a-form-item>
+                            </a-col>
+                            <!-- 开始日期和结束日期 -->
+                            <a-col :span="12">
+                                <a-form-item v-if="createState.trigger && createState.trigger != 'date'"
+                                    name="start_date" label="开始日期" :rules="[{ required: false, message: '请选择开始日期' }]">
+                                    <a-date-picker v-model:value="createState.start_date" show-time
+                                        format="YYYY-MM-DD HH:mm:ss" value-format="YYYY-MM-DD HH:mm:ss"
+                                        placeholder="请选择开始日期" style="width: 100%" />
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item v-if="createState.trigger && createState.trigger != 'date'" name="end_date"
+                                    label="结束日期" :rules="[{ required: false, message: '请选择结束日期' }]">
+                                    <a-date-picker v-model:value="createState.end_date" show-time
+                                        format="YYYY-MM-DD HH:mm:ss" value-format="YYYY-MM-DD HH:mm:ss"
+                                        placeholder="请选择结束日期" style="width: 100%" />
+                                </a-form-item>
+                            </a-col>
+                            <!-- 备注 -->
+                            <a-col :span="12">
+                                <a-form-item name="description" label="备注">
+                                    <a-textarea v-model:value="createState.description" placeholder="请输入备注" :rows="4"
+                                        allowClear />
+                                </a-form-item>
+                            </a-col>
+                        </a-row>
                     </a-form>
                 </div>
                 <div v-else>
-                    <a-form ref="updateForm" :model="updateState"
-                        v-bind="{ labelCol: { span: 5 }, wrapperCol: { span: 15 } }">
-                        <a-form-item name="name" label="任务名称" :rules="[{ required: true, message: '请输入任务名称' }]">
-                            <a-input v-model:value="updateState.name" placeholder="请输入任务名称" allowClear></a-input>
-                        </a-form-item>
-                        <a-form-item name="jobstore" label="任务存储器" :rules="[{ required: true, message: '请选择任务存储' }]">
-                            <a-select v-model:value="updateState.jobstore" placeholder="请选择任务存储" allowClear>
-                                <a-select-option v-for="item in DictDataStore['sys_job_group']" :key="item.id" :value="item.dict_value">
-                                    {{ item.dict_label }}
-                                </a-select-option>
-                            </a-select>
-                        </a-form-item>
-                        <a-form-item name="executor" label="任务执行器" :rules="[{ required: true, message: '请选择任务执行器' }]">
-                            <a-select v-model:value="updateState.executor" placeholder="请选择任务执行器" allowClear>
-                                <a-select-option v-for="item in DictDataStore['sys_job_executor']" :key="item.id" :value="item.dict_value">
-                                    {{ item.dict_label }}
-                                </a-select-option>
-                            </a-select>
-                        </a-form-item>
-                        <a-form-item name="func" label="任务函数" :rules="[{ required: true, message: '请输入任务函数' }]">
-                            <a-select v-model:value="updateState.func" placeholder="请选择任务函数 module.function" allowClear >
-                                <a-select-option v-for="item in DictDataStore['sys_job_function']" :key="item.id" :value="item.dict_value">
-                                    {{ item.dict_label }}
-                                </a-select-option>
-                            </a-select>
-                        </a-form-item>
-                        <a-form-item name="args" label="位置参数" :rules="[{ required: false, message: '请输入位置参数' }]">
-                            <a-input v-model:value="updateState.args" placeholder="请输入位置参数" allowClear></a-input>
-                        </a-form-item>
-                        <a-form-item name="kwargs" label="关键字参数" :rules="[{ required: false, message: '请输入关键字参数' }]">
-                            <a-input v-model:value="updateState.kwargs" placeholder="请输入关键字参数" allowClear></a-input>
-                        </a-form-item>
-                        <a-form-item name="trigger" label="任务触发器" :rules="[{ required: true, message: '请选择触发器' }]">
-                            <a-select v-model:value="updateState.trigger" placeholder="请选择触发器" allowClear >
-                                <a-select-option v-for="item in DictDataStore['sys_job_trigger']" :key="item.id" :value="item.dict_value">
-                                    {{ item.dict_label }}
-                                </a-select-option>
-                            </a-select>
-                        </a-form-item>
-                        <a-form-item v-if="updateState.trigger === 'date'" name="trigger_args" label="运行日期"
-                            :rules="[{ required: true, message: '请选择运行日期' }]">
-                            <a-date-picker v-model:value="updateState.trigger_args" format="YYYY-MM-DD HH:mm:ss"
-                                placeholder="请选择运行日期" :show-time="{ defaultValue: dayjs('00:00:00', 'HH:mm:ss') }"
-                                style="width: 100%" :value-format="'YYYY-MM-DD HH:mm:ss'" />
-                        </a-form-item>
-                        <a-form-item v-else-if="updateState.trigger === 'interval'" name="trigger_args" label="间隔时间"
-                            :rules="[{ required: true, message: '请输入间隔时间' }]">
-                            <a-input v-model:value="updateState.trigger_args" placeholder="请输入 秒-分-时-天-周 (* * * * *)"
-                                allowClear @click="openIntervalTabHandle('update')" readonly />
-                        </a-form-item>
-                        <a-form-item v-else-if="updateState.trigger === 'cron'" name="trigger_args" label="Cron表达式"
-                            :rules="[{ required: true, message: '请输入Cron表达式' }]">
-                            <a-input v-model:value="updateState.trigger_args" placeholder="请输入 Cron表达式(*/3 * * * *)"
-                                @click="handleShowCron" allowClear readonly></a-input>
-                        </a-form-item>
-                        <a-form-item v-else-if="updateState.trigger && createState.trigger != 'date'" name="start_date"
-                            label="开始日期" :rules="[{ required: false, message: '请选择开始日期' }]">
-                            <a-date-picker v-model:value="updateState.start_date" show-time format="YYYY-MM-DD HH:mm:ss"
-                                value-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始日期" style="width: 100%" />
-                        </a-form-item>
-                        <a-form-item v-else-if="updateState.trigger && createState.trigger != 'date'" name="end_date"
-                            label="结束日期" :rules="[{ required: false, message: '请选择结束日期' }]">
-                            <a-date-picker v-model:value="updateState.end_date" show-time format="YYYY-MM-DD HH:mm:ss"
-                                value-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束日期" style="width: 100%" />
-                        </a-form-item>
-                        <a-form-item name="coalesce" label="是否并行" :rules="[{ required: true, message: '请选择是否并行' }]">
-                            <a-radio-group v-model:value="updateState.coalesce">
-                                <a-radio :value="true">是</a-radio>
-                                <a-radio :value="false">否</a-radio>
-                            </a-radio-group>
-                        </a-form-item>
-                        <a-form-item name="max_instances" label="最大实例数"
-                            :rules="[{ required: true, message: '请输入最大实例数' }]">
-                            <a-input-number v-model:value="updateState.max_instances" :min="1" placeholder="请输入最大实例数"
-                                style="width: 100%" />
-                        </a-form-item>
-                        <a-form-item name="description" label="备注">
-                            <a-textarea v-model:value="updateState.description" placeholder="请输入备注" :rows="4"
-                                allowClear />
-                        </a-form-item>
+                    <a-form ref="updateForm" :model="updateState" v-bind="{ labelCol: { span: 8 }, wrapperCol: { span: 12 } }">
+                        <a-row>
+                            <!-- 任务名称和任务存储器 -->
+                            <a-col :span="12">
+                                <a-form-item name="name" label="任务名称" :rules="[{ required: true, message: '请输入任务名称' }]">
+                                    <a-input v-model:value="updateState.name" placeholder="请输入任务名称"
+                                        allowClear></a-input>
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item name="jobstore" label="任务存储器"
+                                    :rules="[{ required: true, message: '请选择任务存储' }]">
+                                    <a-select v-model:value="updateState.jobstore" placeholder="请选择任务存储" allowClear>
+                                        <a-select-option v-for="item in DictDataStore['sys_job_group']" :key="item.id"
+                                            :value="item.dict_value">
+                                            {{ item.dict_label }}
+                                        </a-select-option>
+                                    </a-select>
+                                </a-form-item>
+                            </a-col>
+                            <!-- 任务执行器和任务函数 -->
+                            <a-col :span="12">
+                                <a-form-item name="executor" label="任务执行器"
+                                    :rules="[{ required: true, message: '请选择任务执行器' }]">
+                                    <a-select v-model:value="updateState.executor" placeholder="请选择任务执行器" allowClear>
+                                        <a-select-option v-for="item in DictDataStore['sys_job_executor']"
+                                            :key="item.id" :value="item.dict_value">
+                                            {{ item.dict_label }}
+                                        </a-select-option>
+                                    </a-select>
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item name="func" label="任务函数" :rules="[{ required: true, message: '请输入任务函数' }]">
+                                    <a-select v-model:value="updateState.func" placeholder="请选择任务函数 module.function"
+                                        allowClear>
+                                        <a-select-option v-for="item in DictDataStore['sys_job_function']"
+                                            :key="item.id" :value="item.dict_value">
+                                            {{ item.dict_label }}
+                                        </a-select-option>
+                                    </a-select>
+                                </a-form-item>
+                            </a-col>
+                            <!-- 位置参数和关键字参数 -->
+                            <a-col :span="12">
+                                <a-form-item name="args" label="位置参数"
+                                    :rules="[{ required: false, message: '请输入位置参数' }]">
+                                    <a-input v-model:value="updateState.args" placeholder="请输入位置参数"
+                                        allowClear></a-input>
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item name="kwargs" label="关键字参数"
+                                    :rules="[{ required: false, message: '请输入关键字参数' }]">
+                                    <a-input v-model:value="updateState.kwargs" placeholder="请输入关键字参数"
+                                        allowClear></a-input>
+                                </a-form-item>
+                            </a-col>
+                            <!-- 是否并行和最大实例数 -->
+                            <a-col :span="12">
+                                <a-form-item name="coalesce" label="是否并行"
+                                    :rules="[{ required: true, message: '请选择是否并行' }]">
+                                    <a-radio-group v-model:value="updateState.coalesce">
+                                        <a-radio :value="true">是</a-radio>
+                                        <a-radio :value="false">否</a-radio>
+                                    </a-radio-group>
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item name="max_instances" label="最大实例数"
+                                    :rules="[{ required: true, message: '请输入最大实例数' }]">
+                                    <a-input-number v-model:value="updateState.max_instances" :min="1"
+                                        placeholder="请输入最大实例数" style="width: 100%" />
+                                </a-form-item>
+                            </a-col>
+                            <!-- 任务触发器 -->
+                            <a-col :span="12">
+                                <a-form-item name="trigger" label="任务触发器"
+                                    :rules="[{ required: true, message: '请选择触发器' }]">
+                                    <a-select v-model:value="updateState.trigger" placeholder="请选择触发器" allowClear>
+                                        <a-select-option v-for="item in DictDataStore['sys_job_trigger']" :key="item.id"
+                                            :value="item.dict_value">
+                                            {{ item.dict_label }}
+                                        </a-select-option>
+                                    </a-select>
+                                </a-form-item>
+                            </a-col>
+                            <!-- 运行日期、间隔时间或 Cron 表达式 -->
+                            <a-col :span="12">
+                                <a-form-item v-if="updateState.trigger === 'date'" name="trigger_args" label="运行日期"
+                                    :rules="[{ required: true, message: '请选择运行日期' }]">
+                                    <a-date-picker v-model:value="updateState.trigger_args" format="YYYY-MM-DD HH:mm:ss"
+                                        placeholder="请选择运行日期"
+                                        :show-time="{ defaultValue: dayjs('00:00:00', 'HH:mm:ss') }" style="width: 100%"
+                                        :value-format="'YYYY-MM-DD HH:mm:ss'" />
+                                </a-form-item>
+                                <a-form-item v-else-if="updateState.trigger === 'interval'" name="trigger_args"
+                                    label="间隔时间" :rules="[{ required: true, message: '请输入间隔时间' }]">
+                                    <a-input v-model:value="updateState.trigger_args"
+                                        placeholder="请输入 秒-分-时-天-周 (* * * * *)" allowClear
+                                        @click="openIntervalTabHandle('update')" readonly />
+                                </a-form-item>
+                                <a-form-item v-else-if="updateState.trigger === 'cron'" name="trigger_args"
+                                    label="Cron表达式" :rules="[{ required: true, message: '请输入Cron表达式' }]">
+                                    <a-input v-model:value="updateState.trigger_args"
+                                        placeholder="请输入 Cron表达式(*/3 * * * *)" @click="handleShowCron" allowClear
+                                        readonly></a-input>
+                                </a-form-item>
+                            </a-col>
+                            <!-- 开始日期和结束日期 -->
+                            <a-col :span="12">
+                                <a-form-item v-if="updateState.trigger && updateState.trigger != 'date'"
+                                    name="start_date" label="开始日期" :rules="[{ required: false, message: '请选择开始日期' }]">
+                                    <a-date-picker v-model:value="updateState.start_date" show-time
+                                        format="YYYY-MM-DD HH:mm:ss" value-format="YYYY-MM-DD HH:mm:ss"
+                                        placeholder="请选择开始日期" style="width: 100%" />
+                                </a-form-item>
+                            </a-col>
+                            <a-col :span="12">
+                                <a-form-item v-if="updateState.trigger && updateState.trigger != 'date'" name="end_date"
+                                    label="结束日期" :rules="[{ required: false, message: '请选择结束日期' }]">
+                                    <a-date-picker v-model:value="updateState.end_date" show-time
+                                        format="YYYY-MM-DD HH:mm:ss" value-format="YYYY-MM-DD HH:mm:ss"
+                                        placeholder="请选择结束日期" style="width: 100%" />
+                                </a-form-item>
+                            </a-col>
+                            <!-- 备注 -->
+                            <a-col :span="12">
+                                <a-form-item name="description" label="备注">
+                                    <a-textarea v-model:value="updateState.description" placeholder="请输入备注" :rows="4"
+                                        allowClear />
+                                </a-form-item>
+                            </a-col>
+                        </a-row>
                     </a-form>
                 </div>
             </a-modal>
@@ -508,7 +614,7 @@ const intervalTabRef = ref();
 const expression = ref('');
 
 const getOptions = async () => {
-    const dictOptions = await dictStore.setDict(['sys_job_group', 'sys_job_executor', 'sys_job_function', 'sys_job_trigger'])
+    const dictOptions = await dictStore.getDict(['sys_job_group', 'sys_job_executor', 'sys_job_function', 'sys_job_trigger'])
     return dictOptions
 }
 

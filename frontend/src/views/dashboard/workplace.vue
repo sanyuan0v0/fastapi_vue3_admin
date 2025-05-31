@@ -11,9 +11,8 @@
         <a-col class="content" style="margin-left: 20px;">
           <div class="content-title"
             style="font-size: 20px; font-weight: 500; margin-bottom: 12px;">
-            {{ timefix }}，{{ userInfo.name }}<span class="welcome-text">，{{ welcome }}</span>
+            {{ timefix }}, {{ userInfo.name }}<span class="welcome-text">, {{ welcome }}</span>
           </div>
-          <div>{{userInfo.positions[0].name}} | {{userInfo.dept_name}}</div>
         </a-col>
       </a-row>
       <a-row class="extra-content" justify="space-around">

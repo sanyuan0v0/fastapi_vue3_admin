@@ -1,31 +1,26 @@
 <template>
   <div>
-
-
     <!-- 表格搜索区域 -->
     <div class="table-search-wrapper">
       <a-card :bordered="false">
         <a-form :model="queryState" @finish="onFinish">
-          <a-flex wrap="wrap" gap="small">
-            <a-form-item name="username" label="账号" >
-              <a-input v-model:value="queryState.username" placeholder="请输入账号" allowClear></a-input>
+          <a-flex wrap="wrap" gap="middle">
+            <a-form-item name="username" label="账号">
+              <a-input v-model:value="queryState.username" placeholder="请输入账号" allowClear
+                style="width: 200px;"></a-input>
             </a-form-item>
-            <a-form-item name="name" label="用户名" >
-              <a-input v-model:value="queryState.name" placeholder="请输入用户名" allowClear></a-input>
+            <a-form-item name="name" label="用户名">
+              <a-input v-model:value="queryState.name" placeholder="请输入用户名" allowClear style="width: 200px;"></a-input>
             </a-form-item>
-            <a-form-item name="available" label="状态" >
-              <a-select v-model:value="queryState.available" placeholder="请选择状态" min-width="300px" allowClear>
+            <a-form-item name="available" label="状态">
+              <a-select v-model:value="queryState.available" placeholder="请选择状态" allowClear style="width: 200px;">
                 <a-select-option value="true">启用</a-select-option>
                 <a-select-option value="false">停用</a-select-option>
               </a-select>
             </a-form-item>
+            <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
+            <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
           </a-flex>
-          <a-row>
-            <a-col>
-              <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
-              <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
-            </a-col>
-          </a-row>
         </a-form>
       </a-card>
     </div>
@@ -33,8 +28,7 @@
     <!-- 表格区域 -->
     <div class="table-wrapper">
       <a-card title="用户管理" :bordered="false" :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-        
-      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 360px)' }">
+        :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 330px)' }">
         <template #extra>
           <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')" style="margin-right: 10px;">
             新建
@@ -76,12 +70,15 @@
           <a-col :span="20">
             <a-table :rowKey="record => record.id" :columns="columns" :data-source="dataSource"
               :row-selection="rowSelection" :loading="tableLoading" @change="handleTableChange" :scroll="{ x: 400 }"
-              :pagination="pagination" 
-                    :style="{ minHeight: 'calc(100vh - 420px)' }"
-                    >
+              :pagination="pagination" :style="{ minHeight: 'calc(100vh - 400px)' }">
               <template #bodyCell="{ column, record, index }">
                 <template v-if="column.dataIndex === 'index'">
                   <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
+                </template>
+                <template v-if="column.dataIndex === 'avatar'">
+                  <a-avatar :src="record.avatar" :shape="record.avatar ? 'square' : 'circle'"
+                    :icon="record.avatar ? undefined : h(UserOutlined)">
+                  </a-avatar>
                 </template>
                 <template v-if="column.dataIndex === 'dept'">
                   <span>{{ record.dept_name }}</span>
@@ -139,6 +136,10 @@
               bordered>
               <a-descriptions-item label="序号">{{ (pagination.current - 1) * pagination.pageSize + detailState.index + 1
                 }}</a-descriptions-item>
+              <a-descriptions-item label="头像">
+                <a-avatar :src="detailState.avatar" :shape="detailState.avatar?'square' : 'circle'"
+                  :icon="detailState.avatar? undefined : h(UserOutlined)" />
+              </a-descriptions-item>
               <a-descriptions-item label="账号">{{ detailState.username }}</a-descriptions-item>
               <a-descriptions-item label="用户名">{{ detailState.name }}</a-descriptions-item>
               <a-descriptions-item label="性别">
@@ -168,131 +169,199 @@
         </div>
         <div v-else-if="modalTitle === 'create'">
           <a-form ref="createForm" :model="createState" v-bind="{ labelCol: { span: 5 }, wrapperCol: { span: 15 } }">
-            <a-form-item name="username" label="账号" :rules="[{ required: true, message: '请输入账号' }]">
-              <a-input v-model:value="createState.username" placeholder="请输入账号" allowClear></a-input>
-            </a-form-item>
-            <a-form-item name="name" label="用户名" :rules="[{ required: true, message: '请输入用户名' }]">
-              <a-input v-model:value="createState.name" placeholder="请输入用户名" allowClear></a-input>
-            </a-form-item>
-            <a-form-item name="dept_id" label="部门" :rules="[{ required: true, message: '请选择部门' }]">
-              <a-tree-select v-model:value="createState.dept_id"
-                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }" :tree-data="deptTreeData"
-                :field-names="{ children: 'children', label: 'name', value: 'id' }" placeholder="请选择部门"
-                tree-node-filter-prop="name" style="width: 100%" show-search allow-clear></a-tree-select>
-            </a-form-item>
-            <a-form-item name="role_ids" label="角色">
-              <a-select v-model:value="createState.roleNames" :open="false" @click="selectModalHandle('role')"
-                placeholder="请选择角色">
-                <template #suffixIcon>
-                  <SearchOutlined />
-                </template>
-              </a-select>
-            </a-form-item>
-            <a-form-item name="position_ids" label="岗位">
-              <a-select v-model:value="createState.positionNames" :open="false" @click="selectModalHandle('position')"
-                placeholder="请选择岗位">
-                <template #suffixIcon>
-                  <SearchOutlined />
-                </template>
-              </a-select>
-            </a-form-item>
-            <a-form-item name="password" label="密码" :rules="[{ required: true, message: '请输入密码' }]">
-              <a-input-password v-model:value="createState.password" placeholder="请输入密码" allowClear></a-input-password>
-            </a-form-item>
-            <a-form-item name="gender" label="性别" :rules="[{ required: true, message: '请选择性别' }]">
-              <a-select v-model:value="createState.gender" placeholder="请选择性别" allowClear>
-                  <a-select-option v-for="item in DictDataStore['sys_user_sex']" :key="item.id" :value="item.dict_value">
+            <a-row>
+              <!-- 账号和用户名 -->
+              <a-col :span="12">
+                <a-form-item name="username" label="账号" :rules="[{ required: true, message: '请输入账号' }]">
+                  <a-input v-model:value="createState.username" placeholder="请输入账号" allowClear></a-input>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item name="name" label="用户名" :rules="[{ required: true, message: '请输入用户名' }]">
+                  <a-input v-model:value="createState.name" placeholder="请输入用户名" allowClear></a-input>
+                </a-form-item>
+              </a-col>
+              <!-- 部门和角色 -->
+              <a-col :span="12">
+                <a-form-item name="dept_id" label="部门" :rules="[{ required: true, message: '请选择部门' }]">
+                  <a-tree-select v-model:value="createState.dept_id"
+                    :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }" :tree-data="deptTreeData"
+                    :field-names="{ children: 'children', label: 'name', value: 'id' }" placeholder="请选择部门"
+                    tree-node-filter-prop="name" style="width: 100%" show-search allow-clear></a-tree-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item name="role_ids" label="角色">
+                  <a-select v-model:value="createState.roleNames" :open="false" @click="selectModalHandle('role')"
+                    placeholder="请选择角色">
+                    <template #suffixIcon>
+                      <SearchOutlined />
+                    </template>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <!-- 岗位和密码 -->
+              <a-col :span="12">
+                <a-form-item name="position_ids" label="岗位">
+                  <a-select v-model:value="createState.positionNames" :open="false"
+                    @click="selectModalHandle('position')" placeholder="请选择岗位">
+                    <template #suffixIcon>
+                      <SearchOutlined />
+                    </template>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item name="password" label="密码" :rules="[{ required: true, message: '请输入密码' }]">
+                  <a-input-password v-model:value="createState.password" placeholder="请输入密码"
+                    allowClear></a-input-password>
+                </a-form-item>
+              </a-col>
+              <!-- 性别和邮箱 -->
+              <a-col :span="12">
+                <a-form-item name="gender" label="性别" :rules="[{ required: true, message: '请选择性别' }]">
+                  <a-select v-model:value="createState.gender" placeholder="请选择性别" allowClear>
+                    <a-select-option v-for="item in DictDataStore['sys_user_sex']" :key="item.id"
+                      :value="item.dict_value">
                       {{ item.dict_label }}
-                  </a-select-option>
-              </a-select>
-            </a-form-item>
-            <a-form-item name="email" label="邮箱">
-              <a-input v-model:value="createState.email" placeholder="请输入邮箱" allowClear></a-input>
-            </a-form-item>
-            <a-form-item name="mobile" label="联系电话">
-              <a-input v-model:value="createState.mobile" placeholder="请输入电话" allowClear></a-input>
-            </a-form-item>
-            <a-form-item name="is_superuser" label="是否超管" :rules="[{ required: true, message: '请选择是否超管' }]">
-              <a-radio-group v-model:value="createState.is_superuser">
-                <a-radio :value="true">是</a-radio>
-                <a-radio :value="false">否</a-radio>
-              </a-radio-group>
-            </a-form-item>
-            <a-form-item name="available" label="状态" :rules="[{ required: true, message: '请选择状态' }]">
-              <a-radio-group v-model:value="createState.available">
-                <a-radio :value="true">启用</a-radio>
-                <a-radio :value="false">停用</a-radio>
-              </a-radio-group>
-            </a-form-item>
-            <a-form-item name="description" label="备注">
-              <a-textarea v-model:value="createState.description" placeholder="请输入备注" :rows="4" allowClear />
-            </a-form-item>
+                    </a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item name="email" label="邮箱">
+                  <a-input v-model:value="createState.email" placeholder="请输入邮箱" allowClear></a-input>
+                </a-form-item>
+              </a-col>
+              <!-- 联系电话和是否超管 -->
+              <a-col :span="12">
+                <a-form-item name="mobile" label="联系电话">
+                  <a-input v-model:value="createState.mobile" placeholder="请输入电话" allowClear></a-input>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item name="is_superuser" label="是否超管" :rules="[{ required: true, message: '请选择是否超管' }]">
+                  <a-radio-group v-model:value="createState.is_superuser">
+                    <a-radio :value="true">是</a-radio>
+                    <a-radio :value="false">否</a-radio>
+                  </a-radio-group>
+                </a-form-item>
+              </a-col>
+              <!-- 状态和备注 -->
+              <a-col :span="12">
+                <a-form-item name="available" label="状态" :rules="[{ required: true, message: '请选择状态' }]">
+                  <a-radio-group v-model:value="createState.available">
+                    <a-radio :value="true">启用</a-radio>
+                    <a-radio :value="false">停用</a-radio>
+                  </a-radio-group>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item name="description" label="备注">
+                  <a-textarea v-model:value="createState.description" placeholder="请输入备注" :rows="4" allowClear />
+                </a-form-item>
+              </a-col>
+            </a-row>
           </a-form>
         </div>
         <div v-else>
           <a-form ref="updateForm" :model="updateState" v-bind="{ labelCol: { span: 5 }, wrapperCol: { span: 15 } }">
-            <a-form-item name="username" label="账号" :rules="[{ required: true, message: '请输入账号账号' }]">
-              <a-input v-model:value="updateState.username" placeholder="请输入账号" allowClear></a-input>
-            </a-form-item>
-            <a-form-item name="name" label="用户名" :rules="[{ required: true, message: '请输入用户名' }]">
-              <a-input v-model:value="updateState.name" placeholder="请输入用户名" allowClear></a-input>
-            </a-form-item>
-            <a-form-item name="dept_id" label="部门" :rules="[{ required: true, message: '请选择部门' }]">
-              <a-tree-select v-model:value="updateState.dept_id"
-                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }" :tree-data="deptTreeData"
-                :field-names="{ children: 'children', label: 'name', value: 'id' }" placeholder="请选择部门"
-                tree-node-filter-prop="name" style="width: 100%" show-search allow-clear></a-tree-select>
-            </a-form-item>
-            <a-form-item name="role_ids" label="角色">
-              <a-select v-model:value="updateState.roleNames" :open="false" @click="selectModalHandle('role')"
-                placeholder="请选择角色">
-                <template #suffixIcon>
-                  <SearchOutlined />
-                </template>
-              </a-select>
-            </a-form-item>
-            <a-form-item name="position_ids" label="岗位">
-              <a-select v-model:value="updateState.positionNames" :open="false" @click="selectModalHandle('position')"
-                placeholder="请选择岗位">
-                <template #suffixIcon>
-                  <SearchOutlined />
-                </template>
-              </a-select>
-            </a-form-item>
-            <a-form-item v-if="!showPasswordInput" label="修改密码">
-              <a-checkbox v-model:checked="showPasswordInput"></a-checkbox>
-            </a-form-item>
-            <a-form-item v-else name="password" label="密码">
-              <a-input-password v-model:value="updateState.password" placeholder="请输入密码" allowClear></a-input-password>
-            </a-form-item>
-            <a-form-item name="gender" label="性别" :rules="[{ required: true, message: '请选择性别' }]">
-              <a-select v-model:value="updateState.gender" placeholder="请选择性别" allowClear>
-                  <a-select-option v-for="item in DictDataStore['sys_user_sex']" :key="item.id" :value="item.dict_value">
+            <a-row>
+              <!-- 账号和用户名 -->
+              <a-col :span="12">
+                <a-form-item name="username" label="账号" :rules="[{ required: true, message: '请输入账号' }]">
+                  <a-input v-model:value="updateState.username" placeholder="请输入账号" allowClear></a-input>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item name="name" label="用户名" :rules="[{ required: true, message: '请输入用户名' }]">
+                  <a-input v-model:value="updateState.name" placeholder="请输入用户名" allowClear></a-input>
+                </a-form-item>
+              </a-col>
+              <!-- 部门和角色 -->
+              <a-col :span="12">
+                <a-form-item name="dept_id" label="部门" :rules="[{ required: true, message: '请选择部门' }]">
+                  <a-tree-select v-model:value="updateState.dept_id"
+                    :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }" :tree-data="deptTreeData"
+                    :field-names="{ children: 'children', label: 'name', value: 'id' }" placeholder="请选择部门"
+                    tree-node-filter-prop="name" style="width: 100%" show-search allow-clear></a-tree-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item name="role_ids" label="角色">
+                  <a-select v-model:value="updateState.roleNames" :open="false" @click="selectModalHandle('role')"
+                    placeholder="请选择角色">
+                    <template #suffixIcon>
+                      <SearchOutlined />
+                    </template>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <!-- 岗位和修改密码 -->
+              <a-col :span="12">
+                <a-form-item name="position_ids" label="岗位">
+                  <a-select v-model:value="updateState.positionNames" :open="false"
+                    @click="selectModalHandle('position')" placeholder="请选择岗位">
+                    <template #suffixIcon>
+                      <SearchOutlined />
+                    </template>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item v-if="!showPasswordInput" label="修改密码">
+                  <a-checkbox v-model:checked="showPasswordInput"></a-checkbox>
+                </a-form-item>
+                <a-form-item v-else name="password" label="密码">
+                  <a-input-password v-model:value="updateState.password" placeholder="请输入密码"
+                    allowClear></a-input-password>
+                </a-form-item>
+              </a-col>
+              <!-- 性别和邮箱 -->
+              <a-col :span="12">
+                <a-form-item name="gender" label="性别" :rules="[{ required: true, message: '请选择性别' }]">
+                  <a-select v-model:value="updateState.gender" placeholder="请选择性别" allowClear>
+                    <a-select-option v-for="item in DictDataStore['sys_user_sex']" :key="item.id"
+                      :value="item.dict_value">
                       {{ item.dict_label }}
-                  </a-select-option>
-              </a-select>
-            </a-form-item>
-            <a-form-item name="email" label="邮箱">
-              <a-input v-model:value="updateState.email" placeholder="请输入邮箱" allowClear></a-input>
-            </a-form-item>
-            <a-form-item name="mobile" label="联系电话">
-              <a-input v-model:value="updateState.mobile" placeholder="请输入电话" allowClear></a-input>
-            </a-form-item>
-            <a-form-item name="is_superuser" label="是否超管" :rules="[{ required: true, message: '请选择是否超管' }]">
-              <a-radio-group v-model:value="updateState.is_superuser">
-                <a-radio :value="true">是</a-radio>
-                <a-radio :value="false">否</a-radio>
-              </a-radio-group>
-            </a-form-item>
-            <a-form-item name="available" label="状态" :rules="[{ required: true, message: '请选择状态' }]">
-              <a-radio-group v-model:value="updateState.available">
-                <a-radio :value="true">启用</a-radio>
-                <a-radio :value="false">停用</a-radio>
-              </a-radio-group>
-            </a-form-item>
-            <a-form-item name="description" label="备注">
-              <a-textarea v-model:value="updateState.description" placeholder="请输入备注" :rows="4" allowClear />
-            </a-form-item>
+                    </a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item name="email" label="邮箱">
+                  <a-input v-model:value="updateState.email" placeholder="请输入邮箱" allowClear></a-input>
+                </a-form-item>
+              </a-col>
+              <!-- 联系电话和是否超管 -->
+              <a-col :span="12">
+                <a-form-item name="mobile" label="联系电话">
+                  <a-input v-model:value="updateState.mobile" placeholder="请输入电话" allowClear></a-input>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item name="is_superuser" label="是否超管" :rules="[{ required: true, message: '请选择是否超管' }]">
+                  <a-radio-group v-model:value="updateState.is_superuser">
+                    <a-radio :value="true">是</a-radio>
+                    <a-radio :value="false">否</a-radio>
+                  </a-radio-group>
+                </a-form-item>
+              </a-col>
+              <!-- 状态和备注 -->
+              <a-col :span="12">
+                <a-form-item name="available" label="状态" :rules="[{ required: true, message: '请选择状态' }]">
+                  <a-radio-group v-model:value="updateState.available">
+                    <a-radio :value="true">启用</a-radio>
+                    <a-radio :value="false">停用</a-radio>
+                  </a-radio-group>
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item name="description" label="备注">
+                  <a-textarea v-model:value="updateState.description" placeholder="请输入备注" :rows="4" allowClear />
+                </a-form-item>
+              </a-col>
+            </a-row>
           </a-form>
         </div>
       </a-modal>
@@ -348,7 +417,7 @@
 import { ref, reactive, computed, unref, onMounted, h } from 'vue';
 import { Table, message, Modal } from 'ant-design-vue';
 import type { TableColumnsType, MenuProps } from 'ant-design-vue';
-import { CarryOutOutlined, SmileTwoTone, PlusOutlined, DownOutlined, UploadOutlined, DownloadOutlined, CheckOutlined, StopOutlined, SearchOutlined } from '@ant-design/icons-vue';
+import { UserOutlined, PlusOutlined, DownOutlined, UploadOutlined, DownloadOutlined, CheckOutlined, StopOutlined, SearchOutlined } from '@ant-design/icons-vue';
 import { isEmpty, listToTree } from '@/utils/util';
 import { getDeptList } from '@/api/system/dept'
 import { getUserList, createUser, updateUser, deleteUser, batchAvailableUser, exportUser, downloadTemplate, importUser } from '@/api/system/user'
@@ -364,11 +433,12 @@ const DictDataStore = computed(() => {
 })
 
 const getOptions = async () => {
-    const dictOptions = await dictStore.setDict(['sys_user_sex'])
+    const dictOptions = await dictStore.getDict(['sys_user_sex'])
     return dictOptions
 }
 const deptTree = ref(null);
 const tableLoading = ref(false);
+const treeLoading = ref(false);
 const openModal = ref(false);
 const modalTitle = ref('');
 const modalSubmitLoading = ref(false);
@@ -440,6 +510,12 @@ const columns = reactive<TableColumnsType>([
     width: 80
   },
   {
+    title: '头像',
+    dataIndex: 'avatar',
+    align: 'center',
+    width: 80,
+  },
+  {
     title: '账号',
     dataIndex: 'username',
     ellipsis: true,
@@ -504,7 +580,6 @@ const columns = reactive<TableColumnsType>([
     width: 150
   }
 ]);
-
 const rowSelection = computed(() => {
   return {
     selectedRowKeys: unref(selectedRowKeys),
@@ -519,66 +594,84 @@ const rowSelection = computed(() => {
     ]
   }
 });
-
 const selectedKeys = ref<number[]>([]);
 
 // 生命周期钩子
 onMounted(async () => {
     await getOptions();
+    loadingDeptTree();
     loadingData();
 });
 // 查询
 const onFinish = () => {
   pagination.current = 1;
+  loadingDeptTree();
   loadingData();
 };
 
 // 加载表格数据
-const loadingData = () => {
-  tableLoading.value = true;
+const loadingData = async () => {
+  try {
+    tableLoading.value = true;
 
-  let params = {};
-  if (queryState.username) {
-    params['username'] = queryState.username
-  }
-  if (queryState.name) {
-    params['name'] = queryState.name
-  }
-  if (queryState.available !== null && queryState.available !== undefined) {
-    params['available'] = queryState.available;
-  }
-  if (queryState.dept_id) {
-    params['dept_id'] = queryState.dept_id; // 添加 dept_id 参数
-    selectedKeys.value = [queryState.dept_id]; // 选中对应的部门节点
-  } else {
-    selectedKeys.value = []; // 清除选中状态
-  }
-  
-  params['page_no'] = pagination.current
-  params['page_size'] = pagination.pageSize
+    let params = {};
+    if (queryState.username) {
+      params['username'] = queryState.username 
+    }
+    if (queryState.name) {
+      params['name'] = queryState.name 
+    }
+    if (queryState.available !== null && queryState.available !== undefined) {
+      params['available'] = queryState.available; 
+    }
+    if (queryState.dept_id) {
+      params['dept_id'] = queryState.dept_id; 
+      selectedKeys.value = [queryState.dept_id]; 
+    } else {
+      selectedKeys.value = []; // 清除选中状态 
+    }
+    
+    params['page_no'] = pagination.current 
+    params['page_size'] = pagination.pageSize 
 
-  getDeptList().then(response => {
+    const response = await getUserList(params);
+
+    // 检查响应数据结构
+    if (!response || !response.data || !response.data.data) {
+      message.error('响应数据结构异常，请联系管理员');
+      return;
+    }
+
     const result = response.data;
-    deptTreeData.value = listToTree(result.data.items);
-  })
+    console.log(result);
+    dataSource.value = result.data.items.map((item: tableDataType) => { 
+      item.roleNames = item.roles ? item.roles.map(role => role.name).join(",") : null; 
+      item.positionNames = item.positions ? item.positions.map(position => position.name).join(",") : null; 
+      return item; 
+    }); 
 
-  getUserList(params).then(response => {
-    const result = response.data;
-    dataSource.value = result.data.items.map((item: tableDataType) => {
-      item.roleNames = item.roles ? item.roles.map(item => item.name).join("，") : undefined;
-      item.positionNames = item.positions ? item.positions.map(item => item.name).join("，") : undefined;
-      return item;
-    });
     pagination.total = result.data.total;
     pagination.current = result.data.page_no;
     pagination.pageSize = result.data.page_size;
-  }).catch(error => {
-    console.log(error);
-  }).finally(() => {
+  } catch (error) {
+    console.error(error);
+    message.error('数据加载失败，请检查网络或联系管理员');
+  } finally {
     tableLoading.value = false;
-  });
+  }
 }
 
+const loadingDeptTree = async () => {
+  try {
+    treeLoading.value = true;
+    const response = await getDeptList()
+    deptTreeData.value = listToTree(response.data.data.items);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    treeLoading.value = false;
+  }
+}
 // 重置查询
 const resetFields = () => {
   Object.keys(queryState).forEach((key: string) => {

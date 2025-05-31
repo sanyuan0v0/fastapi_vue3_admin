@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 
 from app.common.response import StreamResponse, SuccessResponse
 from app.core.base_params import PaginationQueryParams
-from app.core.dependencies import AuthPermission
+from app.core.dependencies import AuthPermission, get_current_user
 from app.core.router_class import OperationLogRoute
 from app.core.base_schema import BatchSetAvailable
 from app.core.logger import logger
@@ -95,3 +95,13 @@ async def export_obj_list_controller(
             'Content-Disposition': 'attachment; filename=data.xlsx'
         }
     )
+
+
+@router.get("/info", summary="获取全局启用公告", description="获取全局启用公告")
+async def get_obj_list_available_controller(
+    auth: AuthSchema = Depends(get_current_user)
+) -> JSONResponse:
+    result_dict_list = await NoticeService.get_notice_list_available_service(auth=auth)
+    result_dict = await PaginationService.get_page_obj(data_list= result_dict_list)
+    logger.info(f"{auth.user.name} 查询已启用公告列表成功")
+    return SuccessResponse(data=result_dict, msg="查询已启用公告列表成功")

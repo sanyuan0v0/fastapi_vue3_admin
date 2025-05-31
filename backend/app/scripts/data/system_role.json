@@ -10,11 +10,11 @@
   },
   {
     "id": 2,
-    "name": "演示角色",
-    "data_scope": 5,
+    "name": "普通角色",
+    "data_scope": 1,
     "available": true,
     "order": 2,
-    "description": "演示角色",
+    "description": "普通角色",
     "creator_id": 1
   }
 ]

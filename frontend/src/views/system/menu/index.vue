@@ -6,23 +6,19 @@
     <div class="table-search-wrapper">
       <a-card :bordered="false">
         <a-form :model="queryState" @finish="onFinish">
-          <a-flex wrap="wrap" gap="small">
-              <a-form-item name="name" label="名称" >
-                <a-input v-model:value="queryState.name" placeholder="请输入名称" allowClear></a-input>
-              </a-form-item>
-              <a-form-item name="available" label="状态" >
-                <a-select v-model:value="queryState.available" placeholder="请选择状态" allowClear>
-                  <a-select-option value="true">启用</a-select-option>
-                  <a-select-option value="false">停用</a-select-option>
-                </a-select>
-              </a-form-item>
+          <a-flex wrap="wrap" gap="middle">
+            <a-form-item name="name" label="名称" >
+              <a-input v-model:value="queryState.name" placeholder="请输入名称" allowClear style="width: 200px;"></a-input>
+            </a-form-item>
+            <a-form-item name="available" label="状态" >
+              <a-select v-model:value="queryState.available" placeholder="请选择状态" allowClear style="width: 200px;">
+                <a-select-option value="true">启用</a-select-option>
+                <a-select-option value="false">停用</a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
+            <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
           </a-flex>
-          <a-row>
-            <a-col>
-              <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
-              <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
-            </a-col>
-          </a-row>
         </a-form>
       </a-card>
     </div>
@@ -32,7 +28,7 @@
       <a-card title="菜单列表"
         :bordered="false"
         :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 360px)' }">
+      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 330px)' }">
         <template #extra>
           <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')"
             style="margin-right: 10px;">新建</a-button>
@@ -58,14 +54,14 @@
           :columns="columns"
           :data-source="dataSource"
           :loading="tableLoading"
-          :scroll="{ x: 500, y: 'calc(100vh - 450px)' }"
+          :scroll="{ x: 500, y: 'calc(100vh - 420px)' }"
           :row-selection="rowSelection"
           :pagination="false"
                     :style="{ minHeight: 'calc(100vh - 420px)' }"
                     >
           <template #bodyCell="{ column, record }">
             <template v-if="column.dataIndex === 'icon'">
-              <a-button type="text" size="small" :icon="h(icons[record.icon])">{{ record.icon }}</a-button>
+              <a-button type="text" size="small" :icon="icons[record.icon] ? h(icons[record.icon]) : null">{{ record.icon }}</a-button>
             </template>
             <template v-if="column.dataIndex === 'type'">
               <a-tag :color="record.type === 1 ? 'blue' : (record.type === 2 ? 'green' : 'orange')">
@@ -181,7 +177,7 @@
                     style="margin-top: 20px;">
                     <a-tab-pane v-for="(item, index) in iconDataSource" :key="index" :tab="item.type">
                       <div class="icon-wrapper">
-                        <a-flex wrap="wrap" gap="small">
+                        <a-flex wrap="wrap" gap="middle">
                           <a-button
                             v-for="item in iconData.slice((pagination.current - 1) * pagination.pageSize, pagination.current * pagination.pageSize)"
                             :icon="item.icon" @click="iconHandleClick(item)"
@@ -281,7 +277,7 @@
                     style="margin-top: 20px;">
                     <a-tab-pane v-for="(item, index) in iconDataSource" :key="index" :tab="item.type">
                       <div class="icon-wrapper">
-                        <a-flex wrap="wrap" gap="small">
+                        <a-flex wrap="wrap" gap="middle">
                           <a-button
                             v-for="item in iconData.slice((pagination.current - 1) * pagination.pageSize, pagination.current * pagination.pageSize)"
                             :icon="item.icon" @click="iconHandleClick(item)"
