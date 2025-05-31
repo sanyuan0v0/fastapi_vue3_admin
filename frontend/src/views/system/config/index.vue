@@ -24,6 +24,7 @@
           <a-col :span="8">
             <a-form-item label="网站图标">
               <a-upload
+                name="favicon"
                 v-model:file-list="faviconFileList"
                 list-type="picture-card"
                 :before-upload="beforeUpload"
@@ -41,6 +42,7 @@
           <a-col :span="8">
             <a-form-item label="登录页Logo">
               <a-upload
+                name="logo"
                 v-model:file-list="logoFileList"
                 list-type="picture-card"
                 :before-upload="beforeUpload"
@@ -58,6 +60,7 @@
           <a-col :span="8">
             <a-form-item label="登录页背景图">
               <a-upload
+                name="background"
                 v-model:file-list="backgroundFileList"
                 list-type="picture-card"
                 :before-upload="beforeUpload"
@@ -153,25 +156,21 @@ const backgroundFileList = ref<any[]>([]);
 
 // 加载配置数据
 const loadConfigData = async () => {
-  try {
-    const response = await getConfigInfo({});
-    const data = response.data.data;
+  const response = await getConfigInfo({});
+  const data = response.data.data;
 
-    // 填充配置数据
-    Object.assign(configData, data);
+  // 填充配置数据
+  Object.assign(configData, data);
 
-    // 初始化文件上传列表
-    if (data.favicon) {
-      faviconFileList.value = [{ url: data.favicon }];
-    }
-    if (data.logo) {
-      logoFileList.value = [{ url: data.logo }];
-    }
-    if (data.background) {
-      backgroundFileList.value = [{ url: data.background }];
-    }
-  } catch (error) {
-    console.error('加载配置数据失败:', error);
+  // 初始化文件上传列表
+  if (data.favicon) {
+    faviconFileList.value = [{ url: data.favicon }];
+  }
+  if (data.logo) {
+    logoFileList.value = [{ url: data.logo }];
+  }
+  if (data.background) {
+    backgroundFileList.value = [{ url: data.background }];
   }
 };
 
@@ -216,13 +215,9 @@ const handleUpload = async (options: any, type: string) => {
 
 // 保存配置
 const handleSave = async () => {
-  try {
-    // 调用更新配置接口
-    await updateConfig(configData);
-    window.location.reload();
-  } catch (error) {
-    console.error('保存配置失败:', error);
-  }
+  // 调用更新配置接口
+  await updateConfig(configData);
+  window.location.reload();
 };
 
 // 生命周期钩子

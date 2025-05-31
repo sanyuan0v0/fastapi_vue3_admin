@@ -15,7 +15,7 @@ class CurrentUserUpdateSchema(BaseModel):
     name: str = Field(default=None, max_length=15, description="名称")
     mobile: Optional[str] = Field(default=None, description="手机号")
     email: Optional[EmailStr] = Field(default=None, description="邮箱")
-    gender: Optional[str] = Field(default='1', description="性别")  # 1:男 2:女
+    gender: Optional[str] = Field(default=None, description="性别")
     avatar: Optional[str] = Field(default=None, description="头像")
 
     @classmethod
@@ -28,15 +28,11 @@ class UserRegisterSchema(BaseModel):
     """注册"""
     name: str = Field(default=None, max_length=15, description="名称")
     mobile: Optional[str] = Field(default=None, description="手机号")
-    email: Optional[EmailStr] = Field(default=None, description="邮箱")
-    gender: Optional[str] = Field(default='1', description="性别")  # 1:男 2:女
-    username: str = Field(default=None, max_length=15, description="用户名")
+    username: str = Field(default=None, max_length=15, description="账号")
     password: str = Field(default=None, max_length=128, description="密码哈希值")
-    dept_id: Optional[int] = Field(default=1, description='部门ID')
     role_ids: Optional[List[int]] = Field(default=[2], description='角色ID')
-    position_ids: Optional[List[int]] = Field(default=[1], description='岗位ID')
     creator_id: Optional[int] = Field(default=1, description='创建人ID')
-    description: Optional[str] = Field(default=f'注册用户{username}', max_length=255, description="备注")
+    description: Optional[str] = Field(default=f'注册用户{username}', max_length=250, description="备注")
 
 
 class UserForgetPasswordSchema(BaseModel):

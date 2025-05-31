@@ -23,6 +23,7 @@ export interface RegisterForm {
     name: string;
     password: string;
     mobile: string;
-    email: string;
-    gender: number;
+    // email: string;
+    // gender: number;
+    description: string;
 }

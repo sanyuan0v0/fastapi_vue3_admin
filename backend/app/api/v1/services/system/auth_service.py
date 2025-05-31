@@ -74,8 +74,7 @@ class LoginService:
             raise CustomException(msg="用户不存在")
 
         if not PwdUtil.verify_password(plain_password=login_form.password, password_hash=user.password):
-            logger.warning(f'用户密码错误')
-            raise CustomException(msg="用户密码错误")
+            raise CustomException(msg="账号或密码错误")
 
         if not user.available:
             raise CustomException(msg="用户已被停用")
@@ -102,9 +101,20 @@ class LoginService:
         """
         # 生成会话编号
         session_id = str(uuid.uuid4())
+        request.scope["session_id"] = session_id
+
         user_agent = parse(request.headers.get("user-agent"))
-        login_location = await IpLocalUtil.get_ip_location(request.client.host)
-        
+        request_ip = None
+        x_forwarded_for = request.headers.get('X-Forwarded-For')
+        if x_forwarded_for:
+            # 取第一个 IP 地址，通常为客户端真实 IP
+            request_ip = x_forwarded_for.split(',')[0].strip()
+        else:
+            # 若没有 X-Forwarded-For 头，则使用 request.client.host
+            request_ip = request.client.host
+        login_location = await IpLocalUtil.get_ip_location(request_ip)
+        request.scope["login_location"] = login_location
+
         access_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         refresh_expires = timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES)
         
@@ -114,7 +124,7 @@ class LoginService:
             user_id=user.id, 
             name=user.name,
             user_name=user.username,
-            ipaddr=request.client.host,
+            ipaddr=request_ip,
             login_location=login_location,
             os=user_agent.os.family,
             browser = user_agent.browser.family,
@@ -176,7 +186,7 @@ class LoginService:
         user_id = session_info.get("user_id")
 
         if not session_id or not user_id:
-            raise CustomException(msg="非法凭证，无法获取会话编号或用户ID")
+            raise CustomException(msg="非法凭证,无法获取会话编号或用户ID")
 
         # 用户认证
         auth = AuthSchema(db=db)
@@ -238,7 +248,7 @@ class LoginService:
         session_id = session_info.get("session_id")
         
         if not session_id:
-            raise CustomException(msg="非法token，无法获取会话编号")
+            raise CustomException(msg="非法凭证,无法获取会话编号")
 
         # 删除Redis中的在线用户、访问令牌、刷新令牌
         await RedisCURD(redis).delete(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:{session_id}")
@@ -285,6 +295,7 @@ class CaptchaService:
 
         # 返回验证码信息
         return CaptchaOutSchema(
+            enable=settings.CAPTCHA_ENABLE,
             key=CaptchaKey(captcha_key),
             img_base=CaptchaBase64(f"data:image/png;base64,{captcha_base64}")
         ).model_dump()

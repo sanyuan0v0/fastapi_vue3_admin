@@ -36,7 +36,9 @@ class OnlineService:
             except Exception as e:
                 logger.error(f"解析在线用户数据失败: {e}")
                 continue
-
+        # 按照 login_time 倒序排序
+        online_users.sort(key=lambda x: x.get('login_time', ''), reverse=True)
+        
         return online_users
 
 

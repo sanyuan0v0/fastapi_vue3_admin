@@ -82,8 +82,6 @@ request.interceptors.request.use((config) => {
 
 // 响应拦截器
 request.interceptors.response.use((response) => {
-  // 打印全局响应
-  console.log(response.data);
   // 如果是文件下载类型的响应，直接返回
   if (response.config.responseType === 'blob') {
     return response;

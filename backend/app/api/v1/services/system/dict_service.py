@@ -207,18 +207,7 @@ class DictDataService:
                 raise CustomException(msg=f"初始化字典数据成功 {e}")
     
     @classmethod
-    async def get_init_dict_service(cls, redis: Redis) -> Dict:
-        """获取系统配置"""
-        redis_key = f"{RedisInitKeyConfig.System_Dict.key}:*"
-        obj_list_dict = await RedisCURD(redis).get_keys(redis_key)
-        cache_key_list = [key.split(':', 1)[1] for key in obj_list_dict if key.startswith(f'{RedisInitKeyConfig.System_Dict.key}:')]
-        logger.info(f"获取字典数据：{cache_key_list}")
-        if not cache_key_list:
-            raise CustomException(msg="字典数据不存在")
-        return cache_key_list
-    
-    @classmethod
-    async def query_init_dict_service(cls, redis: Redis, dict_type: str):
+    async def get_init_dict_service(cls, redis: Redis, dict_type: str)->List[Dict]:
         """从缓存获取字典数据列表信息service"""
         redis_key = f"{RedisInitKeyConfig.System_Dict.key}:{dict_type}"
         obj_list_dict = await RedisCURD(redis).get(redis_key)

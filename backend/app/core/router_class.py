@@ -59,30 +59,39 @@ class OperationLogRoute(APIRoute):
             response_data = response.body if "application/json" in response.headers.get("Content-Type", "") else b"{}"
             process_time = time.time() - start_time
 
+            # 获取当前用户ID,如果是登录接口则为空
+            current_user_id = None
+            if "user_id" in request.scope:
+                current_user_id = request.scope.get("user_id")
+            
+            request_ip = None
+            x_forwarded_for = request.headers.get('X-Forwarded-For')
+            if x_forwarded_for:
+                # 取第一个 IP 地址，通常为客户端真实 IP
+                request_ip = x_forwarded_for.split(',')[0].strip()
+            else:
+                # 若没有 X-Forwarded-For 头，则使用 request.client.host
+                request_ip = request.client.host
+            
+            login_location = await IpLocalUtil.get_ip_location(request_ip)
+            
+
             async with session_connect() as session:
                 async with session.begin():
                     auth = AuthSchema(db=session)
-                    # 获取当前用户ID,如果是登录接口则为空
-                    login_location = None
-                    current_user_id = None
-                    if "user_id" in request.scope:
-                        current_user_id = request.scope.get("user_id")
-                    if request.url.path == '/api/v1/system/auth/login':
-                        # 只有登录的才会获取登录地址
-                        login_location = await IpLocalUtil.get_ip_location(request.client.host)
-
+                    
                     await OperationLogService.create_log_service(data=OperationLogCreateSchema(
                         request_path = request.url.path,
                         request_method = request.method,
                         request_payload = payload,
-                        request_ip = request.client.host,
+                        request_ip = request_ip,
                         login_location=login_location,
                         request_os = user_agent.os.family,
                         request_browser = user_agent.browser.family,
                         response_code = response.status_code,
                         response_json = response_data.decode(),
                         process_time = process_time,
-                        description = f"{request.scope.get('session_id')}_{route.summary}",
+                        description = route.summary,
                         creator_id = current_user_id
                     ), auth = auth) 
             

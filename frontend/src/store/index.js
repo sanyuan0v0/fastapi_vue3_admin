@@ -3,8 +3,8 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 import { getCurrentUserInfo } from "@/api/system/user";
 import { getInitConfig } from "@/api/system/config";
-import { getNoticeList } from '@/api/system/notice'
-import { getDictDataByType } from '@/api/system/dict'
+import { getNoticeListAvailable } from '@/api/system/notice'
+import { getInitDict } from '@/api/system/dict'
 
 // pinia-plugin-persistedstate 持久化存储官方文档：https://prazdevs.github.io/pinia-plugin-persistedstate/zh/guide/
 const store = createPinia()
@@ -20,16 +20,12 @@ export const useNoticeStore = defineStore("notice", {
   }),
   actions: {
     async getNotice() {
-      try {
-        const response = await getNoticeList({ available: true });
-        const { status_code, data } = response.data;
-        if (status_code === 200) {
-          this.noticeList = data.items;
-          this.total = data.total;
-          this.isNoticeLoaded = true;
-        }
-      } catch (error) {
-        console.error("获取通知失败", error);
+      const response = await getNoticeListAvailable();
+      const { status_code, data } = response.data;
+      if (status_code === 200) {
+        this.noticeList = data.items;
+        this.total = data.total;
+        this.isNoticeLoaded = true;
       }
     },
     clearUserInfo() {
@@ -49,16 +45,12 @@ export const useUserStore = defineStore("user", {
   }),
   actions: {
     async getUserInfo() {
-      try {
-        const response = await getCurrentUserInfo();
-        const result = response.data;
-        const routers = result.data.menus;
-        delete result.data.menus;
-        this.setRoute(routers);
-        this.basicInfo = { ...this.basicInfo, ...result.data };
-      } catch (error) {
-        console.error(error);
-      }
+      const response = await getCurrentUserInfo();
+      const result = response.data;
+      const routers = result.data.menus;
+      delete result.data.menus;
+      this.setRoute(routers);
+      this.basicInfo = { ...this.basicInfo, ...result.data };
     },
     setRoute(routers) {
       this.routeList = routers;
@@ -83,15 +75,11 @@ export const useConfigStore = defineStore("config", {
   }),
   actions: {
     async getConfig() {
-      try {
-        const response = await getInitConfig();
-        const { status_code, data } = response.data;
-        if (status_code === 200) {
-          this.configData = data;
-          this.isConfigLoaded = true;
-        }
-      } catch (error) {
-        console.error("获取系统配置失败", error);
+      const response = await getInitConfig();
+      const { status_code, data } = response.data;
+      if (status_code === 200) {
+        this.configData = data;
+        this.isConfigLoaded = true;
       }
     },
     getConfigValue(key) {
@@ -113,13 +101,13 @@ export const useDictStore = defineStore('dict', {
   },
   actions: {
     // 批量获取字典数据
-    async setDict(types) {
+    async getDict(types) {
       try {
         for (const type of types) {
-          const response = await getDictDataByType(type)
+          const response = await getInitDict(type)
           const result = response.data;
+          
           if (result.status_code === 200) {
-            console.log("参数:",type, "根据字典类型获取字典数据:",result.data);
             // 格式化数据
             this.dictObj[type] = result.data;
             this.isLoaded = true;

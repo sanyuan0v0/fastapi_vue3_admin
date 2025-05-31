@@ -8,6 +8,13 @@ export function getNoticeList(query) {
   });
 }
 
+export function getNoticeListAvailable() {
+  return request({
+    url: "/api/v1/system/notice/info",
+    method: "get",
+  });
+}
+
 export function getNoticeDetail(query) {
   return request({
     url: "/api/v1/system/notice/detail",

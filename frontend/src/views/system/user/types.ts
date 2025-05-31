@@ -15,6 +15,7 @@ export interface tableDataType {
     index?: number;
     username?: string;
     name?: string;
+    avatar?: string;
     email?: string;
     mobile?: string;
     gender?: string;

@@ -6,13 +6,13 @@
     <div class="table-search-wrapper">
       <a-card :bordered="false">
         <a-form :model="queryState" @finish="onFinish">
-          <a-flex wrap="wrap" gap="small">
+          <a-flex wrap="wrap" gap="middle">
               <a-form-item name="request_path" label="请求路径" >
-                <a-input v-model:value="queryState.request_path" placeholder="请输入请求路径" allowClear></a-input>
+                <a-input v-model:value="queryState.request_path" placeholder="请输入请求路径" allowClear style="width: 200px;"></a-input>
               </a-form-item>
               <a-form-item name="creator" label="创建人" >
                 <a-select v-model:value="queryState.creator_name" placeholder="请选择创建人" :open="false"
-                  @click="selectModalHandle">
+                  @click="selectModalHandle" style="width: 200px;">
                   <template #suffixIcon>
                     <search-outlined />
                   </template>
@@ -21,13 +21,9 @@
               <a-form-item name="date-range-picker" label="创建日期" style="max-width: 350px;">
                 <a-range-picker v-model:value="queryState.date_range" value-format="YYYY-MM-DD" />
               </a-form-item>
-          </a-flex>
-          <a-row>
-            <a-col>
               <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
               <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
-            </a-col>
-          </a-row>
+          </a-flex>
         </a-form>
       </a-card>
     </div>
@@ -37,7 +33,7 @@
       <a-card title="日志列表"
         :bordered="false"
         :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 360px)' }">
+        :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 330px)' }">
         <template #extra>
           <a-button type="primary" :icon="h(DownOutlined)" @click="handleExport"
             style="margin-right: 10px;">
@@ -50,9 +46,9 @@
           :data-source="dataSource"
           :loading="tableLoading"
           @change="handleTableChange"
-          :scroll="{ x: 400 }"
+          :scroll="{ x: 500, y: 'calc(100vh - 440px)' }"
           :pagination="pagination"
-                    :style="{ minHeight: 'calc(100vh - 420px)' }"
+                    :style="{ minHeight: 'calc(100vh - 400px)' }"
                     >
           <template #bodyCell="{ column, record, index }">
             <template v-if="column.dataIndex === 'index'">

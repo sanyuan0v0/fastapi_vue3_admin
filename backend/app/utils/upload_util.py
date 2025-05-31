@@ -113,7 +113,7 @@ class UploadUtil:
             # 生成文件名并保存
             filename = cls.generate_file_name(file.filename)
             filepath = dir_path / filename
-            filepath.mkdir(parents=True, exist_ok=True)
+            # filepath.mkdir(parents=True, exist_ok=True)
 
             # 分块写入文件
             chunk_size = 8 * 1024 * 1024  # 8MB chunks

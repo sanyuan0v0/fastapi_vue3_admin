@@ -2,7 +2,7 @@ import request from "@/utils/request";
 
 export function getConfigInfo() {
   return request({
-    url: "/api/v1/system/config/info",
+    url: "/api/v1/system/config/list",
     method: "get",
   });
 }
@@ -27,7 +27,7 @@ export function uploadFile(body) {
 
 export function getInitConfig() {
   return request({
-    url: "/api/v1/system/config/init",
+    url: "/api/v1/system/config/info",
     method: "get",
   });
 }

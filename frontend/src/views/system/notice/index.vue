@@ -6,25 +6,19 @@
         <div class="table-search-wrapper">
             <a-card :bordered="false">
                 <a-form :model="queryState" @finish="onFinish">
-                    <a-flex wrap="wrap" gap="small">
-                            <a-form-item name="name" label="名称" >
-                                <a-input v-model:value="queryState.notice_title" placeholder="请输入标题"
-                                    allowClear></a-input>
-                            </a-form-item>
-                            <a-form-item name="available" label="状态" >
-                                <a-select v-model:value="queryState.available" placeholder="请选择状态" allowClear>
-                                    <a-select-option value="true">启用</a-select-option>
-                                    <a-select-option value="false">停用</a-select-option>
-                                </a-select>
-                            </a-form-item>
-                        
+                    <a-flex wrap="wrap" gap="middle">
+                        <a-form-item name="name" label="名称" >
+                            <a-input v-model:value="queryState.notice_title" placeholder="请输入标题" allowClear style="width: 200px;"></a-input>
+                        </a-form-item>
+                        <a-form-item name="available" label="状态" >
+                            <a-select v-model:value="queryState.available" placeholder="请选择状态" allowClear style="width: 200px;">
+                                <a-select-option value="true">启用</a-select-option>
+                                <a-select-option value="false">停用</a-select-option>
+                            </a-select>
+                        </a-form-item>
+                        <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
+                        <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
                     </a-flex>
-                    <a-row>
-                        <a-col>
-                            <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
-                            <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
-                        </a-col>
-                    </a-row>
                 </a-form>
             </a-card>
         </div>
@@ -34,7 +28,7 @@
             <a-card title="公告通知列表"
                 :bordered="false"
                 :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 360px)' }">
+      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 330px)' }">
                 <template #extra>
                     <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')"
                         style="margin-right: 10px;">新建</a-button>
@@ -64,9 +58,9 @@
                     :row-selection="rowSelection"
                     :loading="tableLoading"
                     @change="handleTableChange"
-                    :scroll="{ x: 400 }"
+                    :scroll="{ x: 500 }"
                     :pagination="pagination"
-                    :style="{ minHeight: 'calc(100vh - 420px)' }"
+                    :style="{ minHeight: 'calc(100vh - 400px)' }"
                     >
                     <template #bodyCell="{ column, record, index }">
                         <template v-if="column.dataIndex === 'index'">
@@ -143,8 +137,7 @@
                             </a-radio-group>
                         </a-form-item>
                         <a-form-item name="notice_content" label="内容" :rules="[{ required: true, message: '请输入内容' }]">
-                            <a-input v-model:value="createState.notice_content" placeholder="请输入内容"
-                                allowClear></a-input>
+                            <a-input v-model:value="createState.notice_content" placeholder="请输入内容" allowClear></a-input>
                         </a-form-item>
                         <a-form-item name="available" label="状态" :rules="[{ required: true, message: '请选择状态' }]">
                             <a-radio-group v-model:value="createState.available">
@@ -172,8 +165,7 @@
                             </a-radio-group>
                         </a-form-item>
                         <a-form-item name="notice_content" label="内容" :rules="[{ required: true, message: '请输入内容' }]">
-                            <a-input v-model:value="updateState.notice_content" placeholder="请输入内容"
-                                allowClear></a-input>
+                            <a-input v-model:value="updateState.notice_content" placeholder="请输入内容" allowClear></a-input>
                         </a-form-item>
                         <a-form-item name="available" label="状态" :rules="[{ required: true, message: '请选择状态' }]">
                             <a-radio-group v-model:value="updateState.available">
@@ -209,7 +201,7 @@ const DictDataStore = computed(() => {
 })
 
 const getOptions = async () => {
-    const dictOptions = await dictStore.setDict(['sys_notice_type'])
+    const dictOptions = await dictStore.getDict(['sys_notice_type'])
     return dictOptions
 }
 

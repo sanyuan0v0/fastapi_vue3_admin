@@ -6,26 +6,19 @@
     <div class="tree-search-wrapper">
       <a-card :bordered="false">
         <a-form :model="queryState" @finish="onFinish">
-          <a-flex wrap="wrap" gap="small">
+          <a-flex wrap="wrap" gap="middle">
               <a-form-item name="name" label="名称" >
-                <a-input v-model:value="queryState.name" placeholder="请输入名称" allowClear />
+                <a-input v-model:value="queryState.name" placeholder="请输入名称" allowClear style="width: 200px;"/>
               </a-form-item>
               <a-form-item name="available" label="状态" >
-                <a-select v-model:value="queryState.available" placeholder="请选择状态" allowClear>
+                <a-select v-model:value="queryState.available" placeholder="请选择状态" allowClear style="width: 200px;">
                   <a-select-option value="true">启用</a-select-option>
                   <a-select-option value="false">停用</a-select-option>
                 </a-select>
               </a-form-item>
-
+              <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
+              <a-button @click="resetFields">重置</a-button>
           </a-flex>
-          <a-row>
-            <a-col>
-              <a-space>
-                <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
-                <a-button @click="resetFields">重置</a-button>
-              </a-space>
-            </a-col>
-          </a-row>
         </a-form>
       </a-card>
     </div>
@@ -36,7 +29,7 @@
         title="部门列表"
         :bordered="false"
         :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 360px)' }">
+      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 330px)' }">
         <template #extra>
           <a-space>
             <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')">新建</a-button>
@@ -58,7 +51,7 @@
           :columns="columns"
           :data-source="dataSource"
           :loading="tableLoading"
-          :scroll="{ x: 500, y: 'calc(100vh - 450px)' }"
+          :scroll="{ x: 500, y: 'calc(100vh - 420px)' }"
           :row-selection="rowSelection"
           :pagination="false"
           :style="{ minHeight: '420px' }"
@@ -139,7 +132,7 @@
             label="排序"
             :rules="[{ required: true, message: '请输入排序' }]"
           >
-            <a-input-number v-model:value="createState.order" :min="1" style="width: 100%"/>
+            <a-input-number v-model:value="createState.order" :min="1" style="width: 100%" allow-clear/>
           </a-form-item>
 
           <a-form-item name="parent_id" label="上级部门">
@@ -199,7 +192,7 @@
             label="排序"
             :rules="[{ required: true, message: '请输入排序' }]"
           >
-            <a-input-number v-model:value="updateState.order" :min="1" style="width: 100%"/>
+            <a-input-number v-model:value="updateState.order" :min="1" style="width: 100%" allow-clear/>
           </a-form-item>
 
           <a-form-item name="parent_id" label="上级部门">

@@ -64,7 +64,7 @@ async def change_current_user_password_controller(
 ) -> JSONResponse:
     result_dict = await UserService.change_user_password_service(data=data, auth=auth)
     logger.info(f"{auth.user.name} 修改密码成功: {result_dict}")
-    return SuccessResponse(data=result_dict, msg='修改密码成功')
+    return SuccessResponse(data=result_dict, msg='修改密码成功, 请重新登录')
 
 
 @router.post('/register', summary="注册用户", description="注册用户")
@@ -85,8 +85,8 @@ async def forget_password_controller(
 ) -> JSONResponse:
     auth = AuthSchema(db=db)
     user_forget_password_result = await UserService.forget_password_service(data=data, auth=auth)
-    logger.info(f"{data.username} 忘记密码,重置密码成功: {user_forget_password_result}")
-    return SuccessResponse(data=user_forget_password_result, msg='忘记密码,重置密码成功')
+    logger.info(f"{data.username} 重置密码成功: {user_forget_password_result}")
+    return SuccessResponse(data=user_forget_password_result, msg='重置密码成功')
 
 
 @router.get("/list", summary="查询用户", description="查询用户")
