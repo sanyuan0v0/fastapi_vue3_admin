@@ -38,24 +38,14 @@ export default defineConfig(({ command, mode }) => {
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
     },
     build: {
-      chunkSizeWarningLimit: 2000,
-      rollupOptions: {
-          output: {
-              manualChunks(id) {
-                  if (id.includes('node_modules')) {
-                      return id.toString().split('node_modules/')[1].split('/')[0].toString();
-                  }
-              },
-              entryFileNames: `assets/[name]-[hash].js`,
-              chunkFileNames: `assets/[name]-[hash].js`,
-              assetFileNames: `assets/[name]-[hash].[ext]`
+      chunkSizeWarningLimit: 2000, // 打包文件大小限制
+      rollupOptions: { // 打包配置
+        output: { // 
+          manualChunks(id) { // 手动分包
+            if (id.includes('node_modules')) {
+              return id.toString().split('node_modules/')[1].split('/')[0].toString(); // 根据node_modules中的包名进行分包
+            }
           }
-      },
-      minify: false,
-      terserOptions: {
-        compress: {
-            drop_console: true,
-            drop_debugger: true
         }
       }
     },
