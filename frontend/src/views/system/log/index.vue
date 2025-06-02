@@ -4,9 +4,9 @@
 
     <!-- 搜索表单 -->
     <div class="table-search-wrapper">
-      <a-card :bordered="false">
+      <a-card >
         <a-form :model="queryState" @finish="onFinish">
-          <a-flex wrap="wrap" gap="middle">
+          <a-flex wrap="wrap" gap="middle" >
               <a-form-item name="request_path" label="请求路径" >
                 <a-input v-model:value="queryState.request_path" placeholder="请输入请求路径" allowClear style="width: 200px;"></a-input>
               </a-form-item>
@@ -18,11 +18,11 @@
                   </template>
                 </a-select>
               </a-form-item>
-              <a-form-item name="date-range-picker" label="创建日期" style="max-width: 350px;">
+              <a-form-item name="date-range-picker" label="创建日期">
                 <a-range-picker v-model:value="queryState.date_range" value-format="YYYY-MM-DD" />
               </a-form-item>
               <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
-              <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
+              <a-button  @click="resetFields">重置</a-button>
           </a-flex>
         </a-form>
       </a-card>
@@ -31,9 +31,7 @@
     <!-- 表格区域 -->
     <div class="table-wrapper">
       <a-card title="日志列表"
-        :bordered="false"
-        :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-        :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 330px)' }">
+        >
         <template #extra>
           <a-button type="primary" :icon="h(DownOutlined)" @click="handleExport"
             style="margin-right: 10px;">
@@ -46,10 +44,10 @@
           :data-source="dataSource"
           :loading="tableLoading"
           @change="handleTableChange"
-          :scroll="{ x: 500, y: 'calc(100vh - 440px)' }"
           :pagination="pagination"
-                    :style="{ minHeight: 'calc(100vh - 400px)' }"
-                    >
+          :scroll="{ x: 500, y: 'calc(100vh - 490px)' }"
+          :style="{ minHeight: 'calc(100vh - 430px)' }"
+          >
           <template #bodyCell="{ column, record, index }">
             <template v-if="column.dataIndex === 'index'">
               <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
@@ -166,14 +164,13 @@ const columns: TableColumnsType = [
     dataIndex: 'request_ip',
     ellipsis: true,
     // align: 'center',
-    width: 100
+    width: 130
   },
   {
     title: '登录地点',
     dataIndex: 'login_location',
     ellipsis: true,
     // align: 'center',
-    width: 120
   },
   {
     title: '浏览器',
@@ -194,14 +191,14 @@ const columns: TableColumnsType = [
     dataIndex: 'response_code',
     ellipsis: true,
     // align: 'center',
-    width: 80
+    width: 65
   },
   {
     title: '处理时间',
     dataIndex: 'process_time',
     ellipsis: true,
     // align: 'center',
-    width: 120
+    width: 80
   },
   {
     title: '描述',

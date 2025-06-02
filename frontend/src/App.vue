@@ -3,6 +3,10 @@
     :locale="zhCN"
     :theme="{
       algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
+      // 自定义皮肤
+      // token: {
+      //   colorPrimary: '#00b96b',
+      // },
     }"
   >
     <div id="app">
@@ -17,7 +21,6 @@ import zhCN from 'ant-design-vue/es/locale/zh_CN'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
 import { ref, provide } from 'vue'
-import { useRouter } from 'vue-router'
 
 dayjs.locale('zh-cn')
 
@@ -77,5 +80,9 @@ html {
 
 .ant-modal .ant-modal-header {
   margin-bottom: 20px;
+}
+
+.ant-card {
+  background-color: var(--background-color);
 }
 </style>

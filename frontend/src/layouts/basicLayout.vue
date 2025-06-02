@@ -1,11 +1,12 @@
-<template>
-  <a-layout class="basic-layout">
+<template> 
+  <a-layout class="basic-layout" >
+
     <!-- 左侧导航 -->
-    <a-layout-sider class="layout-sider" :collapsed="menuState.collapsed" theme="light" :trigger="null" collapsible
+    <a-layout-sider class="layout-sider" :collapsed="menuState.collapsed" :trigger="null" collapsible
       :width="240" :collapsedWidth="80">
       <!-- Logo 区域 -->
       <div class="logo-container">
-        <a-image :src="initConfigState.web_favicon" :preview="false" :width="28" :height="28" />
+        <a-image :src="initConfigState.web_favicon" :preview="false" :width="30" :height="30" />
         <h1 class="logo-title" v-show="!menuState.collapsed">{{ initConfigState.web_title }}</h1>
       </div>
 
@@ -24,7 +25,8 @@
             <MenuFoldOutlined v-if="menuState.collapsed" />
             <MenuUnfoldOutlined v-else />
           </a-button>
-          <topCrumb></topCrumb>
+          <!-- 面包屑导航 -->
+          <Breadcrumb />
         </div>
 
         <!-- 右侧工具栏 -->
@@ -101,6 +103,13 @@
                   个人中心
                 </a-menu-item>
                 <a-menu-divider />
+                <a-menu-item key="configinfo">
+                  <template #icon>
+                    <SettingOutlined />
+                  </template>
+                  配置中心
+                </a-menu-item>
+                <a-menu-divider />
                 <a-menu-item key="logout">
                   <template #icon>
                     <LogoutOutlined />
@@ -111,12 +120,13 @@
             </template>
           </a-dropdown>
         </div>
+        
       </a-layout-header>
+      <div class="header-tag">
+        <topTags></topTags>
+      </div>
       <!-- 主内容区 -->
       <a-layout-content class="layout-content">
-        <div class="header-tag">
-          <topTags></topTags>
-        </div>
         <div class="header-centent">
           <router-view v-slot="{ Component, route }">
             <transition name="fade" mode="out-in">
@@ -130,6 +140,7 @@
           </router-view>
         </div>
       </a-layout-content>
+
     </a-layout>
   </a-layout>
 </template>
@@ -143,8 +154,8 @@ import * as icons from '@ant-design/icons-vue';
 import { h } from 'vue';
 import { listToTree } from '@/utils/util';
 
-import topTags from '@/components/TopTags/index.vue';
-import topCrumb from '@/components/TopCrumb/index.vue';
+import TopTags from '@/components/TopTags/index.vue';
+import Breadcrumb from '@/components/Breadcrumb/index.vue';
 import {
   QuestionCircleOutlined,
   BellOutlined,
@@ -154,7 +165,8 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   BulbOutlined,
-  BulbFilled
+  BulbFilled,
+  SettingOutlined 
 } from '@ant-design/icons-vue';
 import { useUserStore, useNoticeStore, useDictStore, useConfigStore } from "@/store/index";
 import { logout } from '@/api/system/auth';
@@ -187,6 +199,9 @@ const handleUserMenuClick: MenuProps['onClick'] = ({ key }) => {
   switch (key) {
     case 'profile':
       router.push('/profile');
+      break;
+    case 'configinfo':
+      router.push('/configinfo');
       break;
     case 'logout':
       handleLogout();
@@ -311,8 +326,8 @@ const noticeState = reactive({
 const configStore = useConfigStore();
 
 const initConfigState = reactive({
-  web_title: computed(() => configStore.getConfigValue("title")),
-  web_favicon: computed(() => configStore.getConfigValue("logo")),
+  web_title: computed(() => configStore.getConfigValue("sys_web_title")),
+  web_favicon: computed(() => configStore.getConfigValue("sys_web_logo")),
 });
 
 // 在页面加载时获取通知列表
@@ -323,24 +338,10 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.header-centent {
-  height: calc(100vh - 146px); // 减去header高度
-}
-
-// 调整内容区域的上边距
-.layout-content {
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 16px;
-}
-
 .basic-layout {
-  // height: 100vh;
-  // background-size: cover;
-  // min-height: 100vh;
-
   .layout-sider {
-    height: 100vh;
+    background-color: var(--background-color);
+    height: var(--basic-layout);
     position: fixed;
     left: 0;
     top: 0;
@@ -348,12 +349,11 @@ onMounted(() => {
     z-index: 99;
 
     .logo-container {
-      height: 64px;
+      height: var(--layout-main-height);
       padding: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-
       .logo-title {
         margin: 0 0 0 12px;
         font-weight: 600;
@@ -364,6 +364,7 @@ onMounted(() => {
     }
 
     .side-menu {
+      background-color: var(--background-color);
       height: calc(100vh - 64px);
       border-right: 0;
       padding: 4px 0;
@@ -375,9 +376,6 @@ onMounted(() => {
   .layout-main {
     margin-left: 240px;
     transition: all 0.3s;
-    width: calc(100% - 240px);
-
-    padding-top: 108px; // 等于header高度
 
     &.collapsed {
       margin-left: 80px;
@@ -387,84 +385,72 @@ onMounted(() => {
         transition: left 0.2s;
         left: 80px; // 菜单折叠时调整头部左边距
       }
-
-      .header-tag {
-        transition: left 0.2s;
-        left: 80px; // 菜单折叠时调整头部左边距
-      }
-    }
-
-    .header-tag {
-      background: var(--component-background);
-      padding: 0px;
-
-      // 新增样式，让头部固定在顶部
-      position: fixed;
-      top: 64px;
-      left: 240px;
-      right: 0;
-      z-index: 98;
-      transition: left 0.3s;
     }
 
     .layout-header {
-      background: var(--component-background);
-      padding: 6px;
+      padding: 0;
       display: flex;
-
+      background-color: var(--background-color);
       // 新增样式，让头部固定在顶部
-      position: fixed;
       top: 0;
       left: 240px;
       right: 0;
       z-index: 98;
       transition: left 0.3s;
-    }
+      
 
-    .header-left {
-      display: flex;
-      align-items: center;
-
-      .collapse-btn {
-        padding: 0 6px;
-        font-size: 18px;
-        cursor: pointer;
-        transition: color 0.3s;
-
-        &:hover {
-          color: var(--primary-color);
-        }
-      }
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      margin-left: auto;
-
-      .tool-btn {
-        padding: 0 12px;
-        font-size: 16px;
-        cursor: pointer;
-
-        &:hover {
-          color: var(--primary-color);
-        }
-      }
-
-      .user-dropdown {
+      .header-left {
         display: flex;
         align-items: center;
-        padding: 0 12px;
-        cursor: pointer;
 
-        .username {
-          margin: 0 8px;
-          color: var(--text-color);
-          white-space: nowrap;
+        .collapse-btn {
+          padding: 0 6px;
+          font-size: 18px;
+          cursor: pointer;
+          transition: color 0.3s;
+          &:hover {
+            color: var(--primary-color);
+          }
+        }
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+
+        .tool-btn {
+          padding: 0 12px;
+          font-size: 16px;
+          cursor: pointer;
+          &:hover {
+            color: var(--primary-color);
+          }
+        }
+
+        .user-dropdown {
+          display: flex;
+          align-items: center;
+          padding: 0 12px;
+          cursor: pointer;
+
+          .username {
+            margin: 0 8px;
+            white-space: nowrap;
+          }
         }
       }
     }
+
+    // 调整内容区域的上边距
+    .layout-content {
+      padding: 16px;
+      min-height: calc(100vh - 64px - 40px);
+    }
+
+    .header-tag {
+        background-color: var(--background-color);
+      }
   }
 }
 
@@ -482,15 +468,6 @@ onMounted(() => {
       color: var(--primary-color);
     }
   }
-}
-
-:deep(.ant-list-item-meta-title) {
-  font-weight: 500;
-  margin-bottom: 8px;
-}
-
-:deep(.ant-badge-status-dot) {
-  margin-right: 8px;
 }
 
 // 添加通知弹出框样式

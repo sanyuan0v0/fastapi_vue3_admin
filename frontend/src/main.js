@@ -23,8 +23,8 @@ const initConfig = async () => {
   const configStore = useConfigStore();
   await configStore.getConfig();
 
-  const loginTitle = configStore.getConfigValue("title");
-  const loginLogo = configStore.getConfigValue("favicon");
+  const loginTitle = configStore.getConfigValue("sys_web_title");
+  const loginLogo = configStore.getConfigValue("sys_web_favicon");
 
   if (loginTitle) {
     document.title = loginTitle;

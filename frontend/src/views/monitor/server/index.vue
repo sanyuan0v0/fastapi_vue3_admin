@@ -2,7 +2,7 @@
   <div class="app-container">
     <a-row :gutter="16">
       <a-col :span="12" class="mb-4">
-        <a-card :loading="loading" :bordered="false" class="shadow-sm" :bodyStyle="{ padding: '24px', height: '360px' }">
+        <a-card :loading="loading"  class="shadow-sm" :bodyStyle="{ height: '360px' }">
           <template #title>
             <div class="flex items-center">
               <DesktopOutlined class="text-primary text-lg mr-2" />
@@ -62,7 +62,7 @@
       </a-col>
 
       <a-col :span="12" class="mb-4">
-        <a-card :loading="loading" :bordered="false" class="shadow-sm" :bodyStyle="{ padding: '24px', height: '360px' }">
+        <a-card :loading="loading"  class="shadow-sm" :bodyStyle="{ height: '360px' }">
           <template #title>
             <div class="flex items-center">
               <FileTextOutlined class="text-primary text-lg mr-2" />
@@ -123,7 +123,7 @@
       </a-col>
 
       <a-col :span="24" class="mb-4">
-        <a-card :loading="loading" :bordered="false" class="shadow-sm" :bodyStyle="{ padding: '24px' }">
+        <a-card :loading="loading"  class="shadow-sm">
           <template #title>
             <div class="flex items-center">
               <MonitorOutlined class="text-primary text-lg mr-2" />
@@ -143,7 +143,7 @@
       </a-col>
 
       <a-col :span="24" class="mb-4">
-        <a-card :loading="loading" :bordered="false" class="shadow-sm" :bodyStyle="{ padding: '24px' }">
+        <a-card :loading="loading"  class="shadow-sm">
           <template #title>
             <div class="flex items-center">
               <CodeOutlined class="text-primary text-lg mr-2" />
@@ -165,7 +165,7 @@
       </a-col>
 
       <a-col :span="24">
-        <a-card :loading="loading" :bordered="false" class="shadow-sm" :bodyStyle="{ padding: '24px' }">
+        <a-card :loading="loading"  class="shadow-sm" >
           <template #title>
             <div class="flex items-center">
               <HddOutlined class="text-primary text-lg mr-2" />
@@ -213,7 +213,7 @@
                 // 修改status的类型以匹配Progress组件的要求
                 const status = usageValue > 80 ? 'exception' : usageValue > 60 ? 'normal' : 'normal';
                 const strokeColor = usageValue > 80 ? '#ff4d4f' : usageValue > 60 ? '#faad14' : '#1677ff';
-                return h('div', { style: { padding: '0 10px' }}, [
+                return h('div', [
                   h(AProgress, {
                     percent: usageValue,
                     size: 'small',
@@ -255,7 +255,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, h } from 'vue';
 import { getServer } from '@/api/monitor/server'
-import { message } from 'ant-design-vue';
 import { QuestionCircleOutlined, DesktopOutlined, FileTextOutlined, MonitorOutlined, CodeOutlined, HddOutlined } from '@ant-design/icons-vue';
 import { Progress as AProgress } from 'ant-design-vue';
 import type { ServerInfo } from './types';
@@ -314,7 +313,7 @@ onMounted(() => {
 
 <style scoped>
 .app-container {
-  padding: 20px;
+  padding: 2px;
 }
 
 .shadow-sm {

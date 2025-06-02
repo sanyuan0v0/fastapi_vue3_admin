@@ -155,12 +155,12 @@ class AuthPermission:
         if self.check_data_scope:
             # 严格模式:要求所有权限都满足
             if not all(perm in user_permissions for perm in self.permissions):
-                logger.error(f"用户 {auth.user.name} 缺少所需的权限: {self.permissions}")
+                logger.error(f"用户 缺少所需的权限: {self.permissions}")
                 raise CustomException(msg="无权限操作")
         else:
             # 非严格模式:满足任一权限即可
             if not any(perm in user_permissions for perm in self.permissions):
-                logger.error(f"用户 {auth.user.name} 缺少任何所需的权限: {self.permissions}")
+                logger.error(f"用户 缺少任何所需的权限: {self.permissions}")
                 raise CustomException(msg="无权限操作")
 
         return auth

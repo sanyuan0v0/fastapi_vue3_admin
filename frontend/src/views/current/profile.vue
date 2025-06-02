@@ -1,11 +1,10 @@
 <template>
   <div class="profile-container">
-    <page-header title="个人设置" />
     <div class="profile-content">
-      <a-row :gutter="[24, 24]">
+      <a-row :gutter="[12, 24]">
         <!-- 左侧信息卡片 -->
-        <a-col :xs="24" :sm="24" :md="8" :lg="6">
-          <a-card class="info-card" :bordered="false">
+        <a-col :xs="24" :sm="24" :md="16" :lg="6">
+          <a-card class="info-card" >
             <div class="user-info-header">
               <div class="avatar-wrapper">
                 <a-avatar v-if="infoFormState.avatar" :src="infoFormState.avatar" :size="120" />
@@ -97,7 +96,7 @@
 
         <!-- 右侧设置区域 -->
         <a-col :xs="24" :sm="24" :md="16" :lg="18">
-          <a-card class="settings-card" :bordered="false">
+          <a-card class="settings-card" >
             <a-tabs v-model:activeKey="selectedKeys[0]" @change="handleTabChange">
               <a-tab-pane key="1">
                 <template #tab>
@@ -284,9 +283,8 @@
 </template>
 
 <script lang="ts" setup>
-import PageHeader from '@/components/PageHeader.vue';
 import { ref, reactive, onMounted, h, watch, computed } from 'vue';
-import { message, UploadProps } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 import { 
   UserOutlined, 
   LockOutlined,
@@ -506,15 +504,6 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .profile-container {
-  min-height: 90vh;
-  
-  .profile-content {
-    padding: 24px;
-    
-    @media (max-width: 768px) {
-      padding: 16px;
-    }
-  }
 
   .info-card {
     border-radius: var(--border-radius);
@@ -531,9 +520,6 @@ onMounted(async () => {
 
       .avatar-wrapper {
         position: relative;
-        width: 120px;
-        height: 120px;
-        margin: 0 auto 16px;
         border-radius: 50%;
         overflow: hidden;
         

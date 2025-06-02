@@ -16,8 +16,8 @@ class DictTypeModel(ModelBase):
     __table_args__ = ({'comment': '数据字典类型表'})
 
     id = Column(Integer, primary_key=True, autoincrement=True, comment='字典主键')
-    dict_name = Column(String(100), nullable=True, default='', comment='字典名称')
-    dict_type = Column(String(100), nullable=True, default='', comment='字典类型')
+    dict_name = Column(String(100), nullable=True, unique=True, default='', comment='字典名称')
+    dict_type = Column(String(100), nullable=True, unique=True, default='', comment='字典类型')
     available = Column(Boolean, nullable=True, default='0', comment='状态（0正常 1停用）')
     
     # 审计字段

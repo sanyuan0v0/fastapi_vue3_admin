@@ -4,7 +4,7 @@
 
     <!-- 搜索表单 -->
     <div class="table-search-wrapper">
-      <a-card :bordered="false">
+      <a-card >
         <a-form :model="queryState" @finish="onFinish">
           <a-flex wrap="wrap" gap="middle">
             <a-form-item name="name" label="名称" >
@@ -17,7 +17,7 @@
               </a-select>
             </a-form-item>
             <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
-            <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
+            <a-button  @click="resetFields">重置</a-button>
           </a-flex>
         </a-form>
       </a-card>
@@ -25,10 +25,7 @@
 
     <!-- 表格区域 -->
     <div class="table-wrapper">
-      <a-card title="菜单列表"
-        :bordered="false"
-        :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 330px)' }">
+      <a-card title="菜单列表">
         <template #extra>
           <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')"
             style="margin-right: 10px;">新建</a-button>
@@ -54,11 +51,11 @@
           :columns="columns"
           :data-source="dataSource"
           :loading="tableLoading"
-          :scroll="{ x: 500, y: 'calc(100vh - 420px)' }"
           :row-selection="rowSelection"
           :pagination="false"
-                    :style="{ minHeight: 'calc(100vh - 420px)' }"
-                    >
+          :scroll="{ x: 500, y: 'calc(100vh - 430px)' }"
+          :style="{ minHeight: 'calc(100vh - 370px)' }"
+          >
           <template #bodyCell="{ column, record }">
             <template v-if="column.dataIndex === 'icon'">
               <a-button type="text" size="small" :icon="icons[record.icon] ? h(icons[record.icon]) : null">{{ record.icon }}</a-button>

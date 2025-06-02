@@ -1,6 +1,4 @@
 <template>
-
-
   <div class="app-container">
     <a-tabs>
       <!-- 监控信息 Tab -->
@@ -58,7 +56,7 @@
         <a-row :gutter="16">
           <!-- 缓存列表 -->
           <a-col :span="8">
-            <a-card :bodyStyle="{ height: tableContainerHeight, minHeight: '600px' }">
+            <a-card :bodyStyle="{ height: tableContainerHeight, minHeight: '430px' }">
               <template #title>
                 <SolutionOutlined class="icon" /> 
                 <span class="title">缓存列表</span>
@@ -72,7 +70,7 @@
                 :loading="loading"
                 :dataSource="cacheNames"
                 :pagination="false"
-                :scroll="{ y: 500 }"
+                :scroll="{ y: 460 }"
                 rowKey="cache_name"
               >
                 <a-table-column key="cache_name" title="缓存名称" align="center" :ellipsis="true">
@@ -94,7 +92,7 @@
 
           <!-- 键名列表 -->
           <a-col :span="8">
-            <a-card :bodyStyle="{ height: tableContainerHeight, minHeight: '600px' }">
+            <a-card :bodyStyle="{ height: tableContainerHeight, minHeight: '430px' }">
               <template #title>
                 <KeyOutlined class="icon" />
                 <span class="title">键名列表</span>
@@ -108,7 +106,7 @@
                 :loading="subLoading"
                 :dataSource="cacheKeys.map(key => ({ cacheKey: key }))"
                 :pagination="false"
-                :scroll="{ y: 500 }"
+                :scroll="{ y: 480 }"
                 rowKey="cacheKey"
               >
                 <a-table-column key="cacheKey" title="缓存键名" align="center" :ellipsis="true">
@@ -129,7 +127,7 @@
 
           <!-- 缓存内容 -->
           <a-col :span="8">
-            <a-card :bodyStyle="{ height: tableContainerHeight, minHeight: '600px' }">
+            <a-card :bodyStyle="{ height: tableContainerHeight, minHeight: '430px' }">
               <template #title>
                 <FileOutlined class="icon" />
                 <span class="title">缓存内容</span>
@@ -147,7 +145,7 @@
                 <a-form-item label="缓存内容:" name="cache_value">
                   <a-textarea
                     v-model:value="cacheForm.cache_value"
-                    :rows="15"
+                    :rows="17"
                     readonly
                   />
                 </a-form-item>
@@ -162,8 +160,8 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue';
-import { DeleteOutlined, RedoOutlined, LineChartOutlined, SolutionOutlined, KeyOutlined, FileOutlined, MonitorOutlined, PieChartOutlined, DashboardOutlined } from '@ant-design/icons-vue';
-import { message, Modal } from 'ant-design-vue';
+import { DeleteOutlined, RedoOutlined, SolutionOutlined, KeyOutlined, FileOutlined, MonitorOutlined, PieChartOutlined, DashboardOutlined } from '@ant-design/icons-vue';
+import { Modal } from 'ant-design-vue';
 import { getCacheInfo, getCacheNames, getCacheKeys, getCacheValue, deleteCacheName, deleteCacheKey, deleteCacheAll } from "@/api/monitor/cache";
 import * as echarts from 'echarts';
 import type { CacheInfo, CacheForm, CacheMonitor, RedisInfo } from './types';
@@ -191,7 +189,7 @@ let commandstatsInstance: echarts.ECharts | null = null;
 let usedmemoryInstance: echarts.ECharts | null = null;
 
 // 计算属性
-const tableContainerHeight = computed(() => `calc(100vh - 300px)`);
+const tableContainerHeight = computed(() => `calc(100vh - 260px)`);
 
 const resetCacheForm = () => {
   cacheKeys.value = [];
@@ -276,7 +274,7 @@ const handleClearCacheKey = (cacheKey: string) => {
     content: `确定要清理缓存键名[${cacheKey}]吗？`,
     onOk() {
       deleteCacheKey(cacheKey)
-        .then(({ data: result }) => {
+        .then(() => {
           getCacheKeyList();
         })
         .catch(error => {
@@ -407,6 +405,6 @@ onUnmounted(() => {
 }
 
 .chart-container {
-  height: 420px;
+  height: 365px;
 }
 </style>

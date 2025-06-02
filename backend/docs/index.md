@@ -2,7 +2,7 @@
   <img src="https://capsule-render.vercel.app/api?type=waving&color=timeGradient&height=256&&section=header&text=Fastapi%20Vue3%20Admin&fontSize=90&fontAlign=50&fontAlignY=28&desc=一套现代、开源、全栈融合的中后台快速开发平台，给个⭐️支持一下%F0%9F%98%81&descAlign=50&descSize=0&descAlignY=56&animation=twinkling" />
 </p>
 <p align="center">
-  <img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="200"/> 
+  <img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/header.gif" width="200"/> 
 </p>
 <p align="center">
   <img width="700" src="https://readme-typing-svg.demolab.com?font=LXGW+WenKai+TC&size=25&pause=1000&center=true&vCenter=true&random=false&width=600&lines=欢迎来到我的GitHub主页！"/>
@@ -219,7 +219,7 @@ npm run build
 # 复制脚本 `fastapi_vue3_amdin/start.sh` 脚本文件到服务器, 并赋予执行权限
 chmod +x start.sh
 # 执行脚本
-./start.sh
+https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/start.sh
 #  访问地址
 # 前端访问: `http://公网地址:80`, 
 # 接口访问: `http://公网地址:8001/api/v1/docs`， 
@@ -249,38 +249,38 @@ docker rm <容器名>
 
 <table>
     <tr>
-        <td><img src="./resources/login.png"/>登陆</td>
-        <td><img src="./resources/dashboard.png"/>仪表盘</td>
-        <td><img src="./resources/menu.png"/>菜单管理</td>
-        <td><img src="./resources/dept.png"/>部门管理</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/login.png"/>登陆</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/dashboard.png"/>仪表盘</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/menu.png"/>菜单管理</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/dept.png"/>部门管理</td>
    </tr>
    <tr>
-        <td><img src="./resources/position.png"/>岗位管理</td>
-        <td><img src="./resources/role.png"/>角色管理</td>
-        <td><img src="./resources/user.png"/>用户管理</td>
-        <td><img src="./resources/log.png"/>日志管理</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/position.png"/>岗位管理</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/role.png"/>角色管理</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/user.png"/>用户管理</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/log.png"/>日志管理</td>
    </tr>
    <tr>
-        <td><img src="./resources/config.png"/>配置管理</td>
-        <td><img src="./resources/online.png"/>在线用户管理</td>
-        <td><img src="./resources/service.png"/>服务器监控</td>
-        <td><img src="./resources/cache.png"/>缓存监控</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/config.png"/>配置管理</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/online.png"/>在线用户管理</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/service.png"/>服务器监控</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/cache.png"/>缓存监控</td>
    </tr>
    <tr>
-        <td><img src="./resources/job.png"/>任务管理</td>
-        <td><img src="./resources/docs.png"/>接口管理</td>
-        <td><img src="./resources/redoc.png"/>文档管理</td>
-        <td><img src="./resources/info.png"/>个人信息</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/job.png"/>任务管理</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/docs.png"/>接口管理</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/redoc.png"/>文档管理</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/info.png"/>个人信息</td>
    </tr>
    </tr>
-        <td><img src="./resources/help.png"/>在线文档</td>
-        <td><img src="./resources/dict.png"/>字典管理</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/help.png"/>在线文档</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/dict.png"/>字典管理</td>
    </tr>
    <tr>
-        <td><img src="./resources/app-login.png"/>app登陆</td>
-        <td><img src="./resources/app-home.png"/>app首页</td>
-        <td><img src="./resources/app-work.png"/>app工作台</td>
-        <td><img src="./resources/app-me.png"/>app个人中心</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/app-login.png"/>app登陆</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/app-home.png"/>app首页</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/app-work.png"/>app工作台</td>
+        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/docs/resources/app-me.png"/>app个人中心</td>
    </tr>
 </table>
 

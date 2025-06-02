@@ -1,10 +1,8 @@
 <template>
   <div>
-
-
     <!-- 搜索表单 -->
     <div class="tree-search-wrapper">
-      <a-card :bordered="false">
+      <a-card >
         <a-form :model="queryState" @finish="onFinish">
           <a-flex wrap="wrap" gap="middle">
               <a-form-item name="name" label="名称" >
@@ -25,11 +23,7 @@
 
     <!-- 表格区域 -->
     <div class="table-wrapper">
-      <a-card
-        title="部门列表"
-        :bordered="false"
-        :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 330px)' }">
+      <a-card title="部门列表">
         <template #extra>
           <a-space>
             <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')">新建</a-button>
@@ -51,10 +45,10 @@
           :columns="columns"
           :data-source="dataSource"
           :loading="tableLoading"
-          :scroll="{ x: 500, y: 'calc(100vh - 420px)' }"
           :row-selection="rowSelection"
           :pagination="false"
-          :style="{ minHeight: '420px' }"
+          :scroll="{ x: 500, y: 'calc(100vh - 430px)' }"
+          :style="{ minHeight: 'calc(100vh - 370px)' }"
         >
           <template #bodyCell="{ column, record }">
             

@@ -8,7 +8,7 @@ from app.core.validator import DateTimeStr
 
 
 class DictTypeQueryParams:
-    """操作日志查询参数"""
+    """字典类型查询参数"""
 
     def __init__(
             self,
@@ -37,7 +37,7 @@ class DictTypeQueryParams:
 
 
 class DictDataQueryParams:
-    """操作日志查询参数"""
+    """字典数据查询参数"""
 
     def __init__(
             self,

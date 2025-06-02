@@ -5,15 +5,21 @@ from fastapi import Query
 
 
 class ConfigQueryParams:
-    """部门管理查询参数"""
+    """配置管理查询参数"""
 
     def __init__(
             self,
-            title: Optional[str] = Query(None, description="网站标题"),
+            config_name: Optional[str] = Query(None, description="配置名称"),
+            config_key: Optional[str] = Query(None, description="配置键名"),
+            config_type: Optional[bool] = Query(None, description="系统内置((True:是 False:否))"),
     ) -> None:
         super().__init__()
         
         # 模糊查询字段
-        self.title = ("like", title)
+        self.config_name = ("like", config_name)
+        self.config_key = ("like", config_key)
+
+        # 精确查询字段
+        self.config_type = config_type
 
 

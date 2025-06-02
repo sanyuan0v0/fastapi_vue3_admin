@@ -936,11 +936,11 @@
   },
   {
     "id": 56,
-    "name": "批量更新配置",
+    "name": "导出配置",
     "type": 3,
     "icon": null,
     "order": 4,
-    "permission": "system:config:update",
+    "permission": "system:config:export",
     "route_name": null,
     "route_path": null,
     "component_path": null,
@@ -953,7 +953,7 @@
   },
   {
     "id": 57,
-    "name": "文件上传",
+    "name": "配置上传",
     "type": 3,
     "icon": null,
     "order": 5,

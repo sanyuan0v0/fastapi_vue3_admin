@@ -78,7 +78,9 @@ export const useConfigStore = defineStore("config", {
       const response = await getInitConfig();
       const { status_code, data } = response.data;
       if (status_code === 200) {
-        this.configData = data;
+        data.forEach((item) => {
+          this.configData[item.config_key] = item.config_value;
+        })
         this.isConfigLoaded = true;
       }
     },

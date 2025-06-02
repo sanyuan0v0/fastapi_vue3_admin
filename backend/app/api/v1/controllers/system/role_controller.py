@@ -32,7 +32,7 @@ async def get_obj_list_controller(
 ) -> JSONResponse:
     result_dict_list = await RoleService.get_role_list_service(search=search, auth=auth, order_by=page.order_by)
     result_dict = await PaginationService.get_page_obj(data_list= result_dict_list, page_no= page.page_no, page_size = page.page_size)
-    logger.info(f"{auth.user.name} 查询角色成功")
+    logger.info(f"查询角色成功")
     return SuccessResponse(data=result_dict, msg="查询角色成功")
 
 
@@ -42,7 +42,7 @@ async def get_obj_detail_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:role:query"])),
 ) -> JSONResponse:
     result_dict = await RoleService.get_role_detail_service(id=id, auth=auth)
-    logger.info(f"{auth.user.name} 获取角色详情成功 {id}")
+    logger.info(f"获取角色详情成功 {id}")
     return SuccessResponse(data=result_dict, msg="获取角色详情成功")
 
 
@@ -52,7 +52,7 @@ async def create_obj_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:role:create"])),
 ) -> JSONResponse:
     result_dict = await RoleService.create_role_service(data=data, auth=auth)
-    logger.info(f"{auth.user.name} 创建角色成功: {result_dict}")
+    logger.info(f"创建角色成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg="创建角色成功")
 
 
@@ -62,7 +62,7 @@ async def update_obj_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:role:update"])),
 ) -> JSONResponse:
     result_dict = await RoleService.update_role_service(data=data, auth=auth)
-    logger.info(f"{auth.user.name} 修改角色成功: {result_dict}")
+    logger.info(f"修改角色成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg="修改角色成功")
 
 
@@ -72,7 +72,7 @@ async def delete_obj_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:role:delete"])),
 ) -> JSONResponse:
     await RoleService.delete_role_service(id=id, auth=auth)
-    logger.info(f"{auth.user.name} 删除角色成功: {id}")
+    logger.info(f"删除角色成功: {id}")
     return SuccessResponse(msg="删除角色成功")
 
 
@@ -82,7 +82,7 @@ async def batch_set_available_obj_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:role:patch"])),
 ) -> JSONResponse:
     await RoleService.set_role_available_service(data=data, auth=auth)
-    logger.info(f"{auth.user.name} 批量修改角色状态成功: {data.ids}")
+    logger.info(f"批量修改角色状态成功: {data.ids}")
     return SuccessResponse(msg="批量修改角色状态成功")
 
 
@@ -92,7 +92,7 @@ async def set_role_permission_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:role:permission"])),
 ) -> JSONResponse:
     await RoleService.set_role_permission_service(data=data, auth=auth)
-    logger.info(f"{auth.user.name} 设置角色权限成功: {data}")
+    logger.info(f"设置角色权限成功: {data}")
     return SuccessResponse(msg="授权角色成功")
 
 

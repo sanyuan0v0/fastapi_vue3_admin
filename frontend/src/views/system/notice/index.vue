@@ -4,8 +4,8 @@
 
         <!-- 搜索表单 -->
         <div class="table-search-wrapper">
-            <a-card :bordered="false">
-                <a-form :model="queryState" @finish="onFinish">
+            <a-card >
+                <a-form :model="queryState" @finish="onFinish" >
                     <a-flex wrap="wrap" gap="middle">
                         <a-form-item name="name" label="名称" >
                             <a-input v-model:value="queryState.notice_title" placeholder="请输入标题" allowClear style="width: 200px;"></a-input>
@@ -17,7 +17,7 @@
                             </a-select>
                         </a-form-item>
                         <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
-                        <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
+                        <a-button @click="resetFields">重置</a-button>
                     </a-flex>
                 </a-form>
             </a-card>
@@ -25,10 +25,7 @@
 
         <!-- 表格区域 -->
         <div class="table-wrapper">
-            <a-card title="公告通知列表"
-                :bordered="false"
-                :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 330px)' }">
+            <a-card title="公告通知列表">
                 <template #extra>
                     <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')"
                         style="margin-right: 10px;">新建</a-button>
@@ -52,15 +49,16 @@
                     </a-dropdown>
 
                 </template>
-                <a-table :rowKey="record => record.id"
+                <a-table 
+                    :rowKey="record => record.id"
                     :columns="columns"
                     :data-source="dataSource"
                     :row-selection="rowSelection"
                     :loading="tableLoading"
                     @change="handleTableChange"
-                    :scroll="{ x: 500 }"
                     :pagination="pagination"
-                    :style="{ minHeight: 'calc(100vh - 400px)' }"
+                    :scroll="{ x: 500, y: 'calc(100vh - 490px)' }"
+          :style="{ minHeight: 'calc(100vh - 430px)' }"
                     >
                     <template #bodyCell="{ column, record, index }">
                         <template v-if="column.dataIndex === 'index'">

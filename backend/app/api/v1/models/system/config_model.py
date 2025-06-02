@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Text
+from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Text, Boolean
 from sqlalchemy.orm import relationship
 
 from app.core.base_model import ModelBase
@@ -16,17 +16,10 @@ class ConfigModel(ModelBase):
 
     # 基础字段
     id = Column(Integer, primary_key=True, autoincrement=True, comment='主键ID')
-
-    title = Column(String(100), nullable=False, default="FastAPI Vue Admin", comment="网站标题")
-    favicon = Column(String(500), nullable=False, default="http://localhost:8000/api/v1/static/image/logo.png", comment="网站favicon")
-    logo = Column(String(500), nullable=False, default="http://localhost:8000/api/v1/static/image/logo.png", comment="网站logo")
-    background = Column(String(500), nullable=False, default="http://localhost:8000/api/v1/static/image/background.png", comment="网站背景")
-    copyright = Column(String(500), nullable=False, default="Copyright © 2021-2025 fastapi-vue-admin.com 版权所有", comment="版权信息")
-    keep_record = Column(String(500), nullable=False, default="晋ICP备18005113号-3", comment="备案信息")
-    help_url = Column(String(500), nullable=False, default="https://django-vue-admin.com", comment="帮助链接")
-    privacy_url = Column(String(500), nullable=False, default="https://gitee.com/tao__tao/fastapi_vue3_admin/blob/master/LICENSE", comment="隐私政策链接")
-    clause_url = Column(String(500), nullable=False, default="https://gitee.com/tao__tao/fastapi_vue3_admin/blob/master/LICENSE", comment="服务条款链接")
-    code_url = Column(String(500), nullable=False, default="https://gitee.com/tao__tao/fastapi_vue3_admin.git", comment="源码地址")
+    config_name = Column(String(500), nullable=True, unique=True, default='', comment='参数名称')
+    config_key = Column(String(500), nullable=True, unique=True, default='', comment='参数键名')
+    config_value = Column(String(500), nullable=True, default='', comment='参数键值')
+    config_type = Column(Boolean, default=False, nullable=False, comment="系统内置((True:是 False:否))")
 
     # 审计字段
     description = Column(Text, nullable=True, comment="备注说明")

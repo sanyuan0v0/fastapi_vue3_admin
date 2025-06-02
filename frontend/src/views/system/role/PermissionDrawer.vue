@@ -34,12 +34,11 @@
                     :rowKey="record => record.id"
                     :tree-data="deptTreeData"
                     :defaultExpandAll=true
-                    :scroll="{ y: 1000 }"
                     :field-names="{ children: 'children', title: 'name', key: 'id' }"
                     @check="deptTreeCheck" checkable checkStrictly style="margin-top: 15px;" />
             </div>
 
-            <a-divider type="vertical" style="height: 80vh;" />
+            <a-divider type="vertical"  />
 
             <div>
                 <div style="display: flex; gap: 10px;">
@@ -63,10 +62,11 @@
                         :data-source="menuTreeData"
                         :row-selection="menuRowSelection"
                         :loading="tableLoading"
-                        :scroll="{ y: 1000 }"
                         :pagination="false"
-                        :style="{ minHeight: '700px' }"
-                        :expandAll="true">
+                        :expandAll="true"
+                        :scroll="{ x: 500, y: 'calc(100vh - 500px)' }"
+                        :style="{ minHeight: 'calc(100vh - 450px)' }"
+                        >
                         <template v-slot:bodyCell="{ column, record }">
                             <template v-if="column.dataIndex === 'type'">
                                 <a-tag :color="record.type === 1 ? 'blue' : (record.type === 2 ? 'green' : 'orange')">
@@ -85,7 +85,7 @@
         </div>
 
         <template #footer>
-            <div style="height: 50px;"></div>
+            <div style="height: 16px;"></div>
         </template>
     </a-drawer>
 </template>

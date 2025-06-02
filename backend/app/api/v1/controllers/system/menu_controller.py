@@ -31,7 +31,7 @@ async def get_obj_list_controller(
     menu_items = await MenuService.convert_to_menu(result_dict_list)
     result_dict = await PaginationService.get_page_obj(data_list=menu_items, page_no=page.page_no,
                                                        page_size=page.page_size)
-    logger.info(f"{auth.user.name} 查询菜单成功")
+    logger.info(f"查询菜单成功")
     return SuccessResponse(data=result_dict, msg="查询菜单成功")
 
 
@@ -41,7 +41,7 @@ async def get_obj_detail_controller(
         auth: AuthSchema = Depends(AuthPermission(permissions=["system:menu:query"]))
 ) -> JSONResponse:
     result_dict = await MenuService.get_menu_detail_service(id=id, auth=auth)
-    logger.info(f"{auth.user.name} 查询菜单情成功 {id}")
+    logger.info(f"查询菜单情成功 {id}")
     return SuccessResponse(data=result_dict, msg="获取菜单成功")
 
 
@@ -51,7 +51,7 @@ async def create_obj_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:menu:create"]))
 ) -> JSONResponse:
     result_dict = await MenuService.create_menu_service(data=data, auth=auth)
-    logger.info(f"{auth.user.name} 创建菜单成功: {result_dict}")
+    logger.info(f"创建菜单成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg="创建菜单成功")
 
 
@@ -61,7 +61,7 @@ async def update_obj_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:menu:update"]))
 ) -> JSONResponse:
     result_dict = await MenuService.update_menu_service(data=data, auth=auth)
-    logger.info(f"{auth.user.name} 修改菜单成功: {result_dict}")
+    logger.info(f"修改菜单成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg="修改菜单成功")
 
 
@@ -71,7 +71,7 @@ async def delete_obj_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:menu:delete"]))
 ) -> JSONResponse:
     await MenuService.delete_menu_service(id=id, auth=auth)
-    logger.info(f"{auth.user.name} 删除菜单成功: {id}")
+    logger.info(f"删除菜单成功: {id}")
     return SuccessResponse(msg="删除菜单成功")
 
 
@@ -81,5 +81,5 @@ async def batch_set_available_obj_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:menu:patch"]))
 ) -> JSONResponse:
     await MenuService.set_menu_available_service(data=data, auth=auth)
-    logger.info(f"{auth.user.name} 批量修改菜单状态成功: {data.ids}")
+    logger.info(f"批量修改菜单状态成功: {data.ids}")
     return SuccessResponse(msg="批量修改菜单状态成功")

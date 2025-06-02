@@ -19,7 +19,7 @@
               </a-select>
             </a-form-item>
             <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
-            <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
+            <a-button  @click="resetFields">重置</a-button>
           </a-flex>
         </a-form>
       </a-card>
@@ -32,9 +32,10 @@
         :row-selection="rowSelection"
         :loading="tableLoading" 
         @change="handleTableChange" 
-        :scroll="{ x: 500 }" 
         :pagination="pagination"
-        :style="{ minHeight: '330px' }">
+        :scroll="{ x: 500, y: 'calc(100vh - 500px)' }"
+        :style="{ minHeight: 'calc(100vh - 450px)' }"
+        >
         <template v-slot:bodyCell="{ column, record, index }">
           <template v-if="column.dataIndex === 'index'">
             <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
