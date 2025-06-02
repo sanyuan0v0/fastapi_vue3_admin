@@ -32,6 +32,8 @@
     "@types/md5": "^2.3.5",
     "@types/store": "^2.0.5",
     "@vitejs/plugin-vue": "^4.5.2",
-    "vite": "5.2.8"
+    "vite": "5.2.8",
+    "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-remove-console": "^2.2.0"
   }
 }

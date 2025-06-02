@@ -1,6 +1,8 @@
 import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
+import removeConsole from "vite-plugin-remove-console";
+import viteCompression from 'vite-plugin-compression';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -15,7 +17,15 @@ export default defineConfig(({ command, mode }) => {
       }
     },
     
-    plugins: [vue()],
+    plugins: [
+      vue(), 
+      removeConsole(),
+      viteCompression({
+        threshold: 1024 * 20, 
+        algorithm: 'brotliCompress',
+        ext: '.br'
+      })
+    ],
     server: {
       host: "0.0.0.0",
       port: 5180,
@@ -38,12 +48,13 @@ export default defineConfig(({ command, mode }) => {
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
     },
     build: {
-      chunkSizeWarningLimit: 2000, // 打包文件大小限制
-      rollupOptions: { // 打包配置
-        output: { // 
-          manualChunks(id) { // 手动分包
-            if (id.includes('node_modules')) {
-              return id.toString().split('node_modules/')[1].split('/')[0].toString(); // 根据node_modules中的包名进行分包
+      chunkSizeWarningLimit: 20 * 1024, // 打包文件大小限制
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes("node_modules")) {
+              // 让每个插件都打包成独立的文件
+              return id .toString() .split("node_modules/")[1] .split("/")[0] .toString(); 
             }
           }
         }
