@@ -8,6 +8,7 @@ from starlette.responses import JSONResponse
 from starlette.exceptions import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 
+from app.common.constant import RET
 from app.common.response import ErrorResponse
 from app.core.logger import logger
 
@@ -17,8 +18,8 @@ class CustomException(Exception):
 
     def __init__(
             self,
-            msg: Optional[str] = "exception",
-            code: int = -1,
+            msg: Optional[str] = RET.EXCEPTION.msg,
+            code: int = RET.EXCEPTION.code,
             status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR,
             data: Optional[Any] = None,
     ) -> None:

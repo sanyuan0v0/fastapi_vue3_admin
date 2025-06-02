@@ -47,6 +47,15 @@ const rootRouter = {
       },
       component: () => import("../views/current/profile.vue"),
     },
+    {
+      path: "/configinfo",
+      name: "Configinfo",
+      meta: {
+        title: "配置中心",
+        keepAlive: true,
+      },
+      component: () => import("../views/current/configinfo.vue"),
+    },
   ],
 };
 

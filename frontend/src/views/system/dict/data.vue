@@ -4,7 +4,7 @@
 
         <!-- 搜索表单 -->
         <div class="table-search-wrapper">
-            <a-card :bordered="false">
+            <a-card >
                 <a-form :model="queryState" @finish="onFinish">
                     <a-flex wrap="wrap" gap="middle">
                         <a-form-item name="dict_type" label="字典" >
@@ -25,7 +25,7 @@
                             </a-select>
                         </a-form-item>
                         <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
-                        <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
+                        <a-button  @click="resetFields">重置</a-button>
                     </a-flex>
                 </a-form>
             </a-card>
@@ -33,10 +33,7 @@
 
         <!-- 表格区域 -->
         <div class="table-wrapper">
-            <a-card title="数据字典列表"
-                :bordered="false"
-                :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-                :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 330px)' }">
+            <a-card title="数据字典列表">
                 <template #extra>
                     <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')"
                         style="margin-right: 10px;">新建</a-button>
@@ -51,8 +48,8 @@
                     :loading="tableLoading"
                     @change="handleTableChange"
                     :pagination="pagination"
-                    :scroll="{ x: 500, y: 'calc(100vh - 440px)' }"
-                    :style="{ minHeight: 'calc(100vh - 400px)' }"
+                    :scroll="{ x: 500, y: 'calc(100vh - 490px)' }"
+          :style="{ minHeight: 'calc(100vh - 430px)' }"
                     >
                     <template #bodyCell="{ column, record, index }">
                         <template v-if="column.dataIndex === 'index'">

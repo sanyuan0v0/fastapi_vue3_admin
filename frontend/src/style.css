@@ -6,24 +6,24 @@
   --font-weight-bold: 500;
 
   /* 布局变量 */
-  --header-height: 60px;
-  --sider-width: 240px;
-  --collapsed-sider-width: 80px;
+  --basic-layout: 100vh
+  --header-height: 64px;
+
   --transition-duration: 0.2s;
+  --layout-main-height: calc((--basic-layout)- var(--header-height));
   
   /* 颜色变量 */
   --primary-color: #1890ff;
-  --text-color: rgba(0, 0, 0, 0.85);
+  --text-color: rgba(255, 255, 255, 0.85);
   --text-color-secondary: rgba(0, 0, 0, 0.45);
   --border-color: #f0f0f0;
-  --background-color: #f0f2f5;
-  --component-background: #ffffff;
+  --background-color: #ffffff;
   --box-shadow-base: 0 2px 8px rgba(0, 0, 0, 0.15);
   --box-shadow-light: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 .dark{
-  --component-background: #141414;
+  --background-color: #001628;
   --text-color: rgba(255, 255, 255, 0.85);
 }
 

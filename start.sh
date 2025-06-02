@@ -45,7 +45,7 @@ update_code() {
     if [ -d "${PROJECT_NAME}/" ]; then
         log "🔄 项目已存在，开始更新代码"
         cd "${PROJECT_NAME}" || { log "❌ 无法进入项目目录：${PROJECT_NAME}"; exit 1; }
-        git pull origin master || { log "❌ 拉取更新失败"; exit 1; }
+        git pull --force || { log "❌ 拉取更新失败"; exit 1; }
         git log -1 || { log "❌ 获取提交信息失败"; exit 1; }
         log "✅ 代码更新成功"
     else

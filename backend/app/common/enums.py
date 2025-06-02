@@ -28,8 +28,8 @@ class RedisInitKeyConfig(Enum):
     ACCESS_TOKEN = {'key': 'access_token', 'remark': '登录令牌信息'}
     REFRESH_TOKEN = {'key': 'refresh_token', 'remark': '刷新令牌信息'}
     CAPTCHA_CODES = {'key': 'captcha_codes', 'remark': '图片验证码'}
-    System_Config = {'key': 'system_config', 'remark': '系统配置'}
-    System_Dict = {'key': 'system_dict', 'remark': '数据字典'}
+    SYSTEM_CONFIG = {'key': 'system_config', 'remark': '系统配置'}
+    SYSTEM_DICT = {'key':'system_dict','remark': '数据字典'}
     
     @property
     def key(self) -> str:

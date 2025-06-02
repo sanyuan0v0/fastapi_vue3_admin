@@ -7,13 +7,19 @@
         @edit="onEdit" 
         @change="onChange"
     >
+        
         <a-tab-pane 
             v-for="pane in panes" 
             :key="pane.key" 
             :tab="pane.title" 
             :closable="pane.closable"
         />
+        <!-- 使用 rightExtra 插槽添加关闭全部按钮 -->
+        <template #rightExtra>
+            <a-button type="link" @click="closeAllTabs">关闭全部</a-button>
+        </template>
     </a-tabs>
+    
 </template>
 
 <script lang="ts" setup>
@@ -71,7 +77,22 @@ const onEdit = (targetKey: string | MouseEvent, action: string) => {
 };
 
 const onChange = (targetKey: string) => {
-    router.push(targetKey);
+    if (targetKey !== 'close-all') {
+        router.push(targetKey);
+    } else {
+        // 防止跳转到不存在的路由
+        activeKey.value = panes.value[0].key;
+    }
+};
+
+// 新增关闭所有标签的方法
+const closeAllTabs = () => {
+    // 过滤出不可关闭的标签
+    panes.value = panes.value.filter(pane => !pane.closable);
+    if (panes.value.length > 0) {
+        activeKey.value = panes.value[0].key;
+        router.push(activeKey.value);
+    }
 };
 
 onMounted(getRoute);

@@ -4,7 +4,7 @@ from typing import Optional
 from fastapi import Query
 
 class NoticeQueryParams:
-    """字典管理查询参数"""
+    """公告通知查询参数"""
 
     def __init__(
             self,

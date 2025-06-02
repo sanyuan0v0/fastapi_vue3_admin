@@ -33,7 +33,7 @@ async def get_current_user_info_controller(
     auth: AuthSchema = Depends(get_current_user)
 ) -> JSONResponse:
     result_dict = await UserService.get_current_user_info_service(auth=auth)
-    logger.info(f"{auth.user.name} 获取当前用户信息成功")
+    logger.info(f"获取当前用户信息成功")
     return SuccessResponse(data=result_dict, msg='获取当前用户信息成功')
 
 
@@ -53,7 +53,7 @@ async def update_current_user_info_controller(
     auth: AuthSchema = Depends(get_current_user)
 ) -> JSONResponse:
     result_dict = await UserService.update_current_user_info_service(data=data, auth=auth)
-    logger.info(f"{auth.user.name} 更新当前用户基本信息成功: {result_dict}")
+    logger.info(f"更新当前用户基本信息成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg='更新当前用户基本信息成功')
 
 
@@ -63,7 +63,7 @@ async def change_current_user_password_controller(
     auth: AuthSchema = Depends(get_current_user)
 ) -> JSONResponse:
     result_dict = await UserService.change_user_password_service(data=data, auth=auth)
-    logger.info(f"{auth.user.name} 修改密码成功: {result_dict}")
+    logger.info(f"修改密码成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg='修改密码成功, 请重新登录')
 
 
@@ -97,7 +97,7 @@ async def get_obj_list_controller(
 ) -> JSONResponse:
     result_dict_list = await UserService.get_user_list_service(search=search, auth=auth, order_by=page.order_by)
     result_dict = await PaginationService.get_page_obj(data_list= result_dict_list, page_no= page.page_no, page_size = page.page_size)
-    logger.info(f"{auth.user.name} 查询用户成功")
+    logger.info(f"查询用户成功")
     return SuccessResponse(data=result_dict, msg="查询用户成功")
 
 
@@ -107,7 +107,7 @@ async def get_obj_detail_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:query"])),
 ) -> JSONResponse:
     result_dict = await UserService.get_detail_by_id_service(id=id, auth=auth)
-    logger.info(f"{auth.user.name} 获取用户详情成功 {id}")
+    logger.info(f"获取用户详情成功 {id}")
     return SuccessResponse(data=result_dict, msg='获取用户详情成功')
 
 
@@ -117,7 +117,7 @@ async def create_obj_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:create"])),
 ) -> JSONResponse:
     result_dict = await UserService.create_user_service(data=data, auth=auth)
-    logger.info(f"{auth.user.name} 创建用户成功: {result_dict}")
+    logger.info(f"创建用户成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg="创建用户成功")
 
 
@@ -127,7 +127,7 @@ async def update_obj_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:update"])),
 ) -> JSONResponse:
     result_dict = await UserService.update_user_service(data=data, auth=auth)
-    logger.info(f"{auth.user.name} 修改用户成功: {result_dict}")
+    logger.info(f"修改用户成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg="修改用户成功")
 
 
@@ -137,7 +137,7 @@ async def delete_obj_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:delete"])),
 ) -> JSONResponse:
     await UserService.delete_user_service(id=id, auth=auth)
-    logger.info(f"{auth.user.name} 删除用户成功: {id}")
+    logger.info(f"删除用户成功: {id}")
     return SuccessResponse(msg="删除用户成功")
 
 
@@ -147,7 +147,7 @@ async def batch_set_available_obj_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:patch"])),
 ) -> JSONResponse:
     await UserService.set_user_available_service(data=data, auth=auth)
-    logger.info(f"{auth.user.name} 批量修改用户状态成功: {data.ids}")
+    logger.info(f"批量修改用户状态成功: {data.ids}")
     return SuccessResponse(msg="批量修改用户状态成功")
 
 
@@ -192,5 +192,5 @@ async def import_obj_list_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:import"]))
 ) -> JSONResponse:
     batch_import_result = await UserService.batch_import_user_service(file=file, auth=auth, update_support=True)
-    logger.info(f"{auth.user.name} 导入用户成功: {batch_import_result}")
+    logger.info(f"导入用户成功: {batch_import_result}")
     return SuccessResponse(data=batch_import_result, msg="导入用户成功")

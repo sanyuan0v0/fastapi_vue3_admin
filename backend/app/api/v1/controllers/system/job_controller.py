@@ -28,7 +28,7 @@ async def get_obj_detail_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:query"]))
 ) -> JSONResponse:
     result_dict = await JobService.get_job_detail_service(id=id, auth=auth)
-    logger.info(f"{auth.user.name} 获取定时任务详情成功 {id}")
+    logger.info(f"获取定时任务详情成功 {id}")
     return SuccessResponse(data=result_dict, msg="获取定时任务详情成功")
 
 @router.get("/list", summary="查询定时任务", description="查询定时任务")
@@ -39,7 +39,7 @@ async def get_obj_list_controller(
 ) -> JSONResponse:
     result_dict_list = await JobService.get_job_list_service(auth=auth, search=search, order_by=page.order_by)
     result_dict = await PaginationService.get_page_obj(data_list= result_dict_list, page_no= page.page_no, page_size = page.page_size)
-    logger.info(f"{auth.user.name} 查询定时任务列表成功")
+    logger.info(f"查询定时任务列表成功")
     return SuccessResponse(data=result_dict, msg="查询定时任务列表成功")
 
 @router.post("/create", summary="创建定时任务", description="创建定时任务")
@@ -48,7 +48,7 @@ async def create_obj_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:create"]))
 ) -> JSONResponse:
     result_dict = await JobService.create_job_service(auth=auth, data=data)
-    logger.info(f"{auth.user.name} 创建定时任务成功: {result_dict}")
+    logger.info(f"创建定时任务成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg="创建定时任务成功")
 
 @router.put("/update", summary="修改定时任务", description="修改定时任务")
@@ -57,7 +57,7 @@ async def update_obj_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:update"]))
 ) -> JSONResponse:
     result_dict = await JobService.update_job_service(auth=auth, data=data)
-    logger.info(f"{auth.user.name} 修改定时任务成功: {result_dict}")
+    logger.info(f"修改定时任务成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg="修改定时任务成功")
 
 @router.delete("/delete", summary="删除定时任务", description="删除定时任务")
@@ -66,7 +66,7 @@ async def delete_obj_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:delete"]))
 ) -> JSONResponse:
     await JobService.delete_job_service(auth=auth, id=id)
-    logger.info(f"{auth.user.name} 删除定时任务成功: {id}")
+    logger.info(f"删除定时任务成功: {id}")
     return SuccessResponse(msg="删除定时任务成功")
 
 @router.post('/export', summary="导出定时任务", description="导出定时任务")
@@ -92,7 +92,7 @@ async def clear_obj_log_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:delete"]))
 ) -> JSONResponse:
     await JobService.clear_job_service(auth=auth)
-    logger.info(f"{auth.user.name} 清空定时任务成功")
+    logger.info(f"清空定时任务成功")
     return SuccessResponse(msg="清空定时任务成功")
 
 @router.put("/option", summary="暂停/恢复/重启定时任务", description="暂停/恢复/重启定时任务")
@@ -102,7 +102,7 @@ async def option_obj_controller(
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:update"]))
 ) -> JSONResponse:
     await JobService.option_job_service(auth=auth, id=id, option=option)
-    logger.info(f"{auth.user.name} 操作定时任务成功: {id}")
+    logger.info(f"操作定时任务成功: {id}")
     return SuccessResponse(msg="操作定时任务成功")
 
 @router.get("/log", summary="获取定时任务日志", description="获取定时任务日志", dependencies=[Depends(AuthPermission(permissions=["system:job:query"]))])

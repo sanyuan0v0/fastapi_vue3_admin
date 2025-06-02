@@ -2,7 +2,7 @@
   <div>
     <!-- 表格搜索区域 -->
     <div class="table-search-wrapper">
-      <a-card :bordered="false">
+      <a-card >
         <a-form :model="queryState" @finish="onFinish">
           <a-flex wrap="wrap" gap="middle">
             <a-form-item name="username" label="账号">
@@ -19,7 +19,7 @@
               </a-select>
             </a-form-item>
             <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
-            <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
+            <a-button  @click="resetFields">重置</a-button>
           </a-flex>
         </a-form>
       </a-card>
@@ -27,8 +27,7 @@
 
     <!-- 表格区域 -->
     <div class="table-wrapper">
-      <a-card title="用户管理" :bordered="false" :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-        :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 330px)' }">
+      <a-card title="用户管理"  >
         <template #extra>
           <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')" style="margin-right: 10px;">
             新建
@@ -60,17 +59,29 @@
         <a-row :gutter="16">
           <!-- 左侧部门树 -->
           <a-col :span="4">
-            <a-tree ref="deptTree" v-if="deptTreeData.length" :tree-data="deptTreeData" :show-line="true"
-              :defaultExpandAll="true" :field-names="{ children: 'children', title: 'name', key: 'id' }"
-              :selected-keys="selectedKeys" @select="onSelectDept">
+            <a-tree ref="deptTree" v-if="deptTreeData.length" 
+              :tree-data="deptTreeData" 
+              :show-line="true"
+              :defaultExpandAll="true" 
+              :field-names="{ children: 'children', title: 'name', key: 'id' }"
+              :selected-keys="selectedKeys" 
+              @select="onSelectDept">
             </a-tree>
           </a-col>
 
           <!-- 右侧用户列表 -->
           <a-col :span="20">
-            <a-table :rowKey="record => record.id" :columns="columns" :data-source="dataSource"
-              :row-selection="rowSelection" :loading="tableLoading" @change="handleTableChange" :scroll="{ x: 400 }"
-              :pagination="pagination" :style="{ minHeight: 'calc(100vh - 400px)' }">
+            <a-table 
+              :rowKey="record => record.id" 
+              :columns="columns" 
+              :data-source="dataSource"
+              :row-selection="rowSelection" 
+              :loading="tableLoading" 
+              @change="handleTableChange"
+              :pagination="pagination"
+              :scroll="{ x: 500, y: 'calc(100vh - 490px)' }"
+              :style="{ minHeight: 'calc(100vh - 430px)' }"
+              >
               <template #bodyCell="{ column, record, index }">
                 <template v-if="column.dataIndex === 'index'">
                   <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
@@ -643,7 +654,6 @@ const loadingData = async () => {
     }
 
     const result = response.data;
-    console.log(result);
     dataSource.value = result.data.items.map((item: tableDataType) => { 
       item.roleNames = item.roles ? item.roles.map(role => role.name).join(",") : null; 
       item.positionNames = item.positions ? item.positions.map(position => position.name).join(",") : null; 

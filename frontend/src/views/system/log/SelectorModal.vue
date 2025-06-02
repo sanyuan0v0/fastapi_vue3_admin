@@ -22,19 +22,26 @@
               </a-form-item>
 
               <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
-              <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
+              <a-button  @click="resetFields">重置</a-button>
           </a-flex>
         </a-form>
       </a-card>
     </div>
 
     <div class="table-wrapper">
-      <a-card title="用户列表" :bordered="true" :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
+      <a-card title="用户列表" :bordered="true" 
         :bodyStyle="{ padding: '0 24px' }">
-        <a-table :rowKey="record => record.id" :columns="columns" :data-source="dataSource" :loading="tableLoading"
-          :row-selection="rowSelection" @change="handleTableChange" 
-          :scroll="{ x: 500 }"
-          :pagination="pagination">
+        <a-table 
+          :rowKey="record => record.id" 
+          :columns="columns" 
+          :data-source="dataSource" 
+          :loading="tableLoading"
+          :row-selection="rowSelection" 
+          @change="handleTableChange" 
+          :pagination="pagination"
+          :scroll="{ x: 500, y: 'calc(100vh - 500px)' }"
+          :style="{ minHeight: 'calc(100vh - 450px)' }"
+          >
           <template v-slot:bodyCell="{ column, record, index }">
             <template v-if="column.dataIndex === 'index'">
               <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>

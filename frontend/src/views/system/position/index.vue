@@ -4,7 +4,7 @@
 
     <!-- 搜索表单 -->
     <div class="table-search-wrapper">
-      <a-card :bordered="false">
+      <a-card >
         <a-form :model="queryState" @finish="onFinish">
           <a-flex wrap="wrap" gap="middle">
               <a-form-item name="name" label="名称" >
@@ -17,7 +17,7 @@
                 </a-select>
               </a-form-item>
               <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
-              <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
+              <a-button  @click="resetFields">重置</a-button>
           </a-flex>
         </a-form>
       </a-card>
@@ -25,10 +25,7 @@
 
     <!-- 表格区域 -->
     <div class="table-wrapper">
-      <a-card title="岗位列表"
-        :bordered="false"
-        :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-        :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 330px)' }">
+      <a-card title="岗位列表">
         <template #extra>
           <a-button type="primary"
             :icon="h(PlusOutlined)"
@@ -62,10 +59,10 @@
           :row-selection="rowSelection"
           :loading="tableLoading"
           @change="handleTableChange"
-          :scroll="{ x: 400 }"
           :pagination="pagination"
-                    :style="{ minHeight: 'calc(100vh - 400px)' }"
-                    >
+          :scroll="{ x: 500, y: 'calc(100vh - 500px)' }"
+          :style="{ minHeight: 'calc(100vh - 430px)' }"
+          >
           <template #bodyCell="{ column, record, index }">
             <template v-if="column.dataIndex === 'index'">
               <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>

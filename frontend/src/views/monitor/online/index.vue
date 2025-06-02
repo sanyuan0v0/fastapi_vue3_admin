@@ -3,7 +3,7 @@
 
   <!-- 搜索表单 -->
   <div class="table-search-wrapper">
-    <a-card :bordered="false">
+    <a-card >
       <a-form :model="queryState" @finish="onFinish" >
         <a-flex wrap="wrap" gap="middle">
             <a-form-item name="ipaddr" label="主机" >
@@ -24,19 +24,18 @@
 
   <div class="table-wrapper">
     <a-card title="在线用户列表"
-      :bordered="false"
-      :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-      :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 360px)' }">
+      
+      >
       <a-table
         :rowKey="record => record.session_id"
         :columns="columns"
         :data-source="dataSource"
         :loading="loading"
         @change="handlePageChange"
-        :scroll="{ x: 400 }"
         :pagination="pagination"
-                    :style="{ minHeight: 'calc(100vh - 420px)' }"
-                    >
+        :scroll="{ x: 500, y: 'calc(100vh - 490px)' }"
+        :style="{ minHeight: 'calc(100vh - 430px)' }"
+        >
         <template #bodyCell="{ column, record, index }">
           <template v-if="column.dataIndex === 'index'">
             <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
@@ -59,7 +58,7 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted } from 'vue';
 import { DeleteOutlined } from '@ant-design/icons-vue';
-import { Modal, message } from 'ant-design-vue';
+import { Modal } from 'ant-design-vue';
 import { getOnlineList, deleteOnline} from "@/api/monitor/online";
 import type { searchType, OnlineUser } from './types';
 
@@ -71,7 +70,7 @@ const columns = [
   { title: '会话编号', width: 320, dataIndex: 'session_id', key: 'sessionId', ellipsis: true },
   { title: '登录名称', width: 80, dataIndex: 'name', key: 'name', align: 'center', ellipsis: true },
   { title: '用户账号', width: 80, dataIndex: 'user_name', key: 'userName', align: 'center', ellipsis: true },
-  { title: '主机', width: 100, dataIndex: 'ipaddr', key: 'ipaddr', align: 'center', ellipsis: true },
+  { title: '主机', width: 130, dataIndex: 'ipaddr', key: 'ipaddr', align: 'center', ellipsis: true },
   { title: '登录地点', dataIndex: 'login_location', key: 'loginLocation', align: 'center', ellipsis: true },
   { title: '操作系统', dataIndex: 'os', key: 'os', align: 'center', ellipsis: true },
   { title: '登录时间', dataIndex: 'login_time', key: 'loginTime', align: 'center', ellipsis: true, width: 180 },

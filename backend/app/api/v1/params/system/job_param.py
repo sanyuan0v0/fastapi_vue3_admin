@@ -8,7 +8,7 @@ from app.core.validator import DateTimeStr
 
 
 class JobQueryParams:
-    """操作日志查询参数"""
+    """定时任务查询参数"""
 
     def __init__(
             self,

@@ -2,7 +2,7 @@
   <img src="https://capsule-render.vercel.app/api?type=waving&color=timeGradient&height=256&&section=header&text=Fastapi%20Vue3%20Admin&fontSize=90&fontAlign=50&fontAlignY=28&desc=A modern, open-source, full-stack integrated rapid development platform for middle and back-office applications, give us a ⭐️ to show your support!%F0%9F%98%81&descAlign=50&descSize=0&descAlignY=56&animation=twinkling" />
 </p>
 <p align="center">
-  <img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="200"/> 
+  <img src="./backend/docs/resources/header.gif" width="200"/> 
 </p>
 <p align="center">
   <img width="700" src="https://readme-typing-svg.demolab.com?font=LXGW+WenKai+TC&size=25&pause=1000&center=true&vCenter=true&random=false&width=600&lines=Welcome to my GitHub homepage!"/>

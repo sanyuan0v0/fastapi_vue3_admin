@@ -52,7 +52,7 @@
               </a-skeleton>
             </a-card-grid>
           </a-card>
-          <a-card title="动态" :bordered="false" :bodyStyle="{ padding: '10px' }" style="margin-top: 20px;">
+          <a-card title="动态"  :bodyStyle="{ padding: '10px' }" style="margin-top: 20px;">
             <a-list item-layout="horizontal" :data-source="activities">
               <template #renderItem="{ item }">
                 <a-list-item>

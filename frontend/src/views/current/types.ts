@@ -16,3 +16,12 @@ export interface PasswordFormState {
     newPassword: string;
     repeatPassword: string;
 }
+
+export interface tableDataType {
+    id?: number; 
+    config_name?: string;
+    config_key?: string;
+    config_value?: string;
+    config_type?: boolean;
+    description?: string;
+}

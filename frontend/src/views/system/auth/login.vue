@@ -288,16 +288,16 @@ const requestCaptcha = async () => {
 const configStore = useConfigStore();
 
 const initConfigState = reactive({
-  title:  configStore.getConfigValue("title"),
-  description:  configStore.getConfigValue("description"),
-  logo:  configStore.getConfigValue("logo"),
-  background:  configStore.getConfigValue("background"),
-  copyright:  configStore.getConfigValue("copyright"),
-  keep_record:  configStore.getConfigValue("keep_record"),
-  help_url:  configStore.getConfigValue("help_url"),
-  privacy_url:  configStore.getConfigValue("privacy_url"),
-  clause_url:  configStore.getConfigValue("clause_url"),
-  code_url:  configStore.getConfigValue("code_url"),
+  title:  configStore.getConfigValue("sys_web_title"),
+  description:  configStore.getConfigValue("sys_web_description"),
+  logo:  configStore.getConfigValue("sys_web_logo"),
+  background:  configStore.getConfigValue("sys_login_background"),
+  copyright:  configStore.getConfigValue("sys_web_copyright"),
+  keep_record:  configStore.getConfigValue("sys_keep_record"),
+  help_url:  configStore.getConfigValue("sys_help_doc"),
+  privacy_url:  configStore.getConfigValue("sys_web_privacy"),
+  clause_url:  configStore.getConfigValue("sys_web_clause"),
+  code_url:  configStore.getConfigValue("sys_git_code"),
 });
 
 

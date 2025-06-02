@@ -2,7 +2,7 @@
     <div>
         <!-- 搜索表单 -->
         <div class="table-search-wrapper">
-            <a-card :bordered="false">
+            <a-card >
                 <a-form :model="queryState" @finish="onFinish">
                     <a-flex wrap="wrap" gap="middle">
                         <a-form-item name="name" label="名称">
@@ -16,11 +16,11 @@
                                 <a-select-option value="false">停用</a-select-option>
                             </a-select>
                         </a-form-item>
-                        <a-form-item name="date-range-picker" label="创建日期" style="max-width: 350px;">
+                        <a-form-item name="date-range-picker" label="创建日期" >
                             <a-range-picker v-model:value="queryState.date_range" value-format="YYYY-MM-DD" />
                         </a-form-item>
                         <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
-                        <a-button style="margin: 0 8px" @click="resetFields">重置</a-button>
+                        <a-button  @click="resetFields">重置</a-button>
                     </a-flex>
                 </a-form>
             </a-card>
@@ -28,8 +28,8 @@
 
         <!-- 表格区域 -->
         <div class="table-wrapper">
-            <a-card title="定时任务列表" :bordered="false" :headStyle="{ borderBottom: 'none', padding: '20px 24px' }"
-                :bodyStyle="{ padding: '0 24px', minHeight: 'calc(100vh - 330px)' }">
+            <a-card title="定时任务列表"  
+                >
                 <template #extra>
                     <a-button type="primary" :icon="h(PlusOutlined)" @click="modalHandle('create')"
                         style="margin-right: 10px;">新建</a-button>
@@ -40,10 +40,16 @@
                         style="margin-right: 10px;">清除
                     </a-button>
                 </template>
-                <a-table :rowKey="record => record.id" :columns="columns" :data-source="dataSource"
-                    :row-selection="rowSelection" :loading="tableLoading" @change="handleTableChange"
-                    :pagination="pagination" :scroll="{ x: 500, y: 'calc(100vh - 440px)' }"
-                    :style="{ minHeight: 'calc(100vh - 400px)' }">
+                <a-table :rowKey="record => record.id" 
+                    :columns="columns" 
+                    :data-source="dataSource"
+                    :row-selection="rowSelection" 
+                    :loading="tableLoading" 
+                    @change="handleTableChange"
+                    :pagination="pagination"
+                    :scroll="{ x: 500, y: 'calc(100vh - 490px)' }"
+          :style="{ minHeight: 'calc(100vh - 430px)' }"
+                >
                     <template #bodyCell="{ column, record, index }">
                         <template v-if="column.dataIndex === 'index'">
                             <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
@@ -464,7 +470,7 @@ import { Table, message, Modal } from 'ant-design-vue';
 import type { TableColumnsType } from 'ant-design-vue';
 import { PlusOutlined, DownOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import { cloneDeep, isEmpty } from '@/utils/util';
-import IntervalTab from '@/components/IntervalTab.vue';
+import IntervalTab from '@/components/IntervalTab/index.vue';
 import { getJobList, createJob, updateJob, deleteJob, exportJob, clearJob, OptionJob } from '@/api/system/job'
 import type { searchType, tableJobType } from './types'
 import 'vue3-cron-plus-picker/style.css'
