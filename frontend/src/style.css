@@ -10,7 +10,6 @@
   --header-height: 64px;
 
   --transition-duration: 0.2s;
-  --layout-main-height: calc((--basic-layout)- var(--header-height));
   
   /* 颜色变量 */
   --primary-color: #1890ff;
