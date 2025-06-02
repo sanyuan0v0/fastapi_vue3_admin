@@ -349,7 +349,7 @@ onMounted(() => {
     z-index: 99;
 
     .logo-container {
-      height: var(--layout-main-height);
+      height: calc(100vh - 64px);
       padding: 16px;
       display: flex;
       align-items: center;
