@@ -3,7 +3,6 @@ import storage from "store";
 import router from "@/router";
 import { getNewToken } from "@/api/system/auth";
 import { save_token } from "@/utils/util";
-import notification from "ant-design-vue/es/notification";
 import { message } from 'ant-design-vue';
 
 // 创建 axios 实例

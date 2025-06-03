@@ -1,8 +1,6 @@
 import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
-import removeConsole from "vite-plugin-remove-console";
-import viteCompression from 'vite-plugin-compression';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -18,13 +16,7 @@ export default defineConfig(({ command, mode }) => {
     },
     
     plugins: [
-      vue(), 
-      removeConsole(),
-      viteCompression({
-        threshold: 1024 * 20, 
-        algorithm: 'brotliCompress',
-        ext: '.br'
-      })
+      vue()
     ],
     server: {
       host: "0.0.0.0",
@@ -52,9 +44,10 @@ export default defineConfig(({ command, mode }) => {
       rollupOptions: {
         output: {
           manualChunks(id) {
-            if (id.includes("node_modules")) {
-              // 让每个插件都打包成独立的文件
-              return id .toString() .split("node_modules/")[1] .split("/")[0] .toString(); 
+            if (id.includes('node_modules')) {
+              const module = id.toString().split('node_modules/')[1].split('/')[0]
+              if (['birpc', 'hookable'].includes(module)) return // 排除无用 chunk
+              return module
             }
           }
         }

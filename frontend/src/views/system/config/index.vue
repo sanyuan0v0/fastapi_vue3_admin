@@ -143,7 +143,6 @@
 
 <script lang="ts" setup>
 import { ref, reactive, computed, unref, onMounted, h } from 'vue';
-import dayjs from 'dayjs';
 import { Table, message, Modal } from 'ant-design-vue';
 import type { TableColumnsType } from 'ant-design-vue';
 import { PlusOutlined, DownOutlined } from '@ant-design/icons-vue';

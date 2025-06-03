@@ -216,10 +216,10 @@
 import { ref, reactive, computed, unref, onMounted, h } from 'vue';
 import { useRoute } from 'vue-router';
 import { Table, message, Modal } from 'ant-design-vue';
-import type { TableColumnsType, MenuProps } from 'ant-design-vue';
-import { PlusOutlined, DownOutlined, CheckOutlined, StopOutlined } from '@ant-design/icons-vue';
+import type { TableColumnsType } from 'ant-design-vue';
+import { PlusOutlined, DownOutlined } from '@ant-design/icons-vue';
 import { cloneDeep, isEmpty } from '@/utils/util';
-import { getDictTypeOptionselect, getDictTypeList,getDictTypeDetail,createDictType,updateDictType,deleteDictType,exportDictType,getDictDataList,getDictDataDetail,createDictData,updateDictData,deleteDictData,exportDictData } from '@/api/system/dict'
+import { getDictTypeOptionselect,getDictDataList,createDictData,updateDictData,deleteDictData,exportDictData } from '@/api/system/dict'
 import type { searchDictDataType, tableDictDataType } from './types'
 import { useDictStore } from "@/store/index";
 

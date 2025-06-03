@@ -180,7 +180,6 @@ import { cloneDeep, isEmpty } from '@/utils/util';
 import PermissionDrawer from './PermissionDrawer.vue'
 import type { searchDataType, tableDataType } from './types'
 import { getRoleList, createRole, updateRole, deleteRole, batchAvailableRole, exportRole } from '@/api/system/role'
-import XLSX from 'xlsx';
 
 const createForm = ref();
 const updateForm = ref();
