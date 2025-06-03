@@ -154,10 +154,10 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, unref, onMounted, h } from 'vue';
 import { Table, message, Modal } from 'ant-design-vue';
-import type { TableColumnsType, MenuProps } from 'ant-design-vue';
-import { PlusOutlined, DownOutlined, CheckOutlined, StopOutlined } from '@ant-design/icons-vue';
+import type { TableColumnsType } from 'ant-design-vue';
+import { PlusOutlined, DownOutlined } from '@ant-design/icons-vue';
 import { cloneDeep, isEmpty } from '@/utils/util';
-import { getDictTypeList,getDictTypeDetail,createDictType,updateDictType,deleteDictType,exportDictType,getDictDataList,getDictDataDetail,createDictData,updateDictData,deleteDictData,exportDictData } from '@/api/system/dict'
+import { getDictTypeList,createDictType,updateDictType,deleteDictType,exportDictType} from '@/api/system/dict'
 import type { searchDataType, tableDictType } from './types'
 
 const createForm = ref();

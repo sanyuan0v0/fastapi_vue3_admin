@@ -77,7 +77,7 @@ import { reactive, ref, onMounted } from 'vue';
 import { message } from 'ant-design-vue';
 import { getInitConfig, updateConfig, uploadFile } from '@/api/system/config';
 import type { tableDataType } from './types';
-
+import { PlusOutlined } from '@ant-design/icons-vue';
 // 定义 configData
 const configData = reactive<Record<string, any>>({});
 

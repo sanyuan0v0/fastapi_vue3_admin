@@ -115,12 +115,11 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, h } from 'vue';
 import type { TableColumnsType } from 'ant-design-vue';
-import { SearchOutlined, DownOutlined, DownloadOutlined } from '@ant-design/icons-vue';
+import { SearchOutlined, DownOutlined } from '@ant-design/icons-vue';
 import { message, Modal } from 'ant-design-vue';
 import type { searchDataType, tableDataType, creatorType } from './types'
 import { getLogList, deleteLog, exportLog } from '@/api/system/log'
 import SelectorModal from './SelectorModal.vue'
-import XLSX from 'xlsx';
 
 const tableLoading = ref(false);
 const dataSource = ref<tableDataType[]>([]);

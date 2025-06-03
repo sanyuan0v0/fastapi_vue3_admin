@@ -69,7 +69,7 @@
                   </template>
                   <template #header>
                     <div class="notice-header">
-                      <icons.WarningOutlined style="color: #faad14" /> 公告通知
+                      <WarningOutlined style="color: #faad14" /> 公告通知
                     </div>
                   </template>
                 </a-list>
@@ -166,9 +166,10 @@ import {
   MenuUnfoldOutlined,
   BulbOutlined,
   BulbFilled,
-  SettingOutlined 
+  SettingOutlined,
+  WarningOutlined
 } from '@ant-design/icons-vue';
-import { useUserStore, useNoticeStore, useDictStore, useConfigStore } from "@/store/index";
+import { useUserStore, useNoticeStore, useConfigStore } from "@/store/index";
 import { logout } from '@/api/system/auth';
 
 const userStore = useUserStore();
@@ -349,7 +350,6 @@ onMounted(() => {
     z-index: 99;
 
     .logo-container {
-      height: calc(100vh - 64px);
       padding: 16px;
       display: flex;
       align-items: center;
