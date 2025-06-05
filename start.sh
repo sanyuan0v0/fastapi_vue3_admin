@@ -1,8 +1,7 @@
 #!/bin/bash
 
-# 设置全局变量
-WORK_DIR="$(dirname "$0")"
-# /home/fastapi_vue3_admin
+# 项目路径
+WORK_DIR="/home/fastapi_vue3_admin"
 
 # 打印带时间戳的日志
 log() {
@@ -15,13 +14,7 @@ check_permissions() {
     # 检查脚本文件是否有执行权限
     if [ ! -x "$0" ]; then
         log "⚠️ 当前脚本没有执行权限，尝试添加执行权限..."
-        chmod +x "$0"
-        if [ $? -eq 0 ]; then
-            log "✅ 已成功为脚本添加执行权限"
-        else
-            log "❌ 为脚本添加执行权限失败"
-            exit 1
-        fi
+        exit 1
     else
         log "✅ 脚本已有执行权限"
     fi
@@ -50,7 +43,6 @@ update_code() {
 stop_and_remove_containers() {
     log "🚀 第四步: 终止容器..."
     cd "${WORK_DIR}" || { log "❌ 无法进入工作目录：${WORK_DIR}"; exit 1; }
-    [ -f "docker-compose.yaml" ] || { log "❌ docker-compose.yaml 文件未找到"; exit 1; }
     docker compose down
     log "✅ 容器已停止并删除"
 }
@@ -59,17 +51,10 @@ stop_and_remove_containers() {
 build_frontend() {
     log "🚀 第五步: 构建前端..."
     cd "${WORK_DIR}/frontend" || { log "❌ 无法进入前端目录"; exit 1; }
-    if [ ! -f "package.json" ]; then
-        log "❌ 前端项目缺少 package.json 文件"
-        exit 1
-    fi
-    if [ ! -d "dist" ] || [ ! -d "node_modules" ] || [ "$(git diff --name-only HEAD~1 HEAD -- frontend/)" ]; then
-        npm install || { log "❌ 前端依赖安装失败"; exit 1; }
-        npm run build || { log "❌ 前端工程打包失败"; exit 1; }
-        log "✅ 前端工程打包成功"
-    else
-        log "⚠️ 未检测到前端代码变更且非首次克隆，跳过前端构建"
-    fi
+    npm install || { log "❌ 前端依赖安装失败"; exit 1; }
+    npm run build || { log "❌ 前端工程打包失败"; exit 1; }
+    log "✅ 前端工程打包成功"
+
 }
 
 # 构建镜像
