@@ -50,7 +50,7 @@
 
 ## 📘 项目介绍
 
-**Fastapi-Vue3-Admin** 是一套 **完全开源、高度模块化、技术先进的现代化快速开发平台**，旨在帮助开发者高效搭建高质量的企业级中后台系统。该项目采用 **前后端分离架构**，融合 Python 后端框架 `FastAPI` 和前端主流框架 `Vue3`，结合 `UniApp` 实现多端统一开发，提供了一站式开箱即用的开发体验。
+**Fastapi-Vue3-Admin** 是一套 **完全开源、高度模块化、技术先进的现代化快速开发平台**，旨在帮助开发者高效搭建高质量的企业级中后台系统。该项目采用 **前后端分离架构**，融合 Python 后端框架 `FastAPI` 和前端主流框架 `Vue3`，实现多端统一开发，提供了一站式开箱即用的开发体验。
 
 > **设计初心**: 以模块化、松耦合为核心，追求丰富的功能模块、简洁易用的接口、详尽的开发文档和便捷的维护方式。通过统一框架和组件，降低技术选型成本，遵循开发规范和设计模式，构建强大的代码分层模型，搭配完善的本地中文化支持，专为团队和企业开发场景量身定制。
 
@@ -59,8 +59,6 @@ fastapi_vue3_admin
 ├─ backend        # 后端工程
 ├─ frontend       # 前端工程
 ├─ devops         # 部署工程
-├─ mkdocs         # 文档工程
-├─ uni-app        # 移动端工程
 ├─ docker-compose.yaml # 部署文件
 ├─ start.sh       # 一键部署脚本
 ├─ LICENSE        # 许可协议
@@ -75,15 +73,14 @@ fastapi_vue3_admin
 | 特性 | 描述 |
 | ---- | ---- |
 | 🔭 快速开发 |一套完全开源的现代化快速开发平台，旨在帮助开发者高效搭建高质量的中后台系统。|
-| 🌐 全栈整合 | 前后端分离，融合 Python (FastAPI) + Vue3 + UniApp 多端开发 |
+| 🌐 全栈整合 | 前后端分离，融合 Python (FastAPI) + Vue3 |
 | 🧱 模块化设计 | 系统功能高度解耦，便于扩展和维护 |
 | ⚡️ 高性能异步 | 使用 FastAPI 异步框架 + Redis 缓存优化接口响应速度 |
 | 🔒 安全认证 | 支持 JWT OAuth2 认证机制，保障系统安全 |
 | 📊 权限管理 | RBAC 模型实现菜单、按钮、数据级别的细粒度权限控制 |
 | 🚀 快速部署 | 支持 Docker/Docker Compose/Nginx 一键部署 |
 | 📄 开发友好 | 提供完善的中文文档 + 中文化界面 + 可视化工具链，降低学习成本 |
-| 📫 跨平台支持 | 通过 UniApp 支持多端开发，包括 H5、小程序等。|
-| 🚀 快速接入 |基于 Vue3、Vite5、Pinia、UniApp、Ant Design Vue、uView-plus 等主流前端技术栈，开箱即用。|
+| 🚀 快速接入 |基于 Vue3、Vite5、Pinia、Ant Design Vue 等主流前端技术栈，开箱即用。|
 
 ---
 
@@ -96,8 +93,7 @@ fastapi_vue3_admin
 | 定时任务 | APScheduler         | 轻松实现定时任务。 |
 | 权限认证 | PyJWT               | 实现 JWT 认证。 |
 | 前端框架 | Vue3 / Vite5 / Pinia / TypeScript | 快速开发 Vue3 应用。 |
-| UI 库    | Ant Design Vue / uView-plus | 快速开发美观的 UI 组件。 |
-| 移动端   | UniApp              | 快速开发移动端应用。 |
+| UI 库    | Ant Design Vue  | 快速开发美观的 UI 组件。 |
 | 数据库   | MySQL / MongoDB     | 强大的数据库。 |
 | 缓存     | Redis               | 强大的缓存数据库。 |
 | 文档     | Swagger / Redoc     | 自动生成 API 文档。 |
@@ -138,8 +134,6 @@ fastapi_vue3_admin
 | 前端     | Vue3       | 3.3        |
 | 数据库   | MySQL      | 8.0 （推荐使用最新版）|
 | 中间件   | Redis      | 7.0 （推荐使用最新版）|
-| 小程序   | uni-app    | 3.0.0 |
-| 小程序   | uview-plus | ^3.3.74 |
 
 ---
 
@@ -183,21 +177,6 @@ npm install
 # 启动前端服务
 npm run dev
 # 构建前端, 生成 `frontend/dist` 目录
-npm run build
-```
-
----
-
-### 本地小程序启动
-
-```sh
-# 进入移动工程目录
-cd uni-app
-# 安装依赖
-npm install
-# 启动小程序
-npm run dev:h5
-# 构建, 生成 `uni-app/dist` 目录
 npm run build
 ```
 
@@ -298,8 +277,6 @@ docker rm <容器名>
 - [RuoYi-Vue3-FastAPI 项目](https://gitee.com/insistence2022/RuoYi-Vue3-FastAPI)
 - [APScheduler 项目](https://github.com/agronholm/apscheduler)
 - [Vite 项目](https://github.com/vitejs/vite)
-- [UniApp 项目](https://github.com/dcloudio/uni-app)
-- [uView-plus 项目](https://uiadmin.net/uview-plus)
 
 ---
 
