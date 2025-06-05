@@ -54,7 +54,7 @@ English | [Chinese](./README.md)
 
 ## 📘 Project Introduction
 
-**Fastapi-Vue3-Admin** is a **fully open-source, highly modular, and technologically advanced modern rapid development platform**, designed to help developers efficiently build high-quality enterprise-level middle and back-office systems. This project adopts a **front-end and back-end decoupled architecture**, integrating the Python backend framework `FastAPI` and the mainstream frontend framework `Vue3`, combined with `UniApp` to achieve unified multi-terminal development, providing an all-in-one, out-of-the-box development experience.
+**Fastapi-Vue3-Admin** is a **fully open-source, highly modular, and technologically advanced modern rapid development platform**, designed to help developers efficiently build high-quality enterprise-level middle and back-office systems. This project adopts a **front-end and back-end decoupled architecture**, integrating the Python backend framework `FastAPI` and the mainstream frontend framework `Vue3` to achieve unified multi-terminal development, providing an all-in-one, out-of-the-box development experience.
 
 > **Design Philosophy**: Centered around modularity and loose coupling, it aims to offer rich functional modules, simple and easy-to-use interfaces, comprehensive development documentation, and convenient maintenance methods. By leveraging a unified framework and components, it reduces technology selection costs, follows development specifications and design patterns, builds a robust code layering model, and is equipped with comprehensive localized Chinese support—specifically tailored for team and enterprise development scenarios.
 
@@ -63,7 +63,6 @@ fastapi_vue3_admin
 ├─ backend        # Backend project
 ├─ frontend       # Frontend project
 ├─ devops         # Deployment project
-├─ uni-app        # Mobile application project
 ├─ docker-compose.yaml # Deployment configuration file
 ├─ start.sh       # One-click deployment script
 ├─ LICENSE        # License agreement
@@ -78,15 +77,14 @@ fastapi_vue3_admin
 | Feature | Description |
 | ------ | ----------- |
 | 🔭 Rapid Development | A fully open-source modern rapid development platform designed to help developers efficiently build high-quality middle and back-office systems. |
-| 🌐 Full-Stack Integration | Frontend and backend decoupled architecture, integrating Python (FastAPI), Vue3, and UniApp for multi-terminal development. |
+| 🌐 Full-Stack Integration | Frontend and backend decoupled architecture, integrating Python (FastAPI), and Vue3 for multi-terminal development. |
 | 🧱 Modular Design | Highly decoupled system functions, easy to extend and maintain. |
 | ⚡ High-Performance Asynchronous | Optimized interface response speed using the FastAPI asynchronous framework and Redis caching. |
 | 🔒 Secure Authentication | Supports JWT OAuth2 authentication mechanisms to ensure system security. |
 | 📊 Permission Management | Implements fine-grained permission control at the menu, button, and data levels using the RBAC model. |
 | 🚀 Quick Deployment | Supports one-click deployment with Docker, Docker Compose, and Nginx. |
 | 📄 Developer-Friendly | Provides comprehensive Chinese documentation, localized interface, and visual toolchains to reduce learning costs. |
-| 📫 Cross-Platform Support | Supports multi-terminal development via UniApp, including H5 and mini-programs. |
-| 🚀 Easy Integration | Ready-to-use with mainstream frontend technology stacks such as Vue3, Vite5, Pinia, UniApp, Ant Design Vue, and uView-plus. |
+| 🚀 Easy Integration | Ready-to-use with mainstream frontend technology stacks such as Vue3, Vite5, Pinia, and Ant Design Vue |
 
 ---
 
@@ -99,8 +97,7 @@ fastapi_vue3_admin
 | Task Scheduling | APScheduler                            | Easily implement scheduled tasks.                 |
 | Authentication | PyJWT                                   | Implements JWT-based authentication.              |
 | Frontend Framework | Vue3 / Vite5 / Pinia / TypeScript     | Rapid development of Vue3 applications.           |
-| UI Library   | Ant Design Vue / uView-plus             | Quickly build visually appealing UI components.   |
-| Mobile Development | UniApp                              | Rapid mobile application development.              |
+| UI Library   | Ant Design Vue                            | Quickly build visually appealing UI components.   |
 | Database     | MySQL / MongoDB                         | Powerful database systems.                        |
 | Caching      | Redis                                   | High-performance caching database.                |
 | Documentation | Swagger / Redoc                        | Automatically generates API documentation.        |
@@ -115,7 +112,6 @@ fastapi_vue3_admin
 | System Management | Menus, Departments, Positions, Roles, Users, Logs, Configurations, Announcements, Dictionaries, Tasks | Core system functionality |
 | Monitoring Management | Online Users, Server Monitoring, Cache Monitoring | System monitoring and management features |
 | Public Management | API Management, Documentation Management | Project API documentation management |
-| App Module      | Home Page, Workspace, Personal Center | Mobile application management |
 
 ---
 
@@ -140,8 +136,6 @@ fastapi_vue3_admin
 | Frontend   | Vue3             | 3.3                                      |
 | Database   | MySQL            | 8.0 (latest version recommended)         |
 | Middleware | Redis            | 7.0 (latest version recommended)         |
-| MiniApp    | uni-app          | 3.0.0                                    |
-| MiniApp    | uview-plus       | ^3.3.74                                  |
 
 ---
 
@@ -197,28 +191,9 @@ npm run build
 
 ---
 
-### Local App Startup
-
-```sh
-# Navigate to the frontend project directory
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start the frontend service
-npm run dev
-
-# Build the frontend, generating the `frontend/dist` directory
-npm run build
-```
-
----
-
 ### Local Access Addresses
 
 - Frontend Address: <http://127.0.0.1:5180>
-- Mini Program Address: <http://127.0.0.1:5181>
 - API Address: <http://127.0.0.1:8001/api/v1/docs>
 - Admin Account: `admin` Password: `123456`
 - Demo Account: `demo` Password: `123456`
@@ -233,11 +208,6 @@ chmod +x start.sh
 
 # Execute the script
 ./start.sh
-
-#  Access addresses
-# Frontend access: `http://Public IP address:80`, 
-# API access: `http://Public IP address:8001/api/v1/docs`, 
-# Log in with `admin/123456` or `demo/123456`
 
 # View images:
 docker images -a
@@ -296,12 +266,6 @@ docker rm <Container name>
         <td><img src="./backend/docs/resources/help.png"/>Online Documentation</td>
         <td><img src="./backend/docs/resources/dict.png"/>Dictionary Management</td>
    </tr>
-   <tr>
-        <td><img src="./backend/docs/resources/app-login.png"/>App Login</td>
-        <td><img src="./backend/docs/resources/app-home.png"/>App Home Page</td>
-        <td><img src="./backend/docs/resources/app-work.png"/>App Workspace</td>
-        <td><img src="./backend/docs/resources/app-me.png"/>App Personal Center</td>
-   </tr>
 </table>
 
 ---
@@ -318,8 +282,6 @@ Thanks to the contributions and support of the following projects, which have en
 - [RuoYi-Vue3-FastAPI Project](https://gitee.com/insistence2022/RuoYi-Vue3-FastAPI)
 - [APScheduler Project](https://github.com/agronholm/apscheduler)
 - [Vite Project](https://github.com/vitejs/vite)
-- [UniApp Project](https://github.com/dcloudio/uni-app)
-- [uView-plus Project](https://uiadmin.net/uview-plus)
 
 ---
 
