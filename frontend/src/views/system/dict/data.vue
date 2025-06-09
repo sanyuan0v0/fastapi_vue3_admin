@@ -516,9 +516,7 @@ const modalHandle = (modalType: string, index?: number) => {
 
 // 删除
 const deleteRow = (row: tableDictDataType) => {
-    deleteDictData({ id: row.id }).then(response => {
-        const result = response.data;
-        message.success(result.msg);
+    deleteDictData({ id: row.id }).then(() => {
         loadingData();
     }).catch(error => {
         console.log(error)
@@ -542,12 +540,10 @@ const handleModalSumbit = () => {
                 }
             })
 
-            createDictData(createBody).then(response => {
+            createDictData(createBody).then(() => {
                 modalSubmitLoading.value = false;
                 openModal.value = false;
                 Object.keys(createState).forEach(key => delete createState[key]);
-                const result = response.data;
-                message.success(result.msg);
                 loadingData();
 
             }).catch(error => {
@@ -562,10 +558,9 @@ const handleModalSumbit = () => {
 
     } else if (modalTitle.value === 'update') {
         updateForm.value.validate().then(() => {
-            updateDictData(updateState).then(response => {
+            updateDictData(updateState).then(() => {
                 modalSubmitLoading.value = false;
                 openModal.value = false;
-                message.success(response.data.msg);
                 loadingData();
             }).catch(error => {
                 modalSubmitLoading.value = false;

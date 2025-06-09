@@ -232,8 +232,7 @@ const onSubmit = async () => {
         return;
       }
       await forgetPasswordFormRef.value.validate();
-      const response = await forgetPassword({ ...forgetPasswordForm });
-      message.success(response.data.msg);
+      await forgetPassword({ ...forgetPasswordForm });
       Object.keys(forgetPasswordForm).forEach(key => delete forgetPasswordForm[key]);
       modalVisible.value = false;
     } else {
@@ -244,8 +243,7 @@ const onSubmit = async () => {
         return;
       }
       await registerFormRef.value.validate();
-      const response = await registerUser({ ...registerForm });
-      message.success(response.data.msg);
+      await registerUser({ ...registerForm });
       Object.keys(registerForm).forEach(key => delete registerForm[key]);
       modalVisible.value = false;
     }

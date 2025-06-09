@@ -193,10 +193,8 @@ const handleSave = async (item: any) => {
 
   try {
     await updateConfig(tempConfigState);
-    message.success(`${item.config_name} 保存成功`);
-    isEditing[item.config_key] = false; // 退出编辑模式
   } catch (error) {
-    message.error(`${item.config_name} 保存失败: ${error.message}`);
+    console.error('保存失败:', error);
   } finally {
     isSaving[item.config_key] = false; // 重置保存状态
   }
@@ -212,15 +210,6 @@ const beforeUpload = (file: File) => {
   return true;
 };
 
-// 编辑操作
-const handleEdit = (configKey: string) => {
-  isEditing[configKey] = true;
-};
-
-// 取消操作
-const handleCancel = (configKey: string) => {
-  isEditing[configKey] = false;
-};
 
 // 生命周期钩子
 onMounted(() => {

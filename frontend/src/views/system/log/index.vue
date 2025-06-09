@@ -290,9 +290,7 @@ const resetFields = () => {
 
 // 删除
 const deleteRow = (row: tableDataType) => {
-  deleteLog({ id: row.id }).then(response => {
-    const result = response.data;
-    message.success(result.msg);
+  deleteLog({ id: row.id }).then(() => {
     loadingData();
   }).catch(error => {
     console.log(error)

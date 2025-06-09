@@ -383,9 +383,7 @@ const resetFields = () => {
 
 // 删除
 const deleteRow = (row: tableDataType) => {
-  deleteDept({ id: row.id }).then(response => {
-    const result = response.data;
-    message.success(result.msg);
+  deleteDept({ id: row.id }).then(() => {
     loadingData();
   }).catch(error => {
     console.log(error);
@@ -404,9 +402,7 @@ const handleMoreClick: MenuProps['onClick'] = e => {
     content: e.key == 1 ? '是否确定启用选择项？' : '是否确定停用选择项？',
     onOk() {
       const body = { ids: selectedRowKeys.value, available: e.key == 1 ? true : false };
-      batchAvailableDept(body).then(response => {
-        const result = response.data;
-        message.success(result.msg);
+      batchAvailableDept(body).then(() => {
         selectedRowKeys.value = [];
         loadingData();
       }).catch(error => {
@@ -468,13 +464,11 @@ const handleModalSumbit = () => {
         }
       });
 
-      createDept(createBody).then(response => {
-        const result = response.data;
+      createDept(createBody).then(() => {
         modalSubmitLoading.value = false;
         openModal.value = false;
         Object.keys(createState).forEach(key => delete createState[key]);
         createState.order = 1;
-        message.success(result.msg);
         loadingData();
       }).catch(error => {
         console.error(error);
@@ -487,11 +481,9 @@ const handleModalSumbit = () => {
 
   } else if (modalTitle.value === 'update') {
     updateForm.value.validate().then(() => {
-      updateDept(updateState).then(response => {
+      updateDept(updateState).then(() => {
         modalSubmitLoading.value = false;
         openModal.value = false;
-        const result = response.data;
-        message.success(result.msg);
         loadingData();
 
       }).catch(error => {

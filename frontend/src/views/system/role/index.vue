@@ -348,9 +348,7 @@ const resetFields = () => {
 
 // 删除
 const deleteRow = (row: tableDataType) => {
-  deleteRole({ id: row.id }).then(response => {
-    const result = response.data;
-    message.success(result.msg);
+  deleteRole({ id: row.id }).then(() => {
     loadingData();
 
   }).catch(error => {
@@ -371,8 +369,6 @@ const handleMoreClick: MenuProps['onClick'] = e => {
     onOk() {
       const body = { ids: selectedRowKeys.value, available: e.key == 1 ? true : false };
       batchAvailableRole(body).then(response => {
-        const result = response.data;
-        message.success(result.msg);
         selectedRowKeys.value = [];
         loadingData();
       }).catch(error => {
@@ -445,13 +441,11 @@ const handleModalSumbit = () => {
         }
       })
 
-      createRole(createBody).then(response => {
-        const result = response.data;
+      createRole(createBody).then(() => {
         modalSubmitLoading.value = false;
         openModal.value = false;
         Object.keys(createState).forEach(key => delete createState[key]);
         createState.order = 1;
-        message.success(result.msg);
         loadingData();
 
       }).catch(error => {
@@ -466,11 +460,9 @@ const handleModalSumbit = () => {
 
   } else if (modalTitle.value === 'update') {
     updateForm.value.validate().then(() => {
-      updateRole(updateState).then(response => {
-        const result = response.data;
+      updateRole(updateState).then(() => {
         modalSubmitLoading.value = false;
         openModal.value = false;
-        message.success(result.msg);
         loadingData();
 
       }).catch(error => {

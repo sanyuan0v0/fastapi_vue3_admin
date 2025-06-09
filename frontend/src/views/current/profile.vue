@@ -364,8 +364,7 @@ const onInfoFormFinish = async (values: any) => {
   try {
     infoSubmitting.value = true;
     values.avatar = infoFormState.avatar;
-    const response = await updateCurrentUserInfo(values);
-    message.success(response.data.msg);
+    await updateCurrentUserInfo(values);
     await userStore.getUserInfo;
   } catch (error) {
     console.error(error);
@@ -395,9 +394,7 @@ const onPasswordFormFinish = async (values: any) => {
       new_password: values.newPassword 
     };
     
-    const response = await changeCurrentUserPassword(data);
-    message.success(response.data.msg);
-    
+    await changeCurrentUserPassword(data);
     await logout({ token: storage.get('Access-Token') });
     
     // 重置 store 状态
@@ -439,8 +436,6 @@ const handleUpload = async (options: any) => {
     infoFormState.avatar = fileUrl;
     fileList.value = [{ url: fileUrl }];
     
-    message.success(response.data.msg);
-
     onSuccess(response, file);
   } catch (error) {
     onError(error);
