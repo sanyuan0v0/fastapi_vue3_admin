@@ -1,50 +1,28 @@
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=timeGradient&height=256&&section=header&text=Fastapi%20Vue3%20Admin&fontSize=90&fontAlign=50&fontAlignY=28&desc=A modern, open-source, full-stack integrated rapid development platform for middle and back-office applications, give us a ⭐️ to show your support!%F0%9F%98%81&descAlign=50&descSize=0&descAlignY=56&animation=twinkling" />
-</p>
-<p align="center">
-  <img src="./backend/docs/resources/header.gif" width="200"/> 
-</p>
-<p align="center">
-  <img width="700" src="https://readme-typing-svg.demolab.com?font=LXGW+WenKai+TC&size=25&pause=1000&center=true&vCenter=true&random=false&width=600&lines=Welcome to my GitHub homepage!"/>
-</p>
-
-<p align="center">
-  <a href="https://gitee.com/tao__tao/fastapi_vue3_admin.git" target="_blank">
-    <img src="https://gitee.com/tao__tao/fastapi_vue3_admin/badge/star.svg?theme=dark" alt="Gitee Stars">
-  </a>
-  <a href="https://github.com/1014TaoTao/fastapi_vue3_admin.git" target="_blank">
-    <img src="https://img.shields.io/github/stars/1014TaoTao/fastapi_vue3_admin?style=social" alt="GitHub Stars">
-  </a>
-  <a href="https://gitee.com/tao__tao/fastapi_vue3_admin/blob/master/LICENSE" target="_blank">
-    <img src="https://img.shields.io/badge/License-MIT-orange" alt="License">
-  </a>
-  <img src="https://img.shields.io/badge/Python-≥3.10-blue"> 
-  <img src="https://img.shields.io/badge/NodeJS-≥20.0-blue"> 
-  <img src="https://img.shields.io/badge/MySQL-≥8.0-blue"> 
-  <img src="https://img.shields.io/badge/Redis-≥7.0-blue"> 
-  <img src="https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white"/> 
-  <img src="https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3"/> 
-  <img src="https://img.shields.io/badge/-JavaScript-563D7C?style=flat-square&logo=bootstrap"/> 
-</p>
-
-# 📊 GitHub Data Statistics (Author: @1014TaoTao)
-
-<table align="center">
-    <tr>
-        <td>
-          <img height="200px" width="auto" src="https://github-readme-stats.vercel.app/api?username=1014TaoTao&show_icons=true&theme=dracula">
-        </td>
-        <td>
-          <img height="200px" width="auto" src="https://github-readme-stats.vercel.app/api/top-langs/?username=1014TaoTao&layout=compact&theme=dracula">
-        </td>
-        <td>
-          <img height="200px" width="auto" src="https://github-readme-streak-stats.herokuapp.com/?user=1014TaoTao&theme=dracula">
-        </td>
-    </tr>
-</table>
-<p align="center">
-  <img src="https://github-readme-activity-graph.vercel.app/graph?username=1014TaoTao&theme=dracula&hide_border=true&area=true&custom_title=Activity%20Graph" alt="Activity Graph" title="Activity Graph" />
-</p>
+<div align="center">
+     <p align="center">
+          <img src="./backend/docs/resources/logo.png" width="100"/> 
+     </p>
+     <h2 align="center">Fastapi-Vue3-Admin v1.0.0</h2>
+     <h4 align="center">A modern, open-source, full-stack integrated rapid development platform for mid - and back - end systems. Give a ⭐️ to support!</h4>
+     <p align="center">
+          <a href="https://gitee.com/tao__tao/fastapi_vue3_admin.git" target="_blank">
+               <img src="https://gitee.com/tao__tao/fastapi_vue3_admin/badge/star.svg?theme=dark" alt="Gitee Stars">
+          </a>
+          <a href="https://github.com/1014TaoTao/fastapi_vue3_admin.git" target="_blank">
+               <img src="https://img.shields.io/github/stars/1014TaoTao/fastapi_vue3_admin?style=social" alt="GitHub Stars">
+          </a>
+          <a href="https://gitee.com/tao__tao/fastapi_vue3_admin/blob/master/LICENSE" target="_blank">
+               <img src="https://img.shields.io/badge/License-MIT-orange" alt="License">
+          </a>
+          <img src="https://img.shields.io/badge/Python-≥3.10-blue"> 
+          <img src="https://img.shields.io/badge/NodeJS-≥20.0-blue"> 
+          <img src="https://img.shields.io/badge/MySQL-≥8.0-blue"> 
+          <img src="https://img.shields.io/badge/Redis-≥7.0-blue"> 
+          <img src="https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white"/> 
+          <img src="https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3"/> 
+          <img src="https://img.shields.io/badge/-JavaScript-563D7C?style=flat-square&logo=bootstrap"/> 
+     </p>
+</div>
 
 ---
 
@@ -52,21 +30,21 @@ English | [Chinese](./README.md)
 
 ---
 
-## 📘 Project Introduction
+## 📘 Project Introduction (Author: @1014TaoTao)
 
-**Fastapi-Vue3-Admin** is a **fully open-source, highly modular, and technologically advanced modern rapid development platform**, designed to help developers efficiently build high-quality enterprise-level middle and back-office systems. This project adopts a **front-end and back-end decoupled architecture**, integrating the Python backend framework `FastAPI` and the mainstream frontend framework `Vue3` to achieve unified multi-terminal development, providing an all-in-one, out-of-the-box development experience.
+**Fastapi-Vue3-Admin** is a **completely open-source, highly modular, and technologically advanced modern rapid development platform**. Its aim is to help developers efficiently build high-quality enterprise-level mid - and back - end systems. This project adopts a **front - end and back - end separation architecture**, integrating the Python back - end framework `FastAPI` and the mainstream front - end framework `Vue3` to achieve unified development across multiple terminals, providing a one - stop out - of - the - box development experience.
 
-> **Design Philosophy**: Centered around modularity and loose coupling, it aims to offer rich functional modules, simple and easy-to-use interfaces, comprehensive development documentation, and convenient maintenance methods. By leveraging a unified framework and components, it reduces technology selection costs, follows development specifications and design patterns, builds a robust code layering model, and is equipped with comprehensive localized Chinese support—specifically tailored for team and enterprise development scenarios.
+> **Original Design Concept**: With modularity and loose coupling at its core, it pursues rich functional modules, simple and easy - to - use interfaces, detailed development documentation, and convenient maintenance methods. By unifying frameworks and components, it reduces the cost of technology selection, follows development specifications and design patterns, builds a powerful code hierarchical model, and comes with comprehensive local Chinese support. It is specifically tailored for team and enterprise development scenarios.
 
 ```sh
 fastapi_vue3_admin
 ├─ backend        # Backend project
 ├─ frontend       # Frontend project
 ├─ devops         # Deployment project
-├─ docker-compose.yaml # Deployment configuration file
+├─ docker-compose.yaml # Deployment file
 ├─ start.sh       # One-click deployment script
 ├─ LICENSE        # License agreement
-├─ README.en.md   # English documentation
+|─ README.en.md   # English documentation
 └─ README.md      # Chinese documentation
 ```
 
@@ -75,76 +53,77 @@ fastapi_vue3_admin
 ## ✨ Core Highlights
 
 | Feature | Description |
-| ------ | ----------- |
-| 🔭 Rapid Development | A fully open-source modern rapid development platform designed to help developers efficiently build high-quality middle and back-office systems. |
-| 🌐 Full-Stack Integration | Frontend and backend decoupled architecture, integrating Python (FastAPI), and Vue3 for multi-terminal development. |
-| 🧱 Modular Design | Highly decoupled system functions, easy to extend and maintain. |
-| ⚡ High-Performance Asynchronous | Optimized interface response speed using the FastAPI asynchronous framework and Redis caching. |
-| 🔒 Secure Authentication | Supports JWT OAuth2 authentication mechanisms to ensure system security. |
-| 📊 Permission Management | Implements fine-grained permission control at the menu, button, and data levels using the RBAC model. |
-| 🚀 Quick Deployment | Supports one-click deployment with Docker, Docker Compose, and Nginx. |
-| 📄 Developer-Friendly | Provides comprehensive Chinese documentation, localized interface, and visual toolchains to reduce learning costs. |
-| 🚀 Easy Integration | Ready-to-use with mainstream frontend technology stacks such as Vue3, Vite5, Pinia, and Ant Design Vue |
+| ---- | ---- |
+| 🔭 Rapid Development | A completely open-source modern rapid development platform designed to help developers efficiently build high-quality mid- and back-end systems. |
+| 🌐 Full-stack Integration | Front-end and back-end separation, integrating Python (FastAPI) + Vue3 for multi-terminal development. |
+| 🧱 Modular Design | Highly decoupled system functions, facilitating easy expansion and maintenance. |
+| ⚡️ High-performance Asynchronous | Uses the FastAPI asynchronous framework + Redis cache to optimize API response speed. |
+| 🔒 Secure Authentication | Supports the JWT OAuth2 authentication mechanism to ensure system security. |
+| 📊 Permission Management | The RBAC model enables fine-grained permission control at the menu, button, and data levels. |
+| 🚀 Rapid Deployment | Supports one-click deployment with Docker/Docker Compose/Nginx. |
+| 📄 Developer-friendly | Provides comprehensive Chinese documentation, a Chinese interface, and a visual toolchain to reduce the learning curve. |
+| 🚀 Quick Access | Based on mainstream front-end technology stacks such as Vue3, Vite5, Pinia, and Ant Design Vue, it's ready to use out of the box. |
 
 ---
 
 ## 🛠️ Technology Stack Overview
 
-| Type         | Technology Selection                     | Description                                      |
-|--------------|------------------------------------------|--------------------------------------------------|
-| Backend Framework | FastAPI / Uvicorn / Pydantic 2.0 / Alembic | Modern, high-performance asynchronous framework with strict type constraints and data migration support. |
-| ORM          | SQLAlchemy 2.0                           | Powerful ORM library.                             |
-| Task Scheduling | APScheduler                            | Easily implement scheduled tasks.                 |
-| Authentication | PyJWT                                   | Implements JWT-based authentication.              |
-| Frontend Framework | Vue3 / Vite5 / Pinia / TypeScript     | Rapid development of Vue3 applications.           |
-| UI Library   | Ant Design Vue                            | Quickly build visually appealing UI components.   |
-| Database     | MySQL / MongoDB                         | Powerful database systems.                        |
-| Caching      | Redis                                   | High-performance caching database.                |
-| Documentation | Swagger / Redoc                        | Automatically generates API documentation.        |
-| Deployment   | Docker / Nginx / Docker Compose         | Rapid project deployment.                         |
+| Type     | Technology Selection            | Description |
+|----------|---------------------------------|---------------------------------|
+| Backend Framework | FastAPI / Uvicorn / Pydantic 2.0 / Alembic | A modern, high-performance asynchronous framework with enforced type constraints and data migration capabilities. |
+| ORM      | SQLAlchemy 2.0      | A powerful ORM library. |
+| Scheduled Tasks | APScheduler         | Easily implement scheduled tasks. |
+| Authentication | PyJWT               | Implement JWT authentication. |
+| Frontend Framework | Vue3 / Vite5 / Pinia / TypeScript | Quickly develop Vue3 applications. |
+| UI Library    | Ant Design Vue | Quickly develop beautiful UI components. |
+| Database   | MySQL / MongoDB     | Powerful databases. |
+| Cache     | Redis               | A powerful caching database. |
+| Documentation     | Swagger / Redoc     | Automatically generate API documentation. |
+| Deployment     | Docker / Nginx / Docker Compose | Quickly deploy projects. |
+
 ---
 
 ## 📌 Built-in Modules
 
-| Module Name     | Submodules                          | Description                      |
-|-----------------|-------------------------------------|----------------------------------|
-| Dashboard       | Workspace, Analytics Page           | Common functional entry points   |
-| System Management | Menus, Departments, Positions, Roles, Users, Logs, Configurations, Announcements, Dictionaries, Tasks | Core system functionality |
-| Monitoring Management | Online Users, Server Monitoring, Cache Monitoring | System monitoring and management features |
-| Public Management | API Management, Documentation Management | Project API documentation management |
+| Module Name     | Sub-module Name | Description |
+|----------|---------------------|---------------------|
+| Dashboard    | Workbench, Analysis Page  | Entry for commonly used functions |
+| System Management  | Includes sub-modules such as menu, department, position, role, user, log, configuration, announcement, dictionary, and task | Main system functions |
+| Monitoring Management  | Online users, server monitoring, cache monitoring | System monitoring and management functions |
+| Public Management  | Interface management, document management | Project interface documentation |
 
 ---
 
 ## 🍪 Demo Environment
 
-- **Demo URL**: <http://service.fastapiadmin.com>
-- **Admin Account**: `admin` / Password: `123456`
-- **Demo Account**: `demo` / Password: `123456`
+- Demo URL: <http://service.fastapiadmin.com>
+- Administrator account: `admin` Password: `123456`
+- Demo account: `demo` Password: `123456`
 
 ---
 
 ## 👷 Installation and Usage
 
-### Version Details
+### Version Information
 
-| Type       | Technology Stack | Version                                 |
-|------------|------------------|-----------------------------------------|
-| Backend    | Python           | 3.10 (Versions above 3.10 may cause compatibility issues; upgrade is not planned for now) |
-| Backend    | FastAPI          | 0.109                                   |
-| Frontend   | Node.js          | >= 20.0 (latest version recommended)     |
-| Frontend   | npm              | 16.14                                    |
-| Frontend   | Vue3             | 3.3                                      |
-| Database   | MySQL            | 8.0 (latest version recommended)         |
-| Middleware | Redis            | 7.0 (latest version recommended)         |
+| Type     | Technology Stack     | Version       |
+|----------|----------------------|---------------|
+| Backend  | Python               | 3.10 (Versions greater than 3.10 may have compatibility issues. Upgrades will be considered in the future, but not for now.) |
+| Backend  | FastAPI              | 0.109         |
+| Frontend | Node.js              | >= 20.0 (It is recommended to use the latest version.) |
+| Frontend | npm                  | 16.14         |
+| Frontend | Vue3                 | 3.3           |
+| Database | MySQL                | 8.0 (It is recommended to use the latest version.) |
+| Middleware | Redis              | 7.0 (It is recommended to use the latest version.) |
 
 ---
 
-### Getting the Code  
+### Get Code
 
 ```sh
-# Clone Code to Local Machine
+# Clone the code to your local machine
 git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
-or
+或
 git clone https://github.com/1014TaoTao/fastapi_vue3_admin.git
 ```
 
@@ -153,22 +132,18 @@ git clone https://github.com/1014TaoTao/fastapi_vue3_admin.git
 ### Local Backend Startup
 
 ```sh
-# Navigate to the backend project directory
+# Enter the backend project directory
 cd backend
-
 # Install dependencies
 pip3 install -r requirements.txt
-
 # Start the backend service
-python3 main.py run
-or
-python3 main.py run --env=dev
-
-# Generate migration file (default environment is 'dev' if not specified)
-python3 main.py revision "Initial migration" --env=dev
-
-# Apply migration (default environment is 'dev' if not specified)
-python3 main.py upgrade --env=dev
+python3 main.py run 
+or 
+python3 main.py run --env=dev 
+# Generate migration files
+python3 main.py revision "Initial migration" --env=dev (default is dev if not specified)
+# Apply migrations
+python3 main.py upgrade --env=dev (default is dev if not specified)
 ```
 
 ---
@@ -176,66 +151,62 @@ python3 main.py upgrade --env=dev
 ### Local Frontend Startup
 
 ```sh
-# 进入前端工程目录
+# Enter the frontend project directory
 cd frontend
-
-# 安装依赖
+# Install dependencies
 npm install
-
-# 启动前端服务
+# Start the frontend service
 npm run dev
-
-# 构建前端, 生成 `frontend/dist` 目录
+# Build the frontend and generate the `frontend/dist` directory
 npm run build
 ```
 
 ---
 
-### Local Access Addresses
+### Local Access Address
 
-- Frontend Address: <http://127.0.0.1:5180>
-- API Address: <http://127.0.0.1:8001/api/v1/docs>
-- Admin Account: `admin` Password: `123456`
-- Demo Account: `demo` Password: `123456`
+- Frontend address: <http://127.0.0.1:5180>
+- API address: <http://127.0.0.1:8001/api/v1/docs>
+- Administrator account: `admin` Password: `123456`
+- Demo account: `demo` Password: `123456`
 
 ---
 
-### Docker Deployment
+### Docker Build
 
 ```sh
-# Copy the script `fastapi_vue3_amdin/start.sh` to the server and grant execution permissions
+# Copy the script `fastapi_vue3_admin/start.sh` to the server and grant execution permissions
 chmod +x start.sh
-
 # Execute the script
 ./start.sh
-
 # View images:
 docker images -a
-
 # View containers:
 docker compose ps
-
 # View logs
-docker logs -f <Container name>
-
+docker logs -f <Container Name>
 # Stop the service
 docker compose down
-
 # Delete an image
-docker rmi <Image name>
-
+docker rmi <Image Name>
 # Delete a container
-docker rm <Container name>
-```
+docker rm <Container Name>
+# Backend configuration file directory
+fastapi_vue3_admin/backend/env/.env.prod.py
+# Frontend configuration file directory
+fastapi_vue3_admin/frontend/vite.config.ts
+and 
+fastapi_vue3_admin/frontend/.env.production
+# Deployment file directory  
+fastapi_vue3_admin/docker-compose.yaml
+and 
+fastapi_vue3_admin/devops/devops/nginx/nginx.conf
 
-- **Deployment Issue Troubleshooting**:
-  - Backend configuration file `fastapi_vue3_admin/backend/env/.env.prod.py`
-  - Frontend configuration files `fastapi_vue3_admin/frontend/vite.config.ts` and `fastapi_vue3_admin/frontend/.env.production`
-  - Deployment files `fastapi_vue3_admin/docker-compose.yaml` and `fastapi_vue3_admin/devops/devops/nginx/nginx.conf`
+```
 
 ---
 
-## 🔧 Module Display
+## 🔧 Models
 
 <table>
     <tr>
@@ -259,7 +230,7 @@ docker rm <Container name>
    <tr>
         <td><img src="./backend/docs/resources/job.png"/>Task Management</td>
         <td><img src="./backend/docs/resources/docs.png"/>API Management</td>
-        <td><img src="./backend/docs/resources/redoc.png"/>Documentation Management</td>
+        <td><img src="./backend/docs/resources/redoc.png"/>Document Management</td>
         <td><img src="./backend/docs/resources/info.png"/>Personal Information</td>
    </tr>
    <tr>
@@ -270,7 +241,7 @@ docker rm <Container name>
 
 ---
 
-## 🙏 Special Thanks
+## 🙏 Thanks
 
 Thanks to the contributions and support of the following projects, which have enabled the successful completion of this project:
 
@@ -297,18 +268,14 @@ Thanks to the contributions and support of the following projects, which have en
 
 ---
 
-## ❤️ Star Me
+## ❤️ Star
 
-If you like this project, please give me a ⭐️ Star to show your support! Thank you very much!
+If you like this project, please give it a ⭐️ Star to show your support! Thank you very much!
 
 ---
 
-## 👀 访问统计
+## 👀 Visitor Statistics
 
 ![Visitor Count](https://profile-counter.glitch.me/1014TaoTao/count.svg)
 
 ---
-
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=timeGradient&height=260&&section=footer&text=Thank you&fontSize=90&fontAlign=50&fontAlignY=78&desc=It's not too much to ask for a%20star ⭐️&descAlign=50&descSize=30&descAlignY=46&animation=twinkling" />
-</p>
