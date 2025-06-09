@@ -1,50 +1,28 @@
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=timeGradient&height=256&&section=header&text=Fastapi%20Vue3%20Admin&fontSize=90&fontAlign=50&fontAlignY=28&desc=一套现代、开源、全栈融合的中后台快速开发平台，给个⭐️支持一下%F0%9F%98%81&descAlign=50&descSize=0&descAlignY=56&animation=twinkling" />
-</p>
-<p align="center">
-  <img src="./backend/docs/resources/header.gif" width="200"/> 
-</p>
-<p align="center">
-  <img width="700" src="https://readme-typing-svg.demolab.com?font=LXGW+WenKai+TC&size=25&pause=1000&center=true&vCenter=true&random=false&width=600&lines=欢迎来到我的GitHub主页！"/>
-</p>
-
-<p align="center">
-  <a href="https://gitee.com/tao__tao/fastapi_vue3_admin.git" target="_blank">
-    <img src="https://gitee.com/tao__tao/fastapi_vue3_admin/badge/star.svg?theme=dark" alt="Gitee Stars">
-  </a>
-  <a href="https://github.com/1014TaoTao/fastapi_vue3_admin.git" target="_blank">
-    <img src="https://img.shields.io/github/stars/1014TaoTao/fastapi_vue3_admin?style=social" alt="GitHub Stars">
-  </a>
-  <a href="https://gitee.com/tao__tao/fastapi_vue3_admin/blob/master/LICENSE" target="_blank">
-    <img src="https://img.shields.io/badge/License-MIT-orange" alt="License">
-  </a>
-  <img src="https://img.shields.io/badge/Python-≥3.10-blue"> 
-  <img src="https://img.shields.io/badge/NodeJS-≥20.0-blue"> 
-  <img src="https://img.shields.io/badge/MySQL-≥8.0-blue"> 
-  <img src="https://img.shields.io/badge/Redis-≥7.0-blue"> 
-  <img src="https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white"/> 
-  <img src="https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3"/> 
-  <img src="https://img.shields.io/badge/-JavaScript-563D7C?style=flat-square&logo=bootstrap"/> 
-</p>
-
-# 📊 GitHub 数据统计（作者：@1014TaoTao）
-
-<table align="center">
-    <tr>
-        <td>
-          <img height="200px" width="auto" src="https://github-readme-stats.vercel.app/api?username=1014TaoTao&show_icons=true&theme=dracula">
-        </td>
-        <td>
-          <img height="200px" width="auto" src="https://github-readme-stats.vercel.app/api/top-langs/?username=1014TaoTao&layout=compact&theme=dracula">
-        </td>
-        <td>
-          <img height="200px" width="auto" src="https://github-readme-streak-stats.herokuapp.com/?user=1014TaoTao&theme=dracula">
-        </td>
-    </tr>
-</table>
-<p align="center">
-  <img src="https://github-readme-activity-graph.vercel.app/graph?username=1014TaoTao&theme=dracula&hide_border=true&area=true&custom_title=Activity%20Graph" alt="Activity Graph" title="Activity Graph" />
-</p>
+<div align="center">
+     <p align="center">
+          <img src="./backend/docs/resources/logo.png" width="100"/> 
+     </p>
+     <h2 align="center">Fastapi-Vue3-Admin v1.0.0</h2>
+     <h4 align="center">一套现代、开源、全栈融合的中后台快速开发平台，给个⭐️支持一下</h4>
+     <p align="center">
+          <a href="https://gitee.com/tao__tao/fastapi_vue3_admin.git" target="_blank">
+               <img src="https://gitee.com/tao__tao/fastapi_vue3_admin/badge/star.svg?theme=dark" alt="Gitee Stars">
+          </a>
+          <a href="https://github.com/1014TaoTao/fastapi_vue3_admin.git" target="_blank">
+               <img src="https://img.shields.io/github/stars/1014TaoTao/fastapi_vue3_admin?style=social" alt="GitHub Stars">
+          </a>
+          <a href="https://gitee.com/tao__tao/fastapi_vue3_admin/blob/master/LICENSE" target="_blank">
+               <img src="https://img.shields.io/badge/License-MIT-orange" alt="License">
+          </a>
+          <img src="https://img.shields.io/badge/Python-≥3.10-blue"> 
+          <img src="https://img.shields.io/badge/NodeJS-≥20.0-blue"> 
+          <img src="https://img.shields.io/badge/MySQL-≥8.0-blue"> 
+          <img src="https://img.shields.io/badge/Redis-≥7.0-blue"> 
+          <img src="https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white"/> 
+          <img src="https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3"/> 
+          <img src="https://img.shields.io/badge/-JavaScript-563D7C?style=flat-square&logo=bootstrap"/> 
+     </p>
+</div>
 
 ---
 
@@ -52,7 +30,7 @@
 
 ---
 
-## 📘 项目介绍
+## 📘 项目介绍（作者：@1014TaoTao）
 
 **Fastapi-Vue3-Admin** 是一套 **完全开源、高度模块化、技术先进的现代化快速开发平台**，旨在帮助开发者高效搭建高质量的企业级中后台系统。该项目采用 **前后端分离架构**，融合 Python 后端框架 `FastAPI` 和前端主流框架 `Vue3` 实现多端统一开发，提供了一站式开箱即用的开发体验。
 
@@ -213,12 +191,18 @@ docsker compose down
 docker rmi <镜像名>
 # 删除容器
 docker rm <容器名>
-```
+# 后端配置文件目录
+fastapi_vue3_amdin/backend/env/.env.prod.py
+# 前端配置文件目录
+fastapi_vue3_amdin/frontend/vite.config.ts
+和 
+fastapi_vue3_amdin/frontend/.env.production
+# 部署文件目录  
+fastapi_vue3_amdin/docker-compose.yaml
+和 
+fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 
-- **部署问题排查**:
-  - 后端配置文件 `fastapi_vue3_amdin/backend/env/.env.prod.py`
-  - 前端配置文件 `fastapi_vue3_amdin/frontend/vite.config.ts` 和 `fastapi_vue3_amdin/frontend/.env.production`
-  - 部署文件  `fastapi_vue3_amdin/docker-compose.yaml` 和 `fastapi_vue3_amdin/devops/devops/nginx/nginx.conf`
+```
 
 ---
 
@@ -295,7 +279,3 @@ docker rm <容器名>
 ![Visitor Count](https://profile-counter.glitch.me/1014TaoTao/count.svg)
 
 ---
-
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=timeGradient&height=260&&section=footer&text=感谢&fontSize=90&fontAlign=50&fontAlignY=78&desc=给个%20star ⭐️ %20不过分吧&descAlign=50&descSize=30&descAlignY=46&animation=twinkling" />
-</p>
