@@ -340,9 +340,7 @@ const modalHandle = (modalType: string, index?: number) => {
 const deleteRow = async (row: tableType) => {
   try {
     tableLoading.value = true;
-    const response = await deleteConfig({ id: row.id })
-    const result = response.data;
-    message.success(result.msg);
+    await deleteConfig({ id: row.id })
     loadingData();
   } catch (error) {
     console.log(error)
@@ -367,11 +365,9 @@ const handleModalSumbit = async () => {
           delete createBody[key];
         }
       })
-      const response = await createConfig(createBody)
+      await createConfig(createBody)
       openModal.value = false;
       Object.keys(createState).forEach(key => delete createState[key]);
-      const result = response.data;
-      message.success(result.msg);
       loadingData();
     } catch (error) {
       console.log(error)
@@ -382,9 +378,8 @@ const handleModalSumbit = async () => {
   } else if (modalTitle.value === 'update') {
     try {
       await updateForm.value.validate();
-      const response = await updateConfig(updateState)
+      await updateConfig(updateState)
       openModal.value = false;
-      message.success(response.data.msg);
       loadingData();
     } catch (error) {
       console.log(error)

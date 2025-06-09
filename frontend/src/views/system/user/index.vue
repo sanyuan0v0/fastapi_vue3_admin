@@ -698,11 +698,8 @@ const resetFields = () => {
 
 // 删除
 const deleteRow = (row: tableDataType) => {
-  deleteUser({ id: row.id }).then(response => {
-    const result = response.data;
-    message.success(result.msg);
+  deleteUser({ id: row.id }).then(() => {
     loadingData();
-
   }).catch(error => {
     console.log(error);
   })
@@ -720,9 +717,7 @@ const handleMoreClick: MenuProps['onClick'] = e => {
     content: e.key == 1 ? '是否确定启用选择项？' : '是否确定停用选择项？',
     onOk() {
       const body = { ids: selectedRowKeys.value, available: e.key == 1 ? true : false };
-      batchAvailableUser(body).then(response => {
-        const result = response.data;
-        message.success(result.msg);
+      batchAvailableUser(body).then(() => {
         selectedRowKeys.value = [];
         loadingData();
       }).catch(error => {
@@ -838,12 +833,10 @@ const handleModalSumbit = () => {
         }
       })
 
-      createUser(createBody).then(response => {
-        const result = response.data;
+      createUser(createBody).then(() => {
         modalSubmitLoading.value = false;
         openModal.value = false;
         Object.keys(createState).forEach(key => delete createState[key]);
-        message.success(result.msg);
         loadingData();
 
       }).catch(error => {
@@ -876,11 +869,9 @@ const handleModalSumbit = () => {
         updateBody['password'] = updateState.password;
       }
 
-      updateUser(updateBody).then(response => {
-        const result = response.data;
+      updateUser(updateBody).then(() => {
         modalSubmitLoading.value = false;
         openModal.value = false;
-        message.success(result.msg);
         loadingData();
 
       }).catch(error => {
@@ -1006,7 +997,6 @@ const customRequest = ({ file, onSuccess, onError, onProgress }: any) => {
       fileItem.percent = 100;
       upload.isUploading = false;
       upload.open = false;
-      message.success(response.data.msg);
       onSuccess(response);
       loadingData(); // 刷新数据
     })
@@ -1014,7 +1004,7 @@ const customRequest = ({ file, onSuccess, onError, onProgress }: any) => {
       fileItem.status = 'error';
       upload.isUploading = false;
       onError(error);
-      message.error(error.response?.data?.detail || '用户导入失败');
+      console.error('导入失败:', error);
     });
 };
 

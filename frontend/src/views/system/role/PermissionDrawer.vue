@@ -189,8 +189,7 @@ const emit = defineEmits(['event']);
 const handleDrawerSave = () => {
     drawerSaving.value = true;
 
-    setPermission(permissionState.value).then(response => {
-        message.success(response.data.msg);
+    setPermission(permissionState.value).then(() => {
         drawerSaving.value = false;
         openDrawer.value = false;
         emit('event');

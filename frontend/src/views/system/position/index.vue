@@ -369,9 +369,7 @@ const modalHandle = (modalType: string, index?: number) => {
 
 // 删除
 const deleteRow = (row: tableDataType) => {
-  deletePosition({ id: row.id }).then(response => {
-    const result = response.data;
-    message.success(result.msg);
+  deletePosition({ id: row.id }).then(() => {
     loadingData();
   }).catch(error => {
     console.log(error)
@@ -390,9 +388,7 @@ const handleMoreClick: MenuProps['onClick'] = e => {
     content: e.key == 1 ? '是否确定启用选择项？' : '是否确定停用选择项？',
     onOk() {
       const body = { ids: selectedRowKeys.value, available: e.key == 1 ? true : false };
-      batchAvailablePosition(body).then(response => {
-        const result = response.data;
-        message.success(result.msg);
+      batchAvailablePosition(body).then(() => {
         selectedRowKeys.value = [];
         loadingData();
       }).catch(error => {
@@ -419,13 +415,11 @@ const handleModalSumbit = () => {
         }
       })
 
-      createPosition(createBody).then(response => {
+      createPosition(createBody).then(() => {
         modalSubmitLoading.value = false;
         openModal.value = false;
         Object.keys(createState).forEach(key => delete createState[key]);
         createState.order = 1;
-        const result = response.data;
-        message.success(result.msg);
         loadingData();
 
       }).catch(error => {
@@ -440,10 +434,9 @@ const handleModalSumbit = () => {
 
   } else if (modalTitle.value === 'update') {
     updateForm.value.validate().then(() => {
-      updatePosition(updateState).then(response => {
+      updatePosition(updateState).then(() => {
         modalSubmitLoading.value = false;
         openModal.value = false;
-        message.success(response.data.msg);
         loadingData();
       })
 

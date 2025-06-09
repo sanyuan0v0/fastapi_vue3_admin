@@ -751,9 +751,7 @@ const modalHandle = (modalType: string, index?: number) => {
 
 // 删除
 const deleteRow = (row: tableJobType) => {
-    deleteJob({ id: row.id }).then(response => {
-        const result = response.data;
-        message.success(result.msg);
+    deleteJob({ id: row.id }).then(() => {
         loadingData();
     }).catch(error => {
         console.log(error)
@@ -777,12 +775,10 @@ const handleModalSumbit = () => {
                 }
             })
 
-            createJob(createBody).then(response => {
+            createJob(createBody).then(() => {
                 modalSubmitLoading.value = false;
                 openModal.value = false;
                 Object.keys(createState).forEach(key => delete createState[key]);
-                const result = response.data;
-                message.success(result.msg);
                 loadingData();
 
             }).catch(error => {
@@ -797,10 +793,9 @@ const handleModalSumbit = () => {
 
     } else if (modalTitle.value === 'update') {
         updateForm.value.validate().then(() => {
-            updateJob(updateState).then(response => {
+            updateJob(updateState).then(() => {
                 modalSubmitLoading.value = false;
                 openModal.value = false;
-                message.success(response.data.msg);
                 loadingData();
             }).catch(error => {
                 modalSubmitLoading.value = false;
@@ -864,9 +859,7 @@ const handleClear = () => {
         title: '警告',
         content: '是否确认清空所有定时任务数据?',
         onOk() {
-            clearJob().then(response => {
-                const result = response.data;
-                message.success(result.msg);
+            clearJob().then(() => {
                 loadingData();
             })
         }
@@ -875,9 +868,7 @@ const handleClear = () => {
 
 // 操作按钮:操作类型 1: 暂停 2: 恢复 3: 重启
 const handleOption = (row: tableJobType, option: number) => {
-    OptionJob({ id: row.id, option: option }).then(response => {
-        const result = response.data;
-        message.success(result.msg);
+    OptionJob({ id: row.id, option: option }).then(() => {
         loadingData();
     })
 }
