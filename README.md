@@ -261,7 +261,7 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 <table>
     <tr>
         <td><img src="./backend/docs/resources/wechat.jpg"/></td>
-        <td><img src="./backend/docs/resources/group.jpg"/></td>
+        <td><img src="./backend/docs/resources/group.jpg?v=1"/></td>
         <td><img src="./backend/docs/resources/wechatPay.jpg"/></td>
     </tr>
 </table>
