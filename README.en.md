@@ -1,6 +1,6 @@
 <div align="center">
      <p align="center">
-          <img src="./backend/docs/resources/logo.png" width="100"/> 
+          <img src="./backend/static/image/logo.png" width="100"/> 
      </p>
      <h2 align="center">Fastapi-Vue3-Admin v1.0.0</h2>
      <h4 align="center">A modern, open-source, full-stack integrated rapid development platform for mid - and back - end systems. Give a ⭐️ to support!</h4>
@@ -210,32 +210,32 @@ fastapi_vue3_admin/devops/devops/nginx/nginx.conf
 
 <table>
     <tr>
-        <td><img src="./backend/docs/resources/login.png"/>Login</td>
-        <td><img src="./backend/docs/resources/dashboard.png"/>Dashboard</td>
-        <td><img src="./backend/docs/resources/menu.png"/>Menu Management</td>
-        <td><img src="./backend/docs/resources/dept.png"/>Department Management</td>
+        <td><img src="./backend/static/image/login.png"/>Login</td>
+        <td><img src="./backend/static/image/dashboard.png"/>Dashboard</td>
+        <td><img src="./backend/static/image/menu.png"/>Menu Management</td>
+        <td><img src="./backend/static/image/dept.png"/>Department Management</td>
    </tr>
    <tr>
-        <td><img src="./backend/docs/resources/position.png"/>Position Management</td>
-        <td><img src="./backend/docs/resources/role.png"/>Role Management</td>
-        <td><img src="./backend/docs/resources/user.png"/>User Management</td>
-        <td><img src="./backend/docs/resources/log.png"/>Log Management</td>
+        <td><img src="./backend/static/image/position.png"/>Position Management</td>
+        <td><img src="./backend/static/image/role.png"/>Role Management</td>
+        <td><img src="./backend/static/image/user.png"/>User Management</td>
+        <td><img src="./backend/static/image/log.png"/>Log Management</td>
    </tr>
    <tr>
-        <td><img src="./backend/docs/resources/config.png"/>Configuration Management</td>
-        <td><img src="./backend/docs/resources/online.png"/>Online User Management</td>
-        <td><img src="./backend/docs/resources/service.png"/>Server Monitoring</td>
-        <td><img src="./backend/docs/resources/cache.png"/>Cache Monitoring</td>
+        <td><img src="./backend/static/image/config.png"/>Configuration Management</td>
+        <td><img src="./backend/static/image/online.png"/>Online User Management</td>
+        <td><img src="./backend/static/image/service.png"/>Server Monitoring</td>
+        <td><img src="./backend/static/image/cache.png"/>Cache Monitoring</td>
    </tr>
    <tr>
-        <td><img src="./backend/docs/resources/job.png"/>Task Management</td>
-        <td><img src="./backend/docs/resources/docs.png"/>API Management</td>
-        <td><img src="./backend/docs/resources/redoc.png"/>Document Management</td>
-        <td><img src="./backend/docs/resources/info.png"/>Personal Information</td>
+        <td><img src="./backend/static/image/job.png"/>Task Management</td>
+        <td><img src="./backend/static/image/docs.png"/>API Management</td>
+        <td><img src="./backend/static/image/redoc.png"/>Document Management</td>
+        <td><img src="./backend/static/image/info.png"/>Personal Information</td>
    </tr>
    <tr>
-        <td><img src="./backend/docs/resources/help.png"/>Online Documentation</td>
-        <td><img src="./backend/docs/resources/dict.png"/>Dictionary Management</td>
+        <td><img src="./backend/static/image/help.png"/>Online Documentation</td>
+        <td><img src="./backend/static/image/dict.png"/>Dictionary Management</td>
    </tr>
 </table>
 
@@ -260,9 +260,9 @@ Thanks to the contributions and support of the following projects, which have en
 
 <table>
     <tr>
-        <td><img src="./backend/docs/resources/wechat.jpg"/></td>
-        <td><img src="./backend/docs/resources/group.jpg"/></td>
-        <td><img src="./backend/docs/resources/wechatPay.jpg"/></td>
+        <td><img src="./backend/static/image/wechat.jpg"/></td>
+        <td><img src="./backend/static/image/group.jpg"/></td>
+        <td><img src="./backend/static/image/wechatPay.jpg"/></td>
     </tr>
 </table>
 
