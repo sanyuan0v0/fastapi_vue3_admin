@@ -14,16 +14,10 @@ export interface CaptchaState {
 
 export interface ForgetPasswordForm {
     username: string;
-    mobile: string;
     new_password: string;
 }
 
 export interface RegisterForm {
     username: string;
-    name: string;
     password: string;
-    mobile: string;
-    // email: string;
-    // gender: number;
-    description: string;
 }

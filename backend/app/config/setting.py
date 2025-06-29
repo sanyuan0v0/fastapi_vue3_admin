@@ -20,7 +20,7 @@ class Settings(BaseSettings):
         case_sensitive=True,
     )
 
-    ENVIRONMENT: str
+    ENVIRONMENT: EnvironmentEnum
     
     BANNER: ClassVar[str] = f"""
      ______        _                  _ 
@@ -69,6 +69,7 @@ class Settings(BaseSettings):
     # ================================================= #
     CORS_ORIGIN_ENABLE: bool = True    # 是否启用跨域
     ALLOW_ORIGINS: List[str] = ["*"]   # 允许的域名列表
+    # ALLOW_ORIGINS: List[str] = ["http://localhost:5180", "http://127.0.0.1:5180", "http://0.0.0.1:5180","http://172.18.52.77:5180", "http://service.fastapiadmin.com"]   # 允许的域名列表
     ALLOW_METHODS: List[str] = ["*"]   # 允许的HTTP方法
     ALLOW_HEADERS: List[str] = ["*"]   # 允许的请求头
     ALLOW_CREDENTIALS: bool = True     # 是否允许携带cookie

@@ -99,15 +99,11 @@
           :model="forgetPasswordForm" 
           ref="forgetPasswordFormRef" 
           :rules="{
-          username: [{ required: true, message: '请输入用户名!' }],
-          mobile: [{ required: true, message: '请输入手机号!', pattern: /^1[3-9]\d{9}$/ }],
+          username: [{ required: true, message: '请输入账号!' }],
           new_password: [{ required: true, message: '请输入新密码!', min: 6 }]
         }">
-          <a-form-item label="用户名" name="username">
-            <a-input v-model:value="forgetPasswordForm.username" placeholder="请输入用户名" allow-clear/>
-          </a-form-item>
-          <a-form-item label="手机号" name="mobile">
-            <a-input v-model:value="forgetPasswordForm.mobile" placeholder="请输入手机号" allow-clear/>
+          <a-form-item label="账号" name="username">
+            <a-input v-model:value="forgetPasswordForm.username" placeholder="请输入账号" allow-clear/>
           </a-form-item>
           <a-form-item label="新密码" name="new_password">
             <a-input-password v-model:value="forgetPasswordForm.new_password" placeholder="请输入新密码" allow-clear/>
@@ -119,25 +115,14 @@
           :model="registerForm" 
           ref="registerFormRef" 
           :rules="{
-          name: [{ required: true, message: '请输入用户名!', min: 2 }],
-          username: [{ required: true, message: '请输入用户名!', min: 4 }],
+          username: [{ required: true, message: '请输入账号!', min: 4 }],
           password: [{ required: true, message: '请输入密码!', min: 6 }],
-          mobile: [{ required: true, pattern: /^1[3-9]\d{9}$/, message: '请输入手机号!' }],
         }">
-          <a-form-item label="姓名" name="name">
-            <a-input v-model:value="registerForm.name" placeholder="请输入用户名" allow-clear/>
-          </a-form-item>
           <a-form-item label="账号" name="username">
-            <a-input v-model:value="registerForm.username" placeholder="请输入用户名" allow-clear/>
-          </a-form-item>
-          <a-form-item label="手机号" name="mobile">
-            <a-input v-model:value="registerForm.mobile" placeholder="请输入手机号" allow-clear/>
+            <a-input v-model:value="registerForm.username" placeholder="请输入账号" allow-clear/>
           </a-form-item>
           <a-form-item label="密码" name="password">
             <a-input-password v-model:value="registerForm.password" placeholder="请输入密码" allow-clear/>
-          </a-form-item>
-          <a-form-item label="备注" name="description">
-            <a-textarea v-model:value="registerForm.description" placeholder="请输入备注信息" :rows="4" :maxlength="250" showCount allow-clear/>
           </a-form-item>
         </a-form>
       </a-modal>
@@ -187,7 +172,6 @@ const modalType = ref<'forgetPassword' | 'register'>('forgetPassword');
 const forgetPasswordFormRef = ref();
 const forgetPasswordForm = reactive<ForgetPasswordForm>({
   username: '',
-  mobile: '',
   new_password: ''
 });
 
@@ -195,12 +179,7 @@ const forgetPasswordForm = reactive<ForgetPasswordForm>({
 const registerFormRef = ref();
 const registerForm = reactive<RegisterForm>({
   username: '',
-  name: '',
   password: '',
-  mobile: '',
-  // email: '',
-  // gender: 1
-  description: ''
 });
 
 const loginForm = reactive<LoginForm>({

@@ -19,8 +19,11 @@ class MenuCreateSchema(BaseModel):
     component_path: Optional[str] = Field(default=None, max_length=255, description="组件路径")
     redirect: Optional[str] = Field(default=None, max_length=200, description="重定向地址")
     available: bool = Field(default=True, description="是否启用(True:启用 False:禁用)")
-    cache: bool = Field(default=True, description="是否缓存(True:是 False:否)")
+    keep_alive: bool = Field(default=True, description="是否缓存(True:是 False:否)")
     hidden: bool = Field(default=False, description="是否隐藏(True:是 False:否)")
+    always_show: bool = Field(default=False, description="是否始终显示(True:是 False:否)")
+    title: Optional[str] = Field(default=None, max_length=50, description="菜单标题")
+    parmas: Optional[str] = Field(default=None, max_length=200, description="路由参数")
     parent_id: Optional[int] = Field(default=None, ge=0, description="父菜单ID")
     description: Optional[str] = Field(default=None, max_length=500, description="备注说明")
 
