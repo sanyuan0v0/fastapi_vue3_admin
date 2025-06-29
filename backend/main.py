@@ -47,6 +47,8 @@ def run(env: EnvironmentEnum = typer.Option(EnvironmentEnum.DEV, "--env", help="
     typer.echo("项目启动中..")
     # 设置环境变量
     os.environ["ENVIRONMENT"] = env.value
+    
+    # 确保在设置环境变量后导入配置
     from app.config.setting import settings
     
     # 启动uvicorn服务
@@ -58,8 +60,7 @@ def run(env: EnvironmentEnum = typer.Option(EnvironmentEnum.DEV, "--env", help="
 @shell_app.command()
 def revision(message: str, env: EnvironmentEnum = typer.Option(EnvironmentEnum.DEV, "--env", help="运行环境 (dev, test, prod)")):
     """
-    生成新的 Al
-    embic 迁移脚本。
+    生成新的 Alembic 迁移脚本。
     """
     os.environ["ENVIRONMENT"] = env.value
     command.revision(alembic_cfg, message=message, autogenerate=True)
@@ -77,9 +78,7 @@ def upgrade(env: EnvironmentEnum = typer.Option(EnvironmentEnum.DEV, "--env", he
 
 if __name__ == '__main__':
     # 启动服务
-    # python main.py run    # 启动服务
     # python3 main.py run --env=dev(不加默认为dev)
-    # 修改了模型后需要：重新生成迁移文件，然后应用迁移
     # 生成迁移
     # python main.py revision "初始化迁移" --env=dev(不加默认为dev)
     # 应用迁移
