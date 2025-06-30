@@ -58,8 +58,7 @@ def run(env: EnvironmentEnum = typer.Option(EnvironmentEnum.DEV, "--env", help="
 @shell_app.command()
 def revision(message: str, env: EnvironmentEnum = typer.Option(EnvironmentEnum.DEV, "--env", help="运行环境 (dev, test, prod)")):
     """
-    生成新的 Al
-    embic 迁移脚本。
+    生成新的 Alembic 迁移脚本。
     """
     os.environ["ENVIRONMENT"] = env.value
     command.revision(alembic_cfg, message=message, autogenerate=True)

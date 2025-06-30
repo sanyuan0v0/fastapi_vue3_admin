@@ -24,9 +24,14 @@
                 </a-form-item>
 
                 <a-form-item name="password" :rules="[{ required: true, message: '密码是必填项！' }]">
-                  <a-input-password v-model:value="loginForm.password" placeholder="密码: gitee 或 github 查看" allow-clear>
+                  <a-input-password v-model:value="loginForm.password" v-model:visible="visible" placeholder="密码: gitee 或 github 查看" allow-clear>
                     <template #prefix>
-                      <LockOutlined />
+                      <lock-outlined v-if="!visible"/>
+                      <UnlockOutlined v-else/>
+                    </template>
+                    <template #iconRender="v">
+                      <EyeTwoTone v-if="v"></EyeTwoTone>
+                      <EyeInvisibleOutlined v-else></EyeInvisibleOutlined>
                     </template>
                   </a-input-password>
                 </a-form-item>
@@ -147,9 +152,9 @@
 
 <script lang="ts" setup>
 import type { CSSProperties } from "vue";
-import { ref, reactive, onMounted } from "vue";
+import { watch, ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { UserOutlined, LockOutlined, createFromIconfontCN } from '@ant-design/icons-vue';
+import { UserOutlined, LockOutlined , UnlockOutlined, createFromIconfontCN, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons-vue';
 import { save_token } from "@/utils/util"
 import { message, Form } from 'ant-design-vue';
 import { login, getCaptcha } from "@/api/system/auth"
@@ -158,7 +163,10 @@ import type { LoginForm, CaptchaState, ForgetPasswordForm, RegisterForm } from '
 import { useConfigStore } from "@/store/index";
 
 const useForm = Form.useForm;
-
+const visible = ref<boolean>(false);
+watch(visible, () => {
+  console.log(visible.value);
+});
 const router = useRouter();
 const loginFlag = ref(false);
 const IconFont = createFromIconfontCN({
