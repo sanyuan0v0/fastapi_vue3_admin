@@ -16,8 +16,11 @@ export interface tableDataType {
     redirect?: string;
     parent_id?: number;
     parent_name?: string;
-    cache?: boolean;
+    keep_alive?: boolean;
     hidden?: boolean;
+    always_show?: boolean;
+    title?: string;
+    parmas?: string;
     available?: boolean;
     description?: string;
     created_at?: string;

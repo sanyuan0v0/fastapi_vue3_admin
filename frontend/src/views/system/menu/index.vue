@@ -121,13 +121,16 @@
                 }}</a-descriptions-item>
               <a-descriptions-item v-if="detailState.type === 2" label="组件地址">{{ detailState.component_path
                 }}</a-descriptions-item>
-              <a-descriptions-item v-if="detailState.type !== 3" label="是否缓存">{{ detailState.cache ? '是' : '否'
+              <a-descriptions-item v-if="detailState.type !== 3" label="是否缓存">{{ detailState.keep_alive ? '是' : '否'
                 }}</a-descriptions-item>
               <a-descriptions-item v-if="detailState.type !== 3" label="是否隐藏">{{ detailState.hidden ? '是' : '否'
                 }}</a-descriptions-item>
               <a-descriptions-item label="状态">
                 <a-badge :status="detailState.available ? 'processing': 'error'" :text="detailState.available ? '启用' : '停用'" />
               </a-descriptions-item>
+              <a-descriptions-item label="路由显示" :span="2">{{ detailState.always_show ? '是' : '否' }}</a-descriptions-item>
+              <a-descriptions-item label="路由标题" :span="2">{{ detailState.title }}</a-descriptions-item>
+              <a-descriptions-item label="路由参数" :span="2">{{ detailState.parmas }}</a-descriptions-item>
               <a-descriptions-item label="创建时间">{{ detailState.created_at }}</a-descriptions-item>
               <a-descriptions-item label="修改时间">{{ detailState.updated_at }}</a-descriptions-item>
               <a-descriptions-item label="备注" :span="2">{{ detailState.description }}</a-descriptions-item>
@@ -138,6 +141,15 @@
           <a-form ref="createForm" :model="createState" v-bind="{ labelCol: { span: 5 }, wrapperCol: { span: 15 } }">
             <a-form-item name="name" label="名称" :rules="[{ required: true, message: '请输入名称' }]">
               <a-input v-model:value="createState.name" placeholder="请输入名称" allowClear></a-input>
+            </a-form-item>
+            <a-form-item name="always_show" label="路由显示">
+              <a-switch v-model:checked="createState.always_show"></a-switch>
+            </a-form-item>
+            <a-form-item name="title" label="路由标题">
+              <a-input v-model:value="createState.title" placeholder="请输入路由标题" allowClear></a-input>
+            </a-form-item>
+            <a-form-item name="parmas" label="路由参数">
+              <a-input v-model:value="createState.parmas" placeholder="请输入路由参数" allowClear></a-input>
             </a-form-item>
             <a-form-item name="type" label="类型" :rules="[{ required: true, message: '请选择类型' }]">
               <a-radio-group v-model:value="createState.type">
@@ -223,9 +235,9 @@
                 :rules="[{ required: createState.type === 2 ? true : false, message: '请输入组件地址' }]">
                 <a-input v-model:value="createState.component_path" placeholder="请输入组件地址" allowClear></a-input>
               </a-form-item>
-              <a-form-item name="cache" label="是否缓存"
+              <a-form-item name="keep_alive" label="是否缓存"
                 :rules="[{ required: createState.type !== 3 ? true : false, message: '请选择缓存状态' }]">
-                <a-switch v-model:checked="createState.cache"></a-switch>
+                <a-switch v-model:checked="createState.keep_alive"></a-switch>
               </a-form-item>
               <a-form-item name="hidden" label="是否隐藏"
                 :rules="[{ required: createState.type !== 3 ? true : false, message: '请选择隐藏状态' }]">
@@ -238,6 +250,15 @@
           <a-form ref="updateForm" :model="updateState" v-bind="{ labelCol: { span: 5 }, wrapperCol: { span: 15 } }">
             <a-form-item name="name" label="名称" :rules="[{ required: true, message: '请输入名称' }]">
               <a-input v-model:value="updateState.name" placeholder="请输入名称" allowClear></a-input>
+            </a-form-item>
+            <a-form-item name="always_show" label="路由显示">
+              <a-switch v-model:checked="updateState.always_show"></a-switch>
+            </a-form-item>
+            <a-form-item name="title" label="路由标题">
+              <a-input v-model:value="updateState.title" placeholder="请输入路由标题" allowClear></a-input>
+            </a-form-item>
+            <a-form-item name="parmas" label="路由参数">
+              <a-input v-model:value="updateState.parmas" placeholder="请输入路由参数" allowClear></a-input>
             </a-form-item>
             <a-form-item name="type" label="类型" :rules="[{ required: true, message: '请选择类型' }]">
               <a-radio-group v-model:value="updateState.type">
@@ -323,9 +344,9 @@
                 :rules="[{ required: updateState.type === 2 ? true : false, message: '请输入组件地址' }]">
                 <a-input v-model:value="updateState.component_path" placeholder="请输入组件地址" allowClear></a-input>
               </a-form-item>
-              <a-form-item name="cache" label="是否缓存"
+              <a-form-item name="keep_alive" label="是否缓存"
                 :rules="[{ required: updateState.type !== 3 ? true : false, message: '请选择缓存状态' }]">
-                <a-switch v-model:checked="updateState.cache"></a-switch>
+                <a-switch v-model:checked="updateState.keep_alive"></a-switch>
               </a-form-item>
               <a-form-item name="hidden" label="是否隐藏"
                 :rules="[{ required: updateState.type !== 3 ? true : false, message: '请选择隐藏状态' }]">
@@ -382,8 +403,11 @@ const createState = reactive<tableDataType>({
   component_path: '',
   redirect: null,
   parent_id: undefined,
-  cache: true,
+  keep_alive: true,
   hidden: false,
+  always_show: false,
+  title: '',
+  parmas: '',
   available: true,
   description: ''
 })
@@ -399,8 +423,11 @@ const updateState = reactive<tableDataType>({
   component_path: '',
   redirect: null,
   parent_id: undefined,
-  cache: true,
+  keep_alive: true,
   hidden: false,
+  always_show: false,
+  title: '',
+  parmas: '',
   available: true,
   description: ''
 })
@@ -559,8 +586,11 @@ const modalHandle = (modalType: string, record?: tableDataType) => {
     component_path: '',
     redirect: '',
     parent_id: undefined,
-    cache: true,
+    keep_alive: true,
     hidden: false,
+    always_show: false,
+    title: '',
+    parmas: '',
     available: true,
     description: ''
   });
@@ -577,8 +607,11 @@ const modalHandle = (modalType: string, record?: tableDataType) => {
     component_path: '',
     redirect: '',
     parent_id: undefined,
-    cache: true,
+    keep_alive: true,
     hidden: false,
+    always_show: false,
+    title: '',
+    parmas: '',
     available: true,
     description: ''
   });
@@ -653,7 +686,7 @@ const handleModalSumbit = () => {
         Object.keys(createState).forEach(key => delete createState[key])
         createState.type = 1;
         createState.order = 1;
-        createState.cache = true;
+        createState.keep_alive = true;
         createState.hidden = false;
         loadingData();
 
@@ -691,7 +724,7 @@ watch(() => createState.type, (newType) => {
   Object.keys(createState).forEach(key => delete createState[key])
   createState.type = newType;
   createState.order = 1;
-  createState.cache = true;
+  createState.keep_alive = true;
   createState.hidden = false;
 })
 

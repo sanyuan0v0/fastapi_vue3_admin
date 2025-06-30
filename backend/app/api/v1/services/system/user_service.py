@@ -247,8 +247,7 @@ class UserService:
         """用户注册"""
         # 检查用户名是否存在
         username_ok = await UserCRUD(auth).get_by_username_crud(username=data.username)
-        mobile_ok = await UserCRUD(auth).get_by_mobile_crud(mobile=data.mobile)
-        if username_ok or mobile_ok:
+        if username_ok:
             raise CustomException(msg='账号已存在')
 
         data.password = PwdUtil.set_password_hash(password=data.password)
@@ -271,8 +270,6 @@ class UserService:
             raise CustomException(msg="用户不存在")
         if not user.available:
             raise CustomException(msg="用户已停用")
-        if user.mobile != data.mobile:
-            raise CustomException(msg="手机号不匹配")
         new_password_hash = PwdUtil.set_password_hash(password=data.new_password)
         new_user = await UserCRUD(auth).forget_password_crud(id=user.id, password_hash=new_password_hash)
         return UserOutSchema.model_validate(new_user).model_dump()

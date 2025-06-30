@@ -35,8 +35,11 @@ class MenuModel(ModelBase):
     component_path = Column(String(200), nullable=True, comment="组件路径")
     redirect = Column(String(200), nullable=True, comment="重定向地址")
     hidden = Column(Boolean, default=False, nullable=False, comment="是否隐藏(True:隐藏 False:显示)")
-    cache = Column(Boolean, default=True, nullable=False, comment="是否缓存(True:是 False:否)")
-    
+    keep_alive = Column(Boolean, default=True, nullable=False, comment="是否缓存(True:是 False:否)")
+    always_show = Column(Boolean, default=False, nullable=False, comment="是否始终显示(True:是 False:否)")
+    title = Column(String(50), nullable=True, comment="菜单标题")
+    parmas = Column(String(200), nullable=True, comment="路由参数")
+
     # 层级关系
     parent_id = Column(
         Integer, 
