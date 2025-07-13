@@ -9,15 +9,15 @@ const LogAPI = {
     });
   },
 
-  getLogDetail(query: any) {
+  getLogDetail(id: number) {
     return request<ApiResponse<LogTable>>({
       url: `/system/log/detail`,
       method: "get",
-      params: query,
+      params: id,
     });
   },
 
-  deleteLog(query: any) {
+  deleteLog(query: DeleteType) {
     return request<ApiResponse>({
       url: `/system/log/delete`,
       method: "delete",
@@ -25,7 +25,7 @@ const LogAPI = {
     });
   },
 
-  exportLog(query: any) {
+  exportLog(query: any[]) {
     return request<ApiResponse>({
       url: `/system/log/export`,
       method: "post",

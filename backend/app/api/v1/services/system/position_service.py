@@ -55,12 +55,15 @@ class PositionService:
         return PositionOutSchema.model_validate(updated_position).model_dump()
 
     @classmethod
-    async def delete_position_service(cls, auth: AuthSchema, id: int) -> None:
+    async def delete_position_service(cls, auth: AuthSchema, ids: list[int]) -> None:
         """删除岗位"""
-        position = await PositionCRUD(auth).get_by_id_crud(id=id)
-        if not position:
-            raise CustomException(msg='删除失败，该岗位不存在')
-        await PositionCRUD(auth).delete(ids=[id])
+        if len(ids) < 1:
+            raise CustomException(msg='删除失败，删除对象不能为空')
+        for id in ids:
+            position = await PositionCRUD(auth).get_by_id_crud(id=id)
+            if not position:
+                raise CustomException(msg='删除失败，该岗位不存在')
+        await PositionCRUD(auth).delete(ids=ids)
 
     @classmethod
     async def set_position_available_service(cls, auth: AuthSchema, data: BatchSetAvailable) -> None:

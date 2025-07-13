@@ -25,11 +25,11 @@ const ConfigAPI = {
     });
   },
 
-  getConfigDetail(query: any) {
+  getConfigDetail(id: number) {
     return request<ApiResponse<ConfigTable>>({
       url: `/system/config/detail`,
       method: "get",
-      params: query,
+      params: id,
     });
   },
 
@@ -49,15 +49,15 @@ const ConfigAPI = {
     });
   },
 
-  deleteConfig(query: any) {
+  deleteConfig(body: DeleteType) {
     return request<ApiResponse>({
       url: `/system/config/delete`,
       method: "delete",
-      params: query,
+      data: body,
     });
   },
 
-  exportConfig(body: any) {
+  exportConfig(body: any[]) {
     return request<ApiResponse>({
       url: `/system/config/export`,
       method: "post",

@@ -1,23 +1,23 @@
 import request from "@/utils/request";
 
 const JobAPI = {
-  getJobList(query: any) {
-    return request<ApiResponse>({
+  getJobList(query: JobPageQuery) {
+    return request<ApiResponse<PageResult<JobTable>>>({
       url: `/system/job/list`,
       method: "get",
       params: query,
     });
   },
 
-  getJobDetail(query: any) {
-    return request<ApiResponse>({
+  getJobDetail(id: number) {
+    return request<ApiResponse<JobTable>>({
       url: `/system/job/detail`,
       method: "get",
-      params: query,
+      params: id,
     });
   },
 
-  createJob(body: any) {
+  createJob(body: JobForm) {
     return request<ApiResponse>({
       url: `/system/job/create`,
       method: "post",
@@ -25,7 +25,7 @@ const JobAPI = {
     });
   },
 
-  updateJob(body: any) {
+  updateJob(body: JobForm) {
     return request<ApiResponse>({
       url: `/system/job/update`,
       method: "put",
@@ -33,7 +33,7 @@ const JobAPI = {
     });
   },
 
-  deleteJob(query: any) {
+  deleteJob(query: DeleteType) {
     return request<ApiResponse>({
       url: `/system/job/delete`,
       method: "delete",
@@ -41,7 +41,7 @@ const JobAPI = {
     });
   },
 
-  exportJob(body: any) {
+  exportJob(body: any[]) {
     return request<ApiResponse>({
       url: `/system/job/export`,
       method: "post",
@@ -57,7 +57,7 @@ const JobAPI = {
     });
   },
 
-  OptionJob(params: any) {
+  OptionJob(params: JobPageQuery) {
     return request<ApiResponse>({
       url: `/system/job/option`,
       method: "put",
@@ -75,6 +75,11 @@ export interface JobPageQuery extends PageQuery {
   start_time?: string;
   /** 结束时间 */
   end_time?: string;
+}
+
+export interface JobPageQuery extends PageQuery {
+  id?: number;
+  option?: number; //操作类型 1: 暂停 2: 恢复 3: 重启
 }
 
 export interface JobTable {

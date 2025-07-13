@@ -37,8 +37,7 @@
       <!-- 功能区域 -->
       <div class="data-table__toolbar">
         <div class="data-table__toolbar--actions">
-          <el-button :disabled="selectIds.length === 0" type="danger" icon="delete"
-            @click="handleSubmit()">批量强退</el-button>
+          <el-button type="danger" icon="delete" @click="handleClear()">强退所有</el-button>
         </div>
         <div class="data-table__toolbar--tools">
           <el-tooltip content="刷新">
@@ -209,6 +208,22 @@ async function handleSubmit(id?: number) {
   }
 }
 
+// 强退所有
+async function handleClear() {
+  ElMessageBox.confirm("确认强制退出所有用户?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(async () => {
+    try {
+      loading.value = true;
+      await OnlineAPI.clearOnline();
+      handleResetQuery();
+    } catch (error: any) {
+      ElMessage.error(error.message);
+    }
+  })
+}
 onMounted(() => {
   loadingData();
 });

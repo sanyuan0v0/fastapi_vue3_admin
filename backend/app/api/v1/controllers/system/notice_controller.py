@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Body, Depends, Query
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from app.common.response import StreamResponse, SuccessResponse
@@ -62,10 +62,10 @@ async def update_obj_controller(
 
 @router.delete("/delete", summary="删除公告", description="删除公告")
 async def delete_obj_controller(
-    id: int = Query(..., description="公告ID"),
+    ids: list[int] = Body(..., description="ID列表"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:notice:delete"]))
 ) -> JSONResponse:
-    await NoticeService.delete_notice_service(auth=auth, id=id)
+    await NoticeService.delete_notice_service(auth=auth, ids=ids)
     logger.info(f"删除公告成功: {id}")
     return SuccessResponse(msg="删除公告成功")
 

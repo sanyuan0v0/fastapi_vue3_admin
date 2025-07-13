@@ -92,11 +92,14 @@ class MenuService:
         return new_menu_dict
     
     @classmethod
-    async def delete_menu_service(cls, auth: AuthSchema, id: int) -> None:
-        menu = await MenuCRUD(auth).get_by_id_crud(id=id)
-        if not menu:
-            raise CustomException(msg='删除失败，该菜单不存在')
-        await MenuCRUD(auth).delete(ids=[id])
+    async def delete_menu_service(cls, auth: AuthSchema, ids: list[int]) -> None:
+        if len(ids) < 1:
+            raise CustomException(msg='删除失败，删除对象不能为空')
+        for id in ids:
+            menu = await MenuCRUD(auth).get_by_id_crud(id=id)
+            if not menu:
+                raise CustomException(msg='删除失败，该菜单不存在')
+        await MenuCRUD(auth).delete(ids=ids)
 
     @classmethod
     async def set_menu_available_service(cls, auth: AuthSchema, data: BatchSetAvailable) -> None:

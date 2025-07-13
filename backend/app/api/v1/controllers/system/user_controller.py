@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from fastapi import APIRouter, Depends, Query, UploadFile, Request
+from fastapi import APIRouter, Body, Depends, Query, UploadFile, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 import urllib.parse
@@ -133,10 +133,10 @@ async def update_obj_controller(
 
 @router.delete("/delete", summary="删除用户", description="删除用户")
 async def delete_obj_controller(
-    id: int = Query(..., description="用户ID"),
+    ids: list[int] = Body(..., description="ID列表"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:delete"])),
 ) -> JSONResponse:
-    await UserService.delete_user_service(id=id, auth=auth)
+    await UserService.delete_user_service(ids=ids, auth=auth)
     logger.info(f"删除用户成功: {id}")
     return SuccessResponse(msg="删除用户成功")
 

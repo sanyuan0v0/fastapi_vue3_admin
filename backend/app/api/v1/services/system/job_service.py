@@ -53,12 +53,16 @@ class JobService:
         return JobOutSchema.model_validate(obj).model_dump()
     
     @classmethod
-    async def delete_job_service(cls, auth: AuthSchema, id: int) -> None:
-        exist_obj = await JobCRUD(auth).get_obj_by_id_crud(id=id)
-        if not exist_obj:
-            raise CustomException(msg='删除失败，该数据定时任务不存在')
-        await JobCRUD(auth).delete_obj_crud(ids=[id])
-        SchedulerUtil.remove_job(job_id=id)
+    async def delete_job_service(cls, auth: AuthSchema, ids: list[int]) -> None:
+        if len(ids) < 1:
+            raise CustomException(msg='删除失败，删除对象不能为空')
+        for id in ids:
+            exist_obj = await JobCRUD(auth).get_obj_by_id_crud(id=id)
+            if not exist_obj:
+                raise CustomException(msg='删除失败，该数据定时任务不存在')
+            SchedulerUtil.remove_job(job_id=id)
+        await JobCRUD(auth).delete_obj_crud(ids=ids)
+        
 
     @classmethod
     async def clear_job_service(cls, auth: AuthSchema) -> None:

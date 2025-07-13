@@ -11,11 +11,19 @@ const OnlineAPI = {
   },
 
   // 强退用户
-  deleteOnline(body: any) {
+  deleteOnline(session_id: string) {
     return request<ApiResponse>({
       url: `/monitor/online/delete`,
       method: "delete",
-      data: body,
+      data: session_id,
+    });
+  },
+
+  // 强退用户
+  clearOnline() {
+    return request<ApiResponse>({
+      url: `/monitor/online/clear`,
+      method: "delete",
     });
   },
 };

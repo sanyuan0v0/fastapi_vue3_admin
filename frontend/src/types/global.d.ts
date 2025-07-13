@@ -130,5 +130,20 @@ declare global {
     origin_name: string;
     file_url: string;
   }
+
+  /**
+   * 批量删除
+   */
+  export interface DeleteType {
+    ids?: number[];
+  }
+
+  /**
+   * 批量启用、停用
+   */
+  export interface BatchType {
+    ids?: number[];
+    status?: boolean;
+  }
 }
 export {};

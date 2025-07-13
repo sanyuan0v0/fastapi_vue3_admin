@@ -16,11 +16,11 @@ const NoticeAPI = {
     });
   },
 
-  getNoticeDetail(query: any) {
+  getNoticeDetail(id: number) {
     return request<ApiResponse<NoticeTable>>({
       url: `/system/notice/detail`,
       method: "get",
-      params: query,
+      params: id,
     });
   },
 
@@ -40,7 +40,7 @@ const NoticeAPI = {
     });
   },
 
-  deleteNotice(query: any) {
+  deleteNotice(query: DeleteType) {
     return request<ApiResponse>({
       url: `/system/notice/delete`,
       method: "delete",
@@ -48,7 +48,7 @@ const NoticeAPI = {
     });
   },
 
-  batchAvailableNotice(body: any) {
+  batchAvailableNotice(body: BatchType) {
     return request<ApiResponse>({
       url: `/system/notice/available/setting`,
       method: "patch",
@@ -56,7 +56,7 @@ const NoticeAPI = {
     });
   },
 
-  exportNotice(body: any) {
+  exportNotice(body: any[]) {
     return request<ApiResponse>({
       url: `/system/notice/export`,
       method: "post",

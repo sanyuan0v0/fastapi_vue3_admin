@@ -43,7 +43,7 @@ async def get_online_list_controller(
     summary="强制下线",
     description="强制下线"
 )
-async def delete__online_controller(
+async def delete_online_controller(
     session_id: str = Body(..., description="会话编号"),
     redis: Redis = Depends(redis_getter),
 )->JSONResponse:
@@ -54,3 +54,20 @@ async def delete__online_controller(
     else:
         logger.info("强制下线失败")
         return ErrorResponse(msg="强制下线失败")
+
+@router.delete(
+    '/clear', 
+    dependencies=[Depends(AuthPermission(permissions=['monitor:online:delete']))],
+    summary="清除所有在线用户",
+    description="清除所有在线用户"
+)
+async def clear_online_controller(
+    redis: Redis = Depends(redis_getter),
+)->JSONResponse:
+    is_ok = await OnlineService.clear_online_service(redis=redis)
+    if is_ok:
+        logger.info("清除所有在线用户成功")
+        return SuccessResponse(msg="清除所有在线用户成功")
+    else:
+        logger.info("清除所有在线用户失败")
+        return ErrorResponse(msg="清除所有在线用户失败")

@@ -9,11 +9,11 @@ const RoleAPI = {
     });
   },
 
-  getRoleDetail(query: any) {
+  getRoleDetail(id: number) {
     return request<ApiResponse<RoleTable>>({
       url: `/system/role/detail`,
       method: "get",
-      params: query,
+      params: id,
     });
   },
 
@@ -33,7 +33,7 @@ const RoleAPI = {
     });
   },
 
-  deleteRole(query: any) {
+  deleteRole(query: DeleteType) {
     return request<ApiResponse>({
       url: `/system/role/delete`,
       method: "delete",
@@ -41,7 +41,7 @@ const RoleAPI = {
     });
   },
 
-  batchAvailableRole(body: any) {
+  batchAvailableRole(body: BatchType) {
     return request<ApiResponse>({
       url: `/system/role/available/setting`,
       method: "patch",
@@ -57,7 +57,7 @@ const RoleAPI = {
     });
   },
 
-  exportRole(body: any) {
+  exportRole(body: any[]) {
     return request<ApiResponse>({
       url: `/system/role/export`,
       method: "post",

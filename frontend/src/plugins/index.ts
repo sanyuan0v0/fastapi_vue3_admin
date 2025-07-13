@@ -6,7 +6,6 @@ import { setupStore } from "@/store";
 import { setupElIcons } from "./icons";
 import { setupPermission } from "./permission";
 import { InstallCodeMirror } from "codemirror-editor-vue3";
-import { setupVxeTable } from "./vxeTable";
 
 export default {
   install(app: App<Element>) {
@@ -20,8 +19,6 @@ export default {
     setupElIcons(app);
     // 路由守卫
     setupPermission();
-    // vxe-table
-    setupVxeTable(app);
     // 注册 CodeMirror
     app.use(InstallCodeMirror);
   },

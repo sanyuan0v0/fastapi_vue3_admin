@@ -16,11 +16,11 @@ const DictAPI = {
     });
   },
 
-  getDictTypeDetail(query: any) {
+  getDictTypeDetail(id: number) {
     return request<ApiResponse<DictTable>>({
       url: `/system/dict/type/detail`,
       method: "get",
-      params: query,
+      params: id,
     });
   },
 
@@ -40,7 +40,7 @@ const DictAPI = {
     });
   },
 
-  deleteDictType(query: any) {
+  deleteDictType(query: DeleteType) {
     return request<ApiResponse>({
       url: `/system/dict/type/delete`,
       method: "delete",
@@ -65,11 +65,11 @@ const DictAPI = {
     });
   },
 
-  getDictDataDetail(query: any) {
+  getDictDataDetail(id: number) {
     return request<ApiResponse<DictDataTable>>({
       url: `/system/dict/data/detail`,
       method: "get",
-      params: query,
+      params: id,
     });
   },
 
@@ -89,7 +89,7 @@ const DictAPI = {
     });
   },
 
-  deleteDictData(query: any) {
+  deleteDictData(query: DeleteType) {
     return request<ApiResponse>({
       url: `/system/dict/data/delete`,
       method: "delete",
@@ -97,7 +97,7 @@ const DictAPI = {
     });
   },
 
-  exportDictData(body: any) {
+  exportDictData(body: any[]) {
     return request<ApiResponse>({
       url: `/system/dict/data/export`,
       method: "post",
@@ -106,9 +106,9 @@ const DictAPI = {
     });
   },
 
-  getInitDict(query: any) {
+  getInitDict(dict_type: string) {
     return request<ApiResponse>({
-      url: `/system/dict/data/info/${query}`,
+      url: `/system/dict/data/info/${dict_type}`,
       method: "get",
     });
   },

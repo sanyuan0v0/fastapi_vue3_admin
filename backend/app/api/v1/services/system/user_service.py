@@ -143,25 +143,28 @@ class UserService:
         return user_dict
 
     @classmethod
-    async def delete_user_service(cls, auth: AuthSchema, id: int) -> None:
+    async def delete_user_service(cls, auth: AuthSchema, ids: list[int]) -> None:
         """删除用户"""
-        user = await UserCRUD(auth).get_by_id_crud(id=id)
-        if not user:
-            raise CustomException(msg="用户不存在")
-        if user.is_superuser:
-            raise CustomException(msg="超级管理员不能删除")
-        if user.status:
-            raise CustomException(msg="用户已启用,不能删除")
-        if auth.user.id == id:
-            raise CustomException(msg="不能删除当前登陆用户")
+        if len(ids) < 1:
+            raise CustomException(msg='删除失败，删除对象不能为空')
+        for id in ids:
+            user = await UserCRUD(auth).get_by_id_crud(id=id)
+            if not user:
+                raise CustomException(msg="用户不存在")
+            if user.is_superuser:
+                raise CustomException(msg="超级管理员不能删除")
+            if user.status:
+                raise CustomException(msg="用户已启用,不能删除")
+            if auth.user.id == id:
+                raise CustomException(msg="不能删除当前登陆用户")
         # 删除用户角色关联数据
-        await UserCRUD(auth).set_user_roles_crud(user_ids=[id], role_ids=[])
+        await UserCRUD(auth).set_user_roles_crud(user_ids=ids, role_ids=[])
         
         # 删除用户岗位关联数据
-        await UserCRUD(auth).set_user_positions_crud(user_ids=[id], position_ids=[])
+        await UserCRUD(auth).set_user_positions_crud(user_ids=ids, position_ids=[])
         
         # 删除用户
-        await UserCRUD(auth).delete(ids=[id])
+        await UserCRUD(auth).delete(ids=ids)
 
     @classmethod
     async def get_current_user_info_service(cls, auth: AuthSchema) -> Dict:

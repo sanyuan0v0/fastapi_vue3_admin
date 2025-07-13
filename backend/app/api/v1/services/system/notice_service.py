@@ -53,11 +53,14 @@ class NoticeService:
         return NoticeOutSchema.model_validate(config_obj).model_dump()
     
     @classmethod
-    async def delete_notice_service(cls, auth: AuthSchema, id: int) -> None:
-        config = await NoticeCRUD(auth).get_by_id_crud(id=id)
-        if not config:
-            raise CustomException(msg='删除失败，该公告通知不存在')
-        await NoticeCRUD(auth).delete_crud(ids=[id])
+    async def delete_notice_service(cls, auth: AuthSchema, ids: list[int]) -> None:
+        if len(ids) < 1:
+            raise CustomException(msg='删除失败，删除对象不能为空')
+        for id in ids:
+            config = await NoticeCRUD(auth).get_by_id_crud(id=id)
+            if not config:
+                raise CustomException(msg='删除失败，该公告通知不存在')
+        await NoticeCRUD(auth).delete_crud(ids=ids)
     
     @classmethod
     async def set_notice_available_service(cls, auth: AuthSchema, data: BatchSetAvailable) -> None:

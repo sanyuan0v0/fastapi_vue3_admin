@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Body, Depends, Query
 from fastapi.responses import JSONResponse
 
 from app.common.response import SuccessResponse
@@ -67,10 +67,10 @@ async def update_obj_controller(
 
 @router.delete("/delete", summary="删除菜单", description="删除菜单")
 async def delete_obj_controller(
-    id: int = Query(..., description="菜单ID"),
+    ids: list[int] = Body(..., description="ID列表"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:menu:delete"]))
 ) -> JSONResponse:
-    await MenuService.delete_menu_service(id=id, auth=auth)
+    await MenuService.delete_menu_service(ids=ids, auth=auth)
     logger.info(f"删除菜单成功: {id}")
     return SuccessResponse(msg="删除菜单成功")
 

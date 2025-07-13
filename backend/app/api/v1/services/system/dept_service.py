@@ -92,17 +92,20 @@ class DeptService:
         return DeptOutSchema.model_validate(dept).model_dump()
 
     @classmethod
-    async def delete_dept_service(cls, auth: AuthSchema, id: int) -> None:
+    async def delete_dept_service(cls, auth: AuthSchema, ids: list[int]) -> None:
         """
         删除部门service
         
         :param auth: 认证对象
         :param id: 部门ID
         """
-        dept = await DeptCRUD(auth).get_by_id_crud(id=id)
-        if not dept:
-            raise CustomException(msg='删除失败，该部门不存在')
-        await DeptCRUD(auth).delete(ids=[id])
+        if len(ids) < 1:
+            raise CustomException(msg='删除失败，删除对象不能为空')
+        for id in ids:
+            dept = await DeptCRUD(auth).get_by_id_crud(id=id)
+            if not dept:
+                raise CustomException(msg='删除失败，该部门不存在')
+        await DeptCRUD(auth).delete(ids=ids)
 
     @classmethod
     async def batch_set_available_service(cls, auth: AuthSchema, data: BatchSetAvailable) -> None:

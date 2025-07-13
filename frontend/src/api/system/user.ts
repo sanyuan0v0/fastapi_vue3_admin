@@ -18,7 +18,7 @@ export const UserAPI = {
     });
   },
 
-  updateCurrentUserInfo(body: any) {
+  updateCurrentUserInfo(body: InfoFormState) {
     return request<ApiResponse>({
       url: `/system/user/current/info/update`,
       method: "put",
@@ -26,7 +26,7 @@ export const UserAPI = {
     });
   },
 
-  changeCurrentUserPassword(body: any) {
+  changeCurrentUserPassword(body: PasswordFormState) {
     return request<ApiResponse>({
       url: `/system/user/current/password/change`,
       method: "put",
@@ -50,23 +50,23 @@ export const UserAPI = {
     });
   },
 
-  getUserList(query: any) {
-    return request<ApiResponse>({
+  getUserList(query: UserPageQuery) {
+    return request<ApiResponse<PageResult<UserInfo[]>>>({
       url: `/system/user/list`,
       method: "get",
       params: query,
     });
   },
 
-  getUserDetail(query: any) {
+  getUserDetail(id: number) {
     return request<ApiResponse>({
       url: `/system/user/detail`,
       method: "get",
-      params: query,
+      params: id,
     });
   },
 
-  createUser(body: any) {
+  createUser(body: InfoFormState) {
     return request<ApiResponse>({
       url: `/system/user/create`,
       method: "post",
@@ -74,7 +74,7 @@ export const UserAPI = {
     });
   },
 
-  updateUser(body: any) {
+  updateUser(body: InfoFormState) {
     return request<ApiResponse>({
       url: `/system/user/update`,
       method: "put",
@@ -82,7 +82,7 @@ export const UserAPI = {
     });
   },
 
-  deleteUser(query: any) {
+  deleteUser(query: DeleteType) {
     return request<ApiResponse>({
       url: `/system/user/delete`,
       method: "delete",
@@ -90,7 +90,7 @@ export const UserAPI = {
     });
   },
 
-  batchAvailableUser(body: any) {
+  batchAvailableUser(body: BatchType) {
     return request<ApiResponse>({
       url: `/system/user/available/setting`,
       method: "patch",
@@ -98,7 +98,7 @@ export const UserAPI = {
     });
   },
 
-  exportUser(query: any) {
+  exportUser(query: any[]) {
     return request<ApiResponse>({
       url: `/system/user/export`,
       method: "post",
@@ -208,6 +208,7 @@ export interface positionSelectorType {
 }
 
 export interface InfoFormState {
+  id?: number;
   name: string;
   gender: number;
   mobile: string;

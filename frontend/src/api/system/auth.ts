@@ -23,7 +23,7 @@ const AuthAPI = {
   getCaptcha() {
     return request<ApiResponse<CaptchaInfo>>({
       url: `/system/auth/captcha/get`,
-      method: "post",
+      method: "get",
     });
   },
 

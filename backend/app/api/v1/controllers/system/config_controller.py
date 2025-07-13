@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from fastapi import APIRouter, Depends, Query, Request, UploadFile
+from fastapi import APIRouter, Body, Depends, Query, Request, UploadFile
 from fastapi.responses import JSONResponse, StreamingResponse
 from aioredis import Redis
 
@@ -67,10 +67,10 @@ async def update_objs_controller(
 @router.delete("/delete", summary="删除系统配置", description="删除系统配置")
 async def delete_type_controller(
     redis: Redis = Depends(redis_getter),
-    id: int = Query(..., description="系统配置ID"),
+    ids: list[int] = Body(..., description="ID列表"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:config:delete"]))
 ) -> JSONResponse:
-    await ConfigService.delete_obj_service(auth=auth, redis=redis, id=id)
+    await ConfigService.delete_obj_service(auth=auth, redis=redis, ids=ids)
     logger.info(f"删除系统配置成功: {id}")
     return SuccessResponse(msg="删除系统配置成功")
 

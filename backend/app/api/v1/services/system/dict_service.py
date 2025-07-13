@@ -115,24 +115,28 @@ class DictTypeService:
         return new_obj_dict
     
     @classmethod
-    async def delete_obj_service(cls, auth: AuthSchema, redis: Redis, id: int) -> None:
-        exist_obj = await DictTypeCRUD(auth).get_obj_by_id_crud(id=id)
-        if not exist_obj:
-            raise CustomException(msg='删除失败，该数据字典类型不存在')
-        # 检查是否有字典数据
-        exist_obj_type_list = await DictDataCRUD(auth).list(search={'dict_type': id})
-        if len(exist_obj_type_list) > 0:
-            # 如果有字典数据，不能删除
-            raise CustomException(msg='删除失败，该数据字典类型下存在字典数据')
-        await DictTypeCRUD(auth).delete_obj_crud(ids=[id])
-        # 删除Redis缓存
-        redis_key = f"{RedisInitKeyConfig.SYSTEM_DICT.key}:{exist_obj.dict_type}"
-        try:
-            await RedisCURD(redis).delete(redis_key)
-            logger.info(f"删除字典类型成功: {id}")
-        except Exception as e:
-            logger.error(f"删除字典类型失败: {e}")
-            raise CustomException(msg=f"删除字典类型失败")
+    async def delete_obj_service(cls, auth: AuthSchema, redis: Redis, ids: list[int]) -> None:
+        if len(ids) < 1:
+            raise CustomException(msg='删除失败，删除对象不能为空')
+        for id in ids:
+            exist_obj = await DictTypeCRUD(auth).get_obj_by_id_crud(id=id)
+            if not exist_obj:
+                raise CustomException(msg='删除失败，该数据字典类型不存在')
+            # 检查是否有字典数据
+            exist_obj_type_list = await DictDataCRUD(auth).list(search={'dict_type': id})
+            if len(exist_obj_type_list) > 0:
+                # 如果有字典数据，不能删除
+                raise CustomException(msg='删除失败，该数据字典类型下存在字典数据')
+            # 删除Redis缓存
+            redis_key = f"{RedisInitKeyConfig.SYSTEM_DICT.key}:{exist_obj.dict_type}"
+            try:
+                await RedisCURD(redis).delete(redis_key)
+                logger.info(f"删除字典类型成功: {id}")
+            except Exception as e:
+                logger.error(f"删除字典类型失败: {e}")
+                raise CustomException(msg=f"删除字典类型失败")
+        await DictTypeCRUD(auth).delete_obj_crud(ids=ids)
+        
 
     @classmethod
     async def export_obj_service(cls, data_list: List[Dict[str, Any]]) -> bytes:
@@ -294,20 +298,23 @@ class DictDataService:
         return DictDataOutSchema.model_validate(obj).model_dump()
     
     @classmethod
-    async def delete_obj_service(cls, auth: AuthSchema, redis: Redis, id: int) -> None:
-        exist_obj = await DictDataCRUD(auth).get_obj_by_id_crud(id=id)
-        if not exist_obj:
-            raise CustomException(msg='删除失败，该字典数据不存在')
-        await DictDataCRUD(auth).delete_obj_crud(ids=[id])
-        # 删除Redis缓存
-        redis_key = f"{RedisInitKeyConfig.SYSTEM_DICT.key}:{exist_obj.dict_type}"
-        try:
+    async def delete_obj_service(cls, auth: AuthSchema, redis: Redis, ids: list[int]) -> None:
+        
+        for id in ids:
+
+            exist_obj = await DictDataCRUD(auth).get_obj_by_id_crud(id=id)
+            if not exist_obj:
+                raise CustomException(msg=f'{id} 删除失败，该字典数据不存在')
             # 删除Redis缓存
-            await RedisCURD(redis).delete(redis_key)
-            logger.info(f"删除字典数据成功: {id}")
-        except Exception as e:
-            logger.error(f"删除字典数据失败: {e}")
-            raise CustomException(msg=f"删除字典数据失败 {e}")
+            redis_key = f"{RedisInitKeyConfig.SYSTEM_DICT.key}:{exist_obj.dict_type}"
+            try:
+                # 删除Redis缓存
+                await RedisCURD(redis).delete(redis_key)
+                logger.info(f"删除字典数据成功: {id}")
+            except Exception as e:
+                logger.error(f"删除字典数据失败: {e}")
+                raise CustomException(msg=f"删除字典数据失败 {e}")
+        await DictDataCRUD(auth).delete_obj_crud(ids=ids)
 
     @classmethod
     async def export_obj_service(cls, data_list: List[Dict[str, Any]]) -> bytes:

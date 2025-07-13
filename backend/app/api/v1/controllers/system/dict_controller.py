@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Body, Depends, Query
 from fastapi.responses import JSONResponse, StreamingResponse
 from aioredis import Redis
 
@@ -76,10 +76,10 @@ async def update_type_controller(
 @router.delete("/type/delete", summary="删除字典类型", description="删除字典类型")
 async def delete_type_controller(
     redis: Redis = Depends(redis_getter),
-    id: int = Query(..., description="字典类型ID"),
+    ids: list[int] = Body(..., description="ID列表"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_type:delete"]))
 ) -> JSONResponse:
-    await DictTypeService.delete_obj_service(auth=auth, redis=redis, id=id)
+    await DictTypeService.delete_obj_service(auth=auth, redis=redis, ids=ids)
     logger.info(f"删除字典类型成功: {id}")
     return SuccessResponse(msg="删除字典类型成功")
 
@@ -144,10 +144,10 @@ async def update_data_controller(
 @router.delete("/data/delete", summary="删除字典数据", description="删除字典数据")
 async def delete_data_controller(
     redis: Redis = Depends(redis_getter),
-    id: int = Query(..., description="字典数据ID"),
+    ids: list[int] = Body(..., description="ID列表"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_data:delete"]))
 ) -> JSONResponse:
-    await DictDataService.delete_obj_service(auth=auth, redis=redis, id=id)
+    await DictDataService.delete_obj_service(auth=auth, redis=redis, ids=ids)
     logger.info(f"删除字典数据成功: {id}")
     return SuccessResponse(msg="删除字典数据成功")
 

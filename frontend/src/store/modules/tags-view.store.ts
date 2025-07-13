@@ -1,4 +1,6 @@
+// tags缓存
 export const useTagsViewStore = defineStore("tagsView", () => {
+  
   const visitedViews = ref<TagView[]>([]);
   const cachedViews = ref<string[]>([]);
   const router = useRouter();

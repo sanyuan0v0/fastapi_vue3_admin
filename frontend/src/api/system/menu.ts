@@ -9,11 +9,11 @@ const MenuAPI = {
     });
   },
 
-  getMenuDetail(query: any) {
+  getMenuDetail(id: number) {
     return request<ApiResponse<MenuTable>>({
       url: `/system/menu/detail`,
       method: "get",
-      params: query,
+      params: id,
     });
   },
 
@@ -33,7 +33,7 @@ const MenuAPI = {
     });
   },
 
-  deleteMenu(query: any) {
+  deleteMenu(query: DeleteType) {
     return request<ApiResponse>({
       url: `/system/menu/delete`,
       method: "delete",
@@ -41,7 +41,7 @@ const MenuAPI = {
     });
   },
 
-  batchAvailableMenu(body: any) {
+  batchAvailableMenu(body: BatchType) {
     return request<ApiResponse>({
       url: `/system/menu/available/setting`,
       method: "patch",

@@ -9,11 +9,11 @@ const DeptAPI = {
     });
   },
 
-  getDeptDetail(query: any) {
+  getDeptDetail(id: number) {
     return request<ApiResponse<DeptTable>>({
       url: `/system/dept/detail`,
       method: "get",
-      params: query,
+      params: id,
     });
   },
 
@@ -33,7 +33,7 @@ const DeptAPI = {
     });
   },
 
-  deleteDept(query: any) {
+  deleteDept(query: DeleteType) {
     return request<ApiResponse>({
       url: `/system/dept/delete`,
       method: "delete",
@@ -41,7 +41,7 @@ const DeptAPI = {
     });
   },
 
-  batchAvailableDept(body: any) {
+  batchAvailableDept(body: BatchType) {
     return request<ApiResponse>({
       url: `/system/dept/available/setting`,
       method: "patch",

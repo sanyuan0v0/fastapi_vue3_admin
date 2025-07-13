@@ -63,7 +63,7 @@ async def get_new_token_controller(
     return SuccessResponse(data=token_dict, msg="刷新成功")
 
 
-@router.post("/captcha/get", summary="获取验证码", description="获取登录验证码", response_model=CaptchaOutSchema)
+@router.get("/captcha/get", summary="获取验证码", description="获取登录验证码", response_model=CaptchaOutSchema)
 async def get_captcha_for_login_controller(
     redis: Redis = Depends(redis_getter)
 ) -> JSONResponse:

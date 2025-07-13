@@ -98,9 +98,9 @@ export const useUserStore = defineStore("user", {
 
       return new Promise<void>((resolve, reject) => {
         AuthAPI.refreshToken({refresh_token: refreshToken})
-          .then((data) => {
+          .then((response) => {
             // 更新令牌，保持当前记住我状态
-            Auth.setTokens(data.access_token, data.refresh_token, Auth.getRememberMe());
+            Auth.setTokens(response.data.data.access_token, response.data.data.refresh_token, Auth.getRememberMe());
             resolve();
           })
           .catch((error) => {

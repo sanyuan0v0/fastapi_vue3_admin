@@ -9,11 +9,11 @@ const PositionAPI = {
     });
   },
 
-  getPositionDetail(query: any) {
+  getPositionDetail(id: number) {
     return request<ApiResponse<PositionTable>>({
       url: `/system/position/detail`,
       method: "get",
-      params: query,
+      params: id,
     });
   },
 
@@ -33,7 +33,7 @@ const PositionAPI = {
     });
   },
 
-  deletePosition(query: any) {
+  deletePosition(query: DeleteType) {
     return request<ApiResponse>({
       url: `/system/position/delete`,
       method: "delete",
@@ -41,7 +41,7 @@ const PositionAPI = {
     });
   },
 
-  batchAvailablePosition(body: any) {
+  batchAvailablePosition(body: BatchType) {
     return request<ApiResponse>({
       url: `/system/position/available/setting`,
       method: "patch",
@@ -49,7 +49,7 @@ const PositionAPI = {
     });
   },
 
-  exportPosition(body: any) {
+  exportPosition(body: any[]) {
     return request<ApiResponse>({
       url: `/system/position/export`,
       method: "post",
