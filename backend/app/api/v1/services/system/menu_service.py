@@ -86,7 +86,7 @@ class MenuService:
             data.parent_name = parent_menu.name
         new_menu = await MenuCRUD(auth).update(id=data.id, data=data)
         
-        await cls.set_menu_available_service(auth=auth, data=BatchSetAvailable(ids=[data.id], available=data.available))
+        await cls.set_menu_available_service(auth=auth, data=BatchSetAvailable(ids=[data.id], status=data.status))
         
         new_menu_dict = MenuOutSchema.model_validate(new_menu).model_dump()
         return new_menu_dict
@@ -106,7 +106,7 @@ class MenuService:
         menu_list = await MenuCRUD(auth).get_list_crud()
         total_ids = []
         
-        if data.available:
+        if data.status:
             # 激活，则需要把所有父级菜单都激活
             id_map = get_parent_id_map(model_list=menu_list)
             for menu_id in data.ids:
@@ -119,4 +119,4 @@ class MenuService:
                 disable_ids = get_child_recursion(id=menu_id, id_map=id_map)
                 total_ids.extend(disable_ids)
 
-        await MenuCRUD(auth).set_available_crud(ids=total_ids, available=data.available)
+        await MenuCRUD(auth).set_available_crud(ids=total_ids, status=data.status)

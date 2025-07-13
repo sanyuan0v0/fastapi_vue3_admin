@@ -1,358 +1,386 @@
+<!-- 日志管理 -->
 <template>
-  <div>
-
-
-    <!-- 搜索表单 -->
-    <div class="table-search-wrapper">
-      <a-card >
-        <a-form :model="queryState" @finish="onFinish">
-          <a-flex wrap="wrap" gap="middle" >
-              <a-form-item name="request_path" label="请求路径" >
-                <a-input v-model:value="queryState.request_path" placeholder="请输入请求路径" allowClear style="width: 200px;"></a-input>
-              </a-form-item>
-              <a-form-item name="creator" label="创建人" >
-                <a-select v-model:value="queryState.creator_name" placeholder="请选择创建人" :open="false"
-                  @click="selectModalHandle" style="width: 200px;">
-                  <template #suffixIcon>
-                    <search-outlined />
-                  </template>
-                </a-select>
-              </a-form-item>
-              <a-form-item name="date-range-picker" label="创建日期">
-                <a-range-picker v-model:value="queryState.date_range" value-format="YYYY-MM-DD" />
-              </a-form-item>
-              <a-button type="primary" html-type="submit" :loading="tableLoading">查询</a-button>
-              <a-button  @click="resetFields">重置</a-button>
-          </a-flex>
-        </a-form>
-      </a-card>
-    </div>
-
-    <!-- 表格区域 -->
-    <div class="table-wrapper">
-      <a-card title="日志列表"
-        >
-        <template #extra>
-          <a-button type="primary" :icon="h(DownOutlined)" @click="handleExport"
-            style="margin-right: 10px;">
-            导出
-          </a-button>
-        </template>
-        <a-table
-          :rowKey="record => record.id"
-          :columns="columns"
-          :data-source="dataSource"
-          :loading="tableLoading"
-          @change="handleTableChange"
-          :pagination="pagination"
-          :scroll="{ x: 500, y: 'calc(100vh - 490px)' }"
-          :style="{ minHeight: 'calc(100vh - 430px)' }"
-          >
-          <template #bodyCell="{ column, record, index }">
-            <template v-if="column.dataIndex === 'index'">
-              <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
-            </template>
-            <template v-if="column.dataIndex === 'request_method'">
-              <a-tag :color="getRequestMethodColor(record.request_method)">{{ record.request_method }}</a-tag>
-            </template>
-            <template v-if="column.dataIndex === 'response_code'">
-              <a-tag :color="record.response_code === 200 ? 'green' : 'red'">{{ record.response_code }}</a-tag>
-            </template>
-            <template v-if="column.dataIndex === 'operation'">
-              <a-space size="middle">
-                <a v-on:click="modalHandle('view', record, index)">查看</a>
-                <a-popconfirm title="确定要删除吗?" @confirm="deleteRow(record)">
-                  <a style="color: red;">删除</a>
-                </a-popconfirm>
-              </a-space>
-            </template>
+  <div class="app-container">
+    <!-- 搜索区域 -->
+    <div class="search-container">
+      <el-form ref="queryFormRef" :model="queryFormData" :inline="true">
+        <el-form-item prop="request_path" label="请求路径">
+          <el-input v-model="queryFormData.request_path" placeholder="请输入请求路径" clearable />
+        </el-form-item>
+        <el-form-item prop="creator_name" label="创建人">
+          <el-input v-model="queryFormData.creator_name" placeholder="请输入创建人" clearable />
+        </el-form-item>
+        <!-- 时间范围，收起状态下隐藏 -->
+        <el-form-item v-if="isExpand" prop="start_time" label="创建时间">
+          <el-date-picker v-model="queryFormData.start_time" type="daterange" value-format="yyyy-MM-dd"
+            range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+        </el-form-item>
+        <!-- 查询、重置、展开/收起按钮 -->
+        <el-form-item class="search-buttons">
+          <el-button type="primary" icon="search" @click="handleQuery">查询</el-button>
+          <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
+          <!-- 展开/收起 -->
+          <template v-if="isExpandable">
+            <el-link class="ml-3" type="primary" underline="never" @click="isExpand = !isExpand">
+              {{ isExpand ? "收起" : "展开" }}
+              <el-icon>
+                <template v-if="isExpand">
+                  <ArrowUp />
+                </template>
+                <template v-else>
+                  <ArrowDown />
+                </template>
+              </el-icon>
+            </el-link>
           </template>
-        </a-table>
-      </a-card>
+        </el-form-item>
+      </el-form>
     </div>
+
+    <!-- 内容区域 -->
+    <el-card shadow="hover" class="data-table">
+      <template #header>
+        <div class="card-header">
+          <span>
+            <el-tooltip content="日志管理维护系统的日志。">
+              <QuestionFilled class="w-4 h-4 mx-1" />
+            </el-tooltip>
+            日志列表
+          </span>
+        </div>
+      </template>
+
+      <!-- 功能区域 -->
+      <div class="data-table__toolbar">
+        <div class="data-table__toolbar--actions">
+          <el-button type="danger" icon="delete" :disabled="selectIds.length === 0"
+            @click="handleOperation('delete')">批量删除</el-button>
+        </div>
+        <div class="data-table__toolbar--tools">
+          <el-tooltip content="导出">
+            <el-button type="warning" icon="download" circle @click="handleOperation('export')" />
+          </el-tooltip>
+          <el-tooltip content="刷新">
+            <el-button type="primary" icon="refresh" circle @click="handleRefresh" />
+          </el-tooltip>
+        </div>
+      </div>
+
+      <!-- 表格区域：系统配置列表 -->
+      <el-table ref="dataTableRef" v-loading="loading" :data="pageTableData" highlight-current-row
+        class="data-table__content" height="450" border stripe @selection-change="handleSelectionChange">
+        <template #empty>
+          <el-empty :image-size="80" description="暂无数据" />
+        </template>
+        <el-table-column prop='selection' type="selection" width="55" align="center" />
+        <el-table-column type="index" fixed label="序号" width="60" />
+        <el-table-column label="请求路径" prop="request_path" min-width="200" show-overflow-tooltip />
+        <el-table-column label="请求方法" prop="request_method" min-width="80">
+          <template #default="scope">
+            <el-tag :type="getMethodType(scope.row.request_method)">
+              {{ scope.row.request_method }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态码" prop="response_code" min-width="60">
+          <template #default="scope">
+            <el-tag :type="getStatusCodeType(scope.row.response_code)">
+              {{ scope.row.response_code }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="请求IP" min-width="90">
+          <template #default="scope">
+            <el-text>{{ scope.row.request_ip }}</el-text>
+            <CopyButton v-if="scope.row.request_ip" :text="scope.row.request_ip" style="margin-left: 2px" />
+          </template>
+        </el-table-column>
+        <el-table-column label="浏览器" prop="request_browser" min-width="60" />
+        <el-table-column label="系统" prop="request_os" min-width="80" />
+        <el-table-column label="描述" prop="description" min-width="100" show-overflow-tooltip />
+        <el-table-column label="创建时间" prop="created_at" min-width="120" sortable />
+        <el-table-column label="创建人" min-width="100">
+          <template #default="scope">
+            {{ scope.row.creator?.name }}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" fixed="right" min-width="100">
+          <template #default="scope">
+            <el-button type="primary" size="small" link icon="document"
+              @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
+            <el-button type="danger" size="small" link icon="delete"
+              @click="handleOperation('delete', scope.row.id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <!-- 分页区域 -->
+      <template #footer>
+        <pagination v-model:total="total" v-model:page="queryFormData.page_no" v-model:limit="queryFormData.page_size"
+          @pagination="loadingData" />
+      </template>
+    </el-card>
 
     <!-- 弹窗区域 -->
-    <div class="modal-wrapper">
-      <a-modal v-model:open="openModal" @ok="openModal = false" :width="800" :destroyOnClose="true" style="top: 30px">
-        <template #title>
-          <span>查看日志</span>
-        </template>
-        <a-spin :spinning="detailStateLoading">
-          <a-descriptions :column="{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 1, xs: 1 }" :labelStyle="{ width: '140px' }"
-            bordered>
-            <a-descriptions-item label="序号">{{ (pagination.current - 1) * pagination.pageSize + detailState.index + 1 }}</a-descriptions-item>
-            <a-descriptions-item label="请求地址" >{{ detailState.request_path }}</a-descriptions-item>
-            <a-descriptions-item label="请求方法">
-              <a-tag :color="getRequestMethodColor(detailState.request_method)">{{ detailState.request_method }}</a-tag>
-            </a-descriptions-item>
-            <a-descriptions-item label="IP地址">{{ detailState.request_ip }}</a-descriptions-item>
-            <a-descriptions-item label="登录地址">{{ detailState.login_location }}</a-descriptions-item>
-            <a-descriptions-item label="浏览器">{{ detailState.request_browser }}</a-descriptions-item>
-            <a-descriptions-item label="系统">{{ detailState.request_os }}</a-descriptions-item>
-            <a-descriptions-item label="响应码" :span="2">
-              <a-tag :color="detailState.response_code === 200 ? 'green' : 'red'">{{ detailState.response_code
-                }}</a-tag>
-            </a-descriptions-item>
-            <a-descriptions-item label="请求体" :span="2">{{ detailState.request_payload }}</a-descriptions-item>
-            <a-descriptions-item label="返回信息" :span="2">
-              <div class="scrollable-content">{{ detailState.response_json }}</div>
-            </a-descriptions-item>
-            <a-descriptions-item label="处理时间" :span="2">{{ detailState.process_time }} </a-descriptions-item>
-            <a-descriptions-item label="创建人">{{ detailState.creator ? detailState.creator.name : '-' }}</a-descriptions-item>
-            <a-descriptions-item label="创建时间">{{ detailState.created_at }}</a-descriptions-item>
-            <a-descriptions-item label="修改时间">{{ detailState.updated_at }}</a-descriptions-item>
-            <a-descriptions-item label="备注">{{ detailState.description }}</a-descriptions-item>
-          </a-descriptions>
-        </a-spin>
-      </a-modal>
-    </div>
+    <el-dialog v-model="dialogVisible.visible" :title="dialogVisible.title" @close="handleCloseDialog">
+      <!-- 详情 -->
+      <template v-if="dialogVisible.type === 'detail'">
+        <el-descriptions :column="4" border>
+          <el-descriptions-item label="请求路径" :span="2">{{ detailFormData.request_path }}</el-descriptions-item>
+          <el-descriptions-item label="请求方法" :span="2">
+            <el-tag :type="getMethodType(detailFormData.request_method)">
+              {{ detailFormData.request_method }}
+            </el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="响应状态码" :span="2">
+            <el-tag :type="getStatusCodeType(detailFormData.response_code)">
+              {{ detailFormData.response_code }}
+            </el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="请求IP" :span="2">{{ detailFormData.request_ip }}</el-descriptions-item>
+          <el-descriptions-item label="请求参数" :span="4">
+            <el-input v-model="detailFormData.request_payload" type="textarea" :rows="3" readonly
+              class="long-text-editor" />
+          </el-descriptions-item>
+          <el-descriptions-item label="响应数据" :span="4">
+            <el-input v-model="detailFormData.response_json" type="textarea" :rows="5" readonly
+              class="long-text-editor" />
+            <!-- <el-scrollbar max-height="72vh">
+              <div class="absolute z-36 right-5 top-2">
+                <el-link type="primary" @click="handleCopyCode">
+                  <el-icon>
+                    <CopyDocument />
+                  </el-icon>
+                  一键复制
+                </el-link>
+              </div> -->
 
-    <!-- 选择人弹窗 -->
-    <SelectorModal ref="selectorModal" @event="handleSelectorModalEvent" />
+            <!-- <Codemirror
+                ref="cmRef"
+                v-model:value="code"
+                placeholder="请输入代码"
+                :options="cmOptions"
+                border
+                :readonly="true"
+                :width="700"
+                :height="100"
+              /> -->
+            <!-- </el-scrollbar> -->
+          </el-descriptions-item>
+          <el-descriptions-item label="处理时间" :span="2">{{ detailFormData.process_time }}</el-descriptions-item>
+          <el-descriptions-item label="浏览器" :span="2">{{ detailFormData.request_browser }}</el-descriptions-item>
+          <el-descriptions-item label="操作系统" :span="2">{{ detailFormData.request_os }}</el-descriptions-item>
+          <el-descriptions-item label="登录地点" :span="2">{{ detailFormData.login_location }}</el-descriptions-item>
+          <el-descriptions-item label="描述" :span="2">{{ detailFormData.description }}</el-descriptions-item>
+          <el-descriptions-item label="创建人" :span="2">{{ detailFormData.creator?.name }}</el-descriptions-item>
+          <el-descriptions-item label="创建时间" :span="2">{{ detailFormData.created_at }}</el-descriptions-item>
+          <el-descriptions-item label="更新时间" :span="2">{{ detailFormData.updated_at }}</el-descriptions-item>
+        </el-descriptions>
+      </template>
+
+      <template #footer>
+        <div class="dialog-footer">
+          <!-- 详情弹窗不需要确定按钮的提交逻辑 -->
+          <el-button type="primary" @click="handleCloseDialog">确定</el-button>
+          <el-button @click="handleCloseDialog">取消</el-button>
+        </div>
+      </template>
+    </el-dialog>
+
   </div>
 </template>
 
-<script lang="ts" setup>
-import { ref, reactive, onMounted, h } from 'vue';
-import type { TableColumnsType } from 'ant-design-vue';
-import { SearchOutlined, DownOutlined } from '@ant-design/icons-vue';
-import { message, Modal } from 'ant-design-vue';
-import type { searchDataType, tableDataType, creatorType } from './types'
-import { getLogList, deleteLog, exportLog } from '@/api/system/log'
-import SelectorModal from './SelectorModal.vue'
-
-const tableLoading = ref(false);
-const dataSource = ref<tableDataType[]>([]);
-const detailStateLoading = ref(false);
-const openModal = ref(false);
-const selectorModal = ref();
-
-const pagination = reactive({
-  current: 1,
-  pageSize: 10,
-  defaultPageSize: 10,
-  showSizeChanger: true,
-  total: dataSource.value.length,
-  showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条 / 总共 ${total} 条`
+<script setup lang="ts">
+defineOptions({
+  name: "Log",
+  inheritAttrs: false,
 });
-const queryState = reactive<searchDataType>({});
-const detailState = ref<tableDataType>({});
-const columns: TableColumnsType = [
-  {
-    title: '序号',
-    dataIndex: 'index',
-    align: 'center',
-    width: 80
-  },
-  {
-    title: '请求地址',
-    dataIndex: 'request_path',
-    ellipsis: true,
-    // align: 'center',
-    // width: 200
-  },
-  {
-    title: '请求方法',
-    dataIndex: 'request_method',
-    ellipsis: true,
-    // align: 'center',
-    width: 80
-  },
-  {
-    title: 'IP地址',
-    dataIndex: 'request_ip',
-    ellipsis: true,
-    // align: 'center',
-    width: 130
-  },
-  {
-    title: '登录地点',
-    dataIndex: 'login_location',
-    ellipsis: true,
-    // align: 'center',
-  },
-  {
-    title: '浏览器',
-    dataIndex: 'request_browser',
-    ellipsis: true,
-    // align: 'center',
-    width: 80
-  },
-  {
-    title: '系统',
-    dataIndex: 'request_os',
-    ellipsis: true,
-    // align: 'center',
-    width: 80
-  },
-  {
-    title: '响应码',
-    dataIndex: 'response_code',
-    ellipsis: true,
-    // align: 'center',
-    width: 65
-  },
-  {
-    title: '处理时间',
-    dataIndex: 'process_time',
-    ellipsis: true,
-    // align: 'center',
-    width: 80
-  },
-  {
-    title: '描述',
-    dataIndex: 'description',
-    // align: 'center',
-    ellipsis: true,
-    width: 120
-  },
-  {
-    title: '创建日期',
-    dataIndex: 'created_at',
-    // align: 'center',
-    ellipsis: true,
-    width: 180
-  },
-  {
-    title: '操作',
-    dataIndex: 'operation',
-    align: 'center',
-    fixed: 'right',
-    width: 150
-  }
-];
 
-// 生命周期钩子
-onMounted(() => loadingData());
+import "codemirror/mode/javascript/javascript.js";
+import Codemirror, { type CmComponentRef } from "codemirror-editor-vue3";
+import type { EditorConfiguration } from "codemirror";
 
-// 查询
-const onFinish = () => {
-  pagination.current = 1;
+import LogAPI, { LogTable, LogPageQuery } from "@/api/system/log";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { useDebounceFn } from "@vueuse/core";
+
+const { copy, copied } = useClipboard();
+const queryFormRef = ref();
+const dataFormRef = ref();
+const total = ref(0);
+const selectIds = ref<number[]>([]);
+const loading = ref(false);
+
+const isExpand = ref(false);
+const isExpandable = ref(true);
+
+// 分页表单
+const pageTableData = ref<LogTable[]>([]);
+
+// 详情表单
+const detailFormData = ref<LogTable>({});
+
+// 分页查询参数
+const queryFormData = reactive<LogPageQuery>({
+  page_no: 1,
+  page_size: 10,
+  request_path: undefined,
+  creator_name: undefined,
+  start_time: undefined,
+  end_time: undefined,
+});
+
+// 弹窗状态
+const dialogVisible = reactive({
+  title: "",
+  visible: false,
+  type: 'create' as 'create' | 'update' | 'detail',
+});
+
+
+// 刷新数据(防抖)
+const handleRefresh = useDebounceFn(() => {
   loadingData();
-};
+  ElMessage.success("刷新成功");
+}, 1000);
+
+
+const getStatusCodeType = (code?: number) => {
+  if (code === undefined) {
+    return 'info';
+  }
+  if (code >= 200 && code < 300) {
+    return 'success';
+  } else if (code >= 300 && code < 400) {
+    return 'warning';
+  } else if (code >= 400 && code < 500) {
+    return 'danger';
+  } else {
+    return 'danger';
+  }
+}
+
+const getMethodType = (method?: string) => {
+  if (method === undefined) {
+    return 'info';
+  }
+  if (method === 'GET') {
+    return 'info';
+  } else if (method === 'POST') {
+    return 'success';
+  } else if (method === 'PUT' || method === 'PATCH') {
+    return 'warning';
+  } else if (method === 'DELETE') {
+    return 'danger';
+  } else {
+    return 'info';
+  }
+}
 
 // 加载表格数据
-const loadingData = () => {
-  tableLoading.value = true;
-
-  let params = {};
-
-  if (queryState.request_path) {
-    params['request_path'] = queryState.request_path
+async function loadingData() {
+  loading.value = true;
+  try {
+    const response = await LogAPI.getLogList(queryFormData);
+    pageTableData.value = response.data.data.items;
+    total.value = response.data.data.total;
   }
-
-  if (queryState.creator) {
-    params['creator'] = queryState.creator
+  catch (error: any) {
+    ElMessage.error(error.message);
   }
-
-  if (queryState.date_range) {
-    params['start_time'] = `${queryState.date_range[0]} 00:00:00`;
-    params['end_time'] = `${queryState.date_range[1]} 23:59:59`;
+  finally {
+    loading.value = false;
   }
-  params['page_no'] = pagination.current;
-  params['page_size'] = pagination.pageSize;
+}
 
-  getLogList(params).then(response => {
-    const result = response.data;
-    dataSource.value = result.data.items;
-    pagination.total = result.data.total;
-    pagination.current = result.data.page_no;
-    pagination.pageSize = result.data.page_size;
-  }).catch(error => {
-    console.log(error);
-  }).finally(() => {
-    tableLoading.value = false;
-  });
-};
-
-// 获取请求方法颜色
-const getRequestMethodColor = (method: string) => {
-  const methodColors = {
-    GET: 'green',
-    POST: 'blue',
-    PUT: 'orange',
-    DELETE: 'red',
-    PATCH: 'purple',
-    HEAD: 'gray',
-    OPTIONS: 'cyan',
-  };
-  return methodColors[method] || 'black'; // 默认颜色为黑色
-};
+// 查询（重置页码后获取数据）
+async function handleQuery() {
+  queryFormData.page_no = 1;
+  loadingData();
+}
 
 // 重置查询
-const resetFields = () => {
-  Object.keys(queryState).forEach((key: string) => {
-    delete queryState[key];
-  });
-  pagination.current = 1;
+async function handleResetQuery() {
+  queryFormRef.value.resetFields();
+  queryFormData.page_no = 1;
   loadingData();
-};
+}
 
-// 删除
-const deleteRow = (row: tableDataType) => {
-  deleteLog({ id: row.id }).then(() => {
-    loadingData();
-  }).catch(error => {
-    console.log(error)
-  })
-};
+// 重置表单
+async function resetForm() {
+  dataFormRef.value.resetFields();
+  dataFormRef.value.clearValidate();
+  detailFormData.value.id = undefined;
+}
 
-// 表格分页
-const handleTableChange = (values: any) => {
-  pagination.current = values.current;
-  pagination.pageSize = values.pageSize;
-  loadingData();
-};
+// 行复选框选中项变化
+async function handleSelectionChange(selection: any) {
+  selectIds.value = selection.map((item: any) => item.id);
+}
 
-// 查看
-const modalHandle = (modalType: string, record?: tableDataType, index?: number) => {
-  if (modalType === 'view' && record !== undefined) {
-    openModal.value = true;
+// 关闭弹窗
+async function handleCloseDialog() {
+  dialogVisible.visible = false;
+  resetForm();
+}
 
-    detailStateLoading.value = true;
-
-    detailState.value = record;
-    detailState.value.index = index;
-
-    detailStateLoading.value = false;
+// 打开系统配置弹窗
+async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: number) {
+  dialogVisible.type = type;
+  if (id) {
+    const response = await LogAPI.getLogDetail({ id });
+    if (type === 'detail') {
+      dialogVisible.title = "日志详情";
+      Object.assign(detailFormData.value, response.data.data);
+      code.value = response.data.data.response_json
+    }
   }
-};
+  dialogVisible.visible = true;
+}
 
-// 选择人弹窗
-const selectModalHandle = () => {
-  selectorModal.value.openModal = true;
-  selectorModal.value.selectedRowKeys = [queryState.creator];
-  selectorModal.value.selectedRowName = queryState.creator_name;
-  selectorModal.value.loadingData();
-};
+// 删除、导出
+async function handleOperation(type: 'delete' | 'export', id?: number) {
 
-// 选择人弹窗事件
-const handleSelectorModalEvent = (selectedSelectorRowKeys?: creatorType['id'][], selectedSelectorRowName?: creatorType['name']) => {
-  const creator = selectedSelectorRowKeys.length ? selectedSelectorRowKeys[0] : undefined;
-  const creator_name = selectedSelectorRowName || undefined;
+  if (type === 'delete' && !id && !selectIds.value.length) {
+    ElMessageBox.confirm("确认删除该项数据?", "警告", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    }).then(async () => {
+      try {
+        loading.value = true;
+        await LogAPI.deleteLog({ id: id ? id : selectIds.value });
+        ElMessage.success("删除成功");
+        handleResetQuery();
+      } catch (error: any) {
+        ElMessage.error(error.message);
+      } finally {
+        loading.value = false;
+      }
+    }).catch(() => {
+      ElMessage.info('已取消删除');
+    });
+  }
+  else if (type === 'export') {
+    ElMessageBox.confirm('是否确认导出日志?', '警告', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(async () => {
+      try {
+        loading.value = true;
+        const body = {
+          ...queryFormData,
+          page_no: 1,
+          page_size: total.value
+        };
+        ElMessage.warning('正在导出数据，请稍候...');
 
-  queryState.creator = creator;
-  queryState.creator_name = creator_name;
-};
-
-/** 导出按钮操作 */
-const handleExport = () => {
-  Modal.confirm({
-    title: '警告',
-    content: '是否确认导出所有日志数据?',
-    onOk() {
-      const body = {
-        ...queryState,
-        page_no: 1,
-        page_size: pagination.total
-      };
-      message.loading('正在导出数据，请稍候...', 0);
-
-      return exportLog(body).then(response => {
-        const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const response = await LogAPI.exportLog(body);
+        const blob = new Blob([JSON.stringify(response.data.data)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
         // 从响应头获取文件名
         const contentDisposition = response.headers['content-disposition'];
-        let fileName = '系统日志.xlsx';
+        let fileName = '系统配置.xlsx';
         if (contentDisposition) {
           const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
           if (fileNameMatch) {
@@ -365,38 +393,45 @@ const handleExport = () => {
         link.download = fileName;
         document.body.appendChild(link);
         link.click();
-        message.destroy();
-        message.success('导出成功');
-      }).catch((error) => {
-        message.destroy();
+        ElMessage.success('导出成功');
+      } catch (error: any) {
+        ElMessage.error('文件处理失败', error.message);
         console.error('导出错误:', error);
-        message.error('文件处理失败');
-      });
-    },
-    onCancel() {
-      message.info('已取消导出');
-    }
-  });
+      } finally {
+        loading.value = false;
+      }
+    }).catch(() => {
+      ElMessage.info('已取消导出');
+    });
+  }
+  else {
+    ElMessage.error('未知操作类型');
+  }
+}
+
+const cmOptions: EditorConfiguration = {
+  // mode: "text/javascript",
+  mode: "text/json",
+};
+const code = ref();
+const cmRef = ref<CmComponentRef>();
+
+/** 一键复制 */
+const handleCopyCode = () => {
+  if (code.value) {
+    copy(code.value);
+  }
 };
 
+watch(copied, () => {
+  if (copied.value) {
+    ElMessage.success("复制成功");
+  }
+});
+
+onMounted(() => {
+  loadingData();
+});
 </script>
 
-<style lang="scss" scoped>
-.table-search-wrapper {
-  margin-block-end: 16px;
-}
-
-.scrollable-content {
-  max-height: 200px;
-  /* 设置最大高度 */
-  overflow-y: auto;
-  /* 添加垂直滚动条 */
-  white-space: pre-wrap;
-  /* 保留换行符并允许文本换行 */
-}
-
-.json-viewer {
-  max-height: 300px;
-  overflow-y: auto;
-}
-</style>
+<style lang="scss" scoped></style>

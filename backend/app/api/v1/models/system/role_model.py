@@ -76,7 +76,7 @@ class RoleModel(ModelBase):
 
     # 权限相关
     data_scope = Column(Integer, nullable=False, default=1, comment="数据权限范围")
-    available = Column(Boolean, default=True, nullable=False, comment="是否启用(True:启用 False:禁用)")
+    status = Column(Boolean, default=True, nullable=False, comment="是否启用(True:启用 False:禁用)")
 
     # 关联关系
     menus = relationship(

@@ -59,7 +59,7 @@ class UserCreateSchema(CurrentUserUpdateSchema):
     
     username: str = Field(default=None, max_length=15, description="用户名")
     password: Optional[str] = Field(default=None, max_length=128, description="密码哈希值")
-    available: bool = Field(default=True, description="是否可用")
+    status: bool = Field(default=True, description="是否可用")
     is_superuser: bool = Field(default=False, description="是否超管")
     description: Optional[str] = Field(None, max_length=255, description="备注")
     

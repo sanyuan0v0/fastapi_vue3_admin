@@ -97,5 +97,14 @@
     "config_type": true,
     "description": "源码代码",
     "creator_id": 1
+  },
+  {
+    "id": 12,
+    "config_name": "项目版本",
+    "config_key": "sys_web_version",
+    "config_value": "2.0.0",
+    "config_type": true,
+    "description": "项目版本",
+    "creator_id": 1
   }
 ]

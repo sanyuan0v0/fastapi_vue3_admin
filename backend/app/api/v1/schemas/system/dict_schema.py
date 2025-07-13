@@ -12,7 +12,7 @@ class DictTypeCreateSchema(BaseModel):
 
     dict_name: Optional[str] = Field(default=None, description='字典名称')
     dict_type: Optional[str] = Field(default=None, description='字典类型')
-    available: Optional[bool] = Field(default=None, description='状态（0正常 1停用）')
+    status: Optional[bool] = Field(default=None, description='状态（0正常 1停用）')
     description: Optional[str] = Field(None, max_length=255, description="描述")
 
     @NotBlank(field_name='dict_name', message='字典名称不能为空')
@@ -58,7 +58,7 @@ class DictDataCreateSchema(BaseModel):
     css_class: Optional[str] = Field(default=None, description='样式属性（其他样式扩展）')
     list_class: Optional[str] = Field(default=None, description='表格回显样式')
     is_default: Optional[bool] = Field(default=None, description='是否默认（Y是 N否）')
-    available: Optional[bool] = Field(default=None, description='状态（0正常 1停用）')
+    status: Optional[bool] = Field(default=None, description='状态（0正常 1停用）')
     description: Optional[str] = Field(default=None, max_length=255, description="描述")
 
     @NotBlank(field_name='dict_label', message='字典标签不能为空')

@@ -84,15 +84,15 @@ class UserCRUD(CRUDBase[UserModel, UserCreateSchema, UserUpdateSchema]):
         """
         return await self.update(id=id, data={"last_login": datetime.now()})
 
-    async def set_available_crud(self, ids: List[int], available: bool) -> None:
+    async def set_available_crud(self, ids: List[int], status: bool) -> None:
         """
         批量设置用户可用状态
         
         Args:
             ids: 用户ID列表
-            available: 可用状态
+            status: 可用状态
         """
-        await self.set(ids=ids, available=available)
+        await self.set(ids=ids, status=status)
 
     async def set_user_roles_crud(self, user_ids: List[int], role_ids: List[int]) -> None:
         """

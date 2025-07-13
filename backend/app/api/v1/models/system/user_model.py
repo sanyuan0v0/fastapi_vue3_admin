@@ -74,7 +74,7 @@ class UserModel(ModelBase):
     avatar = Column(String(255), nullable=True, comment="头像地址")
     
     # 账号状态
-    available = Column(Boolean, default=True, nullable=False, comment="是否启用(True:启用 False:禁用)")
+    status = Column(Boolean, default=True, nullable=False, comment="是否启用(True:启用 False:禁用)")
     is_superuser = Column(Boolean, default=False, nullable=False, comment="是否为超级管理员")
     last_login = Column(DateTime, nullable=True, comment="最后登录时间")
     

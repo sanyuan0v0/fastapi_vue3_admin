@@ -71,7 +71,7 @@ class DictTypeService:
         
         dict_data_list = []
         # 如果字典类型修改或状态变更，则修改对应字典数据的类型和状态，并更新Redis缓存
-        if exist_obj.dict_type != data.dict_type or exist_obj.available != data.available:
+        if exist_obj.dict_type != data.dict_type or exist_obj.status != data.status:
             # 检查字典数据类型是否被修改
             exist_obj_type_list = await DictDataCRUD(auth).list(search={'dict_type': exist_obj.dict_type})
             if exist_obj_type_list:
@@ -86,7 +86,7 @@ class DictTypeService:
                         css_class=item.css_class,
                         list_class=item.list_class,
                         is_default=item.is_default,
-                        available=data.available,
+                        status=data.status,
                         description=item.description
                     )
                     obj = await DictDataCRUD(auth).update_obj_crud(id=item.id, data=dict_data)
@@ -141,7 +141,7 @@ class DictTypeService:
             'id': '编号',
             'dict_name': '字典名称', 
             'dict_type': '字典类型',
-            'available': '状态',
+            'status': '状态',
             'description': '备注',
             'created_at': '创建时间',
             'updated_at': '更新时间',
@@ -153,7 +153,7 @@ class DictTypeService:
         data = data_list.copy()
         for item in data:
             # 处理状态
-            item['available'] = '正常' if item.get('available') else '停用'
+            item['status'] = '正常' if item.get('status') else '停用'
 
         return ExcelUtil.export_list2excel(list_data=data_list, mapping_dict=mapping_dict)
     
@@ -250,14 +250,14 @@ class DictDataService:
             raise CustomException(msg='更新失败，数据字典数据重复')
             
         # 如果状态变更，需要同步更新字典类型状态并刷新缓存
-        if exist_obj.available != data.available:
+        if exist_obj.status != data.status:
             dict_type = await DictTypeCRUD(auth).get(dict_type=exist_obj.dict_type)
             if dict_type:
                 update_data = DictTypeUpdateSchema(
                     id=dict_type.id,
                     dict_name=dict_type.dict_name,
                     dict_type=dict_type.dict_type,
-                    available=data.available,
+                    status=data.status,
                     description=dict_type.description
                 )
                 await DictTypeCRUD(auth).update_obj_crud(id=dict_type.id, data=update_data)
@@ -321,7 +321,7 @@ class DictDataService:
             'css_class': '样式属性', 
             'list_class': '表格回显样式', 
             'is_default': '是否默认', 
-            'available': '状态',
+            'status': '状态',
             'description': '备注',
             'created_at': '创建时间',
             'updated_at': '更新时间',
@@ -333,7 +333,7 @@ class DictDataService:
         data = data_list.copy()
         for item in data:
             # 处理状态
-            item['available'] = '正常' if item.get('available') else '停用'
+            item['status'] = '正常' if item.get('status') else '停用'
             # 处理是否默认
             item['is_default'] = '是' if item.get('is_default') else '否'
 

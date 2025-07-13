@@ -4,7 +4,7 @@
 
 ```sh
 fastapi_project/frontend
-├─ public               # 静态资源文件 
+├─ public               # 静态资源文件
 │  └─ site              # 帮助文档模块
 ├─ src                  # 源代码
 │  ├─ api               # 接口文件
@@ -38,4 +38,16 @@ npm install
 npm run dev
 # 构建前端, 生成 `frontend/dist` 目录
 npm run build
+
+# 安装 pnpm
+npm install pnpm -g
+
+# 设置镜像源(可忽略)
+pnpm config set registry https://registry.npmmirror.com
+
+# 安装依赖
+pnpm install
+
+# 启动运行
+pnpm run dev
 ```

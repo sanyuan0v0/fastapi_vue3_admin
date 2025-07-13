@@ -82,7 +82,7 @@ class RoleService:
     @classmethod
     async def set_role_available_service(cls, auth: AuthSchema, data: BatchSetAvailable) -> None:
         """设置角色可用状态"""
-        await RoleCRUD(auth).set_available_crud(ids=data.ids, available=data.available)
+        await RoleCRUD(auth).set_available_crud(ids=data.ids, status=data.status)
 
     @classmethod
     async def export_role_list_service(cls, role_list: List[Dict[str, Any]]) -> bytes:
@@ -93,7 +93,7 @@ class RoleService:
             'name': '角色名称',
             'order': '显示顺序', 
             'data_scope': '数据权限',
-            'available': '状态',
+            'status': '状态',
             'description': '备注',
             'created_at': '创建时间',
             'updated_at': '更新时间',
@@ -113,7 +113,7 @@ class RoleService:
         # 处理数据
         data = role_list.copy()
         for item in data:
-            item['available'] = '正常' if item.get('available') else '停用'
+            item['status'] = '正常' if item.get('status') else '停用'
             item['data_scope'] = data_scope_map.get(item.get('data_scope'))
 
         return ExcelUtil.export_list2excel(list_data=role_list, mapping_dict=mapping_dict)

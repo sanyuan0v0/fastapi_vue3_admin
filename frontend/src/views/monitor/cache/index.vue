@@ -1,195 +1,247 @@
 <template>
   <div class="app-container">
-    <a-tabs>
+    <el-tabs type="border-card">
       <!-- 监控信息 Tab -->
-      <a-tab-pane key="monitor" tab="监控信息">
-        <a-row :gutter="16">
+      <el-tab-pane class="monitor" label="监控信息">
+        <el-row :gutter="16">
           <!-- 基本信息 -->
-          <a-col :span="24">
-            <a-card>
-              <template #title>
-                <MonitorOutlined class="icon" /> 
-                <span class="title">Redis监控信息</span>
+          <el-col :span="24">
+            <el-card>
+              <template #header>
+                <div class="flex items-center gap-2">
+                  <el-icon><Monitor /></el-icon>
+                  <span>Redis监控信息</span>
+                  <el-tooltip content="展示Redis监控信息详情">
+                    <el-icon><QuestionFilled /></el-icon>
+                  </el-tooltip>
+                </div>
               </template>
-              <a-table :dataSource="[cache.info || {}]" :pagination="false" :bordered="true">
-                <a-table-column key="redis_version" title="Redis版本" :customRender="({record}) => record?.redis_version || '-'" />
-                <a-table-column key="redis_mode" title="运行模式" :customRender="({record}) => record?.redis_mode === 'standalone' ? '单机' : '集群'" />
-                <a-table-column key="tcp_port" title="端口" :customRender="({record}) => record?.tcp_port || '-'" />
-                <a-table-column key="connected_clients" title="客户端数" :customRender="({record}) => record?.connected_clients || 0" />
-                <a-table-column key="uptime_in_days" title="运行时间(天)" :customRender="({record}) => record?.uptime_in_days || 0" />
-                <a-table-column key="used_memory_human" title="使用内存" :customRender="({record}) => record?.used_memory_human || '-'" />
-                <a-table-column key="used_cpu" title="使用CPU" :customRender="({record}) => record?.used_cpu_user_children ? parseFloat(record.used_cpu_user_children).toFixed(2) : '-'" />
-                <a-table-column key="maxmemory_human" title="内存配置" :customRender="({record}) => record?.maxmemory_human || '-'" />
-                <a-table-column key="aof_enabled" title="AOF是否开启" :customRender="({record}) => record?.aof_enabled === '0' ? '否' : '是'" />
-                <a-table-column key="rdb_status" title="RDB是否成功" :customRender="({record}) => record?.rdb_last_bgsave_status || '-'" />
-                <a-table-column key="dbSize" title="Key数量" :customRender="() => cache.db_size || 0" />
-                <a-table-column key="network" title="网络入口/出口" :customRender="({record}) => `${record?.instantaneous_input_kbps || 0}kps/${record?.instantaneous_output_kbps || 0}kps`" />
-              </a-table>
-            </a-card>
-          </a-col>
+              <el-descriptions :column=12 border :direction="'vertical'">
+                <el-descriptions-item label="Redis版本">
+                  {{ cache.info?.redis_version || '-' }}
+                </el-descriptions-item>
+                <el-descriptions-item label="运行模式">
+                  {{ cache.info?.redis_mode === 'standalone' ? '单机' : '集群' }}
+                </el-descriptions-item>
+                <el-descriptions-item label="端口">
+                  {{ cache.info?.tcp_port || '-' }}
+                </el-descriptions-item>
+                <el-descriptions-item label="客户端数">
+                  {{ cache.info?.connected_clients || 0 }}
+                </el-descriptions-item>
+                <el-descriptions-item label="运行时间(天)">
+                  {{ cache.info?.uptime_in_days || 0 }}
+                </el-descriptions-item>
+                <el-descriptions-item label="使用内存">
+                  {{ cache.info?.used_memory_human || '-' }}
+                </el-descriptions-item>
+                <el-descriptions-item label="使用CPU">
+                  {{ cache.info?.used_cpu_user_children ? parseFloat(cache.info.used_cpu_user_children).toFixed(2) : '-' }}
+                </el-descriptions-item>
+                <el-descriptions-item label="内存配置">
+                  {{ cache.info?.maxmemory_human || '-' }}
+                </el-descriptions-item>
+                <el-descriptions-item label="AOF是否开启">
+                  {{ cache.info?.aof_enabled === '0' ? '否' : '是' }}
+                </el-descriptions-item>
+                <el-descriptions-item label="RDB是否成功">
+                  {{ cache.info?.rdb_last_bgsave_status || '-' }}
+                </el-descriptions-item>
+                <el-descriptions-item label="Key数量">
+                  {{ cache.db_size || 0 }}
+                </el-descriptions-item>
+                <el-descriptions-item label="网络入口/出口">
+                  {{ `${cache.info?.instantaneous_input_kbps || 0}kps/${cache.info?.instantaneous_output_kbps || 0}kps` }}
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-card>
+          </el-col>
 
           <!-- 监控图表 -->
-          <a-col :span="12" class="mt-4">
-            <a-card>
-              <template #title>
-                <PieChartOutlined class="icon" />
-                <span class="title">命令统计</span>
+          <el-col :span="12" class="mt-4">
+            <el-card>
+              <template #header>
+                <div class="flex items-center gap-2">
+                  <el-icon><Stopwatch /></el-icon>
+                  <span class="title">命令统计</span>
+                  <el-tooltip content="展示命令统计详情">
+                    <el-icon><QuestionFilled /></el-icon>
+                  </el-tooltip>
+                </div>
               </template>
               <div ref="commandstats" class="chart-container" />
-            </a-card>
-          </a-col>
-
-          <a-col :span="12" class="mt-4">
-            <a-card>
-              <template #title>
-                <DashboardOutlined class="icon" />
-                <span class="title">内存信息</span>
+            </el-card>
+          </el-col>
+          
+          <el-col :span="12" class="mt-4">
+            <el-card>
+              <template #header>
+                <div class="flex items-center gap-2">
+                  <el-icon><Stopwatch /></el-icon>
+                  <span>内存信息</span>
+                  <el-tooltip content="展示内存信息详情">
+                    <el-icon><QuestionFilled /></el-icon>
+                  </el-tooltip>
+                </div>
               </template>
               <div ref="usedmemory" class="chart-container" />
-            </a-card>
-          </a-col>
-        </a-row>
-      </a-tab-pane>
+            </el-card>
+          </el-col>
+        </el-row>
+      </el-tab-pane>
 
       <!-- 缓存管理 Tab -->
-      <a-tab-pane key="cache" tab="缓存管理">
-        <a-row :gutter="16">
+      <el-tab-pane class="cache" label="缓存管理">
+        <el-row :gutter="16">
           <!-- 缓存列表 -->
-          <a-col :span="8">
-            <a-card :bodyStyle="{ height: tableContainerHeight, minHeight: '430px' }">
-              <template #title>
-                <SolutionOutlined class="icon" /> 
-                <span class="title">缓存列表</span>
+          <el-col :span="8">
+            <el-card :loading="loading"  shadow="hover">
+              <template #header>
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-2">
+                    <el-icon><Tickets /></el-icon>
+                    <span class="flex items-center gap-2">缓存列表</span>
+                    <el-tooltip content="展示缓存列表详情">
+                      <el-icon><QuestionFilled /></el-icon>
+                    </el-tooltip>
+                  </div>
+                  <div>
+                    <el-button type="primary" link icon="RefreshRight" @click="refreshCacheNames" />
+                  </div>
+                </div>
               </template>
-              <template #extra>
-                <a-button type="link" @click="refreshCacheNames">
-                  <template #icon><RedoOutlined /></template>
-                </a-button>
-              </template>
-              <a-table
+              <el-table
                 :loading="loading"
-                :dataSource="cacheNames"
-                :pagination="false"
-                :scroll="{ y: 460 }"
-                rowKey="cache_name"
+                :data="cacheNames"
+                row-key="cache_name"
+                height="600"
+                border
               >
-                <a-table-column key="cache_name" title="缓存名称" align="center" :ellipsis="true">
-                  <template #default="{ record }">
-                    <a @click="getCacheKeyList(record)">{{ record.cache_name }}</a>
+              <template #empty>
+                <el-empty :image-size="80" description="暂无数据" />
+              </template>
+                <el-table-column prop="cache_name" label="缓存名称" align="center" :ellipsis="true">
+                  <template #default="{ row }">
+                    <el-button type="primary" link @click="getCacheKeyList(row)">{{ row.cache_name }}</el-button>
                   </template>
-                </a-table-column>
-                <a-table-column key="remark" title="备注" align="center" :ellipsis="true" dataIndex="remark" />
-                <a-table-column key="action" title="操作" width="60" align="center">
-                  <template #customRender="{ record }">
-                    <a-button type="link" danger @click.stop="handleClearCacheName(record)">
-                      <template #icon><DeleteOutlined /></template>
-                    </a-button>
+                </el-table-column>
+                <el-table-column prop="remark" label="备注" align="center" :ellipsis="true" />
+                <el-table-column label="操作" width="60" align="center">
+                  <template #default="{ row }">
+                    <el-button type="danger" size="small" link icon="delete" @click="handleClearCacheName(row)" />
                   </template>
-                </a-table-column>
-              </a-table>
-            </a-card>
-          </a-col>
+                </el-table-column>
+              </el-table>
+            </el-card>
+          </el-col>
 
           <!-- 键名列表 -->
-          <a-col :span="8">
-            <a-card :bodyStyle="{ height: tableContainerHeight, minHeight: '430px' }">
-              <template #title>
-                <KeyOutlined class="icon" />
-                <span class="title">键名列表</span>
+          <el-col :span="8">
+            <el-card :loading="loading"  shadow="hover">
+              <template #header>
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-2">
+                    <el-icon><Key /></el-icon>
+                    <span class="flex items-center gap-2">键名列表</span>
+                    <el-tooltip content="展示键名列表详情">
+                      <el-icon><QuestionFilled /></el-icon>
+                    </el-tooltip>
+                  </div>
+                  <div>
+                    <el-button type="primary" link icon="RefreshRight" @click="refreshCacheKeys" />
+                  </div>
+                </div>
               </template>
-              <template #extra>
-                <a-button type="link" @click="refreshCacheKeys">
-                  <template #icon><RedoOutlined /></template>
-                </a-button>
-              </template>
-              <a-table
+              <el-table
                 :loading="subLoading"
-                :dataSource="cacheKeys.map(key => ({ cacheKey: key }))"
-                :pagination="false"
-                :scroll="{ y: 480 }"
-                rowKey="cacheKey"
+                :data="cacheKeys.map(key => ({ cacheKey: key }))"
+                height="600"
+                row-key="cacheKey"
+                border
               >
-                <a-table-column key="cacheKey" title="缓存键名" align="center" :ellipsis="true">
-                  <template #default="{ record }">
-                    <a @click="handleCacheValue(record.cacheKey)">{{ record.cacheKey }}</a>
+                <template #empty>
+                  <el-empty :image-size="80" description="暂无数据" />
+                </template>
+                <el-table-column prop="cacheKey" label="缓存键名" align="center" :ellipsis="true">
+                  <template #default="{ row }">
+                    <el-button type="primary" link @click="handleCacheValue(row.cacheKey)">{{ row.cacheKey }}</el-button>
                   </template>
-                </a-table-column>
-                <a-table-column key="action" title="操作" width="60" align="center">
-                  <template #customRender="{ record }">
-                    <a-button type="link" danger @click.stop="handleClearCacheKey(record.cacheKey)">
-                      <template #icon><DeleteOutlined /></template>
-                    </a-button>
+                </el-table-column>
+                <el-table-column label="操作" width="60" align="center">
+                  <template #default="{ row }">
+                    <el-button type="danger" size="small" link icon="delete" @click="handleClearCacheKey(row.cacheKey)" />
                   </template>
-                </a-table-column>
-              </a-table>
-            </a-card>
-          </a-col>
+                </el-table-column>
+              </el-table>
+            </el-card>
+          </el-col>
 
           <!-- 缓存内容 -->
-          <a-col :span="8">
-            <a-card :bodyStyle="{ height: tableContainerHeight, minHeight: '430px' }">
-              <template #title>
-                <FileOutlined class="icon" />
-                <span class="title">缓存内容</span>
+          <el-col :span="8">
+            <el-card :loading="loading"  shadow="hover">
+              <template #header>
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-2">
+                    <el-icon><Key /></el-icon>
+                    <span class="flex items-center gap-2">缓存内容</span>
+                    <el-tooltip content="展示缓存内容详情">
+                      <el-icon><QuestionFilled /></el-icon>
+                    </el-tooltip>
+                  </div>
+                  <div>
+                    <el-button type="danger" link icon="delete" @click="handleClearCacheAll">清理全部</el-button>
+                  </div>
+                </div>
               </template>
-              <template #extra>
-                <a-button type="link" danger @click="handleClearCacheAll">清理全部</a-button>
-              </template>
-              <a-form :model="cacheForm" layout="vertical">
-                <a-form-item label="缓存名称:" name="cache_name">
-                  <a-input v-model:value="cacheForm.cache_name" readonly />
-                </a-form-item>
-                <a-form-item label="缓存键名:" name="cache_key">
-                  <a-input v-model:value="cacheForm.cache_key" readonly />
-                </a-form-item>
-                <a-form-item label="缓存内容:" name="cache_value">
-                  <a-textarea
-                    v-model:value="cacheForm.cache_value"
-                    :rows="17"
+              <el-form :model="cacheForm" label-position="top">
+                <el-form-item label="缓存名称:">
+                  <el-input v-model="cacheForm.cache_name" readonly />
+                </el-form-item>
+                <el-form-item label="缓存键名:">
+                  <el-input v-model="cacheForm.cache_key" readonly />
+                </el-form-item>
+                <el-form-item label="缓存内容:">
+                  <el-input
+                    v-model="cacheForm.cache_value"
+                    type="textarea"
+                    :rows="18"
                     readonly
                   />
-                </a-form-item>
-              </a-form>
-            </a-card>
-          </a-col>
-        </a-row>
-      </a-tab-pane>
-    </a-tabs>
+                </el-form-item>
+              </el-form>
+            </el-card>
+          </el-col>
+        </el-row>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue';
-import { DeleteOutlined, RedoOutlined, SolutionOutlined, KeyOutlined, FileOutlined, MonitorOutlined, PieChartOutlined, DashboardOutlined } from '@ant-design/icons-vue';
-import { Modal } from 'ant-design-vue';
-import { getCacheInfo, getCacheNames, getCacheKeys, getCacheValue, deleteCacheName, deleteCacheKey, deleteCacheAll } from "@/api/monitor/cache";
+import CacheAPI, {type CacheInfo, type CacheForm, type CacheMonitor, type RedisInfo } from "@/api/monitor/cache";
 import * as echarts from 'echarts';
-import type { CacheInfo, CacheForm, CacheMonitor, RedisInfo } from './types';
 
 // 响应式状态定义
 const cacheNames = ref<CacheInfo[]>([]);
 const cacheKeys = ref<string[]>([]);
-const cacheForm = ref<CacheForm>({
-  cache_name: '',
-  cache_key: '', 
-  cache_value: ''
-});
 const loading = ref(true);
 const subLoading = ref(false);
 const nowCacheName = ref('');
+const commandstats = ref<HTMLElement | null>(null);
+const usedmemory = ref<HTMLElement | null>(null);
 const cache = ref<CacheMonitor>({
   info: {} as RedisInfo,
   command_stats: [],
   db_size: 0
 });
-const commandstats = ref<HTMLElement | null>(null);
-const usedmemory = ref<HTMLElement | null>(null);
+const cacheForm = ref<CacheForm>({
+  cache_name: '',
+  cache_key: '', 
+  cache_value: ''
+});
 
 let commandstatsInstance: echarts.ECharts | null = null;
 let usedmemoryInstance: echarts.ECharts | null = null;
-
-// 计算属性
-const tableContainerHeight = computed(() => `calc(100vh - 260px)`);
 
 const resetCacheForm = () => {
   cacheKeys.value = [];
@@ -201,19 +253,17 @@ const resetCacheForm = () => {
 };
 
 // 缓存名称相关方法
-const getCacheNameList = () => {
-  loading.value = true;
-  getCacheNames()
-    .then(({ data: result }) => {
-      cacheNames.value = result.data || [];
-      resetCacheForm();
-    })
-    .catch(error => {
-      console.error('获取缓存列表出错:', error);
-    })
-    .finally(() => {
-      loading.value = false;
-    });
+const getCacheNameList = async () => {
+  try {
+    loading.value = true;
+    const response = await CacheAPI.getCacheNames()
+    cacheNames.value = response.data.data;
+    resetCacheForm();
+  } catch (error) {
+    console.error('获取缓存列表出错:', error);
+  } finally {
+    loading.value = false;
+  }
 };
 
 // 刷新缓存列表
@@ -223,43 +273,46 @@ const refreshCacheNames = () => {
 
 // 清理缓存名称
 const handleClearCacheName = (row: CacheInfo) => {
-  Modal.confirm({
-    title: '确认清理',
-    content: `确定要清理缓存名称[${row.cache_name}]吗？`,
-    onOk() {
-      deleteCacheName(row.cache_name)
-        .then(() => {
-          getCacheNameList();
-        })
-        .catch(error => {
-          console.error('清理缓存失败:', error);
-        });
+  ElMessageBox.confirm(
+    `确定要清理缓存名称[${row.cache_name}]吗？`,
+    '确认清理',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  )
+  .then(async () => {
+    await CacheAPI.deleteCacheName(row.cache_name);
+    getCacheNameList();
+  })
+  .catch((error) => {
+    if (error !== 'cancel') {
+      console.error('清理缓存失败:', error);
     }
   });
 };
 
 // 缓存键名相关方法
-const getCacheKeyList = (row?: CacheInfo) => {
-  const cacheName = row?.cache_name || nowCacheName.value;
-  if (!cacheName) return;
-  
-  subLoading.value = true;
-  getCacheKeys(cacheName)
-    .then(({ data: result }) => {
-      cacheKeys.value = result.data || [];
-      nowCacheName.value = cacheName;
-      cacheForm.value = {
-        cache_name: cacheName,
-        cache_key: '',
-        cache_value: ''
-      };
-    })
-    .catch(error => {
-      console.error('获取缓存键名列表失败:', error);
-    })
-    .finally(() => {
-      subLoading.value = false;
-    });
+const getCacheKeyList = async (row?: CacheInfo) => {
+  try { 
+    const cacheName = row?.cache_name || nowCacheName.value;
+    if (!cacheName) return;
+    
+    subLoading.value = true;
+    const response = await CacheAPI.getCacheKeys(cacheName);
+    cacheKeys.value = response.data.data;
+    nowCacheName.value = cacheName;
+    cacheForm.value = {
+      cache_name: cacheName,
+      cache_key: '',
+      cache_value: ''
+    };
+  } catch (error) {
+    console.error('获取缓存键名列表出错:', error);
+  } finally {
+    subLoading.value = false;
+  }
 };
 
 // 刷新键名列表
@@ -269,63 +322,79 @@ const refreshCacheKeys = () => {
 
 // 清理缓存键名
 const handleClearCacheKey = (cacheKey: string) => {
-  Modal.confirm({
-    title: '确认清理',
-    content: `确定要清理缓存键名[${cacheKey}]吗？`,
-    onOk() {
-      deleteCacheKey(cacheKey)
-        .then(() => {
-          getCacheKeyList();
-        })
-        .catch(error => {
-          console.error('清理缓存键名失败:', error);
-        });
+  ElMessageBox.confirm(
+    `确定要清理缓存键名[${cacheKey}]吗？`,
+    '确认清理',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  )
+  .then(() => {
+    CacheAPI.deleteCacheKey(cacheKey);
+    getCacheKeyList();
+  })
+  .catch((error) => {
+    if (error !== 'cancel') {
+      console.error('清理缓存键名失败:', error);
     }
   });
 };
 
 // 缓存内容相关方法
-const handleCacheValue = (cacheKey: string) => {
-  getCacheValue(nowCacheName.value, cacheKey)
-    .then(({ data: result }) => {
-      cacheForm.value = result.data;
-    })
-    .catch(error => {
-      console.error('获取缓存内容失败:', error);
-    });
+const handleCacheValue = async (cacheKey: string) => {
+  try {
+    loading.value = true;
+    const response = await CacheAPI.getCacheValue(nowCacheName.value, cacheKey)
+    cacheForm.value = response.data.data;
+  } catch (error) {
+    console.error('获取缓存内容失败:', error);
+  } finally {
+    loading.value = false;
+  }
 };
 
 // 清理全部缓存
-const handleClearCacheAll = () => {
-  Modal.confirm({
-    title: '确认清理',
-    content: '确定要清理全部缓存吗？',
-    onOk() {
-      deleteCacheAll()
-        .then(() => {
-          getCacheNameList();
-        })
-        .catch(error => {
-          console.error('清理全部缓存失败:', error);
-        });
+const handleClearCacheAll = async () => {
+  ElMessageBox.confirm(
+    '确定要清理全部缓存吗？',
+    '确认清理',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  )
+  .then(() => {
+    return CacheAPI.deleteCacheAll();
+  })
+  .then(() => {
+    getCacheNameList();
+  })
+  .catch((error) => {
+    if (error !== 'cancel') {
+      console.error('清理全部缓存失败:', error);
     }
   });
 };
 
 // 监控数据获取
-const getInfo = () => {
-  getCacheInfo()
-    .then(({ data: result }) => {
-      cache.value = result.data || {
-          info: {},
-          command_stats: [],
-          dbSize: 0
-        };
-        initCharts();
-    })
-    .catch(error => {
-      console.error('获取缓存监控数据失败:', error);
-    });
+const getInfo = async () => {
+  try {
+    loading.value = true;
+    const response = await CacheAPI.getCacheInfo()
+    cache.value = response.data.data || {
+        info: {},
+        command_stats: [],
+        dbSize: 0
+      };
+      initCharts();
+  } catch (error) {
+    console.error('获取缓存监控数据失败:', error);
+  } finally {
+    loading.value = false;
+  }
 };
 
 // 图表初始化
@@ -388,21 +457,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped>
-.icon {
-  width: 1em;
-  height: 1em;
-  vertical-align: middle;
-}
-
-.title {
-  vertical-align: middle;
-  margin-left: 8px;
-}
-
-.mt-4 {
-  margin-top: 16px;
-}
+<style scoped lang="scss">
 
 .chart-container {
   height: 365px;

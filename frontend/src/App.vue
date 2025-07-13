@@ -1,98 +1,42 @@
 <template>
-  <ConfigProvider
-    :locale="zhCN"
-    :theme="{
-      algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
-      // algorithm: isDarkMode ? theme.compactAlgorithm : theme.defaultAlgorithm,
-
-      // // 自定义皮肤
-      // token: {
-      //   colorPrimary: '#00b96b',
-      //   colorBgContainer: '#fafafa',
-      //   colorPrimaryBg: '#e6f7ff',
-      //   colorLink: '#1890ff',
-      // },
-      // components: {
-      //   Radio: {
-      //     colorPrimary: '#00b96b',
-      //   },
-      // },
-    }"
-  >
-    <div id="app">
+  <el-config-provider :locale="locale" :size="size">
+    <!-- 开启水印 -->
+    <el-watermark
+      :font="{ color: fontColor }"
+      :content="showWatermark ? defaultSettings.watermarkContent : ''"
+      :z-index="9999"
+      class="wh-full"
+    >
       <router-view />
-    </div>
-  </ConfigProvider>
+    </el-watermark>
+  </el-config-provider>
 </template>
 
-<script lang="ts" setup>
-import { ConfigProvider, theme } from 'ant-design-vue'
-import zhCN from 'ant-design-vue/es/locale/zh_CN'
-import dayjs from 'dayjs'
-import 'dayjs/locale/zh-cn'
-import { ref, provide } from 'vue'
+<script setup lang="ts">
+import { useAppStore, useSettingsStore } from "@/store";
+import { defaultSettings } from "@/settings";
+import { ThemeMode } from "@/enums/settings/theme.enum";
+import { ComponentSize } from "@/enums/settings/layout.enum";
+import { ElNotification } from 'element-plus'
 
-dayjs.locale('zh-cn')
+const appStore = useAppStore();
+const settingsStore = useSettingsStore();
 
-// 主题状态
-const isDarkMode = ref(localStorage.getItem('theme') === 'dark')
+const locale = computed(() => appStore.locale);
+const size = computed(() => appStore.size as ComponentSize);
+const showWatermark = computed(() => settingsStore.showWatermark);
 
-// 提供主题状态和切换方法给所有子组件
-provide('isDarkMode', isDarkMode)
+// 明亮/暗黑主题水印字体颜色适配
+const fontColor = computed(() => {
+  return settingsStore.theme === ThemeMode.DARK ? "rgba(255, 255, 255, .15)" : "rgba(0, 0, 0, .15)";
+});
 
-// 全局切换主题方法
-const toggleTheme = (darkMode: boolean) => {
-  isDarkMode.value = darkMode
-  if (darkMode) {
-    document.documentElement.classList.add('dark')
-  } else {
-    document.documentElement.classList.remove('dark')
-  }
-}
-
-provide('toggleTheme', toggleTheme)
-
-// 初始化主题
-if (isDarkMode.value) {
-  document.documentElement.classList.add('dark')
-}
-
-// 禁用Promise reject输出控制台
-window.addEventListener('unhandledrejection', function browserRejectionHandler(event) {
-  event && event.preventDefault()
+ElNotification({
+  title: '提示',
+  type: 'warning',
+  duration: 0,
+  dangerouslyUseHTMLString: true,
+  message:
+    '<div><p><strong>遇事不决，请先查阅常见问题，说不定你能找到相关解答</strong></p><p><a href="https://gitee.com/tao__tao/fastapi_vue3_admin" target="_blank">链接地址</a></p></div>'
 })
 </script>
-
-<style>
-* {
-  margin: 0;
-  padding: 0;
-}
-
-body,
-html {
-  margin: 0;
-  width: 100%;
-  height: 100vh;
-}
-
-.ant-page-header {
-  padding: 20px 0;
-}
-
-.ant-table-thead > tr > th {
-  padding: 12px 8px !important;
-}
-
-.ant-table-wrapper .ant-table-tbody > tr > td {
-  padding: 12px 8px;
-}
-
-.ant-modal .ant-modal-header {
-  margin-bottom: 20px;
-}
-
-.ant-card {
-  background-color: var(--background-color);
-}
-</style>

@@ -1,683 +1,592 @@
 <template>
-    <!-- 分析页 -->
-    <div style="padding: 15px 0;">
-      <a-row :gutter="24">
-        <a-col :xl="6" :lg="12" :md="12" :sm="24" :xs="24">
-          <a-card :bodyStyle="{ padding: '20px 24px 8px' }">
-            <a-skeleton :loading="loading">
-              <div>
-                <span>总销售额</span>
-                <div style="float: right;">
-                  <a-tooltip title="指标说明" placement="top">
-                    <InfoCircleOutlined />
-                  </a-tooltip>
-                </div>
-                <div class="value">
-                  <span>¥ 126,560</span>
-                </div>
-              </div>
-              <div style="display: flex; height: 45px; padding-top: 10px;">
-                <div style="margin-right: 16px; align-self: flex-end;">
-                  <span>
-                    周同比
-                    <span style="margin-left: 8px;">
-                      12%
-                      <CaretUpOutlined style="color:red;" />
-                    </span>
-                  </span>
-                </div>
-                <div style="align-self: flex-end;">
-                  <span>
-                    日同比
-                    <span style="margin-left: 8px;">
-                      11%
-                      <CaretDownOutlined style="color:green;" />
-                    </span>
-                  </span>
-                </div>
-              </div>
-              <div style="border-top: 1px solid rgba(5, 5, 5, 0.06); margin-top: 10px; padding-top: 10px;">
-                <span>
-                  日销售额
-                  <span>￥12,423</span>
-                </span>
-              </div>
-            </a-skeleton>
-          </a-card>
-        </a-col>
-        <a-col :xl="6" :lg="12" :md="12" :sm="24" :xs="24">
-          <a-card :bodyStyle="{ padding: '20px 24px 8px' }">
-            <a-skeleton :loading="loading">
-              <div>
-                <span>访问量</span>
-                <div style="float: right;">
-                  <a-tooltip title="指标说明" placement="top">
-                    <InfoCircleOutlined />
-                  </a-tooltip>
-                </div>
-                <div class="value">
-                  <span>8,846</span>
-                </div>
-              </div>
-              <div style="height: 45px; padding-top: 10px;">
-                <v-chart class="line-chart" :option="visitOption" autoresize />
-              </div>
-              <div style="border-top: 1px solid rgba(5, 5, 5, 0.06); margin-top: 10px; padding-top: 10px;">
-                <span>
-                  日访问量
-                  <span>1,234</span>
-                </span>
-              </div>
-            </a-skeleton>
-          </a-card>
-        </a-col>
-        <a-col :xl="6" :lg="12" :md="12" :sm="24" :xs="24">
-          <a-card :bodyStyle="{ padding: '20px 24px 8px' }">
-            <a-skeleton :loading="loading">
-              <div>
-                <span>支付笔数</span>
-                <div style="float: right;">
-                  <a-tooltip title="指标说明" placement="top">
-                    <InfoCircleOutlined />
-                  </a-tooltip>
-                </div>
-                <div class="value">
-                  <span>6,560</span>
-                </div>
-              </div>
-              <div style="display: flex; height: 45px; padding-top: 10px;">
-                <v-chart class="payment-chart" :option="paymentOption" autoresize />
-              </div>
-              <div style="border-top: 1px solid rgba(5, 5, 5, 0.06); margin-top: 10px; padding-top: 10px;">
-                <span>
-                  转化率
-                  <span>60%</span>
-                </span>
-              </div>
-            </a-skeleton>
-          </a-card>
-        </a-col>
-        <a-col :xl="6" :lg="12" :md="12" :sm="24" :xs="24">
-          <a-card :bodyStyle="{ padding: '20px 24px 8px' }">
-            <a-skeleton :loading="loading">
-              <div>
-                <span>运营活动效果</span>
-                <div style="float: right;">
-                  <a-tooltip title="指标说明" placement="top">
-                    <InfoCircleOutlined />
-                  </a-tooltip>
-                </div>
-                <div class="value">
-                  <span>78%</span>
-                </div>
-              </div>
-              <div style="height: 45px; line-height: 45px; padding-top: 10px;">
-                <a-progress :percent="78" status="active" :strokeColor="{ from: '#108ee9', to: '#87d068' }" />
-              </div>
-              <div
-                style="display: flex; border-top: 1px solid rgba(5, 5, 5, 0.06); margin-top: 10px; padding-top: 10px;">
-                <div style="margin-right: 16px; align-self: flex-end;">
-                  <span>
-                    周同比
-                    <span style="margin-left: 8px;">
-                      12%
-                      <CaretUpOutlined style="color:red;" />
-                    </span>
-                  </span>
-                </div>
-                <div style="align-self: flex-end;">
-                  <span>
-                    日同比
-                    <span style="margin-left: 8px;">
-                      11%
-                      <CaretDownOutlined style="color:green;" />
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </a-skeleton>
-          </a-card>
-        </a-col>
-      </a-row>
-      <div style="margin-top: 25px;">
-        <a-card :tab-list="tabList" :active-tab-key="barTypeKey" @tabChange="onTabChange">
-          <a-skeleton :loading="loading">
-            <template #tabBarExtraContent>
-              <div class="extra-item" style="">
-                <a>今日</a>
-                <a>本周</a>
-                <a>本月</a>
-                <a>本年</a>
-              </div>
-              <a-range-picker :style="{ width: '256px' }" />
-            </template>
-            <div v-if="barTypeKey == 'sales'">
-              <a-row :gutter="24">
-                <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
-                  <v-chart :option="barOption" autoresize style="width: 100%; height: 300px;" />
-                </a-col>
-                <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
-                  <div class="rank">
-                    <h4>门店销售额排名</h4>
-                    <ul style="list-style: none; margin: 25px 0 0;">
-                      <li :key="i" v-for="(item, i) in barRank">
-                        <span class="active" v-if="i < 3">{{ i + 1 }}</span>
-                        <span v-else>{{ i + 1 }}</span>
-                        <span>{{ item }}</span>
-                        <span>323,234</span>
-                      </li>
-                    </ul>
-                  </div>
-                </a-col>
-              </a-row>
+  <div class="dashboard-container">
+    <!-- github 角标 -->
+    <GithubCorner class="github-corner" />
+
+    <el-card shadow="hover">
+      <div class="flex flex-wrap">
+        <!-- 左侧问候语区域 -->
+        <div class="flex-1 flex items-start">
+          <img class="w80px h80px rounded-full" :src="userStore.basicInfo.avatar + '?imageView2/1/w/80/h/80'" />
+          <div class="ml-5">
+            <div class="text-20px font-bold mb-5px">
+              {{ timefix }}{{ userStore.basicInfo.name }}，{{ welcome }}
             </div>
-            <div v-else>
-              <a-row :gutter="24">
-                <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
-                  <v-chart :option="barOption" autoresize style="width: 100%; height: 300px;" />
-                </a-col>
-                <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
-                  <div class="rank">
-                    <h4>门店访问量排名</h4>
-                    <ul style="list-style: none; margin: 25px 0 0;">
-                      <li :key="i" v-for="(item, i) in barRank">
-                        <span class="active" v-if="i < 3">{{ i + 1 }}</span>
-                        <span v-else>{{ i + 1 }}</span>
-                        <span>{{ item }}</span>
-                        <span>323,234</span>
-                      </li>
-                    </ul>
-                  </div>
-                </a-col>
-              </a-row>
+            <p class="text-sm text-gray">今日天气晴朗，气温在15℃至25℃之间，东南风。</p>
+          </div>
+        </div>
+
+        <!-- 右侧图标区域 - PC端 -->
+        <div class="hidden sm:block">
+          <div class="flex items-end space-x-6">
+            <!-- 仓库 -->
+            <div>
+              <div class="font-bold color-#ff9a2e text-sm flex items-center">
+                <el-icon class="mr-2px">
+                  <Folder />
+                </el-icon>
+                仓库
+              </div>
+              <div class="mt-3 whitespace-nowrap">
+                <el-link href="https://gitee.com/youlaiorg/vue3-element-admin" target="_blank">
+                  <div class="i-svg:gitee text-lg color-#F76560" />
+                </el-link>
+                <el-divider direction="vertical" />
+                <el-link href="https://github.com/youlaitech/vue3-element-admin" target="_blank">
+                  <div class="i-svg:github text-lg color-#4080FF" />
+                </el-link>
+                <el-divider direction="vertical" />
+                <el-link href="https://gitcode.com/youlai/vue3-element-admin" target="_blank">
+                  <div class="i-svg:gitcode text-lg color-#FF9A2E" />
+                </el-link>
+              </div>
             </div>
-          </a-skeleton>
-        </a-card>
+
+            <!-- 文档 -->
+            <div>
+              <div class="font-bold color-#4080ff text-sm flex items-center">
+                <el-icon class="mr-2px">
+                  <Document />
+                </el-icon>
+                文档
+              </div>
+              <div class="mt-3 whitespace-nowrap">
+                <el-link href="https://juejin.cn/post/7228990409909108793" target="_blank">
+                  <div class="i-svg:juejin text-lg" />
+                </el-link>
+                <el-divider direction="vertical" />
+                <el-link href="https://youlai.blog.csdn.net/article/details/130191394" target="_blank">
+                  <div class="i-svg:csdn text-lg" />
+                </el-link>
+                <el-divider direction="vertical" />
+                <el-link href="https://www.cnblogs.com/haoxianrui/p/17331952.html" target="_blank">
+                  <div class="i-svg:cnblogs text-lg" />
+                </el-link>
+              </div>
+            </div>
+
+            <!-- 视频 -->
+            <div>
+              <div class="font-bold color-#f76560 text-sm flex items-center">
+                <el-icon class="mr-2px">
+                  <VideoCamera />
+                </el-icon>
+                视频
+              </div>
+              <div class="mt-3 whitespace-nowrap">
+                <el-link href="https://www.bilibili.com/video/BV1eFUuYyEFj" target="_blank">
+                  <div class="i-svg:bilibili text-lg" />
+                </el-link>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 移动端图标区域 -->
+        <div class="w-full sm:hidden mt-3">
+          <div class="flex justify-end space-x-4 overflow-x-auto">
+            <!-- 仓库图标 -->
+            <el-link href="https://gitee.com/youlaiorg/vue3-element-admin" target="_blank">
+              <div class="i-svg:gitee text-lg color-#F76560" />
+            </el-link>
+            <el-link href="https://github.com/youlaitech/vue3-element-admin" target="_blank">
+              <div class="i-svg:github text-lg color-#4080FF" />
+            </el-link>
+            <el-link href="https://gitcode.com/youlai/vue3-element-admin" target="_blank">
+              <div class="i-svg:gitcode text-lg color-#FF9A2E" />
+            </el-link>
+
+            <!-- 文档图标 -->
+            <el-link href="https://juejin.cn/post/7228990409909108793" target="_blank">
+              <div class="i-svg:juejin text-lg" />
+            </el-link>
+            <el-link href="https://youlai.blog.csdn.net/article/details/130191394" target="_blank">
+              <div class="i-svg:csdn text-lg" />
+            </el-link>
+            <el-link href="https://www.cnblogs.com/haoxianrui/p/17331952.html" target="_blank">
+              <div class="i-svg:cnblogs text-lg" />
+            </el-link>
+
+            <!-- 视频图标 -->
+            <el-link href="https://www.bilibili.com/video/BV1eFUuYyEFj" target="_blank">
+              <div class="i-svg:bilibili text-lg" />
+            </el-link>
+          </div>
+        </div>
       </div>
-      <a-row :gutter="24" style="margin-top: 25px;">
-        <a-col :xl="12" :lg="24" :md="24" :sm="24" :xs="24">
-          <a-card title="线上热门搜索">
-            <a-skeleton :loading="loading">
-              <template #extra>
-                <a-dropdown placement="bottomRight">
-                  <template #overlay>
-                    <a-menu>
-                      <a-menu-item key="1">操作一</a-menu-item>
-                      <a-menu-item key="2">操作二</a-menu-item>
-                    </a-menu>
-                  </template>
-                  <EllipsisOutlined />
-                </a-dropdown>
-              </template>
+    </el-card>
 
-              <a-row :gutter="68">
-                <a-col :sm="12" :xs="24">
-                  <div>
-                    <span>搜索用户数</span>
-                    <span style="margin-left: 8px;">
-                      <a-tooltip title="指标说明" placement="top">
-                        <InfoCircleOutlined />
-                      </a-tooltip>
-                    </span>
-                  </div>
-                  <div style="margin-top: 5px;">
-                    <v-chart class="line-chart" :option="searchOption" autoresize />
-                  </div>
-                </a-col>
-                <a-col :sm="12" :xs="24">
-                  <div>
-                    <span>人均搜索次数</span>
-                    <span style="margin-left: 8px;">
-                      <a-tooltip title="指标说明" placement="top">
-                        <InfoCircleOutlined />
-                      </a-tooltip>
-                    </span>
-                  </div>
-                  <div style="margin-top: 5px;">
-                    <v-chart class="line-chart" :option="searchOption" autoresize />
-                  </div>
-                </a-col>
-              </a-row>
-              <div style="margin-top: 10px;">
-                <a-table row-key="index" size="small" :columns="searchColumns" :data-source="searchData"
-                  :pagination="{ pageSize: 5 }">
-                  <template v-slot:bodyCell="{ column, record }">
-                    <template v-if="column.dataIndex === 'keyword'">
-                      <a>{{ record.keyword }}</a>
-                    </template>
-                    <template v-if="column.dataIndex === 'range'">
-                      <span v-if="record.status === 0">
-                        {{ `${record.range}%` }}
-                        <CaretUpOutlined style="color:red;" />
-                      </span>
-                      <span v-else>
-                        {{ `${record.range}%` }}
-                        <CaretDownOutlined style="color:green;" />
-                      </span>
-                    </template>
-                  </template>
-                </a-table>
-              </div>
-            </a-skeleton>
-          </a-card>
-        </a-col>
-        <a-col :xl="12" :lg="24" :md="24" :sm="24" :xs="24">
-          <a-card title="销售额类别占比">
-            <a-skeleton :loading="loading">
-              <template #extra>
-                <span>
-                  <a-radio-group v-model:value="salesType" @change="salesTabChange">
-                    <a-radio-button value="all">全部渠道</a-radio-button>
-                    <a-radio-button value="online">线上</a-radio-button>
-                    <a-radio-button value="offline">门店</a-radio-button>
-                  </a-radio-group>
-                </span>
-                <span style="margin-left: 20px;">
-                  <a-dropdown placement="bottomRight">
-                    <template #overlay>
-                      <a-menu>
-                        <a-menu-item key="1">操作一</a-menu-item>
-                        <a-menu-item key="2">操作二</a-menu-item>
-                      </a-menu>
-                    </template>
-                    <EllipsisOutlined />
-                  </a-dropdown>
-                </span>
-              </template>
-              <span>
-                销售额
-                <v-chart class="pie-chart" :option="pieOptions" autoresize />
+    <!-- 数据统计 -->
+    <el-row :gutter="10" class="mt-4">
+      <!-- 在线用户数量 -->
+      <el-col :span="8" :xs="24" class="mb-xs-3">
+        <el-card shadow="hover" class="h-full flex flex-col">
+          <template #header>
+            <div class="flex-x-between">
+              <span class="text-gray">在线用户</span>
+              <el-tag type="danger" size="small">实时</el-tag>
+            </div>
+          </template>
+
+          <div class="flex-x-between mt-2 flex-1">
+            <div class="flex-y-center">
+              <span class="text-lg transition-all duration-300 hover:scale-110">
+                9999
               </span>
-            </a-skeleton>
-          </a-card>
-        </a-col>
-      </a-row>
-    </div>
+              <span v-if="true" class="ml-2 text-xs text-[#67c23a]">
+                <el-icon>
+                  <Connection />
+                </el-icon>
+                已连接
+              </span>
+              <span v-else class="ml-2 text-xs text-[#f56c6c]">
+                <el-icon>
+                  <Failed />
+                </el-icon>
+                未连接
+              </span>
+            </div>
+            <div class="i-svg:people w-8 h-8 animate-[pulse_2s_infinite]" />
+          </div>
 
+          <div class="flex-x-between mt-2 text-sm text-gray">
+            <span>更新时间</span>
+            <span>2025-07-12 00:00:00</span>
+          </div>
+        </el-card>
+      </el-col>
+
+      <!-- 访客数(UV) -->
+      <el-col :span="8" :xs="24" class="mb-xs-3">
+        <el-skeleton :loading="visitStatsLoading" :rows="5" animated>
+          <template #template>
+            <el-card>
+              <template #header>
+                <div>
+                  <el-skeleton-item variant="h3" style="width: 40%" />
+                  <el-skeleton-item variant="rect" style="float: right; width: 1em; height: 1em" />
+                </div>
+              </template>
+
+              <div class="flex-x-between">
+                <el-skeleton-item variant="text" style="width: 30%" />
+                <el-skeleton-item variant="circle" style="width: 2em; height: 2em" />
+              </div>
+              <div class="mt-5 flex-x-between">
+                <el-skeleton-item variant="text" style="width: 50%" />
+                <el-skeleton-item variant="text" style="width: 1em" />
+              </div>
+            </el-card>
+          </template>
+          <template v-if="!visitStatsLoading">
+            <el-card shadow="hover" class="h-full flex flex-col">
+              <template #header>
+                <div class="flex-x-between">
+                  <span class="text-gray">访客数(UV)</span>
+                  <el-tag type="success" size="small">日</el-tag>
+                </div>
+              </template>
+
+              <div class="flex-x-between mt-2 flex-1">
+                <div class="flex-y-center">
+                  <span class="text-lg">{{ Math.round(transitionUvCount) }}</span>
+                  <span :class="['text-xs', 'ml-2', computeGrowthRateClass(visitStatsData.uvGrowthRate)]">
+                    <el-icon>
+                      <Top v-if="visitStatsData.uvGrowthRate > 0" />
+                      <Bottom v-else-if="visitStatsData.uvGrowthRate < 0" />
+                    </el-icon>
+                    {{ formatGrowthRate(visitStatsData.uvGrowthRate) }}
+                  </span>
+                </div>
+                <div class="i-svg:visitor w-8 h-8" />
+              </div>
+
+              <div class="flex-x-between mt-2 text-sm text-gray">
+                <span>总访客数</span>
+                <span>{{ Math.round(transitionTotalUvCount) }}</span>
+              </div>
+            </el-card>
+          </template>
+        </el-skeleton>
+      </el-col>
+
+      <!-- 浏览量(PV) -->
+      <el-col :span="8" :xs="24">
+        <el-skeleton :loading="visitStatsLoading" :rows="5" animated>
+          <template #template>
+            <el-card>
+              <template #header>
+                <div>
+                  <el-skeleton-item variant="h3" style="width: 40%" />
+                  <el-skeleton-item variant="rect" style="float: right; width: 1em; height: 1em" />
+                </div>
+              </template>
+
+              <div class="flex-x-between">
+                <el-skeleton-item variant="text" style="width: 30%" />
+                <el-skeleton-item variant="circle" style="width: 2em; height: 2em" />
+              </div>
+              <div class="mt-5 flex-x-between">
+                <el-skeleton-item variant="text" style="width: 50%" />
+                <el-skeleton-item variant="text" style="width: 1em" />
+              </div>
+            </el-card>
+          </template>
+          <template v-if="!visitStatsLoading">
+            <el-card shadow="hover" class="h-full flex flex-col">
+              <template #header>
+                <div class="flex-x-between">
+                  <span class="text-gray">浏览量(PV)</span>
+                  <el-tag type="primary" size="small">日</el-tag>
+                </div>
+              </template>
+
+              <div class="flex-x-between mt-2 flex-1">
+                <div class="flex-y-center">
+                  <span class="text-lg">{{ Math.round(transitionPvCount) }}</span>
+                  <span :class="['text-xs', 'ml-2', computeGrowthRateClass(visitStatsData.pvGrowthRate)]">
+                    <el-icon>
+                      <Top v-if="visitStatsData.pvGrowthRate > 0" />
+                      <Bottom v-else-if="visitStatsData.pvGrowthRate < 0" />
+                    </el-icon>
+                    {{ formatGrowthRate(visitStatsData.pvGrowthRate) }}
+                  </span>
+                </div>
+                <div class="i-svg:browser w-8 h-8" />
+              </div>
+
+              <div class="flex-x-between mt-2 text-sm text-gray">
+                <span>总浏览量</span>
+                <span>{{ Math.round(transitionTotalPvCount) }}</span>
+              </div>
+            </el-card>
+          </template>
+        </el-skeleton>
+      </el-col>
+    </el-row>
+
+    <el-row :gutter="10" class="mt-4">
+      <!-- 访问趋势统计图 -->
+      <el-col :xs="24" :span="16">
+        <el-card>
+          <template #header>
+            <div class="flex-x-between">
+              <span>访问趋势</span>
+              <el-radio-group v-model="visitTrendDateRange" size="small">
+                <el-radio-button :value="7">近7天</el-radio-button>
+                <el-radio-button :value="30">近30天</el-radio-button>
+              </el-radio-group>
+            </div>
+          </template>
+          <ECharts :options="visitTrendChartOptions" height="400px" />
+        </el-card>
+      </el-col>
+      <!-- 最新动态 -->
+      <el-col :xs="24" :span="8">
+        <el-card>
+          <template #header>
+            <div class="flex-x-between">
+              <span class="header-title">最新动态</span>
+              <el-link type="primary" underline="never" href="https://gitee.com/youlaiorg/vue3-element-admin/releases"
+                target="_blank">
+                完整记录
+                <el-icon class="link-icon">
+                  <TopRight />
+                </el-icon>
+              </el-link>
+            </div>
+          </template>
+
+          <el-scrollbar height="400px">
+            <el-timeline class="p-3">
+              <el-timeline-item v-for="(item, index) in vesionList" :key="index" :timestamp="item.date" placement="top"
+                :color="index === 0 ? '#67C23A' : '#909399'" :hollow="index !== 0" size="large">
+                <div class="version-item" :class="{ 'latest-item': index === 0 }">
+                  <div>
+                    <el-text tag="strong">{{ item.title }}</el-text>
+                    <el-tag v-if="item.tag" :type="index === 0 ? 'success' : 'info'" size="small">
+                      {{ item.tag }}
+                    </el-tag>
+                  </div>
+
+                  <el-text class="version-content">{{ item.content }}</el-text>
+
+                  <div v-if="item.link">
+                    <el-link :type="index === 0 ? 'primary' : 'info'" :href="item.link" target="_blank"
+                      underline="never">
+                      详情
+                      <el-icon class="link-icon">
+                        <TopRight />
+                      </el-icon>
+                    </el-link>
+                  </div>
+                </div>
+              </el-timeline-item>
+            </el-timeline>
+          </el-scrollbar>
+        </el-card>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
-
-
-<script lang="ts" setup>
-// 分析页
-import { ref, reactive } from 'vue';
-import { InfoCircleOutlined, CaretUpOutlined, CaretDownOutlined, EllipsisOutlined } from '@ant-design/icons-vue';
-import { getRangeDate } from '@/utils/util'
-
-const loading = ref(true);
-
-let y: number[] = [];
-for (let i = 0; i < 15; i += 1) {
-  y.push(Math.ceil(Math.random() * 10 % 9))
-}
-let x: string[] = getRangeDate('2024-03-01', '2024-03-15');
-
-const visitOption = {
-  color: '#2289ff',
-  grid: {
-    left: '-5%',
-    right: '0%',
-    bottom: '100%',
-    containLabel: true
-  },
-  tooltip: {
-    trigger: 'axis',
-  },
-  xAxis: {
-    type: 'category',
-    boundaryGap: false,
-    show: false,
-    data: x
-  },
-  yAxis: {
-    type: 'value',
-    show: false,
-    splitLine: {
-      show: false
-    }
-  },
-  series: [
-    {
-      data: y,
-      type: 'line',
-      smooth: true,
-      lineStyle: {
-        width: 0
-      },
-      showSymbol: false,
-      areaStyle: {},
-    }
-  ]
-};
-
-const paymentOption = {
-  color: '#2289ff',
-  grid: {
-    left: '-5%',
-    right: '0%',
-    bottom: '100%',
-    containLabel: true
-  },
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: {
-      type: 'shadow'
-    }
-  },
-  xAxis: {
-    type: 'category',
-    show: false,
-    data: x
-  },
-  yAxis: {
-    type: 'value',
-    show: false,
-    splitLine: {
-      show: false
-    }
-  },
-  series: [
-    {
-      data: y,
-      type: 'bar'
-    }
-  ]
-};
-
-const tabList = [
-  {
-    key: 'sales',
-    tab: '销售额',
-  },
-  {
-    key: 'visit',
-    tab: '访问量',
-  },
-];
-const barTypeKey = ref('sales');
-
-let bar_x: string[] = [];
-let bar_y = [1106, 505, 845, 778, 1098, 762, 615, 345, 343, 1177, 431, 813];
-
-for (let i = 1; i < 13; i += 1) {
-  bar_x.push(`${i}月`)
-}
-
-const barOption = reactive({
-  color: '#2289ff',
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: {
-      type: 'shadow'
-    }
-  },
-  grid: {
-    left: '3%',
-    right: '0%',
-    bottom: '3%',
-    containLabel: true
-  },
-  xAxis: [
-    {
-      type: 'category',
-      data: bar_x,
-      axisTick: {
-        alignWithLabel: true
-      }
-    }
-  ],
-  yAxis: [
-    {
-      type: 'value'
-    }
-  ],
-  series: [
-    {
-      name: '销售量',
-      type: 'bar',
-      barWidth: '50%',
-      data: bar_y
-    }
-  ]
+<script setup lang="ts">
+defineOptions({
+  name: "Dashboard",
+  inheritAttrs: false,
 });
 
-let barRank: string[] = [];
-for (let i = 0; i < 7; i += 1) {
-  barRank.push(`工专路${i}号店`)
+import { dayjs } from "element-plus";
+import { useUserStore } from "@/store/modules/user.store";
+import { formatGrowthRate } from "@/utils";
+import { useTransition } from "@vueuse/core";
+import { Connection, Failed } from "@element-plus/icons-vue";
+import { greetings } from '@/utils/common';
+
+const timefix = greetings();
+const welcome = '祝你开心每一天！';
+
+
+interface VersionItem {
+  id: string;
+  title: string; // 版本标题（如：v2.4.0）
+  date: string; // 发布时间
+  content: string; // 版本描述
+  link: string; // 详情链接
+  tag?: string; // 版本标签（可选）
 }
 
-const onTabChange = (value: string) => {
-  barTypeKey.value = value;
-  barOption.series[0].name = value == 'sales' ? '销售量' : '访问量';
-};
+const userStore = useUserStore();
 
-let search_y: number[] = [];
-for (let i = 0; i < 7; i += 1) {
-  search_y.push(Math.ceil(Math.random() * 10 % 9))
-}
-let search_x: string[] = getRangeDate('2024-03-01', '2024-03-07');
+// 当前通知公告列表
+const vesionList = ref<VersionItem[]>([
+  {
+    id: "1",
+    title: "v3.2.1",
+    date: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+    content: "优化性能，修复若干小bug。",
+    link: "https://gitee.com/youlaiorg/vue3-element-admin/releases",
+    tag: "更新",
+  },
+  {
+    id: "2",
+    title: "v3.2.0",
+    date: dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
+    content: "新增用户行为分析功能。",
+    link: "https://gitee.com/youlaiorg/vue3-element-admin/releases",
+    tag: "新功能",
+  },
+  {
+    id: "3",
+    title: "v3.1.0",
+    date: dayjs().subtract(3, 'day').format('YYYY-MM-DD HH:mm:ss'),
+    content: "优化权限管理系统。",
+    link: "https://gitee.com/youlaiorg/vue3-element-admin/releases",
+    tag: "优化",
+  },
+]);
 
-const searchOption = {
-  color: '#2289ff',
-  grid: {
-    left: '-6%',
-    right: '0%',
-    bottom: '100%',
-    containLabel: true
-  },
-  tooltip: {
-    trigger: 'axis',
-  },
-  xAxis: {
-    type: 'category',
-    boundaryGap: false,
-    show: false,
-    data: search_x
-  },
-  yAxis: {
-    type: 'value',
-    show: false,
-    splitLine: {
-      show: false
-    }
-  },
-  series: [
-    {
-      data: search_y,
-      type: 'line',
-      smooth: true,
-      lineStyle: {
-        width: 0
+// 访客统计数据加载状态
+const visitStatsLoading = ref(true);
+// 访客统计数据
+const visitStatsData = ref({
+  todayUvCount: 0,
+  uvGrowthRate: 0,
+  totalUvCount: 0,
+  todayPvCount: 0,
+  pvGrowthRate: 0,
+  totalPvCount: 0,
+});
+
+// 数字过渡动画
+const transitionUvCount = useTransition(
+  computed(() => visitStatsData.value.todayUvCount),
+  {
+    duration: 1000,
+    transition: [0.25, 0.1, 0.25, 1.0], // CSS cubic-bezier
+  }
+);
+
+const transitionTotalUvCount = useTransition(
+  computed(() => visitStatsData.value.totalUvCount),
+  {
+    duration: 1200,
+    transition: [0.25, 0.1, 0.25, 1.0],
+  }
+);
+
+const transitionPvCount = useTransition(
+  computed(() => visitStatsData.value.todayPvCount),
+  {
+    duration: 1000,
+    transition: [0.25, 0.1, 0.25, 1.0],
+  }
+);
+
+const transitionTotalPvCount = useTransition(
+  computed(() => visitStatsData.value.totalPvCount),
+  {
+    duration: 1200,
+    transition: [0.25, 0.1, 0.25, 1.0],
+  }
+);
+
+// 访问趋势日期范围（单位：天）
+const visitTrendDateRange = ref(7);
+// 访问趋势图表配置
+const visitTrendChartOptions = ref();
+
+/**
+ * 更新访问趋势图表的配置项
+ *
+ * @param data - 访问趋势数据
+ */
+const updateVisitTrendChartOptions = () => {
+  visitTrendChartOptions.value = {
+    tooltip: {
+      trigger: "axis",
+    },
+    legend: {
+      data: ["浏览量(PV)", "访客数(UV)"],
+      bottom: 0,
+    },
+    grid: {
+      left: "1%",
+      right: "5%",
+      bottom: "10%",
+      containLabel: true,
+    },
+    xAxis: {
+      type: "category",
+      data: Array.from({ length: visitTrendDateRange.value }, (_, index) =>
+        dayjs().subtract(visitTrendDateRange.value - index - 1, "day").format("YYYY-MM-DD")
+      ),
+    },
+    yAxis: {
+      type: "value",
+      splitLine: {
+        show: true,
+        lineStyle: {
+          type: "dashed",
+        },
       },
-      showSymbol: false,
-      areaStyle: {},
-    }
-  ]
+    },
+    series: [
+      {
+        name: "浏览量(PV)",
+        type: "line",
+        data: Array.from({ length: visitTrendDateRange.value }, () =>
+          Math.floor(Math.random() * 500) + 100
+        ),
+        areaStyle: {
+          color: "rgba(64, 158, 255, 0.1)",
+        },
+        smooth: true,
+        itemStyle: {
+          color: "#4080FF",
+        },
+        lineStyle: {
+          color: "#4080FF",
+        },
+      },
+      {
+        name: "访客数(UV)",
+        type: "line",
+        data: Array.from({ length: visitTrendDateRange.value }, () =>
+          Math.floor(Math.random() * 200) + 50
+        ),
+        areaStyle: {
+          color: "rgba(103, 194, 58, 0.1)",
+        },
+        smooth: true,
+        itemStyle: {
+          color: "#67C23A",
+        },
+        lineStyle: {
+          color: "#67C23A",
+        },
+      },
+    ],
+  };
 };
 
-const searchColumns = [
-  {
-    dataIndex: 'index',
-    title: '排名',
-    width: 90
-  },
-  {
-    dataIndex: 'keyword',
-    title: '搜索关键词'
-  },
-  {
-    dataIndex: 'count',
-    title: '用户数',
-    sorter: (a, b) => a.count - b.count
-  },
-  {
-    dataIndex: 'range',
-    title: '周涨幅',
-    sorter: (a, b) => a.range - b.range
+/**
+ * 根据增长率计算对应的 CSS 类名
+ *
+ * @param growthRate - 增长率数值
+ */
+const computeGrowthRateClass = (growthRate?: number): string => {
+  if (!growthRate) {
+    return "text-[--el-color-info]";
   }
-];
-const searchData = [];
-for (let i = 0; i < 50; i += 1) {
-  searchData.push({
-    index: i + 1,
-    keyword: `搜索关键词-${i}`,
-    count: Math.floor(Math.random() * 1000),
-    range: Math.floor(Math.random() * 100),
-    status: Math.floor((Math.random() * 10) % 2)
-  })
-}
-
-const salesType = ref('all');
-
-const salesTabChange = (item: any) => {
-  if (item.target.value == 'all') {
-    pieOptions.value.series[0].data = [
-      { value: 1231, name: '其他' },
-      { value: 1231, name: '母婴产品' },
-      { value: 2341, name: '服饰箱包' },
-      { value: 3113, name: '个护健康' },
-      { value: 3321, name: '食用酒水' },
-      { value: 4544, name: '家用电器' }
-    ]
-  } else if (item.target.value == 'online') {
-    pieOptions.value.series[0].data = [
-      { value: 111, name: '其他' },
-      { value: 121, name: '母婴产品' },
-      { value: 41, name: '服饰箱包' },
-      { value: 311, name: '个护健康' },
-      { value: 321, name: '食用酒水' },
-      { value: 244, name: '家用电器' }
-    ]
+  if (growthRate > 0) {
+    return "text-[--el-color-danger]";
+  } else if (growthRate < 0) {
+    return "text-[--el-color-success]";
   } else {
-    pieOptions.value.series[0].data = [
-      { value: 65, name: '其他' },
-      { value: 0, name: '母婴产品' },
-      { value: 255, name: '服饰箱包' },
-      { value: 344, name: '个护健康' },
-      { value: 188, name: '食用酒水' },
-      { value: 99, name: '家用电器' }
-    ]
+    return "text-[--el-color-info]";
   }
-}
-const pieOptions = ref({
-  tooltip: {
-    trigger: 'item'
+};
+
+// 监听访问趋势日期范围的变化，重新获取趋势数据
+watch(
+  () => visitTrendDateRange.value,
+  () => {
+    updateVisitTrendChartOptions();
   },
-  series: [
-    {
-      type: 'pie',
-      radius: ['40%', '70%'],
-      data: [
-        { value: 1231, name: '其他' },
-        { value: 1231, name: '母婴产品' },
-        { value: 2341, name: '服饰箱包' },
-        { value: 3113, name: '个护健康' },
-        { value: 3321, name: '食用酒水' },
-        { value: 4544, name: '家用电器' }
-      ],
-      itemStyle: {
-        color: function (colors) {
-          var colorList = [
-            '#68c738',
-            '#7f6bff',
-            '#d787ff',
-            '#f18e56',
-            '#0dcccc',
-            '#2389ff'
-          ];
-          return colorList[colors.dataIndex];
-        }
-      }
-    }
-  ]
-})
+  { immediate: true }
+);
 
-setTimeout(() => {
-  loading.value = false;
-}, 500);
-
-
-// 财务分析
-
-
-
-
-
+// 组件挂载后加载访客统计数据和通知公告数据
+onMounted(() => {
+  visitStatsLoading.value = false;
+  visitStatsData.value = {
+    todayUvCount: Math.floor(Math.random() * 200) + 50,
+    uvGrowthRate: parseFloat((Math.random() * 20 - 10).toFixed(2)),
+    totalUvCount: Math.floor(Math.random() * 5000) + 1000,
+    todayPvCount: Math.floor(Math.random() * 500) + 100,
+    pvGrowthRate: parseFloat((Math.random() * 20 - 10).toFixed(2)),
+    totalPvCount: Math.floor(Math.random() * 20000) + 5000,
+  };
+  updateVisitTrendChartOptions();
+});
 </script>
 
-
 <style lang="scss" scoped>
+.dashboard-container {
+  position: relative;
+  padding: 16px;
 
-.value {
-  height: 38px;
-  padding-top: 4px;
-  font-size: 30px;
-  line-height: 38px;
-  word-break: break-all;
-}
-
-.line-chart {
-  width: 100%;
-  height: 45px;
-}
-
-.payment-chart {
-  width: 100%;
-  height: 45px;
-}
-
-.extra-item {
-  display: inline-block;
-
-  a {
-    margin-right: 25px;
+  .github-corner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    border: 0;
   }
 
-  a:hover {
-    color: #1890ff;
-  }
-}
+  .version-item {
+    padding: 16px;
+    margin-bottom: 12px;
+    background: var(--el-fill-color-lighter);
+    border-radius: 8px;
+    transition: all 0.2s;
 
-.rank {
-  padding: 0 32px 32px 72px;
-
-  h4 {
-    font-size: 14px;
-    font-weight: normal;
-  }
-
-  ul li {
-    margin-top: 16px;
-  }
-
-  ul li span {
-    &:first-child {
-      background-color: var(--background-color);
-      border-radius: 20px;
-      display: inline-block;
-      font-size: 12px;
-      font-weight: 600;
-      margin-right: 24px;
-      height: 20px;
-      line-height: 20px;
-      width: 20px;
-      text-align: center;
-      color: var( --text-color);
+    &.latest-item {
+      background: var(--el-color-primary-light-9);
+      border: 1px solid var(--el-color-primary-light-5);
     }
 
-    &:last-child {
-      float: right;
+    &:hover {
+      transform: translateX(5px);
     }
 
-    &.active {
-      background-color: var(--background-color);
-      color: var(--text-colorr);
+    .version-content {
+      margin-bottom: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--el-text-color-secondary);
     }
   }
-}
-
-.pie-chart {
-  width: 100%;
-  height: 350px;
 }
 </style>

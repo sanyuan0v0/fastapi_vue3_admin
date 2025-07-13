@@ -29,7 +29,7 @@ class BaseSchema(BaseModel):
 class BatchSetAvailable(BaseModel):
     """批量设置可用状态的请求模型"""
     ids: List[int] = Field(default_factory=list, description="ID列表")
-    available: bool = Field(default=True, description="是否可用")
+    status: bool = Field(default=True, description="是否可用")
 
 
 class UploadResponseSchema(BaseModel):

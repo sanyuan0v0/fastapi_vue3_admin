@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional
 from fastapi import Query
 
-
+from app.core.validator import DateTimeStr
 
 class UserQueryParams:
     """用户管理查询参数"""
@@ -16,7 +16,7 @@ class UserQueryParams:
             mobile: Optional[str] = Query(None, description="手机号", pattern=r'^1[3-9]\d{9}$'),
             email: Optional[str] = Query(None, description="邮箱", pattern=r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'), 
             dept_id: Optional[int] = Query(None, description="部门ID"),
-            available: Optional[bool] = Query(None, description="是否可用"),
+            status: Optional[bool] = Query(None, description="是否可用"),
             start_time: Optional[str] = Query(None, description="开始时间"),
             end_time: Optional[str] = Query(None, description="结束时间"),
             creator: Optional[int] = Query(None, description="创建人"),
@@ -32,7 +32,7 @@ class UserQueryParams:
         # 精确查询字段
         self.dept_id = dept_id
         self.creator_id = creator
-        self.available = available
+        self.status = status
         
         # 时间范围查询
         if start_time and end_time:

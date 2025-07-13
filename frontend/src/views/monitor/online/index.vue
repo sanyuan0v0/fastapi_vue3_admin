@@ -1,166 +1,217 @@
+<!-- 在线用户 -->
 <template>
+  <div class="app-container">
+    <!-- 搜索区域 -->
+    <div class="search-container">
+      <el-form ref="queryFormRef" :model="queryFormData" :inline="true">
+        <el-form-item prop="ipaddr" label="IP地址">
+          <el-input v-model="queryFormData.ipaddr" placeholder="请输入IP地址" clearable />
+        </el-form-item>
+        <el-form-item prop="name" label="用户名">
+          <el-input v-model="queryFormData.name" placeholder="请输入用户名" clearable />
+        </el-form-item>
+        <el-form-item prop="login_location" label="登录位置">
+          <el-input v-model="queryFormData.login_location" placeholder="请输入登录位置" clearable />
+        </el-form-item>
+        <!-- 查询、重置、展开/收起按钮 -->
+        <el-form-item class="search-buttons">
+          <el-button type="primary" icon="search" @click="handleQuery">查询</el-button>
+          <el-button icon="refresh" @click="handleResetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
 
+    <!-- 内容区域 -->
+    <el-card shadow="hover" class="data-table">
+      <template #header>
+        <div class="card-header">
+          <span>
+            <el-tooltip content="在线用户列表">
+              <QuestionFilled class="w-4 h-4 mx-1" />
+            </el-tooltip>
+            在线用户列表
+          </span>
+        </div>
+      </template>
 
-  <!-- 搜索表单 -->
-  <div class="table-search-wrapper">
-    <a-card >
-      <a-form :model="queryState" @finish="onFinish" >
-        <a-flex wrap="wrap" gap="middle">
-            <a-form-item name="ipaddr" label="主机" >
-              <a-input v-model:value="queryState.ipaddr" placeholder="请输入主机地址" allowClear style="width: 200px;"></a-input>
-            </a-form-item>
-            <a-form-item name="user_name" label="用户名" >
-              <a-input v-model:value="queryState.name" placeholder="请输入登陆用户名称" allowClear style="width: 200px;"></a-input>
-            </a-form-item>
-            <a-form-item name="login_location" label="登陆地点" >
-              <a-input v-model:value="queryState.login_location" placeholder="请输入登陆地点" allowClear style="width: 200px;"></a-input>
-            </a-form-item>
-            <a-button type="primary" html-type="submit" :loading="loading">查询</a-button>
-            <a-button @click="resetQuery">重置</a-button>
-        </a-flex>
-      </a-form>
-    </a-card>
-  </div>
-
-  <div class="table-wrapper">
-    <a-card title="在线用户列表"
-      
-      >
-      <a-table
-        :rowKey="record => record.session_id"
-        :columns="columns"
-        :data-source="dataSource"
-        :loading="loading"
-        @change="handlePageChange"
-        :pagination="pagination"
-        :scroll="{ x: 500, y: 'calc(100vh - 490px)' }"
-        :style="{ minHeight: 'calc(100vh - 430px)' }"
-        >
-        <template #bodyCell="{ column, record, index }">
-          <template v-if="column.dataIndex === 'index'">
-            <span>{{ (pagination.current - 1) * pagination.pageSize + index + 1 }}</span>
-          </template>
-          <template v-if="column.dataIndex === 'operation'">
-            <a-button type="link" @click="handleForceLogout(record)" danger>
-              <template #icon>
-                <DeleteOutlined />
-                强退
+      <!-- 功能区域 -->
+      <div class="data-table__toolbar">
+        <div class="data-table__toolbar--actions">
+          <el-button :disabled="selectIds.length === 0" type="danger" icon="delete"
+            @click="handleSubmit()">批量强退</el-button>
+        </div>
+        <div class="data-table__toolbar--tools">
+          <el-tooltip content="刷新">
+            <el-button type="primary" icon="refresh" circle @click="handleRefresh" />
+          </el-tooltip>
+          <el-tooltip content="列表筛选">
+            <el-dropdown trigger="click">
+              <el-button type="default" icon="operation" circle />
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item v-for="column in tableColumns" :key="column.prop" :command="column">
+                    <el-checkbox v-model="column.show">{{ column.label }}</el-checkbox>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
               </template>
-            </a-button>
-          </template>
+            </el-dropdown>
+          </el-tooltip>
+        </div>
+      </div>
+
+      <!-- 表格区域：系统配置列表 -->
+      <el-table ref="dataTableRef" v-loading="loading" :data="pageTableData" highlight-current-row
+        class="data-table__content" height="450" border stripe @selection-change="handleSelectionChange">
+        <template #empty>
+          <el-empty :image-size="80" description="暂无数据" />
         </template>
-      </a-table>
-    </a-card>
+
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" width="55"
+          align="center" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号"
+          width="60" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'session_id')?.show" key="session_id" label="会话编号"
+          prop="session_id" min-width="80" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'ipaddr')?.show" key="ipaddr" label="IP地址"
+          prop="ipaddr" min-width="80" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" key="name" label="用户名" prop="name"
+          min-width="80" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'user_name')?.show" key="user_name" label="用户姓名"
+          prop="user_name" min-width="80" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'login_location')?.show" key="login_location"
+          label="登录位置" prop="login_location" min-width="80" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'os')?.show" key="os" label="操作系统" prop="os"
+          min-width="80" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'login_time')?.show" key="login_time" label="登录时间"
+          prop="login_time" min-width="80" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" key="operation" fixed="right"
+          label="操作" min-width="60">
+          <template #default="scope">
+            <el-button type="danger" size="small" link icon="delete" @click="handleSubmit(scope.row.session_id)">强退
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <!-- 分页区域 -->
+      <template #footer>
+        <pagination v-model:total="total" v-model:page="queryFormData.page_no" v-model:limit="queryFormData.page_size"
+          @pagination="loadingData" />
+      </template>
+    </el-card>
+
   </div>
 
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from 'vue';
-import { DeleteOutlined } from '@ant-design/icons-vue';
-import { Modal } from 'ant-design-vue';
-import { getOnlineList, deleteOnline} from "@/api/monitor/online";
-import type { searchType, OnlineUser } from './types';
+defineOptions({
+  name: "Notice",
+  inheritAttrs: false,
+});
 
-const dataSource = ref<OnlineUser[]>([]);
+import OnlineAPI, { type OnlineUserPageQuery, type OnlineUserTable } from "@/api/monitor/online";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { useDebounceFn } from "@vueuse/core";
+
+const queryFormRef = ref();
+const total = ref(0);
+const selectIds = ref<number[]>([]);
 const loading = ref(false);
-const queryState = reactive<searchType>({});
 
-const columns = [
-  { title: '会话编号', width: 320, dataIndex: 'session_id', key: 'sessionId', ellipsis: true },
-  { title: '登录名称', width: 80, dataIndex: 'name', key: 'name', align: 'center', ellipsis: true },
-  { title: '用户账号', width: 80, dataIndex: 'user_name', key: 'userName', align: 'center', ellipsis: true },
-  { title: '主机', width: 130, dataIndex: 'ipaddr', key: 'ipaddr', align: 'center', ellipsis: true },
-  { title: '登录地点', dataIndex: 'login_location', key: 'loginLocation', align: 'center', ellipsis: true },
-  { title: '操作系统', dataIndex: 'os', key: 'os', align: 'center', ellipsis: true },
-  { title: '登录时间', dataIndex: 'login_time', key: 'loginTime', align: 'center', ellipsis: true, width: 180 },
-  { title: '操作', dataIndex: 'operation', key: 'operation', align: 'center', width: 120 }
-];
+// 分页表单
+const pageTableData = ref<OnlineUserTable[]>([]);
 
-const pagination = reactive({
-  current: 1,
-  pageSize: 10,
-  defaultPageSize: 10,
-  showSizeChanger: true,
-  total: dataSource.value.length,
-  showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条 / 总共 ${total} 条`
-})
 
-const onFinish = () => {
-  pagination.current = 1;
+// 表格列配置
+const tableColumns = ref([
+  { label: '选择框', prop: 'selection', show: true },
+  { label: '序号', prop: 'index', show: true },
+  { label: '会话编号', prop: 'session_id', show: true },
+  { label: '登录名称', prop: 'name', show: true },
+  { label: '用户账号', prop: 'user_name', show: true },
+  { label: '主机', prop: 'ipaddr', show: true },
+  { label: '登录地点', prop: 'login_location', show: true },
+  { label: '操作系统', prop: 'os', show: true },
+  { label: '登录时间', prop: 'login_time', show: true },
+  { label: '操作', prop: 'operation', show: true }
+]);
+
+// 分页查询参数
+const queryFormData = reactive<OnlineUserPageQuery>({
+  page_no: 1,
+  page_size: 10,
+  name: undefined,
+  login_location: undefined,
+  ipaddr: undefined
+});
+
+// 刷新数据(防抖)
+const handleRefresh = useDebounceFn(() => {
   loadingData();
-};
+  ElMessage.success("刷新成功");
+}, 1000);
 
-const loadingData = async () => {
+// 加载表格数据
+async function loadingData() {
   loading.value = true;
-
-  let params = {};
-
-  if (queryState.ipaddr) {
-    params['ipaddr'] = queryState.ipaddr
+  try {
+    const response = await OnlineAPI.getOnlineList(queryFormData);
+    pageTableData.value = response.data.data.items;
+    total.value = response.data.data.total;
   }
-
-  if (queryState.name) {
-    params['name'] = queryState.name
+  catch (error: any) {
+    ElMessage.error(error.message);
   }
-
-  if (queryState.login_location) {
-    params['login_location'] = queryState.login_location
-  }
-
-  params['page_no'] = pagination.current;
-  params['page_size'] = pagination.pageSize;
-
-  getOnlineList(params).then(response => {
-    const result = response.data;
-    dataSource.value = result.data.items;
-    pagination.total = result.data.total;
-    pagination.current = result.data.page_no;
-    pagination.pageSize = result.data.page_size;
-  }).catch(error => {
-    console.log(error);
-  }).finally(() => {
+  finally {
     loading.value = false;
-  });
-};
+  }
+}
 
-const resetQuery = () => {
-  Object.keys(queryState).forEach((key: string) => {
-    delete queryState[key];
-  });
-  pagination.current = 1;
+// 查询（重置页码后获取数据）
+async function handleQuery() {
+  queryFormData.page_no = 1;
   loadingData();
-};
+}
 
-const handleForceLogout = (row: OnlineUser) => {
-  if (!row?.session_id) return;
-  Modal.confirm({
-    title: '确认提示',
-    content: `是否确认强退名称为"${row.user_name}"的用户?`,
-    async onOk() {
+// 重置查询
+async function handleResetQuery() {
+  queryFormRef.value.resetFields();
+  queryFormData.page_no = 1;
+  loadingData();
+}
+
+// 行复选框选中项变化
+async function handleSelectionChange(selection: any) {
+  selectIds.value = selection.map((item: any) => item.id);
+}
+
+// 强制退出
+async function handleSubmit(id?: number) {
+  if (!id && !selectIds.value.length) {
+    ElMessageBox.confirm("确认强制退出选中项?", "警告", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    }).then(async () => {
       try {
-        await deleteOnline(row.session_id);
-        await loadingData();
-      } catch (error) {
-        console.error('强退失败:', error);
+        loading.value = true;
+        await OnlineAPI.deleteOnline({ id: id ? id : selectIds.value });
+        handleResetQuery();
+      } catch (error: any) {
+        ElMessage.error(error.message);
+      } finally {
+        loading.value = false;
       }
-    }
-  });
-};
+    }).catch(() => {
+      ElMessage.info('已取消强退');
+    });
+  }
+}
 
-const handlePageChange = (values: any) => {
-  pagination.current = values.current;
-  pagination.pageSize = values.pageSize;
+onMounted(() => {
   loadingData();
-};
-
-
-onMounted(() => loadingData());
-
+});
 </script>
 
-<style lang="scss" scoped>
-.table-search-wrapper {
-  margin-block-end: 16px;
-}
-</style>
+<style lang="scss" scoped></style>

@@ -85,10 +85,10 @@ class DeptService:
         if exist_dept and exist_dept.id != data.id:
             raise CustomException(msg='更新失败，部门名称重复')
         dept = await DeptCRUD(auth).update(id=data.id, data=data)
-        if data.available:
-            await cls.batch_set_available_service(auth=auth, data=BatchSetAvailable(ids=[data.id], available=True))
+        if data.status:
+            await cls.batch_set_available_service(auth=auth, data=BatchSetAvailable(ids=[data.id], status=True))
         else:
-            await cls.batch_set_available_service(auth=auth, data=BatchSetAvailable(ids=[data.id], available=False))
+            await cls.batch_set_available_service(auth=auth, data=BatchSetAvailable(ids=[data.id], status=False))
         return DeptOutSchema.model_validate(dept).model_dump()
 
     @classmethod
@@ -115,7 +115,7 @@ class DeptService:
         dept_list = await DeptCRUD(auth).get_list_crud()
         total_ids = []
         
-        if data.available:
+        if data.status:
             id_map = get_parent_id_map(model_list=dept_list)
             for dept_id in data.ids:
                 enable_ids = get_parent_recursion(id=dept_id, id_map=id_map)
@@ -126,4 +126,4 @@ class DeptService:
                 disable_ids = get_child_recursion(id=dept_id, id_map=id_map)
                 total_ids.extend(disable_ids)
 
-        await DeptCRUD(auth).set_available_crud(ids=total_ids, available=data.available)
+        await DeptCRUD(auth).set_available_crud(ids=total_ids, status=data.status)

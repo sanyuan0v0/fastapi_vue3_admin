@@ -3,7 +3,7 @@
     "id": 1,
     "name": "集团总公司",
     "order": 1,
-    "available": true,
+    "status": true,
     "parent_id": null,
     "description": "集团总公司"
   },
@@ -11,7 +11,7 @@
     "id": 2,
     "name": "西安分公司",
     "order": 1,
-    "available": true,
+    "status": true,
     "parent_id": 1,
     "description": "西安分公司"
   },
@@ -19,7 +19,7 @@
     "id": 3,
     "name": "深圳分公司",
     "order": 2,
-    "available": true,
+    "status": true,
     "parent_id": 1,
     "description": "深圳分公司"
   },
@@ -27,7 +27,7 @@
     "id": 4,
     "name": "开发组",
     "order": 1,
-    "available": true,
+    "status": true,
     "parent_id": 2,
     "description": "开发组"
   },
@@ -36,7 +36,7 @@
     "name": "测试组",
     "order": 2,
     "parent_id": 2,
-    "available": true,
+    "status": true,
     "description": "测试组"
   },
   {
@@ -44,14 +44,14 @@
     "name": "演示组",
     "order": 3,
     "parent_id": 2,
-    "available": true,
+    "status": true,
     "description": "演示组"
   },
   {
     "id": 7,
     "name": "销售部",
     "order": 1,
-    "available": true,
+    "status": true,
     "parent_id": 3,
     "description": "销售部"
   },
@@ -59,7 +59,7 @@
     "id": 8,
     "name": "市场部",
     "order": 2,
-    "available": true,
+    "status": true,
     "parent_id": 3,
     "description": "市场部"
   },
@@ -67,7 +67,7 @@
     "id": 9,
     "name": "财务部",
     "order": 3,
-    "available": true,
+    "status": true,
     "parent_id": 3,
     "description": "财务部"
   },
@@ -75,7 +75,7 @@
     "id": 10,
     "name": "研发部",
     "order": 4,
-    "available": true,
+    "status": true,
     "parent_id": 3,
     "description": "研发部"
   },
@@ -83,7 +83,7 @@
     "id": 11,
     "name": "运维部",
     "order": 5,
-    "available": true,
+    "status": true,
     "parent_id": 3,
     "description": "研发部"
   }

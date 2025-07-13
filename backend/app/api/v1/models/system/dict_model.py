@@ -18,7 +18,7 @@ class DictTypeModel(ModelBase):
     id = Column(Integer, primary_key=True, autoincrement=True, comment='字典主键')
     dict_name = Column(String(100), nullable=True, unique=True, default='', comment='字典名称')
     dict_type = Column(String(100), nullable=True, unique=True, default='', comment='字典类型')
-    available = Column(Boolean, nullable=True, default='0', comment='状态（0正常 1停用）')
+    status = Column(Boolean, nullable=True, default='0', comment='状态（0正常 1停用）')
     
     # 审计字段
     description = Column(Text, nullable=True, comment="备注说明")
@@ -56,7 +56,7 @@ class DictDataModel(ModelBase):
     css_class = Column(String(100), nullable=True, default=None, comment='样式属性（其他样式扩展）')
     list_class = Column(String(100), nullable=True, default=None, comment='表格回显样式')
     is_default = Column(Boolean, nullable=True, default='N', comment='是否默认（Y是 N否）')
-    available = Column(Boolean, nullable=True, default='0', comment='状态（0正常 1停用）')
+    status = Column(Boolean, nullable=True, default='0', comment='状态（0正常 1停用）')
     
     # 审计字段
     description = Column(Text, nullable=True, comment="备注说明")

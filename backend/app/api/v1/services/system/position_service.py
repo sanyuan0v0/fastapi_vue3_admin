@@ -65,7 +65,7 @@ class PositionService:
     @classmethod
     async def set_position_available_service(cls, auth: AuthSchema, data: BatchSetAvailable) -> None:
         """设置岗位状态"""
-        await PositionCRUD(auth).set_available_crud(ids=data.ids, available=data.available)
+        await PositionCRUD(auth).set_available_crud(ids=data.ids, status=data.status)
 
     @classmethod
     async def export_post_list_service(cls, post_list: List[Dict[str, Any]]) -> bytes:
@@ -74,7 +74,7 @@ class PositionService:
             'id': '编号',
             'name': '岗位名称', 
             'order': '显示顺序',
-            'available': '状态',
+            'status': '状态',
             'description': '备注',
             'created_at': '创建时间',
             'updated_at': '更新时间',
@@ -85,6 +85,6 @@ class PositionService:
         # 复制数据并转换状态
         data = post_list.copy()
         for item in data:
-            item['available'] = '正常' if item.get('available') else '停用'
+            item['status'] = '正常' if item.get('status') else '停用'
 
         return ExcelUtil.export_list2excel(list_data=post_list, mapping_dict=mapping_dict)
