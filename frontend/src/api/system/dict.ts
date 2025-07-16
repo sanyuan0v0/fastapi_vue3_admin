@@ -16,11 +16,11 @@ const DictAPI = {
     });
   },
 
-  getDictTypeDetail(id: number) {
+  getDictTypeDetail(query: DetailType) {
     return request<ApiResponse<DictTable>>({
       url: `/system/dict/type/detail`,
       method: "get",
-      params: id,
+      params: query,
     });
   },
 
@@ -44,11 +44,19 @@ const DictAPI = {
     return request<ApiResponse>({
       url: `/system/dict/type/delete`,
       method: "delete",
-      params: query,
+      data: query,
     });
   },
 
-  exportDictType(body: any) {
+  batchAvailableDict(body: BatchType) {
+    return request<ApiResponse>({
+      url: `/system/dict/type/available/setting`,
+      method: "patch",
+      data: body,
+    });
+  },
+
+  exportDictType(body: DictPageQuery) {
     return request<ApiResponse>({
       url: `/system/dict/type/export`,
       method: "post",
@@ -65,11 +73,11 @@ const DictAPI = {
     });
   },
 
-  getDictDataDetail(id: number) {
+  getDictDataDetail(query: DetailType) {
     return request<ApiResponse<DictDataTable>>({
       url: `/system/dict/data/detail`,
       method: "get",
-      params: id,
+      params: query,
     });
   },
 
@@ -93,11 +101,19 @@ const DictAPI = {
     return request<ApiResponse>({
       url: `/system/dict/data/delete`,
       method: "delete",
-      params: query,
+      data: query,
     });
   },
 
-  exportDictData(body: any[]) {
+  batchAvailableDictData(body: BatchType) {
+    return request<ApiResponse>({
+      url: `/system/dict/data/available/setting`,
+      method: "patch",
+      data: body,
+    });
+  },
+
+  exportDictData(body: DictDataPageQuery) {
     return request<ApiResponse>({
       url: `/system/dict/data/export`,
       method: "post",

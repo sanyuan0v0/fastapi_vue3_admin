@@ -3,23 +3,23 @@ import request from "@/utils/request";
 const JobAPI = {
   getJobList(query: JobPageQuery) {
     return request<ApiResponse<PageResult<JobTable>>>({
-      url: `/system/job/list`,
+      url: `/monitor/job/list`,
       method: "get",
       params: query,
     });
   },
 
-  getJobDetail(id: number) {
+  getJobDetail(query: DetailType) {
     return request<ApiResponse<JobTable>>({
-      url: `/system/job/detail`,
+      url: `/monitor/job/detail`,
       method: "get",
-      params: id,
+      params: query,
     });
   },
 
   createJob(body: JobForm) {
     return request<ApiResponse>({
-      url: `/system/job/create`,
+      url: `/monitor/job/create`,
       method: "post",
       data: body,
     });
@@ -27,7 +27,7 @@ const JobAPI = {
 
   updateJob(body: JobForm) {
     return request<ApiResponse>({
-      url: `/system/job/update`,
+      url: `/monitor/job/update`,
       method: "put",
       data: body,
     });
@@ -35,15 +35,15 @@ const JobAPI = {
 
   deleteJob(query: DeleteType) {
     return request<ApiResponse>({
-      url: `/system/job/delete`,
+      url: `/monitor/job/delete`,
       method: "delete",
-      params: query,
+      data: query,
     });
   },
 
-  exportJob(body: any[]) {
+  exportJob(body: JobPageQuery) {
     return request<ApiResponse>({
-      url: `/system/job/export`,
+      url: `/monitor/job/export`,
       method: "post",
       data: body,
       responseType: "blob",
@@ -52,14 +52,14 @@ const JobAPI = {
 
   clearJob() {
     return request<ApiResponse>({
-      url: `/system/job/clear`,
+      url: `/monitor/job/clear`,
       method: "delete",
     });
   },
 
   OptionJob(params: JobPageQuery) {
     return request<ApiResponse>({
-      url: `/system/job/option`,
+      url: `/monitor/job/option`,
       method: "put",
       data: params,
     });

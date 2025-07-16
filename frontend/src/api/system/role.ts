@@ -9,11 +9,11 @@ const RoleAPI = {
     });
   },
 
-  getRoleDetail(id: number) {
+  getRoleDetail(query: DetailType) {
     return request<ApiResponse<RoleTable>>({
       url: `/system/role/detail`,
       method: "get",
-      params: id,
+      params: query,
     });
   },
 
@@ -37,7 +37,7 @@ const RoleAPI = {
     return request<ApiResponse>({
       url: `/system/role/delete`,
       method: "delete",
-      params: query,
+      data: query,
     });
   },
 
@@ -57,11 +57,11 @@ const RoleAPI = {
     });
   },
 
-  exportRole(body: any[]) {
+  exportRole(query: TablePageQuery) {
     return request<ApiResponse>({
       url: `/system/role/export`,
       method: "post",
-      data: body,
+      data: query,
       responseType: "blob",
     });
   },

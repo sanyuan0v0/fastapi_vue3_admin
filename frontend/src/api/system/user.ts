@@ -58,11 +58,11 @@ export const UserAPI = {
     });
   },
 
-  getUserDetail(id: number) {
+  getUserDetail(query: DetailType) {
     return request<ApiResponse>({
       url: `/system/user/detail`,
       method: "get",
-      params: id,
+      params: query,
     });
   },
 
@@ -86,7 +86,7 @@ export const UserAPI = {
     return request<ApiResponse>({
       url: `/system/user/delete`,
       method: "delete",
-      params: query,
+      data: query,
     });
   },
 
@@ -98,7 +98,7 @@ export const UserAPI = {
     });
   },
 
-  exportUser(query: any[]) {
+  exportUser(query: UserPageQuery) {
     return request<ApiResponse>({
       url: `/system/user/export`,
       method: "post",

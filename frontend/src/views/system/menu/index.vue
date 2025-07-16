@@ -8,7 +8,7 @@
           <el-input v-model="queryFormData.name" placeholder="请输入标题" clearable />
         </el-form-item>
         <el-form-item prop="status" label="状态">
-          <el-select v-model="queryFormData.status" placeholder="请选择状态" clearable style="width: 160px">
+          <el-select v-model="queryFormData.status" placeholder="请选择状态" clearable>
             <el-option value="true" label="启用" />
             <el-option value="false" label="停用" />
           </el-select>
@@ -45,10 +45,10 @@
       <template #header>
         <div class="card-header">
           <span>
-            <el-tooltip content="公告通知管理维护系统的公告和通知。">
+            <el-tooltip content="菜单管理系统的菜单和权限。">
               <QuestionFilled class="w-4 h-4 mx-1" />
             </el-tooltip>
-            公告通知列表
+            菜单列表
           </span>
         </div>
       </template>
@@ -58,53 +58,22 @@
         <div class="data-table__toolbar--actions">
           <el-button type="success" icon="plus" @click="handleOpenDialog('create')">新增</el-button>
           <el-button type="danger" icon="delete" :disabled="selectIds.length === 0"
-            @click="handleOperation('delete')">批量删除</el-button>
-          <el-dropdown>
-            <el-button type="default" :disabled="selectIds.length === 0" icon="ArrowDown">更多
-            </el-button>
-            <template #dropdown>
-              <el-menu @click="handleMoreClick">
-                <el-menu-item key="1">
-                  <span>
-                    <el-icon>
-                      <Check />
-                    </el-icon>
-                    <span>批量启用</span>
-                  </span>
-                </el-menu-item>
-                <el-menu-item key="2">
-                  <span>
-                    <el-icon>
-                      <CircleClose />
-                    </el-icon>
-                    <span>批量停用</span>
-                  </span>
-                </el-menu-item>
-              </el-menu>
-            </template>
-          </el-dropdown>
+            @click="handleDelete(selectIds)">批量删除</el-button>
+          <el-dropdown trigger="click">
+                <el-button type="default" :disabled="selectIds.length === 0" icon="ArrowDown">
+                  更多
+                </el-button>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item icon="Check" @click="handleMoreClick(true)">批量启用</el-dropdown-item>
+                    <el-dropdown-item icon="CircleClose" @click="handleMoreClick(false)">批量停用</el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
         </div>
         <div class="data-table__toolbar--tools">
-          <el-tooltip content="导入">
-            <el-button type="info" icon="upload" circle @click="handleOperation('import')" />
-          </el-tooltip>
-          <el-tooltip content="导出">
-            <el-button type="warning" icon="download" circle @click="handleOperation('export')" />
-          </el-tooltip>
           <el-tooltip content="刷新">
-            <el-button type="primary" icon="refresh" circle @click="handleRefresh" />
-          </el-tooltip>
-          <el-tooltip content="列表筛选">
-            <el-dropdown trigger="click">
-              <el-button type="default" icon="operation" circle />
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item v-for="column in tableColumns" :key="column.prop" :command="column">
-                    <el-checkbox v-model="column.show">{{ column.label }}</el-checkbox>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
+            <el-button type="default" icon="refresh" circle @click="handleRefresh" />
           </el-tooltip>
         </div>
       </div>
@@ -118,19 +87,15 @@
         <template #empty>
           <el-empty :image-size="80" description="暂无数据" />
         </template>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" width="55"
-          align="center" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号"
+        <el-table-column type="selection" width="55" align="center" />
+        <el-table-column type="index" fixed label="序号"
           width="60" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" key="name" label="菜单名称" prop="name"
-          min-width="120">
+        <el-table-column label="菜单名称" prop="name" min-width="120">
           <template #default="scope">
-
             {{ scope.row.name }}
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'icon')?.show" key="icon" label="图标" prop="icon"
-          min-width="80" align="center">
+        <el-table-column label="图标" prop="icon" min-width="80" align="center">
           <template #default="scope">
             <template v-if="scope.row.icon && scope.row.icon.startsWith('el-icon')">
               <el-icon style="vertical-align: -0.15em">
@@ -142,16 +107,14 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" key="status" label="状态"
-          prop="status" min-width="80" align="center">
+        <el-table-column label="状态" prop="status" min-width="80" align="center">
           <template #default="scope">
             <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
               {{ scope.row.status ? "启用" : "停用" }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'type')?.show" key="type" label="类型" prop="type"
-          min-width="80" align="center">
+        <el-table-column label="类型" prop="type" min-width="80" align="center">
           <template #default="scope">
             <el-tag v-if="scope.row.type === MenuTypeEnum.CATALOG" type="warning">目录</el-tag>
             <el-tag v-if="scope.row.type === MenuTypeEnum.MENU" type="success">菜单</el-tag>
@@ -159,46 +122,33 @@
             <el-tag v-if="scope.row.type === MenuTypeEnum.EXTLINK" type="info">外链</el-tag>
           </template>
         </el-table-column>
-
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'order')?.show" key="order" label="排序" prop="order"
-          min-width="80" align="center" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'permission')?.show" key="permission" label="权限标识"
-          prop="permission" min-width="100" align="center" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'router_name')?.show" key="router_name"
-          label="路由名称" prop="router_name" min-width="80" align="left" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'route_path')?.show" key="route_path" label="路由路径"
-          prop="router_name" min-width="80" align="left" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'component_path')?.show" key="component_path"
-          label="组件路径" prop="component_path" min-width="80" align="left" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'redirect')?.show" key="redirect" label="重定向"
-          prop="redirect" min-width="80" align="left" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'keep_alive')?.show" key="keep_alive" label="是否缓存"
-          prop="keep_alive" min-width="80" align="center">
+        <el-table-column label="排序" prop="order" min-width="80" />
+        <el-table-column label="权限标识" prop="permission" min-width="100"  />
+        <el-table-column label="路由名称" prop="router_name" min-width="100" />
+        <el-table-column label="路由路径" prop="router_name" min-width="100" />
+        <el-table-column label="组件路径" prop="component_path" min-width="100"  />
+        <el-table-column label="重定向" prop="redirect" min-width="100" />
+        <el-table-column label="是否缓存" prop="keep_alive" min-width="100">
           <template #default="scope">
             <el-tag v-if="scope.row.keep_alive" type="success">是</el-tag>
             <el-tag v-else type="danger">否</el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'hidden')?.show" key="hidden" label="是否隐藏"
-          prop="hidden" min-width="80" align="center">
+        <el-table-column label="是否隐藏" prop="hidden" min-width="100">
           <template #default="scope">
             <el-tag v-if="scope.row.hidden" type="success">是</el-tag>
             <el-tag v-else type="danger">否</el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'always_show')?.show" key="always_show"
-          label="显示根路由" prop="always_show" min-width="80" align="center">
+        <el-table-column label="显示根路由" prop="always_show" min-width="120">
           <template #default="scope">
             <el-tag v-if="scope.row.always_show" type="success">是</el-tag>
             <el-tag v-else type="danger">否</el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'title')?.show" key="title" label="菜单标题"
-          prop="title" min-width="80" align="left" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'params')?.show" key="params" label="路由参数"
-          prop="params" min-width="80" align="left" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'affix')?.show" key="affix" label="固定路由"
-          prop="affix" min-width="80" align="center">
+        <el-table-column label="菜单标题" prop="title" min-width="100"/>
+        <el-table-column label="路由参数" prop="params" min-width="100" />
+        <el-table-column label="固定路由" prop="affix" min-width="100">
           <template #default="scope">
             <el-tag :type="scope.row.affix ? 'success' : 'danger'">
               {{ scope.row.affix ? '是' : '否' }}
@@ -206,15 +156,11 @@
           </template>
         </el-table-column>
 
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" key="description" label="描述"
-          prop="description" min-width="100" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" key="created_at" label="创建时间"
-          prop="created_at" min-width="120" sortable />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at" label="更新时间"
-          prop="updated_at" min-width="120" sortable />
+        <el-table-column label="描述" prop="description" min-width="100" />
+        <el-table-column label="创建时间" prop="created_at" min-width="200" sortable />
+        <el-table-column label="更新时间" prop="updated_at" min-width="200" sortable />
 
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" align="center"
-          label="操作" min-width="220">
+        <el-table-column fixed="right" align="center" label="操作" min-width="260">
           <template #default="scope">
             <el-button v-if="scope.row.type == MenuTypeEnum.CATALOG || scope.row.type == MenuTypeEnum.MENU"
               type="primary" link size="small" icon="plus" @click.stop="handleOpenDialog(scope.row.id)">
@@ -226,15 +172,15 @@
             <el-button type="primary" size="small" link icon="edit"
               @click.stop="handleOpenDialog('update', scope.row.id)">编辑</el-button>
             <el-button type="danger" size="small" link icon="delete"
-              @click.stop="handleOperation('delete', scope.row.id)">删除</el-button>
+              @click.stop="handleDelete([scope.row.id])">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <!-- 分页区域 -->
       <template #footer>
-        <pagination v-if="total > 0" v-model:total="total" v-model:page="queryFormData.page_no" v-model:limit="queryFormData.page_size"
-          @pagination="loadingData" />
+        <pagination v-if="total > 0" v-model:total="total" v-model:page="queryFormData.page_no"
+          v-model:limit="queryFormData.page_size" @pagination="loadingData" />
       </template>
     </el-card>
 
@@ -518,34 +464,6 @@ const isExpandable = ref(true);
 // 分页表单
 const pageTableData = ref<MenuTable[]>([]);
 
-// 表格列配置
-const tableColumns = ref([
-  { prop: 'selection', label: '选择框', show: true },
-  { prop: 'index', label: '序号', show: true },
-  { prop: 'name', label: '标题', show: true },
-  { prop: 'type', label: '类型', show: true },
-  { prop: 'icon', label: '图标', show: true },
-  { prop: 'order', label: '排序', show: true },
-  { prop: 'permission', label: '权限标识', show: true },
-  { prop: 'route_name', label: '路由名称', show: true },
-  { prop: 'route_path', label: '路由路径', show: true },
-  { prop: 'component_path', label: '组件路径', show: true },
-  { prop: 'redirect', label: '跳转路由', show: true },
-  { prop: 'parent_id', label: '父级菜单', show: true },
-  { prop: 'parent_name', label: '父级菜单名称', show: true },
-  { prop: 'keep_alive', label: '缓存页面', show: true },
-  { prop: 'hidden', label: '显示状态', show: true },
-  { prop: 'always_show', label: '始终显示', show: true },
-  { prop: 'title', label: '菜单标题', show: true },
-  { prop: 'params', label: '路由参数', show: true },
-  { prop: 'affix', label: '固定路由', show: true },
-  { prop: 'status', label: '状态', show: true },
-  { prop: 'description', label: '描述', show: true },
-  { prop: 'created_at', label: '创建时间', show: true },
-  { prop: 'updated_at', label: '更新时间', show: true },
-  { prop: 'operation', label: '操作', show: true }
-])
-
 // 详情表单
 const detailFormData = ref<MenuTable>({});
 
@@ -736,9 +654,9 @@ async function handleSubmit() {
   });
 }
 
-// 删除、导入、导出
-async function handleOperation(type: 'delete' | 'import' | 'export', id?: number) {
-  if (type === 'delete' && !id && !selectIds.value.length) {
+// 删除、批量删除
+async function handleDelete(ids: number[]) {
+  if (!ids && !selectIds.value.length) {
     ElMessageBox.confirm("确认删除该项数据?", "警告", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
@@ -746,8 +664,7 @@ async function handleOperation(type: 'delete' | 'import' | 'export', id?: number
     }).then(async () => {
       try {
         loading.value = true;
-        await MenuAPI.deleteMenu({ id: id ? id : selectIds.value });
-        ElMessage.success("删除成功");
+        await DictAPI.deleteDictType({ ids });
         handleResetQuery();
       } catch (error: any) {
         ElMessage.error(error.message);
@@ -758,75 +675,28 @@ async function handleOperation(type: 'delete' | 'import' | 'export', id?: number
       ElMessage.info('已取消删除');
     });
   }
-  else if (type === 'import') {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.xlsx, .xls';
-    input.click();
+}
 
-    input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append('file', file);
-        try {
-          loading.value = true;
-          await MenuAPI.uploadFile(formData);
-          ElMessage.success('导入成功');
-          handleResetQuery();
-        } catch (error: any) {
-          ElMessage.error(error.message);
-        } finally {
-          loading.value = false;
-        }
-      }
-    }
-  }
-  else if (type === 'export') {
-    ElMessageBox.confirm('是否确认导出当前系统配置?', '警告', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
+// 批量启用/停用
+async function handleMoreClick(status: boolean) {
+  if (selectIds.value.length) {
+    ElMessageBox.confirm(`确认${status ? '启用' : '停用'}该项数据?`, "警告", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
     }).then(async () => {
       try {
         loading.value = true;
-        const body = {
-          ...queryFormData,
-          page_no: 1,
-          page_size: total.value
-        };
-        ElMessage.warning('正在导出数据，请稍候...');
-
-        const response = await MenuAPI.exportMenu(body);
-        const blob = new Blob([JSON.stringify(response.data)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
-        // 从响应头获取文件名
-        const contentDisposition = response.headers['content-disposition'];
-        let fileName = '系统配置.xlsx';
-        if (contentDisposition) {
-          const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
-          if (fileNameMatch) {
-            fileName = decodeURIComponent(fileNameMatch[1]);
-          }
-        }
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        ElMessage.success('导出成功');
+        await MenuAPI.batchAvailableMenu({ ids: selectIds.value, status });
+        handleResetQuery();
       } catch (error: any) {
-        ElMessage.error('文件处理失败', error.message);
-        console.error('导出错误:', error);
+        ElMessage.error(error.message);
       } finally {
         loading.value = false;
       }
     }).catch(() => {
-      ElMessage.info('已取消导出');
+      ElMessage.info('已取消批量操作');
     });
-  }
-  else {
-    ElMessage.error('未知操作类型');
   }
 }
 

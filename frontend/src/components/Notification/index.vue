@@ -78,6 +78,9 @@
 <script setup lang="ts">
 import NoticeAPI, { NoticeTable } from "@/api/system/notice";
 import router from "@/router";
+import { useNoticeStore } from "@/store";
+
+const noticeStore = useNoticeStore();
 
 const noticeList = ref<NoticeTable[]>([]);
 const noticeDialogVisible = ref(false);
@@ -87,9 +90,7 @@ const noticeDetail = ref<NoticeTable | null>(null);
  * 获取我的通知公告
  */
 function featchMyNotice() {
-  NoticeAPI.getNoticeList({ page_no: 1, page_size: 5, status: true }).then((response) => {
-    noticeList.value = response.data.data.items;
-  });
+  noticeList.value = noticeStore.noticeList;
 }
 
 // 查看更多

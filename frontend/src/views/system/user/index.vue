@@ -4,7 +4,7 @@
     <el-row :gutter="20">
       <!-- 部门树 -->
       <el-col :lg="4" :xs="24" class="mb-[12px]">
-        <DeptTree v-model="UserPageQuery.dept_id" @node-click="handleQuery" />
+        <DeptTree v-model="queryFormData.dept_id" @node-click="handleQuery" />
       </el-col>
 
       <!-- 用户列表 -->
@@ -19,7 +19,7 @@
               <el-input v-model="queryFormData.name" placeholder="请输入姓名" clearable />
             </el-form-item>
             <el-form-item prop="status" label="状态">
-              <el-select v-model="queryFormData.status" placeholder="请选择状态" clearable style="width: 160px">
+              <el-select v-model="queryFormData.status" placeholder="请选择状态" clearable>
                 <el-option value="true" label="启用" />
                 <el-option value="false" label="停用" />
               </el-select>
@@ -68,29 +68,16 @@
             <div class="data-table__toolbar--actions">
               <el-button type="success" icon="plus" @click="handleOpenDialog('create')">新增</el-button>
               <el-button type="danger" icon="delete" :disabled="selectIds.length === 0"
-                @click="handleOperation('delete')">批量删除</el-button>
-              <el-dropdown>
-                <el-button type="default" :disabled="selectIds.length === 0" icon="ArrowDown">更多
+                @click="handleDelete(selectIds)">批量删除</el-button>
+              <el-dropdown trigger="click">
+                <el-button type="default" :disabled="selectIds.length === 0" icon="ArrowDown">
+                  更多
                 </el-button>
                 <template #dropdown>
-                  <el-menu @click="handleMoreClick">
-                    <el-menu-item key="1">
-                      <span>
-                        <el-icon>
-                          <Check />
-                        </el-icon>
-                        <span>批量启用</span>
-                      </span>
-                    </el-menu-item>
-                    <el-menu-item key="2">
-                      <span>
-                        <el-icon>
-                          <CircleClose />
-                        </el-icon>
-                        <span>批量停用</span>
-                      </span>
-                    </el-menu-item>
-                  </el-menu>
+                  <el-dropdown-menu>
+                    <el-dropdown-item icon="Check" @click="handleMoreClick(true)">批量启用</el-dropdown-item>
+                    <el-dropdown-item icon="CircleClose" @click="handleMoreClick(false)">批量停用</el-dropdown-item>
+                  </el-dropdown-menu>
                 </template>
               </el-dropdown>
             </div>
@@ -135,46 +122,42 @@
             <template #empty>
               <el-empty :image-size="80" description="暂无数据" />
             </template>
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" width="55"
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" min-width="55"
               align="center" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号"
-              width="60" />
-            <el-table-column label="头像" prop="avatar">
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" align="center" min-width="60" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'avatar')?.show" label="头像" prop="avatar" min-width="80" align="center">
               <template #default="scope">
                 <el-avatar :src="scope.row.avatar" />
               </template>
             </el-table-column>
-            <el-table-column label="账号" prop="username" />
-            <el-table-column label="用户名" align="center" prop="name" />
-            <el-table-column label="状态" align="center" prop="status" width="80">
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'username')?.show" label="账号" prop="username" min-width="100" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" label="用户名"  prop="name" min-width="100" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" label="状态" prop="status" min-width="100">
               <template #default="scope">
                 <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
                   {{ scope.row.status === true ? "启用" : "停用" }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="是否超管" align="center" prop="is_superuser">
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'is_superuser')?.show" label="是否超管"  prop="is_superuser" min-width="100">
               <template #default="scope">
                 <el-tag :type="scope.row.is_superuser ? 'success' : 'info'">
                   {{ scope.row.is_superuser ? '是' : '否' }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="性别" align="center">
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'gender')?.show" label="性别" min-width="100">
               <template #default="scope">
                 <DictLabel v-model="scope.row.gender" code="gender" />
               </template>
             </el-table-column>
 
-            <el-table-column label="部门" align="center" prop="dept" />
-            <el-table-column label="角色" align="center" prop="roles" />
-            <el-table-column label="岗位" align="center" prop="positions" />
-            <el-table-column label="手机号" align="center" prop="mobile" width="120" />
-            <el-table-column label="邮箱" align="center" prop="email" width="160" />
-
-            <el-table-column label="创建时间" align="center" prop="createTime" width="150" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'mobile')?.show" label="手机号" prop="mobile" min-width="160" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'email')?.show" label="邮箱" prop="email" min-width="160" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" label="创建时间" prop="created_at" min-width="200" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" label="更新时间"  prop="updated_at" min-width="200" />
             <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作"
-              min-width="120">
+              min-width="280">
               <template #default="scope">
                 <el-button type="primary" icon="RefreshLeft" size="small" link @click="hancleResetPassword(scope.row)">
                   重置密码
@@ -184,7 +167,7 @@
                 <el-button type="primary" size="small" link icon="edit"
                   @click="handleOpenDialog('update', scope.row.id)">编辑</el-button>
                 <el-button type="danger" size="small" link icon="delete"
-                  @click="handleOperation('delete', scope.row.id)">删除</el-button>
+                  @click="handleDelete([scope.row.id])">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -296,14 +279,13 @@
           <template #footer>
             <div class="dialog-footer">
               <!-- 详情弹窗不需要确定按钮的提交逻辑 -->
-              <el-button v-if="dialogVisible.type !== 'detail'" type="primary" @click="handleSubmit">确定</el-button>
+              <el-button v-if="dialogVisible.type === 'create' || dialogVisible.type === 'update'" type="primary" @click="handleSubmit">确定</el-button>
               <el-button v-else type="primary" @click="handleCloseDialog">确定</el-button>
               <el-button @click="handleCloseDialog">取消</el-button>
             </div>
           </template>
         </el-form>
       </template>
-
 
       <template #footer>
         <div class="dialog-footer">
@@ -366,16 +348,11 @@ const tableColumns = ref([
   { prop: 'index', label: '序号', show: true },
   { prop: 'avatar', label: '头像', show: true },
   { prop: 'username', label: '账号', show: true },
-  { prop: 'name', label: '昵称', show: true },
-  { prop: 'dept_name', label: '部门', show: true },
-  { prop: 'roleNames', label: '角色', show: true },
-  { prop: 'positionNames', label: '岗位', show: true },
-  { prop: 'password', label: '密码', show: true },
+  { prop: 'name', label: '用户名', show: true },
   { prop: 'gender', label: '性别', show: true },
   { prop: 'email', label: '邮箱', show: true },
   { prop: 'mobile', label: '手机号', show: true },
   { prop: 'is_superuser', label: '是否超管', show: true },
-  { prop: 'status', label: '状态', show: true },
   { prop: 'status', label: '状态', show: true },
   { prop: 'description', label: '描述', show: true },
   { prop: 'created_at', label: '创建时间', show: true },
@@ -506,7 +483,7 @@ function hancleResetPassword(row: UserInfo) {
         ElMessage.warning("密码至少需要6位字符，请重新输入");
         return false;
       }
-      UserAPI.resetPassword(row.id, value).then(() => {
+      UserAPI.changeCurrentUserPassword(row.id, value).then(() => {
         ElMessage.success("密码重置成功，新密码是：" + value);
       });
     },
@@ -579,28 +556,8 @@ const handleSubmit = useDebounceFn(async () => {
 }, 1000)
 
 // 删除、导入、导出
-async function handleOperation(type: 'delete' | 'import' | 'export', id?: number) {
-  if (type === 'delete' && !id && !selectIds.value.length) {
-    ElMessageBox.confirm("确认删除该项数据?", "警告", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    }).then(async () => {
-      try {
-        loading.value = true;
-        await UserAPI.deleteUser({ id: id ? id : selectIds.value });
-        ElMessage.success("删除成功");
-        handleResetQuery();
-      } catch (error: any) {
-        ElMessage.error(error.message);
-      } finally {
-        loading.value = false;
-      }
-    }).catch(() => {
-      ElMessage.info('已取消删除');
-    });
-  }
-  else if (type === 'import') {
+async function handleOperation(type: 'import' | 'export') {
+  if (type === 'import') {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.xlsx, .xls';
@@ -692,17 +649,40 @@ async function handleOperation(type: 'delete' | 'import' | 'export', id?: number
   }
 }
 
-// 批量启用/停用
-async function handleMoreClick(id: number) {
-  if (id && !selectIds.value.length) {
-    ElMessageBox.confirm("确认删除启用或停用该项数据?", "警告", {
+// 删除、批量删除
+async function handleDelete(ids: number[]) {
+  if (!ids && !selectIds.value.length) {
+    ElMessageBox.confirm("确认删除该项数据?", "警告", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
       type: "warning",
     }).then(async () => {
       try {
         loading.value = true;
-        await UserAPI.batchAvailableUser({ id: id ? id : selectIds.value });
+        await UserAPI.deleteUser({ids});
+        handleResetQuery();
+      } catch (error: any) {
+        ElMessage.error(error.message);
+      } finally {
+        loading.value = false;
+      }
+    }).catch(() => {
+      ElMessage.info('已取消删除');
+    });
+  }
+}
+
+// 批量启用/停用
+async function handleMoreClick(status: boolean) {
+  if (selectIds.value.length) {
+    ElMessageBox.confirm("确认启用或停用该项数据?", "警告", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    }).then(async () => {
+      try {
+        loading.value = true;
+        await UserAPI.batchAvailableUser({ ids: selectIds.value, status });
         handleResetQuery();
       } catch (error: any) {
         ElMessage.error(error.message);

@@ -16,9 +16,8 @@ from app.common.enums import RedisInitKeyConfig
 from app.core.redis_crud import RedisCURD
 from app.utils.excel_util import ExcelUtil
 from app.utils.upload_util import UploadUtil
-from app.core.base_schema import DeleteIdsSchema, UploadResponseSchema
+from app.core.base_schema import UploadResponseSchema
 from app.core.exceptions import CustomException
-from app.config.setting import settings
 from app.core.logger import logger
 
 

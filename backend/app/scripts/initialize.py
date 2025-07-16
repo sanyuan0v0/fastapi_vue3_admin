@@ -20,6 +20,8 @@ from app.api.v1.models.system import (
     notice_model,
     config_model,
     dict_model,
+)
+from app.api.v1.models.monitor import (
     job_model
 )
 

@@ -2,18 +2,18 @@ import request from "@/utils/request";
 
 const DeptAPI = {
   getDeptList(query: DeptPageQuery) {
-    return request<ApiResponse<PageResult<DeptTable>>>({
+    return request<ApiResponse<PageResult<DeptTable[]>>>({
       url: `/system/dept/list`,
       method: "get",
       params: query,
     });
   },
 
-  getDeptDetail(id: number) {
+  getDeptDetail(query: DetailType) {
     return request<ApiResponse<DeptTable>>({
       url: `/system/dept/detail`,
       method: "get",
-      params: id,
+      params: query,
     });
   },
 
@@ -37,7 +37,7 @@ const DeptAPI = {
     return request<ApiResponse>({
       url: `/system/dept/delete`,
       method: "delete",
-      params: query,
+      data: query,
     });
   },
 
@@ -52,7 +52,7 @@ const DeptAPI = {
 
 export default DeptAPI;
 
-export interface DeptPageQuery extends PageQuery {
+export interface DeptPageQuery {
   name?: string;
   status?: boolean;
   /** 开始时间 */

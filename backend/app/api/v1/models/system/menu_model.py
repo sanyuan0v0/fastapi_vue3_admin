@@ -14,6 +14,7 @@ class MenuModel(ModelBase):
     1: 目录
     2: 菜单 
     3: 按钮/权限
+    4: 链接
     """
     __tablename__ = "system_menu"
     __table_args__ = ({'comment': '菜单表'})

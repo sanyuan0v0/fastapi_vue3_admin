@@ -28,8 +28,8 @@ from app.config.setting import settings
 from app.core.database import session_connect
 from app.core.exceptions import CustomException
 from app.core.logger import logger
-from app.api.v1.cruds.system.job_crud import JobCRUD
-from app.api.v1.models.system.job_model import JobModel
+from app.api.v1.cruds.monitor.job_crud import JobCRUD
+from app.api.v1.models.monitor.job_model import JobModel
 
 # job 存储
 # 处理Redis 5.0+ ACL格式的用户名:密码

@@ -29,8 +29,7 @@ async def get_obj_list_controller(
 ) -> JSONResponse:
     result_dict_list = await MenuService.get_menu_list_service(search=search, auth=auth)
     menu_items = await MenuService.convert_to_menu(result_dict_list)
-    result_dict = await PaginationService.get_page_obj(data_list=menu_items, page_no=page.page_no,
-                                                       page_size=page.page_size)
+    result_dict = await PaginationService.get_page_obj(data_list=menu_items, page_no=page.page_no, page_size=page.page_size)
     logger.info(f"查询菜单成功")
     return SuccessResponse(data=result_dict, msg="查询菜单成功")
 

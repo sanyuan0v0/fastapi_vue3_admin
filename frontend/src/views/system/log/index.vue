@@ -54,14 +54,26 @@
       <div class="data-table__toolbar">
         <div class="data-table__toolbar--actions">
           <el-button type="danger" icon="delete" :disabled="selectIds.length === 0"
-            @click="handleOperation('delete')">批量删除</el-button>
+            @click="handleDelete(selectIds)">批量删除</el-button>
         </div>
         <div class="data-table__toolbar--tools">
           <el-tooltip content="导出">
-            <el-button type="warning" icon="download" circle @click="handleOperation('export')" />
+            <el-button type="warning" icon="download" circle @click="handleExport" />
           </el-tooltip>
           <el-tooltip content="刷新">
             <el-button type="primary" icon="refresh" circle @click="handleRefresh" />
+          </el-tooltip>
+          <el-tooltip content="列表筛选">
+            <el-dropdown trigger="click">
+              <el-button type="default" icon="operation" circle />
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item v-for="column in tableColumns" :key="column.prop" :command="column">
+                    <el-checkbox v-model="column.show">{{ column.label }}</el-checkbox>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
           </el-tooltip>
         </div>
       </div>
@@ -72,44 +84,57 @@
         <template #empty>
           <el-empty :image-size="80" description="暂无数据" />
         </template>
-        <el-table-column prop='selection' type="selection" width="55" align="center" />
-        <el-table-column type="index" fixed label="序号" width="60" />
-        <el-table-column label="请求路径" prop="request_path" min-width="200" show-overflow-tooltip />
-        <el-table-column label="请求方法" prop="request_method" min-width="80">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" prop='selection'
+          type="selection" min-width="55" align="center" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号"
+          min-width="60" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_path')?.show" label="请求路径"
+          prop="request_path" min-width="200" show-overflow-tooltip />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_method')?.show" label="请求方法"
+          prop="request_method" min-width="100">
           <template #default="scope">
             <el-tag :type="getMethodType(scope.row.request_method)">
               {{ scope.row.request_method }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="状态码" prop="response_code" min-width="60">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'response_code')?.show" label="状态码"
+          prop="response_code" min-width="100">
           <template #default="scope">
             <el-tag :type="getStatusCodeType(scope.row.response_code)">
               {{ scope.row.response_code }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="请求IP" min-width="90">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_ip')?.show" label="请求IP" prop="request_ip"
+          min-width="150">
           <template #default="scope">
             <el-text>{{ scope.row.request_ip }}</el-text>
             <CopyButton v-if="scope.row.request_ip" :text="scope.row.request_ip" style="margin-left: 2px" />
           </template>
         </el-table-column>
-        <el-table-column label="浏览器" prop="request_browser" min-width="60" />
-        <el-table-column label="系统" prop="request_os" min-width="80" />
-        <el-table-column label="描述" prop="description" min-width="100" show-overflow-tooltip />
-        <el-table-column label="创建时间" prop="created_at" min-width="120" sortable />
-        <el-table-column label="创建人" min-width="100">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'process_time')?.show" label="处理时间"
+          prop="process_time" min-width="200" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_browser')?.show" label="浏览器"
+          prop="request_browser" min-width="100" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_os')?.show" label="系统" prop="request_os"
+          min-width="100" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" label="描述" prop="description"
+          min-width="120" show-overflow-tooltip />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" label="创建时间" prop="created_at"
+          min-width="200" sortable />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'creator')?.show" label="创建人" prop="creator"
+          min-width="120">
           <template #default="scope">
             {{ scope.row.creator?.name }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right" min-width="100">
+        <el-table-column label="操作" fixed="right" min-width="150">
           <template #default="scope">
             <el-button type="primary" size="small" link icon="document"
               @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
             <el-button type="danger" size="small" link icon="delete"
-              @click="handleOperation('delete', scope.row.id)">删除</el-button>
+              @click="handleDelete([scope.row.id])">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -143,9 +168,9 @@
               class="long-text-editor" />
           </el-descriptions-item>
           <el-descriptions-item label="响应数据" :span="4">
-            <el-input v-model="detailFormData.response_json" type="textarea" :rows="5" readonly
-              class="long-text-editor" />
-            <!-- <el-scrollbar max-height="72vh">
+            <!-- <el-input v-model="detailFormData.response_json" type="textarea" :rows="5" readonly
+              class="long-text-editor" /> -->
+            <el-scrollbar max-height="72vh">
               <div class="absolute z-36 right-5 top-2">
                 <el-link type="primary" @click="handleCopyCode">
                   <el-icon>
@@ -153,19 +178,11 @@
                   </el-icon>
                   一键复制
                 </el-link>
-              </div> -->
+              </div>
 
-            <!-- <Codemirror
-                ref="cmRef"
-                v-model:value="code"
-                placeholder="请输入代码"
-                :options="cmOptions"
-                border
-                :readonly="true"
-                :width="700"
-                :height="100"
-              /> -->
-            <!-- </el-scrollbar> -->
+              <Codemirror ref="cmRef" v-model:value="code" placeholder="请输入代码" :options="cmOptions" border
+                :readonly="true" :width="700" :height="100" />
+            </el-scrollbar>
           </el-descriptions-item>
           <el-descriptions-item label="处理时间" :span="2">{{ detailFormData.process_time }}</el-descriptions-item>
           <el-descriptions-item label="浏览器" :span="2">{{ detailFormData.request_browser }}</el-descriptions-item>
@@ -210,12 +227,30 @@ const dataFormRef = ref();
 const total = ref(0);
 const selectIds = ref<number[]>([]);
 const loading = ref(false);
-
 const isExpand = ref(false);
 const isExpandable = ref(true);
 
 // 分页表单
 const pageTableData = ref<LogTable[]>([]);
+
+// 表格列配置
+const tableColumns = ref([
+  { prop: 'selection', label: '选择框', show: true },
+  { prop: 'index', label: '序号', show: true },
+  { prop: 'request_path', label: '请求路径', show: true },
+  { prop: 'request_method', label: '请求方法', show: true },
+  { prop: 'response_code', label: '响应状态码', show: true },
+  { prop: 'request_ip', label: '请求IP', show: true },
+  { prop: 'process_time', label: '处理时间', show: true },
+  { prop: 'request_browser', label: '浏览器', show: true },
+  { prop: 'request_os', label: '操作系统', show: true },
+  { prop: 'login_location', label: '登录地点', show: true },
+  { prop: 'description', label: '描述', show: true },
+  { prop: 'creator', label: '创建人', show: true },
+  { prop: 'created_at', label: '创建时间', show: true },
+  { prop: 'updated_at', label: '更新时间', show: true },
+  { prop: 'operation', label: '操作', show: true }
+])
 
 // 详情表单
 const detailFormData = ref<LogTable>({});
@@ -237,13 +272,11 @@ const dialogVisible = reactive({
   type: 'create' as 'create' | 'update' | 'detail',
 });
 
-
 // 刷新数据(防抖)
 const handleRefresh = useDebounceFn(() => {
   loadingData();
   ElMessage.success("刷新成功");
 }, 1000);
-
 
 const getStatusCodeType = (code?: number) => {
   if (code === undefined) {
@@ -324,8 +357,8 @@ async function handleCloseDialog() {
   resetForm();
 }
 
-// 打开系统配置弹窗
-async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: number) {
+// 打开日志详情弹窗
+async function handleOpenDialog(type: 'create' | 'update' | 'detail', id: number) {
   dialogVisible.type = type;
   if (id) {
     const response = await LogAPI.getLogDetail({ id });
@@ -338,10 +371,9 @@ async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: numbe
   dialogVisible.visible = true;
 }
 
-// 删除、导出
-async function handleOperation(type: 'delete' | 'export', id?: number) {
-
-  if (type === 'delete' && !id && !selectIds.value.length) {
+// 删除、批量删除
+async function handleDelete(ids: number[]) {
+  if (!ids && !selectIds.value.length) {
     ElMessageBox.confirm("确认删除该项数据?", "警告", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
@@ -349,8 +381,7 @@ async function handleOperation(type: 'delete' | 'export', id?: number) {
     }).then(async () => {
       try {
         loading.value = true;
-        await LogAPI.deleteLog({ id: id ? id : selectIds.value });
-        ElMessage.success("删除成功");
+        await LogAPI.deleteLog({ ids });
         handleResetQuery();
       } catch (error: any) {
         ElMessage.error(error.message);
@@ -361,57 +392,54 @@ async function handleOperation(type: 'delete' | 'export', id?: number) {
       ElMessage.info('已取消删除');
     });
   }
-  else if (type === 'export') {
-    ElMessageBox.confirm('是否确认导出日志?', '警告', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }).then(async () => {
-      try {
-        loading.value = true;
-        const body = {
-          ...queryFormData,
-          page_no: 1,
-          page_size: total.value
-        };
-        ElMessage.warning('正在导出数据，请稍候...');
+}
 
-        const response = await LogAPI.exportLog(body);
-        const blob = new Blob([JSON.stringify(response.data.data)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
-        // 从响应头获取文件名
-        const contentDisposition = response.headers['content-disposition'];
-        let fileName = '系统配置.xlsx';
-        if (contentDisposition) {
-          const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
-          if (fileNameMatch) {
-            fileName = decodeURIComponent(fileNameMatch[1]);
-          }
+// 导出
+async function handleExport() {
+  ElMessageBox.confirm('是否确认导出当前系统配置?', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(async () => {
+    try {
+      loading.value = true;
+      const body = {
+        ...queryFormData,
+        page_no: 1,
+        page_size: total.value
+      };
+      ElMessage.warning('正在导出数据，请稍候...');
+
+      const response = await LogAPI.exportLog(body);
+      const blob = new Blob([JSON.stringify(response.data.data)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+      // 从响应头获取文件名
+      const contentDisposition = response.headers['content-disposition'];
+      let fileName = '系统配置.xlsx';
+      if (contentDisposition) {
+        const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
+        if (fileNameMatch) {
+          fileName = decodeURIComponent(fileNameMatch[1]);
         }
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        ElMessage.success('导出成功');
-      } catch (error: any) {
-        ElMessage.error('文件处理失败', error.message);
-        console.error('导出错误:', error);
-      } finally {
-        loading.value = false;
       }
-    }).catch(() => {
-      ElMessage.info('已取消导出');
-    });
-  }
-  else {
-    ElMessage.error('未知操作类型');
-  }
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+    } catch (error: any) {
+      ElMessage.error('文件处理失败', error.message);
+      console.error('导出错误:', error);
+    } finally {
+      loading.value = false;
+    }
+  }).catch(() => {
+    ElMessage.info('已取消导出');
+  });
 }
 
 const cmOptions: EditorConfiguration = {
-  // mode: "text/javascript",
-  mode: "text/json",
+  mode: "text/javascript",
 };
 const code = ref();
 const cmRef = ref<CmComponentRef>();

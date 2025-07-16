@@ -11,9 +11,9 @@ from app.core.logger import logger
 from app.common.request import PaginationService
 from app.utils.common_util import bytes2file_response
 from app.api.v1.schemas.system.auth_schema import AuthSchema
-from app.api.v1.params.system.job_param import JobQueryParams
-from app.api.v1.services.system.job_service import JobService
-from app.api.v1.schemas.system.job_schema import (
+from app.api.v1.params.monitor.job_param import JobQueryParams
+from app.api.v1.services.monitor.job_service import JobService
+from app.api.v1.schemas.monitor.job_schema import (
     JobCreateSchema,
     JobUpdateSchema
 )

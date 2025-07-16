@@ -25,11 +25,11 @@ const ConfigAPI = {
     });
   },
 
-  getConfigDetail(id: number) {
+  getConfigDetail(query: DetailType) {
     return request<ApiResponse<ConfigTable>>({
       url: `/system/config/detail`,
       method: "get",
-      params: id,
+      params: query,
     });
   },
 
@@ -49,15 +49,15 @@ const ConfigAPI = {
     });
   },
 
-  deleteConfig(body: DeleteType) {
+  deleteConfig(query: DeleteType) {
     return request<ApiResponse>({
       url: `/system/config/delete`,
       method: "delete",
-      data: body,
+      data: query,
     });
   },
 
-  exportConfig(body: any[]) {
+  exportConfig(body: ConfigPageQuery) {
     return request<ApiResponse>({
       url: `/system/config/export`,
       method: "post",
@@ -102,4 +102,3 @@ export interface ConfigForm {
   config_type?: boolean;
   description?: string;
 }
-

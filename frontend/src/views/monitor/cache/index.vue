@@ -120,15 +120,23 @@
               <template #empty>
                 <el-empty :image-size="80" description="暂无数据" />
               </template>
-                <el-table-column prop="cache_name" label="缓存名称" align="center" :ellipsis="true">
+                <el-table-column prop="cache_name" label="缓存名称" show-overflow-tooltip>
                   <template #default="{ row }">
                     <el-button type="primary" link @click="getCacheKeyList(row)">{{ row.cache_name }}</el-button>
                   </template>
                 </el-table-column>
-                <el-table-column prop="remark" label="备注" align="center" :ellipsis="true" />
+                <el-table-column prop="remark" label="备注" show-overflow-tooltip />
                 <el-table-column label="操作" width="60" align="center">
                   <template #default="{ row }">
-                    <el-button type="danger" size="small" link icon="delete" @click="handleClearCacheName(row)" />
+                    <el-popconfirm
+                      class="box-item"
+                      :title="`确认删除缓存 ${row.cache_name} 吗？`"
+                      placement="top"
+                    >
+                      <template #reference>
+                        <el-button type="danger" size="small" link icon="delete" @click="handleClearCacheName(row)" />
+                      </template>
+                    </el-popconfirm>
                   </template>
                 </el-table-column>
               </el-table>
@@ -162,14 +170,22 @@
                 <template #empty>
                   <el-empty :image-size="80" description="暂无数据" />
                 </template>
-                <el-table-column prop="cacheKey" label="缓存键名" align="center" :ellipsis="true">
+                <el-table-column prop="cacheKey" label="缓存键名" show-overflow-tooltip>
                   <template #default="{ row }">
                     <el-button type="primary" link @click="handleCacheValue(row.cacheKey)">{{ row.cacheKey }}</el-button>
                   </template>
                 </el-table-column>
                 <el-table-column label="操作" width="60" align="center">
                   <template #default="{ row }">
-                    <el-button type="danger" size="small" link icon="delete" @click="handleClearCacheKey(row.cacheKey)" />
+                    <el-popconfirm
+                      class="box-item"
+                      :title="`确认删除键 ${row.cacheKey} 吗？`"
+                      placement="top"
+                    >
+                      <template #reference>
+                        <el-button type="danger" size="small" link icon="delete" @click="handleClearCacheKey(row.cacheKey)" />
+                      </template>
+                    </el-popconfirm>
                   </template>
                 </el-table-column>
               </el-table>
@@ -272,25 +288,13 @@ const refreshCacheNames = () => {
 };
 
 // 清理缓存名称
-const handleClearCacheName = (row: CacheInfo) => {
-  ElMessageBox.confirm(
-    `确定要清理缓存名称[${row.cache_name}]吗？`,
-    '确认清理',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
-    }
-  )
-  .then(async () => {
+const handleClearCacheName = async (row: CacheInfo) => {
+  try { 
     await CacheAPI.deleteCacheName(row.cache_name);
-    getCacheNameList();
-  })
-  .catch((error) => {
-    if (error !== 'cancel') {
-      console.error('清理缓存失败:', error);
-    }
-  });
+    refreshCacheNames();
+  } catch (error) {
+    console.error('清理缓存名称出错:', error);
+  }
 };
 
 // 缓存键名相关方法
@@ -321,25 +325,13 @@ const refreshCacheKeys = () => {
 };
 
 // 清理缓存键名
-const handleClearCacheKey = (cacheKey: string) => {
-  ElMessageBox.confirm(
-    `确定要清理缓存键名[${cacheKey}]吗？`,
-    '确认清理',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
-    }
-  )
-  .then(() => {
-    CacheAPI.deleteCacheKey(cacheKey);
+const handleClearCacheKey = async (cacheKey: string) => {
+  try { 
+    await CacheAPI.deleteCacheKey(cacheKey);
     getCacheKeyList();
-  })
-  .catch((error) => {
-    if (error !== 'cancel') {
-      console.error('清理缓存键名失败:', error);
-    }
-  });
+  } catch (error) {
+    console.error('清理缓存键名出错:', error);
+  }
 };
 
 // 缓存内容相关方法
@@ -359,15 +351,15 @@ const handleCacheValue = async (cacheKey: string) => {
 const handleClearCacheAll = async () => {
   ElMessageBox.confirm(
     '确定要清理全部缓存吗？',
-    '确认清理',
+    '危险！',
     {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning',
     }
   )
-  .then(() => {
-    return CacheAPI.deleteCacheAll();
+  .then(async () => {
+    return await CacheAPI.deleteCacheAll();
   })
   .then(() => {
     getCacheNameList();

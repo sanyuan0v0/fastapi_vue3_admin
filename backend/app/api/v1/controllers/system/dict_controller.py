@@ -7,6 +7,7 @@ from aioredis import Redis
 
 from app.common.response import StreamResponse, SuccessResponse
 from app.core.base_params import PaginationQueryParams
+from app.core.base_schema import BatchSetAvailable
 from app.core.dependencies import AuthPermission, redis_getter
 from app.core.router_class import OperationLogRoute
 from app.core.logger import logger
@@ -83,6 +84,15 @@ async def delete_type_controller(
     logger.info(f"删除字典类型成功: {id}")
     return SuccessResponse(msg="删除字典类型成功")
 
+@router.patch("/type/available/setting", summary="批量修改公告状态", description="批量修改公告状态")
+async def batch_set_available_obj_controller(
+    data: BatchSetAvailable,
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_type:patch"]))
+) -> JSONResponse:
+    await DictTypeService.set_obj_available_service(auth=auth, data=data)
+    logger.info(f"批量修改字典类型状态成功: {data.ids}")
+    return SuccessResponse(msg="批量修改字典类型状态成功")
+
 @router.post('/type/export', summary="导出字典类型", description="导出字典类型")
 async def export_type_list_controller(
     search: DictTypeQueryParams = Depends(),
@@ -150,6 +160,15 @@ async def delete_data_controller(
     await DictDataService.delete_obj_service(auth=auth, redis=redis, ids=ids)
     logger.info(f"删除字典数据成功: {id}")
     return SuccessResponse(msg="删除字典数据成功")
+
+@router.patch("/data/available/setting", summary="批量修改字典数据状态", description="批量修改字典数据状态")
+async def batch_set_available_obj_controller(
+    data: BatchSetAvailable,
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_data:patch"]))
+) -> JSONResponse:
+    await DictDataService.set_obj_available_service(auth=auth, data=data)
+    logger.info(f"批量修改字典数据状态成功: {data.ids}")
+    return SuccessResponse(msg="批量修改字典数据状态成功")
 
 @router.post('/data/export', summary="导出字典数据", description="导出字典数据")
 async def export_data_list_controller(

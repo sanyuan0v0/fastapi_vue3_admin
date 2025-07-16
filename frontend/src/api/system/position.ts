@@ -9,11 +9,11 @@ const PositionAPI = {
     });
   },
 
-  getPositionDetail(id: number) {
+  getPositionDetail(query: DetailType) {
     return request<ApiResponse<PositionTable>>({
       url: `/system/position/detail`,
       method: "get",
-      params: id,
+      params: query,
     });
   },
 
@@ -37,7 +37,7 @@ const PositionAPI = {
     return request<ApiResponse>({
       url: `/system/position/delete`,
       method: "delete",
-      params: query,
+      data: query,
     });
   },
 
@@ -49,7 +49,7 @@ const PositionAPI = {
     });
   },
 
-  exportPosition(body: any[]) {
+  exportPosition(body: PositionPageQuery) {
     return request<ApiResponse>({
       url: `/system/position/export`,
       method: "post",

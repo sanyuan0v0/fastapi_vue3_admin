@@ -32,7 +32,7 @@ async def get_obj_list_controller(
 
 @router.get("/detail", summary="日志详情", description="日志详情")
 async def get_obj_detail_controller(
-    id: int = Body(..., description="操作日志ID"),
+    id: int = Query(..., description="操作日志ID"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:log:query"]))
 ) -> JSONResponse:
     """ 详情日志 """

@@ -111,7 +111,7 @@ declare global {
     /** 错误信息 */
     messageList: Array<string>;
   }
-  
+
   /**
    * 创建人
    */
@@ -136,6 +136,13 @@ declare global {
    */
   export interface DeleteType {
     ids?: number[];
+  }
+
+  /**
+   * 详情参数
+   */
+  export interface DetailType {
+    id?: number;
   }
 
   /**

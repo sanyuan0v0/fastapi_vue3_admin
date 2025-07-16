@@ -11,7 +11,7 @@
           <el-input v-model="queryFormData.dict_type" placeholder="请输入字典类型" clearable />
         </el-form-item>
         <el-form-item prop="status" label="状态">
-          <el-select v-model="queryFormData.status" placeholder="请选择状态" clearable style="width: 160px">
+          <el-select v-model="queryFormData.status" placeholder="请选择状态" clearable>
             <el-option value="true" label="启用" />
             <el-option value="false" label="停用" />
           </el-select>
@@ -61,38 +61,22 @@
         <div class="data-table__toolbar--actions">
           <el-button type="success" icon="plus" @click="handleOpenDialog('create')">新增</el-button>
           <el-button type="danger" icon="delete" :disabled="selectIds.length === 0"
-            @click="handleOperation('delete')">批量删除</el-button>
-          <el-dropdown>
-            <el-button type="default" :disabled="selectIds.length === 0" icon="ArrowDown">更多
+            @click="handleDelete(selectIds)">批量删除</el-button>
+          <el-dropdown trigger="click">
+            <el-button type="default" :disabled="selectIds.length === 0" icon="ArrowDown">
+              更多
             </el-button>
             <template #dropdown>
-              <el-menu @click="handleMoreClick">
-                <el-menu-item key="1">
-                  <span>
-                    <el-icon>
-                      <Check />
-                    </el-icon>
-                    <span>批量启用</span>
-                  </span>
-                </el-menu-item>
-                <el-menu-item key="2">
-                  <span>
-                    <el-icon>
-                      <CircleClose />
-                    </el-icon>
-                    <span>批量停用</span>
-                  </span>
-                </el-menu-item>
-              </el-menu>
+              <el-dropdown-menu>
+                <el-dropdown-item icon="Check" @click="handleMoreClick(true)">批量启用</el-dropdown-item>
+                <el-dropdown-item icon="CircleClose" @click="handleMoreClick(false)">批量停用</el-dropdown-item>
+              </el-dropdown-menu>
             </template>
           </el-dropdown>
         </div>
         <div class="data-table__toolbar--tools">
-          <el-tooltip content="导入">
-            <el-button type="info" icon="upload" circle @click="handleOperation('import')" />
-          </el-tooltip>
           <el-tooltip content="导出">
-            <el-button type="warning" icon="download" circle @click="handleOperation('export')" />
+            <el-button type="warning" icon="download" circle @click="handleExport" />
           </el-tooltip>
           <el-tooltip content="刷新">
             <el-button type="primary" icon="refresh" circle @click="handleRefresh" />
@@ -118,19 +102,14 @@
         <template #empty>
           <el-empty :image-size="80" description="暂无数据" />
         </template>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" width="55"
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" min-width="55"
           align="center" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号"
-          width="60" />
+          min-width="60" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_name')?.show" key="dict_name" label="字典名称"
-          prop="dict_name" min-width="80" />
+          prop="dict_name" min-width="120" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_type')?.show" key="dict_type" label="字典类型"
-          prop="dict_type" min-width="120">
-          <template #default="scope">
-            <router-link :to="'/system/dict_data?dict_type=' + scope.row.dict_type">
-              <el-tag type="primary">{{ scope.row.dict_type }}</el-tag>
-            </router-link>
-          </template>
+          prop="dict_type" min-width="160">
         </el-table-column>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" key="status" label="状态"
           prop="status" min-width="60">
@@ -141,21 +120,29 @@
           </template>
         </el-table-column>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" key="description" label="描述"
-          prop="description" min-width="100" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" key="created_at" label="创建时间"
-          prop="created_at" min-width="120" sortable />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at" label="更新时间"
-          prop="updated_at" min-width="120" sortable />
-
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作"
+          prop="description" min-width="140" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'creator')?.show" label="创建人" prop="creator"
           min-width="120">
           <template #default="scope">
+            {{ scope.row.creator?.name }}
+          </template>
+        </el-table-column>
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" key="created_at" label="创建时间"
+          prop="created_at" min-width="200" sortable />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at" label="更新时间"
+          prop="updated_at" min-width="200" sortable />
+
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作"
+          min-width="260">
+          <template #default="scope">
+            <el-button type="warning" size="small" link icon="document"
+              @click="handleDictDataDrawer(scope.row.dict_type)">字典</el-button>
             <el-button type="info" size="small" link icon="document"
               @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
             <el-button type="primary" size="small" link icon="edit"
               @click="handleOpenDialog('update', scope.row.id)">编辑</el-button>
             <el-button type="danger" size="small" link icon="delete"
-              @click="handleOperation('delete', scope.row.id)">删除</el-button>
+              @click="handleDelete([scope.row.id])">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -218,6 +205,8 @@
       </template>
     </el-dialog>
 
+    <DataDrawer v-if="drawerVisible" v-model="drawerVisible" :dict-type="currentDictType" />
+
   </div>
 </template>
 
@@ -230,6 +219,7 @@ defineOptions({
 import DictAPI, { DictTable, DictForm, DictPageQuery } from "@/api/system/dict";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useDebounceFn } from "@vueuse/core";
+import DataDrawer from "@/views/system/dict/components/DataDrawer.vue"
 
 const queryFormRef = ref();
 const dataFormRef = ref();
@@ -252,6 +242,7 @@ const tableColumns = ref([
   { prop: 'dict_type', label: '字典类型', show: true },
   { prop: 'status', label: '状态', show: true },
   { prop: 'description', label: '描述', show: true },
+  { prop: 'creator', label: '创建人', show: true },
   { prop: 'created_at', label: '创建时间', show: true },
   { prop: 'updated_at', label: '更新时间', show: true },
   { prop: 'operation', label: '操作', show: true }
@@ -299,6 +290,13 @@ const handleRefresh = useDebounceFn(() => {
   loadingData();
   ElMessage.success("刷新成功");
 }, 1000);
+
+
+// 抽屉显隐
+const drawerVisible = ref(false);
+
+// 添加字典类型变量
+const currentDictType = ref('');
 
 // 加载表格数据
 async function loadingData() {
@@ -376,7 +374,7 @@ async function handleSubmit() {
       const id = formData.id;
       if (id) {
         try {
-          await DictAPI.updateDictType(formData)
+          await DictAPI.updateDictType({ id, ...formData })
           dialogVisible.visible = false;
           resetForm();
           handleResetQuery();
@@ -401,9 +399,9 @@ async function handleSubmit() {
   });
 }
 
-// 删除、导入、导出
-async function handleOperation(type: 'delete' | 'import' | 'export', id?: number) {
-  if (type === 'delete' && !id && !selectIds.value.length) {
+// 删除、批量删除
+async function handleDelete(ids: number[]) {
+  if (!ids && !selectIds.value.length) {
     ElMessageBox.confirm("确认删除该项数据?", "警告", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
@@ -411,8 +409,7 @@ async function handleOperation(type: 'delete' | 'import' | 'export', id?: number
     }).then(async () => {
       try {
         loading.value = true;
-        await DictAPI.deleteDictType({ id: id ? id : selectIds.value });
-        ElMessage.success("删除成功");
+        await DictAPI.deleteDictType({ ids });
         handleResetQuery();
       } catch (error: any) {
         ElMessage.error(error.message);
@@ -423,89 +420,63 @@ async function handleOperation(type: 'delete' | 'import' | 'export', id?: number
       ElMessage.info('已取消删除');
     });
   }
-  else if (type === 'import') {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.xlsx, .xls';
-    input.click();
+}
 
-    input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append('file', file);
-        try {
-          loading.value = true;
-          await DictAPI.uploadFile(formData);
-          ElMessage.success('导入成功');
-          handleResetQuery();
-        } catch (error: any) {
-          ElMessage.error(error.message);
-        } finally {
-          loading.value = false;
+// 导出
+async function handleExport() {
+  ElMessageBox.confirm('是否确认导出当前系统配置?', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(async () => {
+    try {
+      loading.value = true;
+      const body = {
+        ...queryFormData,
+        page_no: 1,
+        page_size: total.value
+      };
+      ElMessage.warning('正在导出数据，请稍候...');
+
+      const response = await DictAPI.exportDictType(body);
+      const blob = new Blob([JSON.stringify(response.data.data)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+      // 从响应头获取文件名
+      const contentDisposition = response.headers['content-disposition'];
+      let fileName = '字典类型.xlsx';
+      if (contentDisposition) {
+        const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
+        if (fileNameMatch) {
+          fileName = decodeURIComponent(fileNameMatch[1]);
         }
       }
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+    } catch (error: any) {
+      ElMessage.error('文件处理失败', error.message);
+      console.error('导出错误:', error);
+    } finally {
+      loading.value = false;
     }
-  }
-  else if (type === 'export') {
-    ElMessageBox.confirm('是否确认导出当前系统配置?', '警告', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }).then(async () => {
-      try {
-        loading.value = true;
-        const body = {
-          ...queryFormData,
-          page_no: 1,
-          page_size: total.value
-        };
-        ElMessage.warning('正在导出数据，请稍候...');
-
-        const response = await DictAPI.exportDictType(body);
-        const blob = new Blob([JSON.stringify(response.data.data)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
-        // 从响应头获取文件名
-        const contentDisposition = response.headers['content-disposition'];
-        let fileName = '系统配置.xlsx';
-        if (contentDisposition) {
-          const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
-          if (fileNameMatch) {
-            fileName = decodeURIComponent(fileNameMatch[1]);
-          }
-        }
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        ElMessage.success('导出成功');
-      } catch (error: any) {
-        ElMessage.error('文件处理失败', error.message);
-        console.error('导出错误:', error);
-      } finally {
-        loading.value = false;
-      }
-    }).catch(() => {
-      ElMessage.info('已取消导出');
-    });
-  }
-  else {
-    ElMessage.error('未知操作类型');
-  }
+  }).catch(() => {
+    ElMessage.info('已取消导出');
+  });
 }
 
 // 批量启用/停用
-async function handleMoreClick(id: number) {
-  if (id && !selectIds.value.length) {
-    ElMessageBox.confirm("确认删除启用或停用该项数据?", "警告", {
+async function handleMoreClick(status: boolean) {
+  if (selectIds.value.length) {
+    ElMessageBox.confirm(`确认${status ? '启用' : '停用'}该项数据?`, "警告", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
       type: "warning",
     }).then(async () => {
       try {
         loading.value = true;
-        await DictAPI.batchAvailableDictType({ id: id ? id : selectIds.value });
+        await DictAPI.batchAvailableDict({ ids: selectIds.value, status });
         handleResetQuery();
       } catch (error: any) {
         ElMessage.error(error.message);
@@ -516,6 +487,11 @@ async function handleMoreClick(id: number) {
       ElMessage.info('已取消批量操作');
     });
   }
+}
+
+function handleDictDataDrawer(dictType: string) {
+  currentDictType.value = dictType;
+  drawerVisible.value = true;
 }
 
 onMounted(() => {

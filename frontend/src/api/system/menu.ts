@@ -9,11 +9,11 @@ const MenuAPI = {
     });
   },
 
-  getMenuDetail(id: number) {
+  getMenuDetail(query: DetailType) {
     return request<ApiResponse<MenuTable>>({
       url: `/system/menu/detail`,
       method: "get",
-      params: id,
+      params: query,
     });
   },
 
@@ -37,7 +37,7 @@ const MenuAPI = {
     return request<ApiResponse>({
       url: `/system/menu/delete`,
       method: "delete",
-      params: query,
+      data: query,
     });
   },
 

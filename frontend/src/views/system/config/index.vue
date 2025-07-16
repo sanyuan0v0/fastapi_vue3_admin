@@ -11,14 +11,15 @@
           <el-input v-model="queryFormData.config_key" placeholder="请输入配置键名" clearable />
         </el-form-item>
         <el-form-item prop="config_type" label="系统内置">
-          <el-select v-model="queryFormData.config_type" placeholder="请选择系统内置" clearable style="width: 160px">
+          <el-select v-model="queryFormData.config_type" placeholder="请选择系统内置" clearable>
             <el-option value="true" label="是" />
             <el-option value="false" label="否" />
           </el-select>
         </el-form-item>
         <!-- 时间范围，收起状态下隐藏 -->
         <el-form-item v-if="isExpand" prop="start_time" label="创建时间">
-          <el-date-picker v-model="queryFormData.start_time" type="daterange" value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+          <el-date-picker v-model="queryFormData.start_time" type="daterange" value-format="yyyy-MM-dd"
+            range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
         </el-form-item>
         <el-form-item class="search-buttons">
           <el-button type="primary" icon="search" @click="handleQuery">查询</el-button>
@@ -58,14 +59,12 @@
       <div class="data-table__toolbar">
         <div class="data-table__toolbar--actions">
           <el-button type="success" icon="plus" @click="handleOpenDialog('create')">新增</el-button>
-          <el-button type="danger" icon="delete" :disabled="selectIds.length === 0" @click="handleOperation('delete')">批量删除</el-button>
+          <el-button type="danger" icon="delete" :disabled="selectIds.length === 0"
+            @click="handleDelete(selectIds)">批量删除</el-button>
         </div>
         <div class="data-table__toolbar--tools">
-          <el-tooltip content="导入">
-            <el-button type="info" icon="upload" circle @click="handleOperation('import')" />
-          </el-tooltip>
           <el-tooltip content="导出">
-            <el-button type="warning" icon="download" circle @click="handleOperation('export')" />
+            <el-button type="warning" icon="download" circle @click="handleExport" />
           </el-tooltip>
           <el-tooltip content="刷新">
             <el-button type="primary" icon="refresh" circle @click="handleRefresh" />
@@ -91,33 +90,52 @@
         <template #empty>
           <el-empty :image-size="80" description="暂无数据" />
         </template>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" width="55" align="center" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" width="60" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'config_name')?.show" key="config_name" label="配置名称" prop="config_name" min-width="80" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'config_key')?.show" key="config_key" label="配置键" prop="config_key" min-width="120" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'config_value')?.show" key="config_value" label="配置值" prop="config_value" min-width="100" show-overflow-tooltip />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'config_type')?.show" key="config_type" label="系统内置" prop="config_type" min-width="60">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" min-width="55"
+          align="center" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号"
+          min-width="60" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'config_name')?.show" key="config_name"
+          label="配置名称" prop="config_name" min-width="100" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'config_key')?.show" key="config_key" label="配置键"
+          prop="config_key" min-width="200" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'config_value')?.show" key="config_value"
+          label="配置值" prop="config_value" min-width="120" show-overflow-tooltip />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'config_type')?.show" key="config_type"
+          label="系统内置" prop="config_type" min-width="100">
           <template #default="scope">
             <el-tag v-if="scope.row.config_type" type="success">是</el-tag>
             <el-tag v-else type="danger">否</el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" key="description" label="描述" prop="description" min-width="100" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" key="created_at" label="创建时间" prop="created_at" min-width="120" sortable />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at" label="更新时间" prop="updated_at" min-width="120" sortable />
-
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" min-width="120">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" key="description" label="描述"
+          prop="description" min-width="120" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'creator')?.show" key="creator" label="创建人"
+          min-width="120" sortable>
           <template #default="scope">
-            <el-button type="info" size="small" link icon="document" @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
-            <el-button type="primary" size="small" link icon="edit" @click="handleOpenDialog('update', scope.row.id)">编辑</el-button>
-            <el-button type="danger" size="small" link icon="delete" @click="handleOperation('delete', scope.row.id)">删除</el-button>
+            {{ scope.row.creator?.name }}
+          </template>
+        </el-table-column>
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" key="created_at" label="创建时间"
+          prop="created_at" min-width="200" sortable />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at" label="更新时间"
+          prop="updated_at" min-width="200" sortable />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作"
+          min-width="200">
+          <template #default="scope">
+            <el-button type="info" size="small" link icon="document"
+              @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
+            <el-button type="primary" size="small" link icon="edit"
+              @click="handleOpenDialog('update', scope.row.id)">编辑</el-button>
+            <el-button type="danger" size="small" link icon="delete"
+              @click="handleDelete([scope.row.id])">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <!-- 分页区域 -->
       <template #footer>
-        <pagination v-model:total="total" v-model:page="queryFormData.page_no" v-model:limit="queryFormData.page_size" @pagination="loadingData" />
+        <pagination v-model:total="total" v-model:page="queryFormData.page_no" v-model:limit="queryFormData.page_size"
+          @pagination="loadingData" />
       </template>
     </el-card>
 
@@ -158,7 +176,8 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="描述" prop="description">
-            <el-input v-model="formData.description" :rows="4" :maxlength="100" show-word-limit type="textarea" placeholder="请输入描述" />
+            <el-input v-model="formData.description" :rows="4" :maxlength="100" show-word-limit type="textarea"
+              placeholder="请输入描述" />
           </el-form-item>
         </el-form>
       </template>
@@ -173,86 +192,7 @@
       </template>
     </el-dialog>
 
-    <!-- 导出弹窗 -->
-    <el-dialog v-model="exportsModalVisible" :align-center="true" title="导出数据" width="600px" style="padding-right: 0"
-      @close="handleCloseExportsModal">
-      <!-- 滚动 -->
-      <el-scrollbar max-height="60vh">
-        <!-- 表单 -->
-        <el-form ref="exportsFormRef" style="padding-right: var(--el-dialog-padding-primary)" :model="exportsFormData"
-          :rules="exportsFormRules">
-          <el-form-item label="文件名" prop="filename">
-            <el-input v-model="exportsFormData.filename" clearable />
-          </el-form-item>
-          <el-form-item label="工作表名" prop="sheetname">
-            <el-input v-model="exportsFormData.sheetname" clearable />
-          </el-form-item>
-          <el-form-item label="数据源" prop="origin">
-            <el-select v-model="exportsFormData.origin">
-              <el-option label="当前数据 (当前页的数据)" :value="ExportsOriginEnum.CURRENT" />
-              <el-option label="选中数据 (所有选中的数据)" :value="ExportsOriginEnum.SELECTED"
-                :disabled="selectionData.length <= 0" />
-              <el-option label="全量数据 (所有分页的数据)" :value="ExportsOriginEnum.REMOTE"
-                :disabled="contentConfig.exportsAction === undefined" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="字段" prop="fields">
-            <el-checkbox-group v-model="exportsFormData.fields">
-              <template v-for="col in cols" :key="col.prop">
-                <el-checkbox v-if="col.prop" :value="col.prop" :label="col.label" />
-              </template>
-            </el-checkbox-group>
-          </el-form-item>
-        </el-form>
-      </el-scrollbar>
-      <!-- 弹窗底部操作按钮 -->
-      <template #footer>
-        <div style="padding-right: var(--el-dialog-padding-primary)">
-          <el-button type="primary" @click="handleExportsSubmit">确 定</el-button>
-          <el-button @click="handleCloseExportsModal">取 消</el-button>
-        </div>
-      </template>
-    </el-dialog>
-    <!-- 导入弹窗 -->
-    <el-dialog v-model="importModalVisible" :align-center="true" title="导入数据" width="600px" style="padding-right: 0"
-      @close="handleCloseImportModal">
-      <!-- 滚动 -->
-      <el-scrollbar max-height="60vh">
-        <!-- 表单 -->
-        <el-form ref="importFormRef" style="padding-right: var(--el-dialog-padding-primary)" :model="importFormData"
-          :rules="importFormRules">
-          <el-form-item label="文件名" prop="files">
-            <el-upload ref="uploadRef" v-model:file-list="importFormData.files" class="w-full"
-              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-              :drag="true" :limit="1" :auto-upload="false" :on-exceed="handleFileExceed">
-              <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-              <div class="el-upload__text">
-                <span>将文件拖到此处，或</span>
-                <em>点击上传</em>
-              </div>
-              <template #tip>
-                <div class="el-upload__tip">
-                  *.xlsx / *.xls
-                  <el-link v-if="contentConfig.importTemplate" type="primary" icon="download" underline="never"
-                    @click="handleDownloadTemplate">
-                    下载模板
-                  </el-link>
-                </div>
-              </template>
-            </el-upload>
-          </el-form-item>
-        </el-form>
-      </el-scrollbar>
-      <!-- 弹窗底部操作按钮 -->
-      <template #footer>
-        <div style="padding-right: var(--el-dialog-padding-primary)">
-          <el-button type="primary" :disabled="importFormData.files.length === 0" @click="handleImportSubmit">
-            确 定
-          </el-button>
-          <el-button @click="handleCloseImportModal">取 消</el-button>
-        </div>
-      </template>
-    </el-dialog>
+
   </div>
 </template>
 
@@ -290,6 +230,7 @@ const tableColumns = ref([
   { prop: 'description', label: '描述', show: true },
   { prop: 'created_at', label: '创建时间', show: true },
   { prop: 'updated_at', label: '更新时间', show: true },
+  { prop: 'creator', label: '创建人', show: true },
   { prop: 'operation', label: '操作', show: true }
 ])
 
@@ -315,7 +256,7 @@ const formData = reactive<ConfigForm>({
   config_value: '',
   config_type: false,
   description: ''
-})
+});
 
 // 弹窗状态
 const dialogVisible = reactive({
@@ -440,9 +381,9 @@ async function handleSubmit() {
   });
 }
 
-// 删除系统配置
-async function handleOperation(type: 'delete' | 'import' | 'export', id?: number) {
-  if (type === 'delete' && !id && !selectIds.value.length) {
+// 删除、批量删除
+async function handleDelete(ids: number[]) {
+  if (!ids && !selectIds.value.length) {
     ElMessageBox.confirm("确认删除该项数据?", "警告", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
@@ -450,8 +391,7 @@ async function handleOperation(type: 'delete' | 'import' | 'export', id?: number
     }).then(async () => {
       try {
         loading.value = true;
-        await ConfigAPI.deleteConfig({ id: id ? id : selectIds.value });
-        ElMessage.success("删除成功");
+        await ConfigAPI.deleteConfig({ ids });
         handleResetQuery();
       } catch (error: any) {
         ElMessage.error(error.message);
@@ -462,198 +402,50 @@ async function handleOperation(type: 'delete' | 'import' | 'export', id?: number
       ElMessage.info('已取消删除');
     });
   }
-  else if (type === 'import') {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.xlsx, .xls';
-    input.click();
-
-    input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append('file', file);
-        try {
-          loading.value = true;
-          await ConfigAPI.uploadFile(formData);
-          ElMessage.success('导入成功');
-          handleResetQuery();
-        } catch (error: any) {
-          ElMessage.error(error.message);
-        } finally {
-          loading.value = false;
-        }
-      }
-    }
-  }
-  else if (type === 'export') {
-    ElMessageBox.confirm('是否确认导出当前系统配置?', '警告', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }).then(async () => {
-      try {
-        loading.value = true;
-        const body = {
-          ...queryFormData,
-          page_no: 1,
-          page_size: total.value
-        };
-        ElMessage.warning('正在导出数据，请稍候...');
-
-        const response = await ConfigAPI.exportConfig(body);
-        const blob = new Blob([JSON.stringify(response.data)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
-        // 从响应头获取文件名
-        const contentDisposition = response.headers['content-disposition'];
-        let fileName = '系统配置.xlsx';
-        if (contentDisposition) {
-          const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
-          if (fileNameMatch) {
-            fileName = decodeURIComponent(fileNameMatch[1]);
-          }
-        }
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        ElMessage.success('导出成功');
-      } catch (error: any) {
-        ElMessage.error('文件处理失败', error.message);
-        console.error('导出错误:', error);
-      } finally {
-        loading.value = false;
-      }
-    }).catch(() => {
-      ElMessage.info('已取消导出');
-    });
-  }
-  else {
-    ElMessage.error('未知操作类型');
-  }
 }
 
 // 导出
-function handleExport() {
-  const filename = exportsFormData.filename
-    ? exportsFormData.filename
-    : props.contentConfig.permPrefix || "export";
-  const sheetname = exportsFormData.sheetname ? exportsFormData.sheetname : "sheet";
-  const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet(sheetname);
-  const columns: Partial<ExcelJS.Column>[] = [];
-  cols.value.forEach((col) => {
-    if (col.label && col.prop && exportsFormData.fields.includes(col.prop)) {
-      columns.push({ header: col.label, key: col.prop });
+async function handleExport() {
+  ElMessageBox.confirm('是否确认导出当前系统配置?', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(async () => {
+    try {
+      loading.value = true;
+      const body = {
+        ...queryFormData,
+        page_no: 1,
+        page_size: total.value
+      };
+      ElMessage.warning('正在导出数据，请稍候...');
+
+      const response = await ConfigAPI.exportConfig(body);
+      const blob = new Blob([JSON.stringify(response.data.data)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+      // 从响应头获取文件名
+      const contentDisposition = response.headers['content-disposition'];
+      let fileName = '系统配置.xlsx';
+      if (contentDisposition) {
+        const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
+        if (fileNameMatch) {
+          fileName = decodeURIComponent(fileNameMatch[1]);
+        }
+      }
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+    } catch (error: any) {
+      ElMessage.error('文件处理失败', error.message);
+      console.error('导出错误:', error);
+    } finally {
+      loading.value = false;
     }
+  }).catch(() => {
+    ElMessage.info('已取消导出');
   });
-  worksheet.columns = columns;
-  if (exportsFormData.origin === ExportsOriginEnum.REMOTE) {
-    if (props.contentConfig.exportsAction) {
-      props.contentConfig.exportsAction(lastFormData).then((res) => {
-        worksheet.addRows(res);
-        workbook.xlsx
-          .writeBuffer()
-          .then((buffer) => {
-            saveXlsx(buffer, filename as string);
-          })
-          .catch((error) => console.log(error));
-      });
-    } else {
-      ElMessage.error("未配置exportsAction");
-    }
-  } else {
-    worksheet.addRows(
-      exportsFormData.origin === ExportsOriginEnum.SELECTED ? selectionData.value : pageData.value
-    );
-    workbook.xlsx
-      .writeBuffer()
-      .then((buffer) => {
-        saveXlsx(buffer, filename as string);
-      })
-      .catch((error) => console.log(error));
-  }
-}
-
-// 下载导入模板
-function handleDownloadTemplate() {
-  const importTemplate = props.contentConfig.importTemplate;
-  if (typeof importTemplate === "string") {
-    window.open(importTemplate);
-  } else if (typeof importTemplate === "function") {
-    importTemplate().then((response) => {
-      const fileData = response.data;
-      const fileName = decodeURI(
-        response.headers["content-disposition"].split(";")[1].split("=")[1]
-      );
-      saveXlsx(fileData, fileName);
-    });
-  } else {
-    ElMessage.error("未配置importTemplate");
-  }
-}
-
-// 导入
-function handleImport() {
-  const importsAction = props.contentConfig.importsAction;
-  if (importsAction === undefined) {
-    ElMessage.error("未配置importsAction");
-    return;
-  }
-  // 获取选择的文件
-  const file = importFormData.files[0].raw as File;
-  // 创建Workbook实例
-  const workbook = new ExcelJS.Workbook();
-  // 使用FileReader对象来读取文件内容
-  const fileReader = new FileReader();
-  // 二进制字符串的形式加载文件
-  fileReader.readAsArrayBuffer(file);
-  fileReader.onload = (ev) => {
-    if (ev.target !== null && ev.target.result !== null) {
-      const result = ev.target.result as ArrayBuffer;
-      // 从 buffer中加载数据解析
-      workbook.xlsx
-        .load(result)
-        .then((workbook) => {
-          // 解析后的数据
-          const data = [];
-          // 获取第一个worksheet内容
-          const worksheet = workbook.getWorksheet(1);
-          if (worksheet) {
-            // 获取第一行的标题
-            const fields: any[] = [];
-            worksheet.getRow(1).eachCell((cell) => {
-              fields.push(cell.value);
-            });
-            // 遍历工作表的每一行（从第二行开始，因为第一行通常是标题行）
-            for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
-              const rowData: IObject = {};
-              const row = worksheet.getRow(rowNumber);
-              // 遍历当前行的每个单元格
-              row.eachCell((cell, colNumber) => {
-                // 获取标题对应的键，并将当前单元格的值存储到相应的属性名中
-                rowData[fields[colNumber - 1]] = cell.value;
-              });
-              // 将当前行的数据对象添加到数组中
-              data.push(rowData);
-            }
-          }
-          if (data.length === 0) {
-            ElMessage.error("未解析到数据");
-            return;
-          }
-          importsAction(data).then(() => {
-            ElMessage.success("导入数据成功");
-            handleCloseImportModal();
-            handleRefresh(true);
-          });
-        })
-        .catch((error) => console.log(error));
-    } else {
-      ElMessage.error("读取文件失败");
-    }
-  };
 }
 
 onMounted(() => {

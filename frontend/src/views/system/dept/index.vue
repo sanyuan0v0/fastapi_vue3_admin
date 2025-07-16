@@ -8,7 +8,7 @@
           <el-input v-model="queryFormData.name" placeholder="请输入部门名称" clearable />
         </el-form-item>
         <el-form-item prop="status" label="状态">
-          <el-select v-model="queryFormData.status" placeholder="请选择状态" clearable style="width: 160px">
+          <el-select v-model="queryFormData.status" placeholder="请选择状态asdasda" clearable>
             <el-option value="true" label="启用" />
             <el-option value="false" label="停用" />
           </el-select>
@@ -58,39 +58,20 @@
         <div class="data-table__toolbar--actions">
           <el-button type="success" icon="plus" @click="handleOpenDialog('create')">新增</el-button>
           <el-button type="danger" icon="delete" :disabled="selectIds.length === 0"
-            @click="handleOperation('delete')">批量删除</el-button>
-          <el-dropdown>
-            <el-button type="default" :disabled="selectIds.length === 0" icon="ArrowDown">更多
+            @click="handleDelete(selectIds)">批量删除</el-button>
+          <el-dropdown trigger="click">
+            <el-button type="default" :disabled="selectIds.length === 0" icon="ArrowDown">
+              更多
             </el-button>
             <template #dropdown>
-              <el-menu @click="handleMoreClick">
-                <el-menu-item key="1">
-                  <span>
-                    <el-icon>
-                      <Check />
-                    </el-icon>
-                    <span>批量启用</span>
-                  </span>
-                </el-menu-item>
-                <el-menu-item key="2">
-                  <span>
-                    <el-icon>
-                      <CircleClose />
-                    </el-icon>
-                    <span>批量停用</span>
-                  </span>
-                </el-menu-item>
-              </el-menu>
+              <el-dropdown-menu>
+                <el-dropdown-item icon="Check" @click="handleMoreClick(true)">批量启用</el-dropdown-item>
+                <el-dropdown-item icon="CircleClose" @click="handleMoreClick(false)">批量停用</el-dropdown-item>
+              </el-dropdown-menu>
             </template>
           </el-dropdown>
         </div>
         <div class="data-table__toolbar--tools">
-          <el-tooltip content="导入">
-            <el-button type="info" icon="upload" circle @click="handleOperation('import')" />
-          </el-tooltip>
-          <el-tooltip content="导出">
-            <el-button type="warning" icon="download" circle @click="handleOperation('export')" />
-          </el-tooltip>
           <el-tooltip content="刷新">
             <el-button type="primary" icon="refresh" circle @click="handleRefresh" />
           </el-tooltip>
@@ -113,7 +94,7 @@
       <el-table ref="dataTableRef" v-loading="loading" row-key="id" :data="pageTableData" :tree-props="{
         children: 'children',
         hasChildren: 'hasChildren',
-      }" highlight-current-row class="data-table__content" height="450" border stripe
+      }" highlight-current-row class="data-table__content" height="540" border stripe
         @selection-change="handleSelectionChange">
         <template #empty>
           <el-empty :image-size="80" description="暂无数据" />
@@ -123,9 +104,9 @@
         <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号"
           width="60" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" key="name" label="部门名称" prop="name"
-          min-width="80" />
+          min-width="120" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" key="status" label="状态"
-          prop="status" min-width="60">
+          prop="status" min-width="80">
           <template #default="scope">
             <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
               {{ scope.row.status ? "启用" : "停用" }}
@@ -133,7 +114,7 @@
           </template>
         </el-table-column>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'order')?.show" key="order" label="排序" prop="order"
-          min-width="100" show-overflow-tooltip />
+          min-width="80" show-overflow-tooltip />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" key="description" label="描述"
           prop="description" min-width="100" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" key="created_at" label="创建时间"
@@ -150,16 +131,11 @@
             <el-button type="primary" size="small" link icon="edit"
               @click="handleOpenDialog('update', scope.row.id)">编辑</el-button>
             <el-button type="danger" size="small" link icon="delete"
-              @click="handleOperation('delete', scope.row.id)">删除</el-button>
+              @click="handleDelete([scope.row.id])">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <!-- 分页区域 -->
-      <template #footer>
-        <pagination v-if="total > 0" v-model:total="total" v-model:page="queryFormData.page_no" v-model:limit="queryFormData.page_size"
-          @pagination="loadingData" />
-      </template>
     </el-card>
 
     <!-- 弹窗区域 -->
@@ -174,7 +150,6 @@
           </el-descriptions-item>
           <el-descriptions-item label="排序" :span="2">{{ detailFormData.order }}</el-descriptions-item>
           <el-descriptions-item label="描述" :span="2">{{ detailFormData.description }}</el-descriptions-item>
-          <el-descriptions-item label="创建人" :span="2">{{ detailFormData.creator?.name }}</el-descriptions-item>
           <el-descriptions-item label="创建时间" :span="2">{{ detailFormData.created_at }}</el-descriptions-item>
           <el-descriptions-item label="更新时间" :span="2">{{ detailFormData.updated_at }}</el-descriptions-item>
         </el-descriptions>
@@ -262,8 +237,6 @@ const detailFormData = ref<DeptTable>({});
 
 // 分页查询参数
 const queryFormData = reactive<DeptPageQuery>({
-  page_no: 1,
-  page_size: 10,
   name: undefined,
   status: undefined,
   start_time: undefined,
@@ -318,14 +291,12 @@ async function loadingData() {
 
 // 查询（重置页码后获取数据）
 async function handleQuery() {
-  queryFormData.page_no = 1;
   loadingData();
 }
 
 // 重置查询
 async function handleResetQuery() {
   queryFormRef.value.resetFields();
-  queryFormData.page_no = 1;
   loadingData();
 }
 
@@ -351,13 +322,13 @@ async function handleCloseDialog() {
 async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: number) {
   dialogVisible.type = type;
   if (id) {
-    const data = await DeptAPI.getDeptDetail({ id });
+    const response = await DeptAPI.getDeptDetail({ id });
     if (type === 'detail') {
       dialogVisible.title = "部门详情";
-      Object.assign(detailFormData.value, data);
+      Object.assign(detailFormData.value, response.data.data);
     } else if (type === 'update') {
       dialogVisible.title = "修改部门";
-      Object.assign(formData, data);
+      Object.assign(formData, response.data.data);
     }
   } else {
     dialogVisible.title = "新增部门";
@@ -376,7 +347,7 @@ async function handleSubmit() {
       const id = formData.id;
       if (id) {
         try {
-          await DeptAPI.updateDept(formData)
+          await DeptAPI.updateDept({ id, ...formData })
           dialogVisible.visible = false;
           resetForm();
           handleResetQuery();
@@ -401,9 +372,9 @@ async function handleSubmit() {
   });
 }
 
-// 删除、导入、导出
-async function handleOperation(type: 'delete' | 'import' | 'export', id?: number) {
-  if (type === 'delete' && !id && !selectIds.value.length) {
+// 删除、批量删除
+async function handleDelete(ids: number[]) {
+  if (!ids && !selectIds.value.length) {
     ElMessageBox.confirm("确认删除该项数据?", "警告", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
@@ -411,8 +382,7 @@ async function handleOperation(type: 'delete' | 'import' | 'export', id?: number
     }).then(async () => {
       try {
         loading.value = true;
-        await DeptAPI.deleteDept({ id: id ? id : selectIds.value });
-        ElMessage.success("删除成功");
+        await DeptAPI.deleteDept({ ids });
         handleResetQuery();
       } catch (error: any) {
         ElMessage.error(error.message);
@@ -423,89 +393,19 @@ async function handleOperation(type: 'delete' | 'import' | 'export', id?: number
       ElMessage.info('已取消删除');
     });
   }
-  else if (type === 'import') {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.xlsx, .xls';
-    input.click();
-
-    input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append('file', file);
-        try {
-          loading.value = true;
-          await DeptAPI.uploadFile(formData);
-          ElMessage.success('导入成功');
-          handleResetQuery();
-        } catch (error: any) {
-          ElMessage.error(error.message);
-        } finally {
-          loading.value = false;
-        }
-      }
-    }
-  }
-  else if (type === 'export') {
-    ElMessageBox.confirm('是否确认导出当前部门?', '警告', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }).then(async () => {
-      try {
-        loading.value = true;
-        const body = {
-          ...queryFormData,
-          page_no: 1,
-          page_size: total.value
-        };
-        ElMessage.warning('正在导出数据，请稍候...');
-
-        const response = await DeptAPI.exportDept(body);
-        const blob = new Blob([JSON.stringify(response.data)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
-        // 从响应头获取文件名
-        const contentDisposition = response.headers['content-disposition'];
-        let fileName = '部门.xlsx';
-        if (contentDisposition) {
-          const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
-          if (fileNameMatch) {
-            fileName = decodeURIComponent(fileNameMatch[1]);
-          }
-        }
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        ElMessage.success('导出成功');
-      } catch (error: any) {
-        ElMessage.error('文件处理失败', error.message);
-        console.error('导出错误:', error);
-      } finally {
-        loading.value = false;
-      }
-    }).catch(() => {
-      ElMessage.info('已取消导出');
-    });
-  }
-  else {
-    ElMessage.error('未知操作类型');
-  }
 }
 
 // 批量启用/停用
-async function handleMoreClick(id: number) {
-  if (id && !selectIds.value.length) {
-    ElMessageBox.confirm("确认删除启用或停用该项数据?", "警告", {
+async function handleMoreClick(status: boolean) {
+  if (selectIds.value.length) {
+    ElMessageBox.confirm(`确认${status ? '启用' : '停用'}该项数据?`, "警告", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
       type: "warning",
     }).then(async () => {
       try {
         loading.value = true;
-        await DeptAPI.batchAvailableDept({ id: id ? id : selectIds.value });
+        await DeptAPI.batchAvailableDept({ ids: selectIds.value, status });
         handleResetQuery();
       } catch (error: any) {
         ElMessage.error(error.message);

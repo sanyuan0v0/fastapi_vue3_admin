@@ -10,11 +10,11 @@ from app.api.v1.schemas.system.dict_schema import DictDataCreateSchema,DictDataO
 from app.common.enums import RedisInitKeyConfig
 from app.api.v1.params.system.dict_param import DictDataQueryParams, DictTypeQueryParams
 from app.api.v1.cruds.system.dict_crud import DictDataCRUD, DictTypeCRUD
+from app.core.base_schema import BatchSetAvailable
 from app.core.redis_crud import RedisCURD
 from app.core.exceptions import CustomException
 from app.utils.excel_util import ExcelUtil
 from app.core.logger import logger
-from app.config.setting import settings
 
 class DictTypeService:
     """
@@ -136,7 +136,10 @@ class DictTypeService:
                 logger.error(f"删除字典类型失败: {e}")
                 raise CustomException(msg=f"删除字典类型失败")
         await DictTypeCRUD(auth).delete_obj_crud(ids=ids)
-        
+    
+    @classmethod
+    async def set_obj_available_service(cls, auth: AuthSchema, data: BatchSetAvailable) -> None:
+        await DictTypeCRUD(auth).set_obj_available_crud(ids=data.ids, status=data.status)
 
     @classmethod
     async def export_obj_service(cls, data_list: List[Dict[str, Any]]) -> bytes:
@@ -315,6 +318,10 @@ class DictDataService:
                 logger.error(f"删除字典数据失败: {e}")
                 raise CustomException(msg=f"删除字典数据失败 {e}")
         await DictDataCRUD(auth).delete_obj_crud(ids=ids)
+
+    @classmethod
+    async def set_obj_available_service(cls, auth: AuthSchema, data: BatchSetAvailable) -> None:
+        await DictDataCRUD(auth).set_obj_available_crud(ids=data.ids, status=data.status)
 
     @classmethod
     async def export_obj_service(cls, data_list: List[Dict[str, Any]]) -> bytes:

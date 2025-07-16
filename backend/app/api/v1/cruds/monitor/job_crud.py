@@ -3,8 +3,8 @@
 from typing import Dict, List, Optional, Sequence
 
 from app.core.base_crud import CRUDBase
-from app.api.v1.models.system.job_model import JobModel
-from app.api.v1.schemas.system.job_schema import JobCreateSchema,JobUpdateSchema
+from app.api.v1.models.monitor.job_model import JobModel
+from app.api.v1.schemas.monitor.job_schema import JobCreateSchema,JobUpdateSchema
 from app.api.v1.schemas.system.auth_schema import AuthSchema
 
 

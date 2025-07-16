@@ -16,11 +16,11 @@ const NoticeAPI = {
     });
   },
 
-  getNoticeDetail(id: number) {
+  getNoticeDetail(query: DetailType) {
     return request<ApiResponse<NoticeTable>>({
       url: `/system/notice/detail`,
       method: "get",
-      params: id,
+      params: query,
     });
   },
 
@@ -56,7 +56,7 @@ const NoticeAPI = {
     });
   },
 
-  exportNotice(body: any[]) {
+  exportNotice(body: NoticePageQuery) {
     return request<ApiResponse>({
       url: `/system/notice/export`,
       method: "post",

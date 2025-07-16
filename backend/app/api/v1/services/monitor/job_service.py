@@ -7,9 +7,9 @@ from app.core.ap_scheduler import SchedulerUtil
 from app.core.exceptions import CustomException
 from app.utils.cron_util import CronUtil
 from app.utils.excel_util import ExcelUtil
-from app.api.v1.schemas.system.job_schema import JobCreateSchema, JobUpdateSchema, JobOutSchema
-from app.api.v1.params.system.job_param import JobQueryParams
-from app.api.v1.cruds.system.job_crud import JobCRUD
+from app.api.v1.schemas.monitor.job_schema import JobCreateSchema, JobUpdateSchema, JobOutSchema
+from app.api.v1.params.monitor.job_param import JobQueryParams
+from app.api.v1.cruds.monitor.job_crud import JobCRUD
 
 
 class JobService:

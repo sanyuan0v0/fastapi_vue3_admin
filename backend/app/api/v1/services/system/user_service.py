@@ -181,7 +181,7 @@ class UserService:
 
         # 获取菜单权限
         if auth.user.is_superuser:
-            menu_all = await MenuCRUD(auth).get_list_crud(search={'type': ('in', [1, 2]), 'status': True})
+            menu_all = await MenuCRUD(auth).get_list_crud(search={'type': ('in', [1, 2, 4]), 'status': True})
             menus = [MenuOutSchema.model_validate(menu).model_dump() for menu in menu_all]
         else:
             menus = [

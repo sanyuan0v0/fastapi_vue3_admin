@@ -8,7 +8,7 @@
                     <el-input v-model="queryFormData.name" placeholder="请输入任务名称" clearable />
                 </el-form-item>
                 <el-form-item prop="status" label="状态">
-                    <el-select v-model="queryFormData.status" placeholder="请选择状态" clearable style="width: 160px">
+                    <el-select v-model="queryFormData.status" placeholder="请选择状态" clearable>
                         <el-option value="true" label="启用" />
                         <el-option value="false" label="暂停" />
                     </el-select>
@@ -59,30 +59,6 @@
                     <el-button type="success" icon="plus" @click="handleOpenDialog('create')">新增</el-button>
                     <el-button type="danger" icon="delete" :disabled="selectIds.length === 0"
                         @click="handleOperation('delete')">批量删除</el-button>
-                    <el-dropdown>
-                        <el-button type="default" :disabled="selectIds.length === 0" icon="ArrowDown">更多
-                        </el-button>
-                        <template #dropdown>
-                            <el-menu @click="handleMoreClick">
-                                <el-menu-item key="1">
-                                    <span>
-                                        <el-icon>
-                                            <Check />
-                                        </el-icon>
-                                        <span>批量启用</span>
-                                    </span>
-                                </el-menu-item>
-                                <el-menu-item key="2">
-                                    <span>
-                                        <el-icon>
-                                            <CircleClose />
-                                        </el-icon>
-                                        <span>批量停用</span>
-                                    </span>
-                                </el-menu-item>
-                            </el-menu>
-                        </template>
-                    </el-dropdown>
                 </div>
                 <div class="data-table__toolbar--tools">
                     <el-tooltip content="导入">
@@ -99,14 +75,15 @@
                     </el-tooltip>
                     <el-tooltip content="列表筛选">
                         <el-dropdown trigger="click">
-                        <el-button type="default" icon="operation" circle />
-                        <template #dropdown>
-                            <el-dropdown-menu>
-                            <el-dropdown-item v-for="column in tableColumns" :key="column.prop" :command="column">
-                                <el-checkbox v-model="column.show">{{ column.label }}</el-checkbox>
-                            </el-dropdown-item>
-                            </el-dropdown-menu>
-                        </template>
+                            <el-button type="default" icon="operation" circle />
+                            <template #dropdown>
+                                <el-dropdown-menu>
+                                    <el-dropdown-item v-for="column in tableColumns" :key="column.prop"
+                                        :command="column">
+                                        <el-checkbox v-model="column.show">{{ column.label }}</el-checkbox>
+                                    </el-dropdown-item>
+                                </el-dropdown-menu>
+                            </template>
                         </el-dropdown>
                     </el-tooltip>
                 </div>
@@ -119,21 +96,21 @@
                     <el-empty :image-size="80" description="暂无数据" />
                 </template>
                 <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection"
-                    width="55" align="center" />
+                    min-width="55" align="center" />
                 <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed
-                    label="序号" width="60" />
+                    label="序号" min-width="60" />
                 <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" key="name" label="任务名称"
-                    prop="name" min-width="80" />
+                    prop="name" min-width="140" />
                 <el-table-column v-if="tableColumns.find(col => col.prop === 'func')?.show" key="func" label="执行函数"
-                    prop="func" min-width="80" />
+                    prop="func" min-width="140" />
                 <el-table-column v-if="tableColumns.find(col => col.prop === 'trigger')?.show" key="trigger" label="触发器"
-                    prop="trigger" min-width="80" />
+                    prop="trigger" min-width="100" />
                 <el-table-column v-if="tableColumns.find(col => col.prop === 'jobstore')?.show" key="jobstore"
-                    label="存储器" prop="jobstore" min-width="80" />
+                    label="存储器" prop="jobstore" min-width="100" />
                 <el-table-column v-if="tableColumns.find(col => col.prop === 'executor')?.show" key="executor"
-                    label="执行器" prop="executor" min-width="80" />
+                    label="执行器" prop="executor" min-width="100" />
                 <el-table-column v-if="tableColumns.find(col => col.prop === 'coalesce')?.show" key="coalesce"
-                    label="并发执行" prop="coalesce" min-width="80">
+                    label="并发执行" prop="coalesce" min-width="100">
                     <template #default="scope">
                         <el-tag :type="scope.row.coalesce === true ? 'success' : 'danger'">
                             {{ scope.row.coalesce === true ? "是" : "否" }}
@@ -141,7 +118,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" key="status" label="状态"
-                    prop="status" min-width="60">
+                    prop="status" min-width="100">
                     <template #default="scope">
                         <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
                             {{ scope.row.status === true ? "启用" : "停用" }}
@@ -151,12 +128,12 @@
                 <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" key="description"
                     label="描述" prop="description" min-width="100" />
                 <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" key="created_at"
-                    label="创建时间" prop="created_at" min-width="120" sortable />
+                    label="创建时间" prop="created_at" min-width="200" sortable />
                 <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at"
-                    label="更新时间" prop="updated_at" min-width="120" sortable />
+                    label="更新时间" prop="updated_at" min-width="200" sortable />
 
                 <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right"
-                    label="操作" min-width="120">
+                    label="操作" min-width="240">
                     <template #default="scope">
                         <el-button type="info" size="small" link icon="document"
                             @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
@@ -164,16 +141,16 @@
                             @click="handleOpenDialog('update', scope.row.id)">编辑</el-button>
                         <el-button type="danger" size="small" link icon="delete"
                             @click="handleOperation('delete', scope.row.id)">删除</el-button>
-                        <el-dropdown>
+                        <el-dropdown trigger="click">
                             <el-button type="default" size="small" link icon="ArrowDown">
                                 更多
                             </el-button>
                             <template #dropdown>
-                                <el-menu @click="handleOption(scope.row, $event.key)">
-                                    <el-menu-item key="1">暂停</el-menu-item>
-                                    <el-menu-item key="2">恢复</el-menu-item>
-                                    <!-- <el-menu-item key="3">重启</el-menu-item> -->
-                                </el-menu>
+                                <el-dropdown-menu>
+                                    <el-dropdown-item icon="Check" @click="handleOption(scope.row, 1)">暂停</el-dropdown-item>
+                                    <el-dropdown-item icon="CircleClose" @click="handleOption(scope.row, 2)">恢复</el-dropdown-item>
+                                    <!-- <el-dropdown-item icon="CircleClose" @click="handleOption(scope.row, 3)">重启</el-dropdown-item> -->
+                                </el-dropdown-menu>
                             </template>
                         </el-dropdown>
                     </template>
@@ -205,9 +182,9 @@
                         <el-tag v-else type="danger">否</el-tag>
                     </el-descriptions-item>
                     <el-descriptions-item label="最大实例数" :span="2">{{ detailFormData.max_instances
-                    }}</el-descriptions-item>
+                        }}</el-descriptions-item>
                     <el-descriptions-item label="触发器参数" :span="2">{{ detailFormData.trigger_args
-                    }}</el-descriptions-item>
+                        }}</el-descriptions-item>
                     <el-descriptions-item label="开始时间" :span="2">{{ detailFormData.start_date }}</el-descriptions-item>
                     <el-descriptions-item label="结束时间" :span="2">{{ detailFormData.end_date }}</el-descriptions-item>
                     <el-descriptions-item label="日志信息" :span="2">{{ detailFormData.message }}</el-descriptions-item>
@@ -217,7 +194,7 @@
                     </el-descriptions-item>
                     <el-descriptions-item label="描述" :span="2">{{ detailFormData.description }}</el-descriptions-item>
                     <el-descriptions-item label="创建人" :span="2">{{ detailFormData.creator?.name
-                    }}</el-descriptions-item>
+                        }}</el-descriptions-item>
                     <el-descriptions-item label="创建时间" :span="2">{{ detailFormData.created_at }}</el-descriptions-item>
                     <el-descriptions-item label="更新时间" :span="2">{{ detailFormData.updated_at }}</el-descriptions-item>
                 </el-descriptions>
@@ -338,13 +315,13 @@ defineOptions({
     inheritAttrs: false,
 });
 
-import JobAPI, { JobTable, JobForm, JobPageQuery } from "@/api/system/job";
+import JobAPI, { JobTable, JobForm, JobPageQuery } from "@/api/monitor/job";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useDebounceFn } from "@vueuse/core";
 
 import IntervalTab from '@/components/IntervalTab/index.vue';
-import 'vue3-cron-plus-picker/style.css'
-import { Vue3CronPlusPicker } from 'vue3-cron-plus-picker'
+import 'vue3-cron-plus-picker/style.css';
+import { Vue3CronPlusPicker } from 'vue3-cron-plus-picker';
 import { useDictStore } from "@/store/index";
 
 const dictStore = useDictStore();
@@ -649,29 +626,6 @@ async function handleOperation(type: 'delete' | 'import' | 'export', id?: number
     }
     else {
         ElMessage.error('未知操作类型');
-    }
-}
-
-// 批量启用/停用
-async function handleMoreClick(id: number) {
-    if (id && !selectIds.value.length) {
-        ElMessageBox.confirm("确认删除启用或停用该项数据?", "警告", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning",
-        }).then(async () => {
-            try {
-                loading.value = true;
-                await JobAPI.batchAvailableJob({ id: id ? id : selectIds.value });
-                handleResetQuery();
-            } catch (error: any) {
-                ElMessage.error(error.message);
-            } finally {
-                loading.value = false;
-            }
-        }).catch(() => {
-            ElMessage.info('已取消批量操作');
-        });
     }
 }
 

@@ -65,12 +65,12 @@
           <el-empty :image-size="80" description="暂无数据" />
         </template>
 
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" width="55"
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" min-width="55"
           align="center" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号"
-          width="60" />
+          min-width="60" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'session_id')?.show" key="session_id" label="会话编号"
-          prop="session_id" min-width="80" />
+          prop="session_id" min-width="250" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'ipaddr')?.show" key="ipaddr" label="IP地址"
           prop="ipaddr" min-width="80" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" key="name" label="用户名" prop="name"
@@ -82,7 +82,7 @@
         <el-table-column v-if="tableColumns.find(col => col.prop === 'os')?.show" key="os" label="操作系统" prop="os"
           min-width="80" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'login_time')?.show" key="login_time" label="登录时间"
-          prop="login_time" min-width="80" />
+          prop="login_time" min-width="200" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" key="operation" fixed="right"
           label="操作" min-width="60">
           <template #default="scope">
@@ -186,8 +186,8 @@ async function handleSelectionChange(selection: any) {
 }
 
 // 强制退出
-async function handleSubmit(id?: number) {
-  if (!id && !selectIds.value.length) {
+async function handleSubmit(ids?: number[]) {
+  if (!ids && !selectIds.value.length) {
     ElMessageBox.confirm("确认强制退出选中项?", "警告", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
@@ -195,7 +195,7 @@ async function handleSubmit(id?: number) {
     }).then(async () => {
       try {
         loading.value = true;
-        await OnlineAPI.deleteOnline({ id: id ? id : selectIds.value });
+        await OnlineAPI.deleteOnline({ ids });
         handleResetQuery();
       } catch (error: any) {
         ElMessage.error(error.message);
