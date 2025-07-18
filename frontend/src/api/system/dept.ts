@@ -9,11 +9,10 @@ const DeptAPI = {
     });
   },
 
-  getDeptDetail(query: DetailType) {
+  getDeptDetail(query: number) {
     return request<ApiResponse<DeptTable>>({
-      url: `/system/dept/detail`,
+      url: `/system/dept/detail/${query}`,
       method: "get",
-      params: query,
     });
   },
 
@@ -33,11 +32,11 @@ const DeptAPI = {
     });
   },
 
-  deleteDept(query: DeleteType) {
+  deleteDept(body: number[]) {
     return request<ApiResponse>({
       url: `/system/dept/delete`,
       method: "delete",
-      data: query,
+      data: body,
     });
   },
 

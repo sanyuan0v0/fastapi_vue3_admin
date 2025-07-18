@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
 from typing import Optional
 from fastapi import Query
 
@@ -25,6 +26,7 @@ class NoticeQueryParams:
         # 精确查询字段
         self.creator_id = creator
         self.status = status
+        self.notice_type = notice_type
 
         # 时间范围查询
         if start_time and end_time:

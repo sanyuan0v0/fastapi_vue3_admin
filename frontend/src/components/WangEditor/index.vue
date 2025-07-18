@@ -42,7 +42,7 @@ type InsertFnType = (_url: string, _alt: string, _href: string) => void;
 defineProps({
   height: {
     type: String,
-    default: "500px",
+    default: "200px",
   },
 });
 // 双向绑定

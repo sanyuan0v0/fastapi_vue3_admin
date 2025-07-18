@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from fastapi import APIRouter, Body, Depends, Query
+from fastapi import APIRouter, Body, Depends, Path, Query
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from app.common.request import PaginationService
@@ -30,9 +30,9 @@ async def get_obj_list_controller(
     return SuccessResponse(data=result_dict, msg="查询日志成功")
 
 
-@router.get("/detail", summary="日志详情", description="日志详情")
+@router.get("/detail/{id}", summary="日志详情", description="日志详情")
 async def get_obj_detail_controller(
-    id: int = Query(..., description="操作日志ID"),
+    id: int = Path(..., description="操作日志ID"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:log:query"]))
 ) -> JSONResponse:
     """ 详情日志 """
@@ -43,7 +43,7 @@ async def get_obj_detail_controller(
 
 @router.delete("/delete", summary="删除日志", description="删除日志")
 async def delete_obj_log_controller(
-    ids: list[int] = Query(..., description="ID列表"),
+    ids: list[int] = Body(..., description="ID列表"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:log:delete"]))
 ) -> JSONResponse:
     """ 删除日志 """

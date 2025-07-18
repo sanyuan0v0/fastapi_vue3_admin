@@ -58,15 +58,14 @@ export const UserAPI = {
     });
   },
 
-  getUserDetail(query: DetailType) {
+  getUserDetail(query: number) {
     return request<ApiResponse>({
-      url: `/system/user/detail`,
+      url: `/system/user/detail/${query}`,
       method: "get",
-      params: query,
     });
   },
 
-  createUser(body: InfoFormState) {
+  createUser(body: UserForm) {
     return request<ApiResponse>({
       url: `/system/user/create`,
       method: "post",
@@ -74,7 +73,7 @@ export const UserAPI = {
     });
   },
 
-  updateUser(body: InfoFormState) {
+  updateUser(body: UserForm) {
     return request<ApiResponse>({
       url: `/system/user/update`,
       method: "put",
@@ -82,11 +81,11 @@ export const UserAPI = {
     });
   },
 
-  deleteUser(query: DeleteType) {
+  deleteUser(body: number[]) {
     return request<ApiResponse>({
       url: `/system/user/delete`,
       method: "delete",
-      data: query,
+      data: body,
     });
   },
 
@@ -229,16 +228,16 @@ export interface PasswordFormState {
 
 export interface UserForm {
   id: undefined;
-  username: string;
-  name: string;
-  dept_id?: undefined | number;
-  dept_name?: undefined | string;
-  role_ids?: undefined | number[];
-  roleNames?: undefined | string;
-  position_ids?: undefined | number[];
-  positionNames?: undefined | string;
-  password: string;
-  gender?: undefined | number;
+  username?: string;
+  name?: string;
+  dept_id?:  number;
+  dept_name?: string;
+  role_ids?: number[];
+  roleNames?: string;
+  position_ids?: number[];
+  positionNames?: string;
+  password?: string;
+  gender?: number;
   email?: string;
   mobile?: string;
   is_superuser?: boolean;

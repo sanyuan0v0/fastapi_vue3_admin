@@ -277,7 +277,7 @@ function logout() {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100%;
+    // height: 100%;
     padding: 0 8px;
 
     &__avatar {

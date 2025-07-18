@@ -1,10 +1,10 @@
 <!-- 用户管理 -->
 <template>
   <div class="app-container">
-    <el-row :gutter="20">
+    <el-row :gutter="12">
       <!-- 部门树 -->
-      <el-col :lg="4" :xs="24" class="mb-[12px]">
-        <DeptTree v-model="queryFormData.dept_id" @node-click="handleQuery" />
+      <el-col :lg="4" :xs="24">
+        <DeptTree v-model="queryFormData.dept_id" class="h-full" @node-click="handleQuery"  />
       </el-col>
 
       <!-- 用户列表 -->
@@ -19,7 +19,7 @@
               <el-input v-model="queryFormData.name" placeholder="请输入姓名" clearable />
             </el-form-item>
             <el-form-item prop="status" label="状态">
-              <el-select v-model="queryFormData.status" placeholder="请选择状态" clearable>
+              <el-select v-model="queryFormData.status" placeholder="请选择状态" style="width: 167.5px" clearable>
                 <el-option value="true" label="启用" />
                 <el-option value="false" label="停用" />
               </el-select>
@@ -117,29 +117,35 @@
           </div>
 
           <!-- 表格区域 -->
-          <el-table ref="dataTableRef" v-loading="loading" :data="pageTableData" highlight-current-row
+          <el-table ref="dataFormRef" v-loading="loading" :data="pageTableData" highlight-current-row
             class="data-table__content" height="450" border stripe @selection-change="handleSelectionChange">
             <template #empty>
               <el-empty :image-size="80" description="暂无数据" />
             </template>
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" min-width="55"
-              align="center" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" align="center" min-width="60" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'avatar')?.show" label="头像" prop="avatar" min-width="80" align="center">
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection"
+              min-width="55" align="center" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号"
+              align="center" min-width="60" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'avatar')?.show" label="头像" prop="avatar"
+              min-width="80" align="center">
               <template #default="scope">
                 <el-avatar :src="scope.row.avatar" />
               </template>
             </el-table-column>
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'username')?.show" label="账号" prop="username" min-width="100" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" label="用户名"  prop="name" min-width="100" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" label="状态" prop="status" min-width="100">
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'username')?.show" label="账号" prop="username"
+              min-width="100" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" label="用户名" prop="name"
+              min-width="100" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" label="状态" prop="status"
+              min-width="100">
               <template #default="scope">
                 <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
                   {{ scope.row.status === true ? "启用" : "停用" }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'is_superuser')?.show" label="是否超管"  prop="is_superuser" min-width="100">
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'is_superuser')?.show" label="是否超管"
+              prop="is_superuser" min-width="100">
               <template #default="scope">
                 <el-tag :type="scope.row.is_superuser ? 'success' : 'info'">
                   {{ scope.row.is_superuser ? '是' : '否' }}
@@ -152,11 +158,15 @@
               </template>
             </el-table-column>
 
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'mobile')?.show" label="手机号" prop="mobile" min-width="160" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'email')?.show" label="邮箱" prop="email" min-width="160" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" label="创建时间" prop="created_at" min-width="200" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" label="更新时间"  prop="updated_at" min-width="200" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作"
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'mobile')?.show" label="手机号" prop="mobile"
+              min-width="160" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'email')?.show" label="邮箱" prop="email"
+              min-width="160" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" label="创建时间"
+              prop="created_at" min-width="200" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" label="更新时间"
+              prop="updated_at" min-width="200" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" align="center"
               min-width="280">
               <template #default="scope">
                 <el-button type="primary" icon="RefreshLeft" size="small" link @click="hancleResetPassword(scope.row)">
@@ -279,7 +289,8 @@
           <template #footer>
             <div class="dialog-footer">
               <!-- 详情弹窗不需要确定按钮的提交逻辑 -->
-              <el-button v-if="dialogVisible.type === 'create' || dialogVisible.type === 'update'" type="primary" @click="handleSubmit">确定</el-button>
+              <el-button v-if="dialogVisible.type === 'create' || dialogVisible.type === 'update'" type="primary"
+                @click="handleSubmit">确定</el-button>
               <el-button v-else type="primary" @click="handleCloseDialog">确定</el-button>
               <el-button @click="handleCloseDialog">取消</el-button>
             </div>
@@ -375,18 +386,18 @@ const queryFormData = reactive<UserPageQuery>({
 // 表单
 const formData = reactive<UserForm>({
   id: undefined,
-  username: '',
-  name: '',
+  username: undefined,
+  name: undefined,
   dept_id: undefined,
   dept_name: undefined,
   role_ids: undefined,
   roleNames: undefined,
   position_ids: undefined,
   positionNames: undefined,
-  password: '',
+  password: undefined,
   gender: undefined,
-  email: '',
-  mobile: '',
+  email: undefined,
+  mobile: undefined,
   is_superuser: undefined,
   status: undefined,
   description: undefined,
@@ -503,7 +514,7 @@ async function handleCloseDialog() {
 async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: number) {
   dialogVisible.type = type;
   if (id) {
-    const response = await UserAPI.getUserDetail({ id });
+    const response = await UserAPI.getUserDetail(id);
     if (type === 'detail') {
       dialogVisible.title = "用户详情";
       Object.assign(detailFormData.value, response.data.data);
@@ -528,7 +539,7 @@ const handleSubmit = useDebounceFn(async () => {
       const id = formData.id;
       if (id) {
         try {
-          await UserAPI.updateUser(formData)
+          await UserAPI.updateUser({ id, ...formData })
           dialogVisible.visible = false;
           resetForm();
           handleCloseDialog();
@@ -651,25 +662,23 @@ async function handleOperation(type: 'import' | 'export') {
 
 // 删除、批量删除
 async function handleDelete(ids: number[]) {
-  if (!ids && !selectIds.value.length) {
-    ElMessageBox.confirm("确认删除该项数据?", "警告", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    }).then(async () => {
-      try {
-        loading.value = true;
-        await UserAPI.deleteUser({ids});
-        handleResetQuery();
-      } catch (error: any) {
-        ElMessage.error(error.message);
-      } finally {
-        loading.value = false;
-      }
-    }).catch(() => {
-      ElMessage.info('已取消删除');
-    });
-  }
+  ElMessageBox.confirm("确认删除该项数据?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(async () => {
+    try {
+      loading.value = true;
+      await UserAPI.deleteUser(ids);
+      handleResetQuery();
+    } catch (error: any) {
+      ElMessage.error(error.message);
+    } finally {
+      loading.value = false;
+    }
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
 }
 
 // 批量启用/停用

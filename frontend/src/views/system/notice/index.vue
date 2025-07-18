@@ -8,10 +8,13 @@
           <el-input v-model="queryFormData.notice_title" placeholder="请输入标题" clearable />
         </el-form-item>
         <el-form-item prop="notice_type" label="类型">
-          <el-input v-model="queryFormData.notice_type" placeholder="请输入类型" clearable />
+          <el-select v-model="queryFormData.notice_type" placeholder="请选择类型" style="width: 167.5px" clearable>
+            <el-option value="1" label="通知" />
+            <el-option value="2" label="公告" />
+          </el-select>
         </el-form-item>
         <el-form-item prop="status" label="状态">
-          <el-select v-model="queryFormData.status" placeholder="请选择状态" clearable>
+          <el-select v-model="queryFormData.status" placeholder="请选择状态" style="width: 167.5px" clearable>
             <el-option value="true" label="启用" />
             <el-option value="false" label="停用" />
           </el-select>
@@ -142,7 +145,7 @@
         <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" label="更新时间" prop="updated_at"
           min-width="200" sortable />
 
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作"
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" align="center"
           min-width="200">
           <template #default="scope">
             <el-button type="info" size="small" link icon="document" @click="handleOpenDialog('detail', scope.row.id)">
@@ -223,7 +226,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="内容" prop="notice_content">
-            <WangEditor v-model="formData.notice_content" height="200px" />
+            <WangEditor v-model="formData.notice_content" />
           </el-form-item>
           <el-form-item label="描述" prop="description">
             <el-input v-model="formData.description" :rows="4" :maxlength="100" show-word-limit type="textarea"
@@ -463,7 +466,7 @@ async function handleCloseDialog() {
 async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: number) {
   dialogVisible.type = type;
   if (id) {
-    const response = await NoticeAPI.getNoticeDetail({ id });
+    const response = await NoticeAPI.getNoticeDetail(id);
     if (type === 'detail') {
       dialogVisible.title = "公告通知详情";
       Object.assign(detailFormData.value, response.data.data);
@@ -517,25 +520,23 @@ async function handleSubmit() {
 
 // 删除、批量删除
 async function handleDelete(ids: number[]) {
-  if (!ids && !selectIds.value.length) {
-    ElMessageBox.confirm("确认删除该项数据?", "警告", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    }).then(async () => {
-      try {
-        loading.value = true;
-        await NoticeAPI.deleteNotice({ ids });
-        handleResetQuery();
-      } catch (error: any) {
-        ElMessage.error(error.message);
-      } finally {
-        loading.value = false;
-      }
-    }).catch(() => {
-      ElMessage.info('已取消删除');
-    });
-  }
+  ElMessageBox.confirm("确认删除该项数据?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(async () => {
+    try {
+      loading.value = true;
+      await NoticeAPI.deleteNotice(ids);
+      handleResetQuery();
+    } catch (error: any) {
+      ElMessage.error(error.message);
+    } finally {
+      loading.value = false;
+    }
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
 }
 
 // 导出

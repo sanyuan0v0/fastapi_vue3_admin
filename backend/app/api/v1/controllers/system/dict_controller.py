@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
-from fastapi import APIRouter, Body, Depends, Query
+from fastapi import APIRouter, Body, Depends, Path, Query
 from fastapi.responses import JSONResponse, StreamingResponse
 from aioredis import Redis
 
@@ -26,9 +26,9 @@ from app.api.v1.schemas.system.dict_schema import (
 
 router = APIRouter(route_class=OperationLogRoute)
 
-@router.get("/type/detail", summary="获取字典类型详情", description="获取字典类型详情")
+@router.get("/type/detail/{id}", summary="获取字典类型详情", description="获取字典类型详情")
 async def get_type_detail_controller(
-    id: int = Query(..., description="字典类型ID"),
+    id: int = Path(..., description="字典类型ID"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_type:query"]))
 ) -> JSONResponse:
     result_dict = await DictTypeService.get_obj_detail_service(id=id, auth=auth)
@@ -111,9 +111,9 @@ async def export_type_list_controller(
         }
     )
 
-@router.get("/data/detail", summary="获取字典数据详情", description="获取字典数据详情")
+@router.get("/data/detail/{id}", summary="获取字典数据详情", description="获取字典数据详情")
 async def get_data_detail_controller(
-    id: int = Query(..., description="字典数据ID"),
+    id: int = Path(..., description="字典数据ID"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_data:query"]))
 ) -> JSONResponse:
     result_dict = await DictDataService.get_obj_detail_service(id=id, auth=auth)

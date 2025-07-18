@@ -6,7 +6,7 @@
         <el-row :gutter="16">
           <!-- 基本信息 -->
           <el-col :span="24">
-            <el-card>
+            <el-card shadow="hover">
               <template #header>
                 <div class="flex items-center gap-2">
                   <el-icon><Monitor /></el-icon>
@@ -59,7 +59,7 @@
 
           <!-- 监控图表 -->
           <el-col :span="12" class="mt-4">
-            <el-card>
+            <el-card shadow="hover">
               <template #header>
                 <div class="flex items-center gap-2">
                   <el-icon><Stopwatch /></el-icon>
@@ -74,7 +74,7 @@
           </el-col>
           
           <el-col :span="12" class="mt-4">
-            <el-card>
+            <el-card shadow="hover">
               <template #header>
                 <div class="flex items-center gap-2">
                   <el-icon><Stopwatch /></el-icon>
@@ -95,7 +95,7 @@
         <el-row :gutter="16">
           <!-- 缓存列表 -->
           <el-col :span="8">
-            <el-card :loading="loading"  shadow="hover">
+            <el-card :loading="loading"  shadow="hover" >
               <template #header>
                 <div class="flex justify-between items-center">
                   <div class="flex items-center gap-2">
@@ -132,9 +132,10 @@
                       class="box-item"
                       :title="`确认删除缓存 ${row.cache_name} 吗？`"
                       placement="top"
+                      @confirm="handleClearCacheName(row)"
                     >
                       <template #reference>
-                        <el-button type="danger" size="small" link icon="delete" @click="handleClearCacheName(row)" />
+                        <el-button type="danger" size="small" link icon="delete" />
                       </template>
                     </el-popconfirm>
                   </template>
@@ -181,9 +182,10 @@
                       class="box-item"
                       :title="`确认删除键 ${row.cacheKey} 吗？`"
                       placement="top"
+                      @confirm="handleClearCacheKey(row.cacheKey)"
                     >
                       <template #reference>
-                        <el-button type="danger" size="small" link icon="delete" @click="handleClearCacheKey(row.cacheKey)" />
+                        <el-button type="danger" size="small" link icon="delete" />
                       </template>
                     </el-popconfirm>
                   </template>
@@ -325,7 +327,7 @@ const refreshCacheKeys = () => {
 };
 
 // 清理缓存键名
-const handleClearCacheKey = async (cacheKey: string) => {
+async function  handleClearCacheKey (cacheKey: string) {
   try { 
     await CacheAPI.deleteCacheKey(cacheKey);
     getCacheKeyList();
@@ -335,7 +337,7 @@ const handleClearCacheKey = async (cacheKey: string) => {
 };
 
 // 缓存内容相关方法
-const handleCacheValue = async (cacheKey: string) => {
+async function handleCacheValue (cacheKey: string) {
   try {
     loading.value = true;
     const response = await CacheAPI.getCacheValue(nowCacheName.value, cacheKey)

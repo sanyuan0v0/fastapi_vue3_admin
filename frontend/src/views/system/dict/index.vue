@@ -11,7 +11,7 @@
           <el-input v-model="queryFormData.dict_type" placeholder="请输入字典类型" clearable />
         </el-form-item>
         <el-form-item prop="status" label="状态">
-          <el-select v-model="queryFormData.status" placeholder="请选择状态" clearable>
+          <el-select v-model="queryFormData.status" placeholder="请选择状态" style="width: 167.5px" clearable>
             <el-option value="true" label="启用" />
             <el-option value="false" label="停用" />
           </el-select>
@@ -132,11 +132,11 @@
         <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at" label="更新时间"
           prop="updated_at" min-width="200" sortable />
 
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作"
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" align="center"
           min-width="260">
           <template #default="scope">
             <el-button type="warning" size="small" link icon="document"
-              @click="handleDictDataDrawer(scope.row.dict_type)">字典</el-button>
+              @click="handleDictDataDrawer(scope.row.dict_type, scope.row.dict_name)">字典</el-button>
             <el-button type="info" size="small" link icon="document"
               @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
             <el-button type="primary" size="small" link icon="edit"
@@ -205,7 +205,7 @@
       </template>
     </el-dialog>
 
-    <DataDrawer v-if="drawerVisible" v-model="drawerVisible" :dict-type="currentDictType" />
+    <DataDrawer v-if="drawerVisible" v-model="drawerVisible" :dict-type="currentDictType" :dict-label="currentDictLabel" />
 
   </div>
 </template>
@@ -298,6 +298,9 @@ const drawerVisible = ref(false);
 // 添加字典类型变量
 const currentDictType = ref('');
 
+// 添加字典名称变量
+const currentDictLabel = ref('');
+
 // 加载表格数据
 async function loadingData() {
   loading.value = true;
@@ -349,7 +352,7 @@ async function handleCloseDialog() {
 async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: number) {
   dialogVisible.type = type;
   if (id) {
-    const response = await DictAPI.getDictTypeDetail({ id });
+    const response = await DictAPI.getDictTypeDetail(id);
     if (type === 'detail') {
       dialogVisible.title = "字典详情";
       Object.assign(detailFormData.value, response.data.data);
@@ -401,25 +404,23 @@ async function handleSubmit() {
 
 // 删除、批量删除
 async function handleDelete(ids: number[]) {
-  if (!ids && !selectIds.value.length) {
-    ElMessageBox.confirm("确认删除该项数据?", "警告", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    }).then(async () => {
-      try {
-        loading.value = true;
-        await DictAPI.deleteDictType({ ids });
-        handleResetQuery();
-      } catch (error: any) {
-        ElMessage.error(error.message);
-      } finally {
-        loading.value = false;
-      }
-    }).catch(() => {
-      ElMessage.info('已取消删除');
-    });
-  }
+  ElMessageBox.confirm("确认删除该项数据?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(async () => {
+    try {
+      loading.value = true;
+      await DictAPI.deleteDictType(ids);
+      handleResetQuery();
+    } catch (error: any) {
+      ElMessage.error(error.message);
+    } finally {
+      loading.value = false;
+    }
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
 }
 
 // 导出
@@ -489,8 +490,9 @@ async function handleMoreClick(status: boolean) {
   }
 }
 
-function handleDictDataDrawer(dictType: string) {
+function handleDictDataDrawer(dictType: string, dictLabel: string) {
   currentDictType.value = dictType;
+  currentDictLabel.value = dictLabel;
   drawerVisible.value = true;
 }
 

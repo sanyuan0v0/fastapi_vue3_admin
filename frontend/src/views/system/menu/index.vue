@@ -8,7 +8,7 @@
           <el-input v-model="queryFormData.name" placeholder="请输入标题" clearable />
         </el-form-item>
         <el-form-item prop="status" label="状态">
-          <el-select v-model="queryFormData.status" placeholder="请选择状态" clearable>
+          <el-select v-model="queryFormData.status" placeholder="请选择状态" style="width: 167.5px" clearable>
             <el-option value="true" label="启用" />
             <el-option value="false" label="停用" />
           </el-select>
@@ -123,10 +123,6 @@
           </template>
         </el-table-column>
         <el-table-column label="排序" prop="order" min-width="80" />
-        <el-table-column label="权限标识" prop="permission" min-width="100"  />
-        <el-table-column label="路由名称" prop="router_name" min-width="100" />
-        <el-table-column label="路由路径" prop="router_name" min-width="100" />
-        <el-table-column label="组件路径" prop="component_path" min-width="100"  />
         <el-table-column label="重定向" prop="redirect" min-width="100" />
         <el-table-column label="是否缓存" prop="keep_alive" min-width="100">
           <template #default="scope">
@@ -146,8 +142,6 @@
             <el-tag v-else type="danger">否</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="菜单标题" prop="title" min-width="100"/>
-        <el-table-column label="路由参数" prop="params" min-width="100" />
         <el-table-column label="固定路由" prop="affix" min-width="100">
           <template #default="scope">
             <el-tag :type="scope.row.affix ? 'success' : 'danger'">
@@ -155,15 +149,20 @@
             </el-tag>
           </template>
         </el-table-column>
-
+        <el-table-column label="菜单标题" prop="title" min-width="100"/>
+        <el-table-column label="权限标识" prop="permission" min-width="100"  />
+        <el-table-column label="路由名称" prop="router_name" min-width="100" />
+        <el-table-column label="路由路径" prop="router_name" min-width="100" />
+        <el-table-column label="组件路径" prop="component_path" min-width="100"  />
+        <el-table-column label="路由参数" prop="params" min-width="100" />
         <el-table-column label="描述" prop="description" min-width="100" />
         <el-table-column label="创建时间" prop="created_at" min-width="200" sortable />
         <el-table-column label="更新时间" prop="updated_at" min-width="200" sortable />
 
-        <el-table-column fixed="right" align="center" label="操作" min-width="260">
+        <el-table-column fixed="right" label="操作" align="center" min-width="260">
           <template #default="scope">
             <el-button v-if="scope.row.type == MenuTypeEnum.CATALOG || scope.row.type == MenuTypeEnum.MENU"
-              type="primary" link size="small" icon="plus" @click.stop="handleOpenDialog(scope.row.id)">
+              type="success" link size="small" icon="plus" @click.stop="handleOpenDialog(scope.row.id)">
               新增
             </el-button>
 

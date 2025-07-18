@@ -8,7 +8,7 @@
           <el-input v-model="queryFormData.name" placeholder="请输入部门名称" clearable />
         </el-form-item>
         <el-form-item prop="status" label="状态">
-          <el-select v-model="queryFormData.status" placeholder="请选择状态asdasda" clearable>
+          <el-select v-model="queryFormData.status" placeholder="请选择状态" style="width: 167.5px" clearable>
             <el-option value="true" label="启用" />
             <el-option value="false" label="停用" />
           </el-select>
@@ -106,7 +106,7 @@
         <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" key="name" label="部门名称" prop="name"
           min-width="120" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" key="status" label="状态"
-          prop="status" min-width="80">
+          prop="status" min-width="60">
           <template #default="scope">
             <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
               {{ scope.row.status ? "启用" : "停用" }}
@@ -114,7 +114,7 @@
           </template>
         </el-table-column>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'order')?.show" key="order" label="排序" prop="order"
-          min-width="80" show-overflow-tooltip />
+          min-width="60" show-overflow-tooltip />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" key="description" label="描述"
           prop="description" min-width="100" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" key="created_at" label="创建时间"
@@ -122,10 +122,10 @@
         <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at" label="更新时间"
           prop="updated_at" min-width="120" sortable />
 
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作"
-          min-width="220">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" align="center" 
+          min-width="200">
           <template #default="scope">
-            <el-button type="success" size="small" link icon="plus" @click="handleOpenDialog('create')">新增</el-button>
+            <el-button type="success" size="small" link icon="plus" @click="handleOpenDialog('create', undefined, scope.row.id)">新增</el-button>
             <el-button type="info" size="small" link icon="document"
               @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
             <el-button type="primary" size="small" link icon="edit"
@@ -142,16 +142,17 @@
     <el-dialog v-model="dialogVisible.visible" :title="dialogVisible.title" @close="handleCloseDialog">
       <!-- 详情 -->
       <template v-if="dialogVisible.type === 'detail'">
-        <el-descriptions :column="2" border>
+        <el-descriptions :column="4" border>
           <el-descriptions-item label="部门名称" :span="2">{{ detailFormData.name }}</el-descriptions-item>
+          <el-descriptions-item label="上级部门" :span="2">{{ detailFormData.parent_name }}</el-descriptions-item>
           <el-descriptions-item label="状态" :span="2">
             <el-tag v-if="detailFormData.status" type="success">启用</el-tag>
             <el-tag v-else type="danger">停用</el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="排序" :span="2">{{ detailFormData.order }}</el-descriptions-item>
-          <el-descriptions-item label="描述" :span="2">{{ detailFormData.description }}</el-descriptions-item>
           <el-descriptions-item label="创建时间" :span="2">{{ detailFormData.created_at }}</el-descriptions-item>
           <el-descriptions-item label="更新时间" :span="2">{{ detailFormData.updated_at }}</el-descriptions-item>
+          <el-descriptions-item label="描述" :span="4">{{ detailFormData.description }}</el-descriptions-item>
         </el-descriptions>
       </template>
       <!-- 新增、编辑表单 -->
@@ -165,7 +166,7 @@
               check-strictly :render-after-expand="false" />
           </el-form-item>
           <el-form-item label="排序" prop="order">
-            <el-input-number v-model="formData.order" controls-position="right" :min="0" :max="999" />
+            <el-input-number v-model="formData.order" controls-position="right" :min="1" :max="999" />
           </el-form-item>
           <el-form-item label="状态" prop="status">
             <el-radio-group v-model="formData.status">
@@ -201,8 +202,7 @@ defineOptions({
 
 import DeptAPI, { DeptTable, DeptForm, DeptPageQuery } from "@/api/system/dept";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { useDebounceFn } from "@vueuse/core";
-import { listToTree } from "@/utils/common";
+import { listToTree, formatDeptTree } from "@/utils/common";
 
 const queryFormRef = ref();
 const dataFormRef = ref();
@@ -247,9 +247,9 @@ const queryFormData = reactive<DeptPageQuery>({
 const formData = reactive<DeptForm>({
   id: undefined,
   name: undefined,
-  order: undefined,
+  order: 1,
   parent_id: undefined,
-  status: undefined,
+  status: true,
   description: undefined,
 })
 
@@ -268,18 +268,35 @@ const rules = reactive({
 });
 
 // 刷新数据(防抖)
-const handleRefresh = useDebounceFn(() => {
-  loadingData();
-  ElMessage.success("刷新成功");
-}, 1000);
+const handleRefresh = () => {
+  refreshTable();
+};
+
+// 刷新列表数据
+async function refreshTable() {
+  loading.value = true;
+  try {
+    const response = await DeptAPI.getDeptList(queryFormData);
+    const treeData = listToTree(response.data.data.items);
+    pageTableData.value = treeData;
+    total.value = response.data.data.total;
+  } catch (error: any) {
+    ElMessage.error(error.message);
+  } finally {
+    loading.value = false;
+  }
+}
 
 // 加载表格数据
 async function loadingData() {
   loading.value = true;
   try {
     const response = await DeptAPI.getDeptList(queryFormData);
-    pageTableData.value = listToTree(response.data.data.items);
+    const treeData = listToTree(response.data.data.items);
+    pageTableData.value = treeData;
     total.value = response.data.data.total;
+    // 加载部门选项
+    deptOptions.value = formatDeptTree(treeData);
   }
   catch (error: any) {
     ElMessage.error(error.message);
@@ -302,8 +319,10 @@ async function handleResetQuery() {
 
 // 重置表单
 async function resetForm() {
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
+  if (dataFormRef.value) {
+    dataFormRef.value.resetFields();
+    dataFormRef.value.clearValidate();
+  }
   formData.id = undefined;
 }
 
@@ -319,10 +338,10 @@ async function handleCloseDialog() {
 }
 
 // 打开系统配置弹窗
-async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: number) {
+async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: number, parentId?: number) {
   dialogVisible.type = type;
   if (id) {
-    const response = await DeptAPI.getDeptDetail({ id });
+    const response = await DeptAPI.getDeptDetail(id);
     if (type === 'detail') {
       dialogVisible.title = "部门详情";
       Object.assign(detailFormData.value, response.data.data);
@@ -333,6 +352,10 @@ async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: numbe
   } else {
     dialogVisible.title = "新增部门";
     formData.id = undefined;
+    // 设置父级部门
+    if (parentId) {
+      formData.parent_id = parentId;
+    }
   }
   dialogVisible.visible = true;
 }
@@ -374,25 +397,23 @@ async function handleSubmit() {
 
 // 删除、批量删除
 async function handleDelete(ids: number[]) {
-  if (!ids && !selectIds.value.length) {
-    ElMessageBox.confirm("确认删除该项数据?", "警告", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    }).then(async () => {
-      try {
-        loading.value = true;
-        await DeptAPI.deleteDept({ ids });
-        handleResetQuery();
-      } catch (error: any) {
-        ElMessage.error(error.message);
-      } finally {
-        loading.value = false;
-      }
-    }).catch(() => {
-      ElMessage.info('已取消删除');
-    });
-  }
+  ElMessageBox.confirm("确认删除该项数据?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(async () => {
+    try {
+      loading.value = true;
+      await DeptAPI.deleteDept(ids);
+      handleResetQuery();
+    } catch (error: any) {
+      ElMessage.error(error.message);
+    } finally {
+      loading.value = false;
+    }
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
 }
 
 // 批量启用/停用

@@ -9,11 +9,10 @@ const PositionAPI = {
     });
   },
 
-  getPositionDetail(query: DetailType) {
+  getPositionDetail(query: number) {
     return request<ApiResponse<PositionTable>>({
-      url: `/system/position/detail`,
+      url: `/system/position/detail/${query}`,
       method: "get",
-      params: query,
     });
   },
 
@@ -33,11 +32,11 @@ const PositionAPI = {
     });
   },
 
-  deletePosition(query: DeleteType) {
+  deletePosition(body: number[]) {
     return request<ApiResponse>({
       url: `/system/position/delete`,
       method: "delete",
-      data: query,
+      data: body,
     });
   },
 

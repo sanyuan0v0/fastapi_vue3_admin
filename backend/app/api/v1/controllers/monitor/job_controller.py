@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from fastapi import APIRouter, Body, Depends, Query
+from fastapi import APIRouter, Body, Depends, Path, Query
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from app.common.response import StreamResponse, SuccessResponse
@@ -22,9 +22,9 @@ from app.core.ap_scheduler import SchedulerUtil
 
 router = APIRouter(route_class=OperationLogRoute)
 
-@router.get("/detail", summary="获取定时任务详情", description="获取定时任务详情")
+@router.get("/detail/{id}", summary="获取定时任务详情", description="获取定时任务详情")
 async def get_obj_detail_controller(
-    id: int = Query(..., description="定时任务ID"),
+    id: int = Path(..., description="定时任务ID"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:query"]))
 ) -> JSONResponse:
     result_dict = await JobService.get_job_detail_service(id=id, auth=auth)

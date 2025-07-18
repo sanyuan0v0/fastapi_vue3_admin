@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from fastapi import APIRouter, Body, Depends, Query
+from fastapi import APIRouter, Body, Depends, Path, Query
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from app.common.response import StreamResponse, SuccessResponse
@@ -22,9 +22,9 @@ from app.api.v1.schemas.system.notice_schema import (
 
 router = APIRouter(route_class=OperationLogRoute)
 
-@router.get("/detail", summary="获取公告详情", description="获取公告详情")
+@router.get("/detail/{id}", summary="获取公告详情", description="获取公告详情")
 async def get_obj_detail_controller(
-    id: int = Query(..., description="公告ID"),
+    id: int = Path(..., description="公告ID"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:notice:query"]))
 ) -> JSONResponse:
     result_dict = await NoticeService.get_notice_detail_service(id=id, auth=auth)
@@ -97,7 +97,7 @@ async def export_obj_list_controller(
     )
 
 
-@router.get("/info", summary="获取全局启用公告", description="获取全局启用公告")
+@router.get("/available", summary="获取全局启用公告", description="获取全局启用公告")
 async def get_obj_list_available_controller(
     auth: AuthSchema = Depends(get_current_user)
 ) -> JSONResponse:

@@ -129,9 +129,9 @@
             {{ scope.row.creator?.name }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right" min-width="150">
+        <el-table-column label="操作" fixed="right" align="center" min-width="150">
           <template #default="scope">
-            <el-button type="primary" size="small" link icon="document"
+            <el-button type="info" size="small" link icon="document"
               @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
             <el-button type="danger" size="small" link icon="delete"
               @click="handleDelete([scope.row.id])">删除</el-button>
@@ -168,9 +168,9 @@
               class="long-text-editor" />
           </el-descriptions-item>
           <el-descriptions-item label="响应数据" :span="4">
-            <!-- <el-input v-model="detailFormData.response_json" type="textarea" :rows="5" readonly
-              class="long-text-editor" /> -->
-            <el-scrollbar max-height="72vh">
+            <el-input v-model="detailFormData.response_json" type="textarea" :rows="5" readonly
+              class="long-text-editor" />
+            <!-- <el-scrollbar max-height="72vh">
               <div class="absolute z-36 right-5 top-2">
                 <el-link type="primary" @click="handleCopyCode">
                   <el-icon>
@@ -182,16 +182,16 @@
 
               <Codemirror ref="cmRef" v-model:value="code" placeholder="请输入代码" :options="cmOptions" border
                 :readonly="true" :width="700" :height="100" />
-            </el-scrollbar>
+            </el-scrollbar> -->
           </el-descriptions-item>
           <el-descriptions-item label="处理时间" :span="2">{{ detailFormData.process_time }}</el-descriptions-item>
           <el-descriptions-item label="浏览器" :span="2">{{ detailFormData.request_browser }}</el-descriptions-item>
           <el-descriptions-item label="操作系统" :span="2">{{ detailFormData.request_os }}</el-descriptions-item>
           <el-descriptions-item label="登录地点" :span="2">{{ detailFormData.login_location }}</el-descriptions-item>
-          <el-descriptions-item label="描述" :span="2">{{ detailFormData.description }}</el-descriptions-item>
           <el-descriptions-item label="创建人" :span="2">{{ detailFormData.creator?.name }}</el-descriptions-item>
           <el-descriptions-item label="创建时间" :span="2">{{ detailFormData.created_at }}</el-descriptions-item>
           <el-descriptions-item label="更新时间" :span="2">{{ detailFormData.updated_at }}</el-descriptions-item>
+          <el-descriptions-item label="描述" :span="4">{{ detailFormData.description }}</el-descriptions-item>
         </el-descriptions>
       </template>
 
@@ -361,7 +361,7 @@ async function handleCloseDialog() {
 async function handleOpenDialog(type: 'create' | 'update' | 'detail', id: number) {
   dialogVisible.type = type;
   if (id) {
-    const response = await LogAPI.getLogDetail({ id });
+    const response = await LogAPI.getLogDetail(id);
     if (type === 'detail') {
       dialogVisible.title = "日志详情";
       Object.assign(detailFormData.value, response.data.data);
@@ -373,26 +373,25 @@ async function handleOpenDialog(type: 'create' | 'update' | 'detail', id: number
 
 // 删除、批量删除
 async function handleDelete(ids: number[]) {
-  if (!ids && !selectIds.value.length) {
-    ElMessageBox.confirm("确认删除该项数据?", "警告", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    }).then(async () => {
-      try {
-        loading.value = true;
-        await LogAPI.deleteLog({ ids });
-        handleResetQuery();
-      } catch (error: any) {
-        ElMessage.error(error.message);
-      } finally {
-        loading.value = false;
-      }
-    }).catch(() => {
-      ElMessage.info('已取消删除');
-    });
-  }
+  ElMessageBox.confirm("确认删除该项数据?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(async () => {
+    try {
+      loading.value = true;
+      await LogAPI.deleteLog(ids);
+      handleResetQuery();
+    } catch (error: any) {
+      ElMessage.error(error.message);
+    } finally {
+      loading.value = false;
+    }
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
 }
+
 
 // 导出
 async function handleExport() {

@@ -2,18 +2,17 @@ import request from "@/utils/request";
 
 const JobAPI = {
   getJobList(query: JobPageQuery) {
-    return request<ApiResponse<PageResult<JobTable>>>({
+    return request<ApiResponse<PageResult<JobTable[]>>>({
       url: `/monitor/job/list`,
       method: "get",
       params: query,
     });
   },
 
-  getJobDetail(query: DetailType) {
+  getJobDetail(query: number) {
     return request<ApiResponse<JobTable>>({
-      url: `/monitor/job/detail`,
+      url: `/monitor/job/detail/${query}`,
       method: "get",
-      params: query,
     });
   },
 
@@ -33,11 +32,11 @@ const JobAPI = {
     });
   },
 
-  deleteJob(query: DeleteType) {
+  deleteJob(body: number[]) {
     return request<ApiResponse>({
       url: `/monitor/job/delete`,
       method: "delete",
-      data: query,
+      data: body,
     });
   },
 
@@ -57,7 +56,7 @@ const JobAPI = {
     });
   },
 
-  OptionJob(params: JobPageQuery) {
+  OptionJob(params: JobOptionData) {
     return request<ApiResponse>({
       url: `/monitor/job/option`,
       method: "put",
@@ -77,7 +76,7 @@ export interface JobPageQuery extends PageQuery {
   end_time?: string;
 }
 
-export interface JobPageQuery extends PageQuery {
+export interface JobOptionData {
   id?: number;
   option?: number; //操作类型 1: 暂停 2: 恢复 3: 重启
 }

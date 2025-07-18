@@ -10,7 +10,7 @@
     <template #dropdown>
       <div class="p-5">
         <template v-if="noticeList.length > 0">
-          <div v-for="(item, index) in noticeList" :key="index" class="py-3">
+          <div v-for="(item, index) in noticeList" :key="index" class="w-400px py-3">
             <div class="flex-y-center">
               <el-tag :type="item.notice_type === '1' ? 'primary' : 'warning'">
                 {{ item.notice_type === '1' ? '通知' : '公告' }}
@@ -18,7 +18,7 @@
 
               <!-- truncated: 超出部分省略 -->
               <el-text size="small" class="w-200px cursor-pointer !ml-2 !flex-1" truncated > 
-                {{ item.notice_title }}
+                {{ item.notice_content }}
               </el-text>
 
               <!-- 时间 -->
@@ -89,19 +89,20 @@ const noticeDetail = ref<NoticeTable | null>(null);
 /**
  * 获取我的通知公告
  */
-function featchMyNotice() {
+async function featchMyNotice() {
+  await noticeStore.getNotice()
   noticeList.value = noticeStore.noticeList;
 }
 
 // 查看更多
 function handleViewMoreNotice() {
-  router.push({ name: "MyNotice" });
+  router.push({ name: "Notice" });
 }
 
 // 全部已读
 function handleMarkAllAsRead() {
   NoticeAPI.batchAvailableNotice({
-    ids: noticeList.value.map((item) => item.id),
+    ids: noticeList.value.map((item) => item.id).filter((id): id is number => id !== undefined),
     status: true
   }).then(() => {
     noticeList.value = [];

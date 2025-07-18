@@ -8,7 +8,7 @@
           <el-input v-model="queryFormData.name" placeholder="请输入岗位名称" clearable />
         </el-form-item>
         <el-form-item prop="status" label="状态">
-          <el-select v-model="queryFormData.status" placeholder="请选择状态" clearable>
+          <el-select v-model="queryFormData.status" placeholder="请选择状态" style="width: 167.5px" clearable>
             <el-option value="true" label="启用" />
             <el-option value="false" label="停用" />
           </el-select>
@@ -118,12 +118,18 @@
         <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" key="description" label="描述"
           prop="description" min-width="120" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" key="created_at" label="创建时间"
-          prop="created_at" min-width="120" sortable />
+          prop="created_at" min-width="200" sortable />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at" label="更新时间"
-          prop="updated_at" min-width="120" sortable />
+          prop="updated_at" min-width="200" sortable />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'creator')?.show" key="creator" label="创建人"
+          min-width="120">
+          <template #default="scope">
+            {{ scope.row.creator?.name }}
+          </template>
+        </el-table-column>
 
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作"
-          min-width="150">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" align="center"
+          min-width="200">
           <template #default="scope">
             <el-button type="info" size="small" link icon="document"
               @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
@@ -146,7 +152,7 @@
     <el-dialog v-model="dialogVisible.visible" :title="dialogVisible.title" @close="handleCloseDialog">
       <!-- 详情 -->
       <template v-if="dialogVisible.type === 'detail'">
-        <el-descriptions :column="2" border>
+        <el-descriptions :column="4" border>
           <el-descriptions-item label="岗位名称" :span="2">{{ detailFormData.name }}</el-descriptions-item>
           <el-descriptions-item label="排序" :span="2">
             {{ detailFormData.order }}
@@ -155,10 +161,10 @@
             <el-tag v-if="detailFormData.status" type="success">启用</el-tag>
             <el-tag v-else type="danger">停用</el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="描述" :span="2">{{ detailFormData.description }}</el-descriptions-item>
           <el-descriptions-item label="创建人" :span="2">{{ detailFormData.creator?.name }}</el-descriptions-item>
           <el-descriptions-item label="创建时间" :span="2">{{ detailFormData.created_at }}</el-descriptions-item>
           <el-descriptions-item label="更新时间" :span="2">{{ detailFormData.updated_at }}</el-descriptions-item>
+          <el-descriptions-item label="描述" :span="4">{{ detailFormData.description }}</el-descriptions-item>
         </el-descriptions>
       </template>
       <!-- 新增、编辑表单 -->
@@ -326,7 +332,7 @@ async function handleCloseDialog() {
 async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: number) {
   dialogVisible.type = type;
   if (id) {
-    const response = await PositionAPI.getPositionDetail({ id });
+    const response = await PositionAPI.getPositionDetail(id);
     if (type === 'detail') {
       dialogVisible.title = "岗位详情";
       Object.assign(detailFormData.value, response.data.data);
@@ -351,7 +357,7 @@ async function handleSubmit() {
       const id = formData.id;
       if (id) {
         try {
-          await PositionAPI.updatePosition(formData)
+          await PositionAPI.updatePosition({ id, ...formData })
           dialogVisible.visible = false;
           resetForm();
           handleResetQuery();
@@ -378,25 +384,23 @@ async function handleSubmit() {
 
 // 删除、批量删除
 async function handleDelete(ids: number[]) {
-  if (!ids && !selectIds.value.length) {
-    ElMessageBox.confirm("确认删除该项数据?", "警告", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    }).then(async () => {
-      try {
-        loading.value = true;
-        await PositionAPI.deletePosition({ ids });
-        handleResetQuery();
-      } catch (error: any) {
-        ElMessage.error(error.message);
-      } finally {
-        loading.value = false;
-      }
-    }).catch(() => {
-      ElMessage.info('已取消删除');
-    });
-  }
+  ElMessageBox.confirm("确认删除该项数据?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(async () => {
+    try {
+      loading.value = true;
+      await PositionAPI.deletePosition(ids);
+      handleResetQuery();
+    } catch (error: any) {
+      ElMessage.error(error.message);
+    } finally {
+      loading.value = false;
+    }
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
 }
 
 // 导出

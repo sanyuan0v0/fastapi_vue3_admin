@@ -52,7 +52,10 @@ httpRequest.interceptors.response.use(
 
     // 请求成功
     if (data.code === ResultEnum.SUCCESS) {
-      ElMessage.success(data.msg);
+      // 只有不是 get 请求时才显示成功消息
+      if (response?.config?.method?.toLowerCase() !== 'get') {
+        ElMessage.success(data.msg);
+      }
       return response;
     } else if (data.code === ResultEnum.ERROR) {
       ElMessage.error(data.msg || "请求错误");

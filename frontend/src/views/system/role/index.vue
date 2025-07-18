@@ -8,7 +8,7 @@
           <el-input v-model="queryFormData.name" placeholder="请输入岗位名称" clearable />
         </el-form-item>
         <el-form-item prop="status" label="状态">
-          <el-select v-model="queryFormData.status" placeholder="请选择状态" clearable>
+          <el-select v-model="queryFormData.status" placeholder="请选择状态" style="width: 167.5px" clearable>
             <el-option value="true" label="启用" />
             <el-option value="false" label="停用" />
           </el-select>
@@ -105,9 +105,9 @@
         <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" key="name" label="角色名称" prop="name"
           min-width="100" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'data_scope')?.show" key="data_scope" label="数据权限"
-          prop="data_scope" min-width="80" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'order')?.show" key="order" label="排序"
-          prop="order" min-width="80" show-overflow-tooltip />
+          prop="data_scope" min-width="100" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'order')?.show" key="order" label="排序" prop="order"
+          min-width="80" show-overflow-tooltip />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" key="status" label="状态"
           prop="status" min-width="60">
           <template #default="scope">
@@ -122,9 +122,15 @@
           prop="created_at" min-width="200" sortable />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at" label="更新时间"
           prop="updated_at" min-width="200" sortable />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'creator')?.show" key="creator" label="创建人"
+          min-width="120">
+          <template #default="scope">
+            {{ scope.row.creator?.name }}
+          </template>
+        </el-table-column>
 
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作"
-          min-width="260">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" align="center"
+          min-width="280">
           <template #default="scope">
             <el-button type="primary" size="small" link icon="position"
               @click="handleOpenAssignPermDialog(scope.row)">分配权限</el-button>
@@ -169,30 +175,30 @@
       </template>
       <!-- 新增、编辑表单 -->
       <template v-else>
-        <el-form ref="roleFormRef" :model="formData" :rules="rules" label-width="100px">
-        <el-form-item label="角色名称" prop="name">
-          <el-input v-model="formData.name" placeholder="请输入角色名称" />
-        </el-form-item>
+        <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
+          <el-form-item label="角色名称" prop="name">
+            <el-input v-model="formData.name" placeholder="请输入角色名称" />
+          </el-form-item>
 
-        <el-form-item label="排序" prop="order">
-          <el-input-number v-model="formData.order" controls-position="right" :min="0" style="width: 100px" />
-        </el-form-item>
+          <el-form-item label="排序" prop="order">
+            <el-input-number v-model="formData.order" controls-position="right" :min="0" style="width: 100px" />
+          </el-form-item>
 
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="formData.status">
-            <el-radio :value="true">启用</el-radio>
-            <el-radio :value="false">停用</el-radio>
-          </el-radio-group>
-        </el-form-item>
+          <el-form-item label="状态" prop="status">
+            <el-radio-group v-model="formData.status">
+              <el-radio :value="true">启用</el-radio>
+              <el-radio :value="false">停用</el-radio>
+            </el-radio-group>
+          </el-form-item>
 
-        <el-form-item label="描述" prop="description">
-          <el-input v-model="formData.description" :rows="4" :maxlength="100" show-word-limit type="textarea"
-            placeholder="请输入描述" />
-        </el-form-item>
-      </el-form>
+          <el-form-item label="描述" prop="description">
+            <el-input v-model="formData.description" :rows="4" :maxlength="100" show-word-limit type="textarea"
+              placeholder="请输入描述" />
+          </el-form-item>
+        </el-form>
 
       </template>
-      
+
 
       <template #footer>
         <div class="dialog-footer">
@@ -221,7 +227,7 @@
             </div>
           </div>
 
-          <el-form ref="roleFormRef" :model="formData" :rules="rules" label-width="100px">
+          <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
             <el-form-item label="数据权限" prop="data_scope">
               <el-select v-model="permissionState.data_scope">
                 <el-option :key="1" label="全部数据" :value="1" />
@@ -310,7 +316,6 @@ const appStore = useAppStore();
 
 const queryFormRef = ref();
 const dataFormRef = ref();
-const roleFormRef = ref();
 const permTreeRef = ref();
 const selectIds = ref<number[]>([]);
 const loading = ref(false);
@@ -344,6 +349,7 @@ const tableColumns = ref([
   { prop: 'description', label: '描述', show: true },
   { prop: 'created_at', label: '创建时间', show: true },
   { prop: 'updated_at', label: '更新时间', show: true },
+  { prop: 'creator', label: '创建人', show: true },
   { prop: 'operation', label: '操作', show: true }
 ])
 
@@ -455,7 +461,7 @@ async function handleCloseDialog() {
 async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: number) {
   dialogVisible.type = type;
   if (id) {
-    const response = await RoleAPI.getRoleDetail({ id });
+    const response = await RoleAPI.getRoleDetail(id);
     if (type === 'detail') {
       dialogVisible.title = "角色详情";
       Object.assign(detailFormData.value, response.data.data);
@@ -480,7 +486,7 @@ async function handleSubmit() {
       const id = formData.id;
       if (id) {
         try {
-          await RoleAPI.updateRole(formData)
+          await RoleAPI.updateRole({ id, ...formData })
           dialogVisible.visible = false;
           resetForm();
           handleResetQuery();
@@ -507,25 +513,23 @@ async function handleSubmit() {
 
 // 删除、批量删除
 async function handleDelete(ids: number[]) {
-  if (!ids && !selectIds.value.length) {
-    ElMessageBox.confirm("确认删除该项数据?", "警告", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    }).then(async () => {
-      try {
-        loading.value = true;
-        await RoleAPI.deleteRole({ ids });
-        handleResetQuery();
-      } catch (error: any) {
-        ElMessage.error(error.message);
-      } finally {
-        loading.value = false;
-      }
-    }).catch(() => {
-      ElMessage.info('已取消删除');
-    });
-  }
+  ElMessageBox.confirm("确认删除该项数据?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(async () => {
+    try {
+      loading.value = true;
+      await RoleAPI.deleteRole(ids);
+      handleResetQuery();
+    } catch (error: any) {
+      ElMessage.error(error.message);
+    } finally {
+      loading.value = false;
+    }
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
 }
 
 // 导出

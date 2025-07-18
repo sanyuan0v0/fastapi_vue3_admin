@@ -11,16 +11,15 @@ const NoticeAPI = {
 
   getNoticeListAvailable() {
     return request<ApiResponse<PageResult<NoticeTable[]>>>({
-      url: `/system/notice/info`,
+      url: `/system/notice/available`,
       method: "get",
     });
   },
 
-  getNoticeDetail(query: DetailType) {
+  getNoticeDetail(query: number) {
     return request<ApiResponse<NoticeTable>>({
-      url: `/system/notice/detail`,
+      url: `/system/notice/detail/${query}`,
       method: "get",
-      params: query,
     });
   },
 
@@ -40,11 +39,11 @@ const NoticeAPI = {
     });
   },
 
-  deleteNotice(query: DeleteType) {
+  deleteNotice(body: number[]) {
     return request<ApiResponse>({
       url: `/system/notice/delete`,
       method: "delete",
-      params: query,
+      data: body,
     });
   },
 

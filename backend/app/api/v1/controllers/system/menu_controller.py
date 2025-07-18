@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from fastapi import APIRouter, Body, Depends, Query
+from fastapi import APIRouter, Body, Depends, Path, Query
 from fastapi.responses import JSONResponse
 
 from app.common.response import SuccessResponse
@@ -34,9 +34,9 @@ async def get_obj_list_controller(
     return SuccessResponse(data=result_dict, msg="查询菜单成功")
 
 
-@router.get("/detail", summary="查询菜单详情", description="查询菜单详情")
+@router.get("/detail/{id}", summary="查询菜单详情", description="查询菜单详情")
 async def get_obj_detail_controller(
-        id: int = Query(..., description="菜单ID"),
+        id: int = Path(..., description="菜单ID"),
         auth: AuthSchema = Depends(AuthPermission(permissions=["system:menu:query"]))
 ) -> JSONResponse:
     result_dict = await MenuService.get_menu_detail_service(id=id, auth=auth)

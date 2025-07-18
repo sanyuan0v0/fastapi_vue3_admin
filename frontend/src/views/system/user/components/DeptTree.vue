@@ -9,7 +9,7 @@
       </template>
     </el-input>
 
-    <el-tree ref="deptTreeRef" class="mt-2" :data="deptList"
+    <el-tree ref="deptTreeRef" class="mt-2" :data="deptOptions"
       :props="{ children: 'children', label: 'label', disabled: '' }" :expand-on-click-node="false"
       :filter-node-method="handleFilter" default-expand-all @node-click="handleNodeClick" />
   </el-card>
@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import DeptAPI, { DeptPageQuery } from "@/api/system/dept";
-import { listToTree } from "@/utils/common";
+import { formatDeptTree, listToTree } from "@/utils/common";
 
 const props = defineProps({
   modelValue: {
@@ -26,7 +26,7 @@ const props = defineProps({
   },
 });
 
-const deptList = ref<OptionType[]>(); // 部门列表
+const deptOptions = ref<OptionType[]>([]); // 部门列表
 const deptTreeRef = ref(); // 部门树
 const deptName = ref(); // 部门名称
 
@@ -60,8 +60,6 @@ function handleNodeClick(data: { [key: string]: any }) {
 }
 
 const queryFormData = reactive<DeptPageQuery>({
-  page_no: 1,
-  page_size: 9999,
   name: undefined,
   status: undefined,
   start_time: undefined,
@@ -73,7 +71,8 @@ const loading = ref(true);
 onBeforeMount(() => {
   loading.value = true;
   DeptAPI.getDeptList(queryFormData).then((response) => {
-    deptList.value = listToTree(response.data.data.items);
+    const treeData = listToTree(response.data.data.items);
+    deptOptions.value = formatDeptTree(treeData);
   }).finally(() => {
     loading.value = false;
   });

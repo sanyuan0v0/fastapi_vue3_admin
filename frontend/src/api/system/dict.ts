@@ -16,11 +16,10 @@ const DictAPI = {
     });
   },
 
-  getDictTypeDetail(query: DetailType) {
+  getDictTypeDetail(query: number) {
     return request<ApiResponse<DictTable>>({
-      url: `/system/dict/type/detail`,
+      url: `/system/dict/type/detail/${query}`,
       method: "get",
-      params: query,
     });
   },
 
@@ -40,11 +39,11 @@ const DictAPI = {
     });
   },
 
-  deleteDictType(query: DeleteType) {
+  deleteDictType(body: number[]) {
     return request<ApiResponse>({
       url: `/system/dict/type/delete`,
       method: "delete",
-      data: query,
+      data: body,
     });
   },
 
@@ -73,11 +72,10 @@ const DictAPI = {
     });
   },
 
-  getDictDataDetail(query: DetailType) {
+  getDictDataDetail(query: number) {
     return request<ApiResponse<DictDataTable>>({
-      url: `/system/dict/data/detail`,
+      url: `/system/dict/data/detail/${query}`,
       method: "get",
-      params: query,
     });
   },
 
@@ -97,11 +95,11 @@ const DictAPI = {
     });
   },
 
-  deleteDictData(query: DeleteType) {
+  deleteDictData(body: number[]) {
     return request<ApiResponse>({
       url: `/system/dict/data/delete`,
       method: "delete",
-      data: query,
+      data: body,
     });
   },
 

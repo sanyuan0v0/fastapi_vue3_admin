@@ -132,20 +132,6 @@ declare global {
   }
 
   /**
-   * 批量删除
-   */
-  export interface DeleteType {
-    ids?: number[];
-  }
-
-  /**
-   * 详情参数
-   */
-  export interface DetailType {
-    id?: number;
-  }
-
-  /**
    * 批量启用、停用
    */
   export interface BatchType {

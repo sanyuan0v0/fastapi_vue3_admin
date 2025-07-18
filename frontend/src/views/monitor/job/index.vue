@@ -58,14 +58,11 @@
                 <div class="data-table__toolbar--actions">
                     <el-button type="success" icon="plus" @click="handleOpenDialog('create')">新增</el-button>
                     <el-button type="danger" icon="delete" :disabled="selectIds.length === 0"
-                        @click="handleOperation('delete')">批量删除</el-button>
+                        @click="handleDelete(selectIds)">批量删除</el-button>
                 </div>
                 <div class="data-table__toolbar--tools">
-                    <el-tooltip content="导入">
-                        <el-button type="info" icon="upload" circle @click="handleOperation('import')" />
-                    </el-tooltip>
                     <el-tooltip content="导出">
-                        <el-button type="warning" icon="download" circle @click="handleOperation('export')" />
+                        <el-button type="warning" icon="download" circle @click="handleExport" />
                     </el-tooltip>
                     <el-tooltip content="清除">
                         <el-button type="danger" icon="plus" circle @click="handleClear" />
@@ -140,7 +137,7 @@
                         <el-button type="primary" size="small" link icon="edit"
                             @click="handleOpenDialog('update', scope.row.id)">编辑</el-button>
                         <el-button type="danger" size="small" link icon="delete"
-                            @click="handleOperation('delete', scope.row.id)">删除</el-button>
+                            @click="handleDelete([scope.row.id])">删除</el-button>
                         <el-dropdown trigger="click">
                             <el-button type="default" size="small" link icon="ArrowDown">
                                 更多
@@ -193,10 +190,10 @@
                         <el-tag v-else type="danger">停用</el-tag>
                     </el-descriptions-item>
                     <el-descriptions-item label="描述" :span="2">{{ detailFormData.description }}</el-descriptions-item>
-                    <el-descriptions-item label="创建人" :span="2">{{ detailFormData.creator?.name
-                        }}</el-descriptions-item>
                     <el-descriptions-item label="创建时间" :span="2">{{ detailFormData.created_at }}</el-descriptions-item>
                     <el-descriptions-item label="更新时间" :span="2">{{ detailFormData.updated_at }}</el-descriptions-item>
+                    <el-descriptions-item label="创建人" :span="2">{{ detailFormData.creator?.name
+                        }}</el-descriptions-item>
                 </el-descriptions>
             </template>
             <!-- 新增、编辑表单 -->
@@ -220,7 +217,6 @@
                             <el-option value="default" label="默认" />
                             <el-option value="processpool" label="进程池" />
                         </el-select>
-                        <el-input v-model="formData.executor" placeholder="请输入执行器" :maxlength="50" />
                     </el-form-item>
                     <el-form-item label="位置参数" prop="args">
                         <el-input v-model="formData.args" placeholder="请输入位置参数" :maxlength="50" />
@@ -244,7 +240,6 @@
                             <el-option value="interval" label="间隔触发器(interval)" />
                             <el-option value="cron" label="cron表达式" />
                         </el-select>
-                        <el-input v-model="formData.trigger" placeholder="请输入触发器" :maxlength="50" />
                     </el-form-item>
 
                     <!-- 运行日期、间隔时间或 Cron 表达式 -->
@@ -483,7 +478,7 @@ async function handleCloseDialog() {
 async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: number) {
     dialogVisible.type = type;
     if (id) {
-        const response = await JobAPI.getJobDetail({ id });
+        const response = await JobAPI.getJobDetail(id);
         if (type === 'detail') {
             dialogVisible.title = "任务详情";
             Object.assign(detailFormData.value, response.data.data);
@@ -535,98 +530,69 @@ async function handleSubmit() {
     });
 }
 
-// 删除、导入、导出
-async function handleOperation(type: 'delete' | 'import' | 'export', id?: number) {
-    if (type === 'delete' && !id && !selectIds.value.length) {
-        ElMessageBox.confirm("确认删除该项数据?", "警告", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning",
-        }).then(async () => {
-            try {
-                loading.value = true;
-                await JobAPI.deleteJob({ id: id ? id : selectIds.value });
-                ElMessage.success("删除成功");
-                handleResetQuery();
-            } catch (error: any) {
-                ElMessage.error(error.message);
-            } finally {
-                loading.value = false;
-            }
-        }).catch(() => {
-            ElMessage.info('已取消删除');
-        });
-    }
-    else if (type === 'import') {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.xlsx, .xls';
-        input.click();
-
-        input.onchange = async (e) => {
-            const file = (e.target as HTMLInputElement).files?.[0];
-            if (file) {
-                const formData = new FormData();
-                formData.append('file', file);
-                try {
-                    loading.value = true;
-                    await JobAPI.uploadFile(formData);
-                    ElMessage.success('导入成功');
-                    handleResetQuery();
-                } catch (error: any) {
-                    ElMessage.error(error.message);
-                } finally {
-                    loading.value = false;
-                }
-            }
+// 删除、批量删除
+async function handleDelete(ids: number[]) {
+    ElMessageBox.confirm("确认删除该项数据?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+    }).then(async () => {
+        try {
+            loading.value = true;
+            await JobAPI.deleteJob(ids);
+            handleResetQuery();
+        } catch (error: any) {
+            ElMessage.error(error.message);
+        } finally {
+            loading.value = false;
         }
-    }
-    else if (type === 'export') {
-        ElMessageBox.confirm('是否确认导出当前系统配置?', '警告', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-        }).then(async () => {
-            try {
-                loading.value = true;
-                const body = {
-                    ...queryFormData,
-                    page_no: 1,
-                    page_size: total.value
-                };
-                ElMessage.warning('正在导出数据，请稍候...');
+    }).catch(() => {
+        ElMessage.info('已取消删除');
+    });
+}
 
-                const response = await JobAPI.exportJob(body);
-                const blob = new Blob([JSON.stringify(response.data.data)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
-                // 从响应头获取文件名
-                const contentDisposition = response.headers['content-disposition'];
-                let fileName = '系统配置.xlsx';
-                if (contentDisposition) {
-                    const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
-                    if (fileNameMatch) {
-                        fileName = decodeURIComponent(fileNameMatch[1]);
-                    }
+// 导出
+async function handleExport() {
+    ElMessageBox.confirm('是否确认导出当前任务配置?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+    }).then(async () => {
+        try {
+            loading.value = true;
+            const body = {
+                ...queryFormData,
+                page_no: 1,
+                page_size: total.value
+            };
+            ElMessage.warning('正在导出数据，请稍候...');
+
+            const response = await JobAPI.exportJob(body);
+            const blob = new Blob([JSON.stringify(response.data.data)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+            // 从响应头获取文件名
+            const contentDisposition = response.headers['content-disposition'];
+            let fileName = '系统配置.xlsx';
+            if (contentDisposition) {
+                const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
+                if (fileNameMatch) {
+                    fileName = decodeURIComponent(fileNameMatch[1]);
                 }
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = fileName;
-                document.body.appendChild(link);
-                link.click();
-                ElMessage.success('导出成功');
-            } catch (error: any) {
-                ElMessage.error('文件处理失败', error.message);
-                console.error('导出错误:', error);
-            } finally {
-                loading.value = false;
             }
-        }).catch(() => {
-            ElMessage.info('已取消导出');
-        });
-    }
-    else {
-        ElMessage.error('未知操作类型');
-    }
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+        } catch (error: any) {
+            ElMessage.error('文件处理失败', error.message);
+            console.error('导出错误:', error);
+        } finally {
+            loading.value = false;
+        }
+    }).catch(() => {
+        ElMessage.info('已取消导出');
+    });
 }
 
 const getOptions = async () => {

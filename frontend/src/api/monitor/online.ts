@@ -11,11 +11,11 @@ const OnlineAPI = {
   },
 
   // 强退用户
-  deleteOnline(query: DeleteType) {
+  deleteOnline(body: string) {
     return request<ApiResponse>({
       url: `/monitor/online/delete`,
       method: "delete",
-      data: query,
+      data: body,
     });
   },
 

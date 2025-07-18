@@ -144,6 +144,22 @@ export function listToTree(list: any[]) {
   return tree;
 }
 
+// 加载部门选项
+export function formatDeptTree(nodes: any[]): any[] {
+  return nodes.map(node => {
+    const formattedNode = {
+      value: node.id,
+      label: node.name
+    };
+    
+    if (node.children && node.children.length > 0) {
+      Object.assign(formattedNode, { children: formatDeptTree(node.children) });
+    }
+    
+    return formattedNode;
+  });
+}
+
 export function cloneDeep(obj: any) {
   return JSON.parse(JSON.stringify(obj));
 }

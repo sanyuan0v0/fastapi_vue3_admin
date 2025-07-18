@@ -9,11 +9,10 @@ const RoleAPI = {
     });
   },
 
-  getRoleDetail(query: DetailType) {
+  getRoleDetail(query: number) {
     return request<ApiResponse<RoleTable>>({
-      url: `/system/role/detail`,
+      url: `/system/role/detail/${query}`,
       method: "get",
-      params: query,
     });
   },
 
@@ -33,11 +32,11 @@ const RoleAPI = {
     });
   },
 
-  deleteRole(query: DeleteType) {
+  deleteRole(body: number[]) {
     return request<ApiResponse>({
       url: `/system/role/delete`,
       method: "delete",
-      data: query,
+      data: body,
     });
   },
 

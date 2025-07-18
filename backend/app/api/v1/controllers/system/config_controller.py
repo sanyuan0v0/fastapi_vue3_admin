@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from fastapi import APIRouter, Body, Depends, Query, Request, UploadFile
+from fastapi import APIRouter, Body, Depends, Path, Query, Request, UploadFile
 from fastapi.responses import JSONResponse, StreamingResponse
 from aioredis import Redis
 
@@ -20,9 +20,9 @@ from app.utils.common_util import bytes2file_response
 
 router = APIRouter(route_class=OperationLogRoute)
 
-@router.get("/detail", summary="获取系统配置详情", description="获取系统配置详情")
+@router.get("/detail/{id}", summary="获取系统配置详情", description="获取系统配置详情")
 async def get_type_detail_controller(
-    id: int = Query(..., description="系统配置ID"),
+    id: int = Path(..., description="系统配置ID"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:config:query"]))
 ) -> JSONResponse:
     result_dict = await ConfigService.get_obj_detail_service(id=id, auth=auth)

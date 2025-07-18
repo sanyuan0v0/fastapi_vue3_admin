@@ -1,6 +1,6 @@
 <!-- 字典数据 -->
 <template>
-  <el-drawer v-model="drawerVisible" title="字典数据" size="70%">
+  <el-drawer v-model="drawerVisible" :title="`${props.dictLabel}-字典数据`" size="70%">
     <!-- 搜索区域 -->
     <div class="search-container">
       <el-form ref="queryFormRef" :model="queryFormData" :inline="true">
@@ -9,7 +9,7 @@
           <el-input v-model="queryFormData.dict_label" placeholder="请输入字典标签" clearable />
         </el-form-item>
         <el-form-item prop="status" label="状态">
-          <el-select v-model="queryFormData.status" placeholder="请选择状态" clearable>
+          <el-select v-model="queryFormData.status" placeholder="请选择状态" style="width: 167.5px" clearable>
             <el-option value="true" label="启用" />
             <el-option value="false" label="停用" />
           </el-select>
@@ -149,8 +149,8 @@
         <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at" label="更新时间"
           prop="updated_at" min-width="200" sortable />
 
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作"
-          min-width="240">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" align="center"
+          min-width="200">
           <template #default="scope">
             <el-button type="info" size="small" link icon="document"
               @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
@@ -254,7 +254,17 @@
 </template>
 
 <script setup lang="ts">
-
+// 添加 props 来接收 dictType
+const props = defineProps({
+  dictType: {
+    type: String,
+    required: true
+  },
+  dictLabel: {
+    type: String,
+    required: true
+  }
+})
 
 import DictAPI, { DictDataTable, DictDataForm, DictDataPageQuery } from "@/api/system/dict";
 import { ElMessage, ElMessageBox } from "element-plus";
@@ -351,6 +361,8 @@ const handleRefresh = useDebounceFn(() => {
 async function loadingData() {
   loading.value = true;
   try {
+    // 在查询参数中添加 dictType
+    queryFormData.dict_type = props.dictType;
     const response = await DictAPI.getDictDataList(queryFormData);
     pageTableData.value = response.data.data.items;
     total.value = response.data.data.total;
@@ -398,7 +410,7 @@ async function handleCloseDialog() {
 async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: number) {
   dialogVisible.type = type;
   if (id) {
-    const response = await DictAPI.getDictDataDetail({ id });
+    const response = await DictAPI.getDictDataDetail(id);
     if (type === 'detail') {
       dialogVisible.title = "公告通知详情";
       Object.assign(detailFormData.value, response.data.data);
@@ -409,6 +421,7 @@ async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: numbe
   } else {
     dialogVisible.title = "新增公告通知";
     formData.id = undefined;
+    formData.dict_type = props.dictType;
   }
   dialogVisible.visible = true;
 }
@@ -450,25 +463,23 @@ async function handleSubmit() {
 
 // 删除、批量删除
 async function handleDelete(ids: number[]) {
-  if (!ids && !selectIds.value.length) {
-    ElMessageBox.confirm("确认删除该项数据?", "警告", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    }).then(async () => {
-      try {
-        loading.value = true;
-        await DictAPI.deleteDictData({ ids });
-        handleResetQuery();
-      } catch (error: any) {
-        ElMessage.error(error.message);
-      } finally {
-        loading.value = false;
-      }
-    }).catch(() => {
-      ElMessage.info('已取消删除');
-    });
-  }
+  ElMessageBox.confirm("确认删除该项数据?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(async () => {
+    try {
+      loading.value = true;
+      await DictAPI.deleteDictData(ids);
+      handleResetQuery();
+    } catch (error: any) {
+      ElMessage.error(error.message);
+    } finally {
+      loading.value = false;
+    }
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
 }
 
 // 导出
@@ -537,17 +548,6 @@ async function handleMoreClick(status: boolean) {
     });
   }
 }
-
-// 监听抽屉显示状态，设置字典类型过滤
-watch(
-  () => props.modelValue,
-  (visible) => {
-    if (visible && props.dictType) {
-      queryFormData.dict_type = props.dictType;
-      loadingData();
-    }
-  }
-);
 
 onMounted(() => {
   loadingData();

@@ -9,19 +9,18 @@ const LogAPI = {
     });
   },
 
-  getLogDetail(query: DetailType) {
+  getLogDetail(query: number) {
     return request<ApiResponse<LogTable>>({
-      url: `/system/log/detail`,
+      url: `/system/log/detail/${query}`,
       method: "get",
-      params: query,
     });
   },
 
-  deleteLog(query: DeleteType) {
+  deleteLog(body: number[]) {
     return request<ApiResponse>({
       url: `/system/log/delete`,
       method: "delete",
-      data: query,
+      data: body,
     });
   },
 

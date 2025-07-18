@@ -11,7 +11,7 @@
           <el-input v-model="queryFormData.config_key" placeholder="请输入配置键名" clearable />
         </el-form-item>
         <el-form-item prop="config_type" label="系统内置">
-          <el-select v-model="queryFormData.config_type" placeholder="请选择系统内置" clearable>
+          <el-select v-model="queryFormData.config_type" placeholder="请选择系统内置" style="width: 167.5px" clearable>
             <el-option value="true" label="是" />
             <el-option value="false" label="否" />
           </el-select>
@@ -110,7 +110,7 @@
         <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" key="description" label="描述"
           prop="description" min-width="120" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'creator')?.show" key="creator" label="创建人"
-          min-width="120" sortable>
+          min-width="120">
           <template #default="scope">
             {{ scope.row.creator?.name }}
           </template>
@@ -119,7 +119,7 @@
           prop="created_at" min-width="200" sortable />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at" label="更新时间"
           prop="updated_at" min-width="200" sortable />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作"
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" align="center"
           min-width="200">
           <template #default="scope">
             <el-button type="info" size="small" link icon="document"
@@ -330,7 +330,7 @@ async function handleCloseDialog() {
 async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: number) {
   dialogVisible.type = type;
   if (id) {
-    const response = await ConfigAPI.getConfigDetail({ id });
+    const response = await ConfigAPI.getConfigDetail(id);
     if (type === 'detail') {
       dialogVisible.title = "系统配置详情";
       Object.assign(detailFormData.value, response.data.data);
@@ -383,26 +383,25 @@ async function handleSubmit() {
 
 // 删除、批量删除
 async function handleDelete(ids: number[]) {
-  if (!ids && !selectIds.value.length) {
-    ElMessageBox.confirm("确认删除该项数据?", "警告", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    }).then(async () => {
-      try {
-        loading.value = true;
-        await ConfigAPI.deleteConfig({ ids });
-        handleResetQuery();
-      } catch (error: any) {
-        ElMessage.error(error.message);
-      } finally {
-        loading.value = false;
-      }
-    }).catch(() => {
-      ElMessage.info('已取消删除');
-    });
-  }
+  ElMessageBox.confirm("确认删除该项数据?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(async () => {
+    try {
+      loading.value = true;
+      await ConfigAPI.deleteConfig(ids);
+      handleResetQuery();
+    } catch (error: any) {
+      ElMessage.error(error.message);
+    } finally {
+      loading.value = false;
+    }
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
 }
+
 
 // 导出
 async function handleExport() {
