@@ -57,8 +57,7 @@
             <div class="data-table__toolbar">
                 <div class="data-table__toolbar--actions">
                     <el-button type="success" icon="plus" @click="handleOpenDialog('create')">新增</el-button>
-                    <el-button type="danger" icon="delete" :disabled="selectIds.length === 0"
-                        @click="handleDelete(selectIds)">批量删除</el-button>
+                    <el-button type="danger" icon="delete" :disabled="selectIds.length === 0" @click="handleDelete(selectIds)">批量删除</el-button>
                 </div>
                 <div class="data-table__toolbar--tools">
                     <el-tooltip content="导出">
@@ -70,67 +69,41 @@
                     <el-tooltip content="刷新">
                         <el-button type="primary" icon="refresh" circle @click="handleRefresh" />
                     </el-tooltip>
-                    <el-tooltip content="列表筛选">
-                        <el-dropdown trigger="click">
-                            <el-button type="default" icon="operation" circle />
-                            <template #dropdown>
-                                <el-dropdown-menu>
-                                    <el-dropdown-item v-for="column in tableColumns" :key="column.prop"
-                                        :command="column">
-                                        <el-checkbox v-model="column.show">{{ column.label }}</el-checkbox>
-                                    </el-dropdown-item>
-                                </el-dropdown-menu>
-                            </template>
-                        </el-dropdown>
-                    </el-tooltip>
                 </div>
             </div>
 
             <!-- 表格区域：系统配置列表 -->
-            <el-table ref="dataTableRef" v-loading="loading" :data="pageTableData" highlight-current-row
-                class="data-table__content" height="450" border stripe @selection-change="handleSelectionChange">
+            <el-table ref="dataTableRef" v-loading="loading" :data="pageTableData" class="data-table__content"
+                highlight-current-row height="450" border stripe @selection-change="handleSelectionChange">
                 <template #empty>
                     <el-empty :image-size="80" description="暂无数据" />
                 </template>
-                <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection"
-                    min-width="55" align="center" />
-                <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed
-                    label="序号" min-width="60" />
-                <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" key="name" label="任务名称"
-                    prop="name" min-width="140" />
-                <el-table-column v-if="tableColumns.find(col => col.prop === 'func')?.show" key="func" label="执行函数"
-                    prop="func" min-width="140" />
-                <el-table-column v-if="tableColumns.find(col => col.prop === 'trigger')?.show" key="trigger" label="触发器"
-                    prop="trigger" min-width="100" />
-                <el-table-column v-if="tableColumns.find(col => col.prop === 'jobstore')?.show" key="jobstore"
-                    label="存储器" prop="jobstore" min-width="100" />
-                <el-table-column v-if="tableColumns.find(col => col.prop === 'executor')?.show" key="executor"
-                    label="执行器" prop="executor" min-width="100" />
-                <el-table-column v-if="tableColumns.find(col => col.prop === 'coalesce')?.show" key="coalesce"
-                    label="并发执行" prop="coalesce" min-width="100">
+                <el-table-column type="selection" align="center" min-width="55" />
+                <el-table-column type="index" label="序号" fixed min-width="60" />
+                <el-table-column label="任务名称" prop="name" min-width="140" />
+                <el-table-column label="执行函数" prop="func" min-width="140" />
+                <el-table-column label="触发器" prop="trigger" min-width="100" />
+                <el-table-column label="存储器" prop="jobstore" min-width="100" />
+                <el-table-column label="执行器" prop="executor" min-width="100" />
+                <el-table-column label="并发执行" prop="coalesce" min-width="100">
                     <template #default="scope">
                         <el-tag :type="scope.row.coalesce === true ? 'success' : 'danger'">
                             {{ scope.row.coalesce === true ? "是" : "否" }}
                         </el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" key="status" label="状态"
-                    prop="status" min-width="100">
+                <el-table-column label="状态" prop="status" min-width="100">
                     <template #default="scope">
                         <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
                             {{ scope.row.status === true ? "启用" : "停用" }}
                         </el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" key="description"
-                    label="描述" prop="description" min-width="100" />
-                <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" key="created_at"
-                    label="创建时间" prop="created_at" min-width="200" sortable />
-                <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at"
-                    label="更新时间" prop="updated_at" min-width="200" sortable />
+                <el-table-column label="描述" prop="description" min-width="100" />
+                <el-table-column label="创建时间" prop="created_at" min-width="200" sortable />
+                <el-table-column label="更新时间" prop="updated_at" min-width="200" sortable />
 
-                <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right"
-                    label="操作" min-width="240">
+                <el-table-column fixed="right" label="操作" min-width="240">
                     <template #default="scope">
                         <el-button type="info" size="small" link icon="document"
                             @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
@@ -139,9 +112,7 @@
                         <el-button type="danger" size="small" link icon="delete"
                             @click="handleDelete([scope.row.id])">删除</el-button>
                         <el-dropdown trigger="click">
-                            <el-button type="default" size="small" link icon="ArrowDown">
-                                更多
-                            </el-button>
+                            <el-button type="default" size="small" link icon="ArrowDown">更多</el-button>
                             <template #dropdown>
                                 <el-dropdown-menu>
                                     <el-dropdown-item icon="Check" @click="handleOption(scope.row, 1)">暂停</el-dropdown-item>
@@ -156,8 +127,7 @@
 
             <!-- 分页区域 -->
             <template #footer>
-                <pagination v-model:total="total" v-model:page="queryFormData.page_no"
-                    v-model:limit="queryFormData.page_size" @pagination="loadingData" />
+                <pagination v-model:total="total" v-model:page="queryFormData.page_no" v-model:limit="queryFormData.page_size" @pagination="loadingData" />
             </template>
         </el-card>
 
@@ -175,30 +145,29 @@
                     <el-descriptions-item label="位置参数" :span="2">{{ detailFormData.args }}</el-descriptions-item>
                     <el-descriptions-item label="关键字参数" :span="2">{{ detailFormData.kwargs }}</el-descriptions-item>
                     <el-descriptions-item label="并发执行" :span="2">
-                        <el-tag v-if="detailFormData.coalesce === true" type="success">是</el-tag>
-                        <el-tag v-else type="danger">否</el-tag>
+                        <el-tag :type="detailFormData.coalesce ? 'success' : 'danger'">
+                            {{ detailFormData.coalesce ? '是' : '否' }}
+                        </el-tag>
                     </el-descriptions-item>
-                    <el-descriptions-item label="最大实例数" :span="2">{{ detailFormData.max_instances
-                        }}</el-descriptions-item>
-                    <el-descriptions-item label="触发器参数" :span="2">{{ detailFormData.trigger_args
-                        }}</el-descriptions-item>
+                    <el-descriptions-item label="状态" :span="2">
+                        <el-tag :type="detailFormData.status ? 'success' : 'danger'">
+                            {{ detailFormData.status ? '启用' : '停用' }}
+                        </el-tag>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="最大实例数" :span="2">{{ detailFormData.max_instances }}</el-descriptions-item>
+                    <el-descriptions-item label="触发器参数" :span="2">{{ detailFormData.trigger_args }}</el-descriptions-item>
                     <el-descriptions-item label="开始时间" :span="2">{{ detailFormData.start_date }}</el-descriptions-item>
                     <el-descriptions-item label="结束时间" :span="2">{{ detailFormData.end_date }}</el-descriptions-item>
                     <el-descriptions-item label="日志信息" :span="2">{{ detailFormData.message }}</el-descriptions-item>
-                    <el-descriptions-item label="状态" :span="2">
-                        <el-tag v-if="detailFormData.status" type="success">启用</el-tag>
-                        <el-tag v-else type="danger">停用</el-tag>
-                    </el-descriptions-item>
-                    <el-descriptions-item label="描述" :span="2">{{ detailFormData.description }}</el-descriptions-item>
+                    <el-descriptions-item label="创建人" :span="2">{{ detailFormData.creator?.name }}</el-descriptions-item>
                     <el-descriptions-item label="创建时间" :span="2">{{ detailFormData.created_at }}</el-descriptions-item>
                     <el-descriptions-item label="更新时间" :span="2">{{ detailFormData.updated_at }}</el-descriptions-item>
-                    <el-descriptions-item label="创建人" :span="2">{{ detailFormData.creator?.name
-                        }}</el-descriptions-item>
+                    <el-descriptions-item label="描述" :span="4">{{ detailFormData.description }}</el-descriptions-item>
                 </el-descriptions>
             </template>
             <!-- 新增、编辑表单 -->
             <template v-else>
-                <el-form ref="dataFormRef" :model="formData" :rules="rules" label-suffix=":" label-width="100px">
+                <el-form ref="dataFormRef" :model="formData" :rules="rules" label-suffix=":" label-width="100px" >
                     <el-form-item label="任务名称" prop="name">
                         <el-input v-model="formData.name" placeholder="请输入任务名称" :maxlength="50" />
                     </el-form-item>
@@ -232,7 +201,7 @@
                     </el-form-item>
                     <el-form-item label="最大实例数" prop="max_instances">
                         <el-input-number v-model="formData.max_instances" controls-position="right" :min="1"
-                            :max="100" />
+                            :max="10" />
                     </el-form-item>
                     <el-form-item label="触发器" prop="trigger">
                         <el-select v-model="formData.trigger" placeholder="请选择触发器">
@@ -271,7 +240,6 @@
                             value-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束日期" style="width: 100%" />
                     </el-form-item>
 
-
                     <el-form-item label="描述" prop="description">
                         <el-input v-model="formData.description" :rows="4" :maxlength="100" show-word-limit
                             type="textarea" placeholder="请输入描述" />
@@ -296,11 +264,10 @@
             <IntervalTab ref="intervalTabRef" />
         </el-dialog>
 
-        <!-- core组件是由element-plus封装的vue3组件，所以需要使用element-plus -->
+        <!-- core组件 -->
         <el-dialog v-model="openCron">
             <Vue3CronPlusPicker :expression="expression" @hide="closeDialog" @fill="fillValue" />
         </el-dialog>
-
     </div>
 </template>
 
@@ -314,9 +281,9 @@ import JobAPI, { JobTable, JobForm, JobPageQuery } from "@/api/monitor/job";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useDebounceFn } from "@vueuse/core";
 
-import IntervalTab from '@/components/IntervalTab/index.vue';
-import 'vue3-cron-plus-picker/style.css';
-import { Vue3CronPlusPicker } from 'vue3-cron-plus-picker';
+import IntervalTab from "@/components/IntervalTab/index.vue";
+import "vue3-cron-plus-picker/style.css";
+import { Vue3CronPlusPicker } from "vue3-cron-plus-picker";
 import { useDictStore } from "@/store/index";
 
 const dictStore = useDictStore();
@@ -339,8 +306,8 @@ const isExpandable = ref(true);
 // const tableLoading = ref(false);
 // const openModal = ref(false);
 const openCron = ref(false);
-const cronMode = ref('create');
-const modalTitle = ref('');
+const cronMode = ref("create");
+const modalTitle = ref("");
 // const modalSubmitLoading = ref(false);
 // const detailStateLoading = ref(false);
 // const dataSource = ref<tableJobType[]>([]);
@@ -353,23 +320,6 @@ const expression = ref();
 
 // 分页表单
 const pageTableData = ref<JobTable[]>([]);
-
-// 表格列配置
-const tableColumns = ref([
-    { prop: 'selection', label: '选择框', show: true },
-    { prop: 'index', label: '序号', show: true },
-    { prop: 'name', label: '任务名称', show: true },
-    { prop: 'func', label: '执行函数', show: true },
-    { prop: 'trigger', label: '触发器', show: true },
-    { prop: 'jobstore', label: '存储器', show: true },
-    { prop: 'executor', label: '执行器', show: true },
-    { prop: 'coalesce', label: '并发执行', show: true },
-    { prop: 'status', label: '状态', show: true },
-    { prop: 'description', label: '描述', show: true },
-    { prop: 'created_at', label: '创建时间', show: true },
-    { prop: 'updated_at', label: '更新时间', show: true },
-    { prop: 'operation', label: '操作', show: true }
-])
 
 // 详情表单
 const detailFormData = ref<JobTable>({});
@@ -402,13 +352,13 @@ const formData = reactive<JobForm>({
     status: undefined,
     message: undefined,
     description: undefined,
-})
+});
 
 // 弹窗状态
 const dialogVisible = reactive({
     title: "",
     visible: false,
-    type: 'create' as 'create' | 'update' | 'detail',
+    type: "create" as "create" | "update" | "detail",
 });
 
 // 表单验证规则
@@ -434,11 +384,9 @@ async function loadingData() {
         const response = await JobAPI.getJobList(queryFormData);
         pageTableData.value = response.data.data.items;
         total.value = response.data.data.total;
-    }
-    catch (error: any) {
+    } catch (error: any) {
         ElMessage.error(error.message);
-    }
-    finally {
+    } finally {
         loading.value = false;
     }
 }
@@ -475,14 +423,17 @@ async function handleCloseDialog() {
 }
 
 // 打开弹窗
-async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: number) {
+async function handleOpenDialog(
+    type: "create" | "update" | "detail",
+    id?: number,
+) {
     dialogVisible.type = type;
     if (id) {
         const response = await JobAPI.getJobDetail(id);
-        if (type === 'detail') {
+        if (type === "detail") {
             dialogVisible.title = "任务详情";
             Object.assign(detailFormData.value, response.data.data);
-        } else if (type === 'update') {
+        } else if (type === "update") {
             dialogVisible.title = "修改任务";
             Object.assign(formData, response.data.data);
         }
@@ -503,7 +454,7 @@ async function handleSubmit() {
             const id = formData.id;
             if (id) {
                 try {
-                    await JobAPI.updateJob(formData)
+                    await JobAPI.updateJob(formData);
                     dialogVisible.visible = false;
                     resetForm();
                     handleCloseDialog();
@@ -515,7 +466,7 @@ async function handleSubmit() {
                 }
             } else {
                 try {
-                    await JobAPI.createJob(formData)
+                    await JobAPI.createJob(formData);
                     dialogVisible.visible = false;
                     resetForm();
                     handleCloseDialog();
@@ -536,73 +487,74 @@ async function handleDelete(ids: number[]) {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-    }).then(async () => {
-        try {
-            loading.value = true;
-            await JobAPI.deleteJob(ids);
-            handleResetQuery();
-        } catch (error: any) {
-            ElMessage.error(error.message);
-        } finally {
-            loading.value = false;
-        }
-    }).catch(() => {
-        ElMessage.info('已取消删除');
-    });
+    })
+        .then(async () => {
+            try {
+                loading.value = true;
+                await JobAPI.deleteJob(ids);
+                handleResetQuery();
+            } catch (error: any) {
+                ElMessage.error(error.message);
+            } finally {
+                loading.value = false;
+            }
+        })
+        .catch(() => {
+            ElMessage.info("已取消删除");
+        });
 }
 
 // 导出
 async function handleExport() {
-    ElMessageBox.confirm('是否确认导出当前任务配置?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-    }).then(async () => {
-        try {
-            loading.value = true;
-            const body = {
-                ...queryFormData,
-                page_no: 1,
-                page_size: total.value
-            };
-            ElMessage.warning('正在导出数据，请稍候...');
+    ElMessageBox.confirm("是否确认导出当前任务配置?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+    })
+        .then(async () => {
+            try {
+                loading.value = true;
+                const body = {
+                    ...queryFormData,
+                    page_no: 1,
+                    page_size: total.value,
+                };
+                ElMessage.warning("正在导出数据，请稍候...");
 
-            const response = await JobAPI.exportJob(body);
-            const blob = new Blob([JSON.stringify(response.data.data)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
-            // 从响应头获取文件名
-            const contentDisposition = response.headers['content-disposition'];
-            let fileName = '系统配置.xlsx';
-            if (contentDisposition) {
-                const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
-                if (fileNameMatch) {
-                    fileName = decodeURIComponent(fileNameMatch[1]);
+                const response = await JobAPI.exportJob(body);
+                const blob = new Blob([JSON.stringify(response.data.data)], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+                });
+                // 从响应头获取文件名
+                const contentDisposition = response.headers["content-disposition"];
+                let fileName = "系统配置.xlsx";
+                if (contentDisposition) {
+                    const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
+                    if (fileNameMatch) {
+                        fileName = decodeURIComponent(fileNameMatch[1]);
+                    }
                 }
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+            } catch (error: any) {
+                ElMessage.error("文件处理失败", error.message);
+                console.error("导出错误:", error);
+            } finally {
+                loading.value = false;
             }
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-        } catch (error: any) {
-            ElMessage.error('文件处理失败', error.message);
-            console.error('导出错误:', error);
-        } finally {
-            loading.value = false;
-        }
-    }).catch(() => {
-        ElMessage.info('已取消导出');
-    });
-}
-
-const getOptions = async () => {
-    const dictOptions = await dictStore.getDict(['sys_job_group', 'sys_job_executor', 'sys_job_function', 'sys_job_trigger'])
-    return dictOptions
+        })
+        .catch(() => {
+            ElMessage.info("已取消导出");
+        });
 }
 
 function openIntervalTabHandle(value: any) {
     openIntervalTab.value = true;
-    modalTitle.value = value
+    modalTitle.value = value;
 }
 
 function handleIntervalConfirm() {
@@ -613,15 +565,15 @@ function handleIntervalConfirm() {
 const handleShowCron = () => {
     openCron.value = true;
     expression.value = formData.trigger_args;
-}
+};
 
 const closeDialog = () => {
     openCron.value = false;
-}
+};
 
 const fillValue = (cronValue: string) => {
     formData.trigger_args = cronValue;
-}
+};
 
 // 清空按钮操作
 const handleClear = () => {
@@ -629,28 +581,30 @@ const handleClear = () => {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-    }).then(async () => {
-        try {
-            loading.value = true;
-            await JobAPI.clearJob();
-            ElMessage.success("清空成功");
-            handleResetQuery();
-        } catch (error: any) {
-            ElMessage.error(error.message);
-        } finally {
-            loading.value = false;
-        }
-    }).catch(() => {
-        ElMessage.info('已取消清空');
-    });
-}
+    })
+        .then(async () => {
+            try {
+                loading.value = true;
+                await JobAPI.clearJob();
+                ElMessage.success("清空成功");
+                handleResetQuery();
+            } catch (error: any) {
+                ElMessage.error(error.message);
+            } finally {
+                loading.value = false;
+            }
+        })
+        .catch(() => {
+            ElMessage.info("已取消清空");
+        });
+};
 
 // 操作按钮:操作类型 1: 暂停 2: 恢复 3: 重启（暂时移除重启）
 const handleOption = (id: number, option: number) => {
     JobAPI.OptionJob({ id, option }).then(() => {
         loadingData();
-    })
-}
+    });
+};
 
 onMounted(() => {
     loadingData();

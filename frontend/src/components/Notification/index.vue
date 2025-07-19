@@ -50,8 +50,7 @@
     </template>
   </el-dropdown>
 
-  <el-dialog v-model="noticeDialogVisible" :title="noticeDetail?.notice_title ?? '通知详情'" width="800px"
-    custom-class="notification-detail">
+  <el-dialog v-model="noticeDialogVisible" :title="noticeDetail?.notice_title ?? '通知详情'" width="800px" custom-class="notification-detail">
     <div v-if="noticeDetail" class="p-x-20px">
       <div class="flex-y-center mb-16px text-13px text-color-secondary">
         <span class="flex-y-center">

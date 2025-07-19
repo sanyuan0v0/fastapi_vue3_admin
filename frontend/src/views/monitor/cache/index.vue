@@ -9,10 +9,14 @@
             <el-card shadow="hover">
               <template #header>
                 <div class="flex items-center gap-2">
-                  <el-icon><Monitor /></el-icon>
+                  <el-icon>
+                    <Monitor />
+                  </el-icon>
                   <span>Redis监控信息</span>
                   <el-tooltip content="展示Redis监控信息详情">
-                    <el-icon><QuestionFilled /></el-icon>
+                    <el-icon>
+                      <QuestionFilled />
+                    </el-icon>
                   </el-tooltip>
                 </div>
               </template>
@@ -36,7 +40,8 @@
                   {{ cache.info?.used_memory_human || '-' }}
                 </el-descriptions-item>
                 <el-descriptions-item label="使用CPU">
-                  {{ cache.info?.used_cpu_user_children ? parseFloat(cache.info.used_cpu_user_children).toFixed(2) : '-' }}
+                  {{ cache.info?.used_cpu_user_children ? parseFloat(cache.info.used_cpu_user_children).toFixed(2) : '-'
+                  }}
                 </el-descriptions-item>
                 <el-descriptions-item label="内存配置">
                   {{ cache.info?.maxmemory_human || '-' }}
@@ -51,7 +56,8 @@
                   {{ cache.db_size || 0 }}
                 </el-descriptions-item>
                 <el-descriptions-item label="网络入口/出口">
-                  {{ `${cache.info?.instantaneous_input_kbps || 0}kps/${cache.info?.instantaneous_output_kbps || 0}kps` }}
+                  {{ `${cache.info?.instantaneous_input_kbps || 0}kps/${cache.info?.instantaneous_output_kbps || 0}kps`
+                  }}
                 </el-descriptions-item>
               </el-descriptions>
             </el-card>
@@ -62,25 +68,33 @@
             <el-card shadow="hover">
               <template #header>
                 <div class="flex items-center gap-2">
-                  <el-icon><Stopwatch /></el-icon>
+                  <el-icon>
+                    <Stopwatch />
+                  </el-icon>
                   <span class="title">命令统计</span>
                   <el-tooltip content="展示命令统计详情">
-                    <el-icon><QuestionFilled /></el-icon>
+                    <el-icon>
+                      <QuestionFilled />
+                    </el-icon>
                   </el-tooltip>
                 </div>
               </template>
               <div ref="commandstats" class="chart-container" />
             </el-card>
           </el-col>
-          
+
           <el-col :span="12" class="mt-4">
             <el-card shadow="hover">
               <template #header>
                 <div class="flex items-center gap-2">
-                  <el-icon><Stopwatch /></el-icon>
+                  <el-icon>
+                    <Stopwatch />
+                  </el-icon>
                   <span>内存信息</span>
                   <el-tooltip content="展示内存信息详情">
-                    <el-icon><QuestionFilled /></el-icon>
+                    <el-icon>
+                      <QuestionFilled />
+                    </el-icon>
                   </el-tooltip>
                 </div>
               </template>
@@ -95,14 +109,18 @@
         <el-row :gutter="16">
           <!-- 缓存列表 -->
           <el-col :span="8">
-            <el-card :loading="loading"  shadow="hover" >
+            <el-card :loading="loading" shadow="hover">
               <template #header>
                 <div class="flex justify-between items-center">
                   <div class="flex items-center gap-2">
-                    <el-icon><Tickets /></el-icon>
+                    <el-icon>
+                      <Tickets />
+                    </el-icon>
                     <span class="flex items-center gap-2">缓存列表</span>
                     <el-tooltip content="展示缓存列表详情">
-                      <el-icon><QuestionFilled /></el-icon>
+                      <el-icon>
+                        <QuestionFilled />
+                      </el-icon>
                     </el-tooltip>
                   </div>
                   <div>
@@ -110,16 +128,10 @@
                   </div>
                 </div>
               </template>
-              <el-table
-                :loading="loading"
-                :data="cacheNames"
-                row-key="cache_name"
-                height="600"
-                border
-              >
-              <template #empty>
-                <el-empty :image-size="80" description="暂无数据" />
-              </template>
+              <el-table :loading="loading" :data="cacheNames" row-key="cache_name" height="600" border>
+                <template #empty>
+                  <el-empty :image-size="80" description="暂无数据" />
+                </template>
                 <el-table-column prop="cache_name" label="缓存名称" show-overflow-tooltip>
                   <template #default="{ row }">
                     <el-button type="primary" link @click="getCacheKeyList(row)">{{ row.cache_name }}</el-button>
@@ -128,12 +140,7 @@
                 <el-table-column prop="remark" label="备注" show-overflow-tooltip />
                 <el-table-column label="操作" width="60" align="center">
                   <template #default="{ row }">
-                    <el-popconfirm
-                      class="box-item"
-                      :title="`确认删除缓存 ${row.cache_name} 吗？`"
-                      placement="top"
-                      @confirm="handleClearCacheName(row)"
-                    >
+                    <el-popconfirm class="box-item" :title="`确认删除缓存 ${row.cache_name} 吗？`" placement="top" @confirm="handleClearCacheName(row)">
                       <template #reference>
                         <el-button type="danger" size="small" link icon="delete" />
                       </template>
@@ -146,14 +153,18 @@
 
           <!-- 键名列表 -->
           <el-col :span="8">
-            <el-card :loading="loading"  shadow="hover">
+            <el-card :loading="loading" shadow="hover">
               <template #header>
                 <div class="flex justify-between items-center">
                   <div class="flex items-center gap-2">
-                    <el-icon><Key /></el-icon>
+                    <el-icon>
+                      <Key />
+                    </el-icon>
                     <span class="flex items-center gap-2">键名列表</span>
                     <el-tooltip content="展示键名列表详情">
-                      <el-icon><QuestionFilled /></el-icon>
+                      <el-icon>
+                        <QuestionFilled />
+                      </el-icon>
                     </el-tooltip>
                   </div>
                   <div>
@@ -161,29 +172,19 @@
                   </div>
                 </div>
               </template>
-              <el-table
-                :loading="subLoading"
-                :data="cacheKeys.map(key => ({ cacheKey: key }))"
-                height="600"
-                row-key="cacheKey"
-                border
-              >
+              <el-table :loading="subLoading" :data="cacheKeys.map(key => ({ cacheKey: key }))" height="600" row-key="cacheKey" border>
                 <template #empty>
                   <el-empty :image-size="80" description="暂无数据" />
                 </template>
                 <el-table-column prop="cacheKey" label="缓存键名" show-overflow-tooltip>
                   <template #default="{ row }">
-                    <el-button type="primary" link @click="handleCacheValue(row.cacheKey)">{{ row.cacheKey }}</el-button>
+                    <el-button type="primary" link @click="handleCacheValue(row.cacheKey)">{{ row.cacheKey
+                      }}</el-button>
                   </template>
                 </el-table-column>
                 <el-table-column label="操作" width="60" align="center">
                   <template #default="{ row }">
-                    <el-popconfirm
-                      class="box-item"
-                      :title="`确认删除键 ${row.cacheKey} 吗？`"
-                      placement="top"
-                      @confirm="handleClearCacheKey(row.cacheKey)"
-                    >
+                    <el-popconfirm class="box-item" :title="`确认删除键 ${row.cacheKey} 吗？`" placement="top" @confirm="handleClearCacheKey(row.cacheKey)">
                       <template #reference>
                         <el-button type="danger" size="small" link icon="delete" />
                       </template>
@@ -196,14 +197,18 @@
 
           <!-- 缓存内容 -->
           <el-col :span="8">
-            <el-card :loading="loading"  shadow="hover">
+            <el-card :loading="loading" shadow="hover">
               <template #header>
                 <div class="flex justify-between items-center">
                   <div class="flex items-center gap-2">
-                    <el-icon><Key /></el-icon>
+                    <el-icon>
+                      <Key />
+                    </el-icon>
                     <span class="flex items-center gap-2">缓存内容</span>
                     <el-tooltip content="展示缓存内容详情">
-                      <el-icon><QuestionFilled /></el-icon>
+                      <el-icon>
+                        <QuestionFilled />
+                      </el-icon>
                     </el-tooltip>
                   </div>
                   <div>
@@ -219,12 +224,7 @@
                   <el-input v-model="cacheForm.cache_key" readonly />
                 </el-form-item>
                 <el-form-item label="缓存内容:">
-                  <el-input
-                    v-model="cacheForm.cache_value"
-                    type="textarea"
-                    :rows="18"
-                    readonly
-                  />
+                  <el-input v-model="cacheForm.cache_value" type="textarea" :rows="18" readonly />
                 </el-form-item>
               </el-form>
             </el-card>
@@ -236,7 +236,7 @@
 </template>
 
 <script lang="ts" setup>
-import CacheAPI, {type CacheInfo, type CacheForm, type CacheMonitor, type RedisInfo } from "@/api/monitor/cache";
+import CacheAPI, { type CacheInfo, type CacheForm, type CacheMonitor, type RedisInfo } from "@/api/monitor/cache";
 import * as echarts from 'echarts';
 
 // 响应式状态定义
@@ -254,7 +254,7 @@ const cache = ref<CacheMonitor>({
 });
 const cacheForm = ref<CacheForm>({
   cache_name: '',
-  cache_key: '', 
+  cache_key: '',
   cache_value: ''
 });
 
@@ -291,7 +291,7 @@ const refreshCacheNames = () => {
 
 // 清理缓存名称
 const handleClearCacheName = async (row: CacheInfo) => {
-  try { 
+  try {
     await CacheAPI.deleteCacheName(row.cache_name);
     refreshCacheNames();
   } catch (error) {
@@ -301,10 +301,10 @@ const handleClearCacheName = async (row: CacheInfo) => {
 
 // 缓存键名相关方法
 const getCacheKeyList = async (row?: CacheInfo) => {
-  try { 
+  try {
     const cacheName = row?.cache_name || nowCacheName.value;
     if (!cacheName) return;
-    
+
     subLoading.value = true;
     const response = await CacheAPI.getCacheKeys(cacheName);
     cacheKeys.value = response.data.data;
@@ -327,8 +327,8 @@ const refreshCacheKeys = () => {
 };
 
 // 清理缓存键名
-async function  handleClearCacheKey (cacheKey: string) {
-  try { 
+async function handleClearCacheKey(cacheKey: string) {
+  try {
     await CacheAPI.deleteCacheKey(cacheKey);
     getCacheKeyList();
   } catch (error) {
@@ -337,7 +337,7 @@ async function  handleClearCacheKey (cacheKey: string) {
 };
 
 // 缓存内容相关方法
-async function handleCacheValue (cacheKey: string) {
+async function handleCacheValue(cacheKey: string) {
   try {
     loading.value = true;
     const response = await CacheAPI.getCacheValue(nowCacheName.value, cacheKey)
@@ -360,17 +360,17 @@ const handleClearCacheAll = async () => {
       type: 'warning',
     }
   )
-  .then(async () => {
-    return await CacheAPI.deleteCacheAll();
-  })
-  .then(() => {
-    getCacheNameList();
-  })
-  .catch((error) => {
-    if (error !== 'cancel') {
-      console.error('清理全部缓存失败:', error);
-    }
-  });
+    .then(async () => {
+      return await CacheAPI.deleteCacheAll();
+    })
+    .then(() => {
+      getCacheNameList();
+    })
+    .catch((error) => {
+      if (error !== 'cancel') {
+        console.error('清理全部缓存失败:', error);
+      }
+    });
 };
 
 // 监控数据获取
@@ -379,11 +379,11 @@ const getInfo = async () => {
     loading.value = true;
     const response = await CacheAPI.getCacheInfo()
     cache.value = response.data.data || {
-        info: {},
-        command_stats: [],
-        dbSize: 0
-      };
-      initCharts();
+      info: {},
+      command_stats: [],
+      dbSize: 0
+    };
+    initCharts();
   } catch (error) {
     console.error('获取缓存监控数据失败:', error);
   } finally {
@@ -452,7 +452,6 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="scss">
-
 .chart-container {
   height: 365px;
 }

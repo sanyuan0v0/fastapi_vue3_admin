@@ -15,8 +15,7 @@
         </el-form-item>
         <!-- 时间范围，收起状态下隐藏 -->
         <el-form-item v-if="isExpand" prop="start_time" label="创建时间">
-          <el-date-picker v-model="queryFormData.start_time" type="daterange" value-format="yyyy-MM-dd"
-            range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+          <el-date-picker v-model="queryFormData.start_time" type="daterange" value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
         </el-form-item>
         <!-- 查询、重置、展开/收起按钮 -->
         <el-form-item class="search-buttons">
@@ -57,12 +56,9 @@
       <div class="data-table__toolbar">
         <div class="data-table__toolbar--actions">
           <el-button type="success" icon="plus" @click="handleOpenDialog('create')">新增</el-button>
-          <el-button type="danger" icon="delete" :disabled="selectIds.length === 0"
-            @click="handleDelete(selectIds)">批量删除</el-button>
+          <el-button type="danger" icon="delete" :disabled="selectIds.length === 0" @click="handleDelete(selectIds)">批量删除</el-button>
           <el-dropdown trigger="click">
-                <el-button type="default" :disabled="selectIds.length === 0" icon="ArrowDown">
-                  更多
-                </el-button>
+                <el-button type="default" :disabled="selectIds.length === 0" icon="ArrowDown">更多</el-button>
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item icon="Check" @click="handleMoreClick(true)">批量启用</el-dropdown-item>
@@ -79,17 +75,12 @@
       </div>
 
       <!-- 表格区域 -->
-      <el-table ref="dataTableRef" v-loading="loading" row-key="id" :data="pageTableData" :tree-props="{
-        children: 'children',
-        hasChildren: 'hasChildren',
-      }" class="data-table__content" height="450" border stripe @selection-change="handleSelectionChange"
-        @row-click="handleRowClick">
+      <el-table ref="dataTableRef" v-loading="loading" row-key="id" :data="pageTableData" :tree-props="{children: 'children',hasChildren: 'hasChildren'}" class="data-table__content" height="450" border stripe @selection-change="handleSelectionChange" @row-click="handleRowClick">
         <template #empty>
           <el-empty :image-size="80" description="暂无数据" />
         </template>
-        <el-table-column type="selection" width="55" align="center" />
-        <el-table-column type="index" fixed label="序号"
-          width="60" />
+        <el-table-column type="selection" min-width="55" align="center" />
+        <el-table-column type="index" fixed label="序号" min-width="60" />
         <el-table-column label="菜单名称" prop="name" min-width="120">
           <template #default="scope">
             {{ scope.row.name }}
@@ -161,31 +152,22 @@
 
         <el-table-column fixed="right" label="操作" align="center" min-width="260">
           <template #default="scope">
-            <el-button v-if="scope.row.type == MenuTypeEnum.CATALOG || scope.row.type == MenuTypeEnum.MENU"
-              type="success" link size="small" icon="plus" @click.stop="handleOpenDialog(scope.row.id)">
-              新增
-            </el-button>
-
-            <el-button type="info" size="small" link icon="document"
-              @click.stop="handleOpenDialog('detail', scope.row.id)">详情</el-button>
-            <el-button type="primary" size="small" link icon="edit"
-              @click.stop="handleOpenDialog('update', scope.row.id)">编辑</el-button>
-            <el-button type="danger" size="small" link icon="delete"
-              @click.stop="handleDelete([scope.row.id])">删除</el-button>
+            <el-button v-if="scope.row.type == MenuTypeEnum.CATALOG || scope.row.type == MenuTypeEnum.MENU" type="success" link size="small" icon="plus" @click.stop="handleOpenDialog(scope.row.id)">新增</el-button>
+            <el-button type="info" size="small" link icon="document" @click.stop="handleOpenDialog('detail', scope.row.id)">详情</el-button>
+            <el-button type="primary" size="small" link icon="edit" @click.stop="handleOpenDialog('update', scope.row.id)">编辑</el-button>
+            <el-button type="danger" size="small" link icon="delete" @click.stop="handleDelete([scope.row.id])">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <!-- 分页区域 -->
       <template #footer>
-        <pagination v-if="total > 0" v-model:total="total" v-model:page="queryFormData.page_no"
-          v-model:limit="queryFormData.page_size" @pagination="loadingData" />
+        <pagination v-if="total > 0" v-model:total="total" v-model:page="queryFormData.page_no" v-model:limit="queryFormData.page_size" @pagination="loadingData" />
       </template>
     </el-card>
 
     <!-- 弹窗区域 -->
-    <el-drawer v-model="dialogVisible.visible" :title="dialogVisible.title" :size="drawerSize"
-      @close="handleCloseDialog">
+    <el-drawer v-model="dialogVisible.visible" :title="dialogVisible.title" :size="drawerSize" @close="handleCloseDialog">
       <!-- 详情 -->
       <template v-if="dialogVisible.type === 'detail'">
         <el-descriptions :column="4" border>
@@ -244,8 +226,7 @@
       <template v-else>
         <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
           <el-form-item label="父级菜单" prop="parent_id">
-            <el-tree-select v-model="formData.parent_id" placeholder="选择上级菜单" :data="menuOptions" filterable
-              check-strictly :render-after-expand="false" />
+            <el-tree-select v-model="formData.parent_id" placeholder="选择上级菜单" :data="menuOptions" filterable check-strictly :render-after-expand="false" />
           </el-form-item>
 
           <el-form-item label="菜单名称" prop="name">
@@ -282,8 +263,7 @@
             <el-input v-model="formData.route_name" placeholder="User" />
           </el-form-item>
 
-          <el-form-item v-if="formData.type == MenuTypeEnum.CATALOG || formData.type == MenuTypeEnum.MENU"
-            prop="routePath">
+          <el-form-item v-if="formData.type == MenuTypeEnum.CATALOG || formData.type == MenuTypeEnum.MENU" prop="routePath">
             <template #label>
               <div class="flex-y-center">
                 路由路径
@@ -352,13 +332,10 @@
 
                 <el-input v-model="item.value" placeholder="参数值" style="width: 100px" />
 
-                <el-icon v-if="formData.params.indexOf(item) === formData.params.length - 1"
-                  class="ml-2 cursor-pointer color-[var(--el-color-success)]" style="vertical-align: -0.15em"
-                  @click="formData.params.push({ key: '', value: '' })">
+                <el-icon v-if="formData.params.indexOf(item) === formData.params.length - 1" class="ml-2 cursor-pointer color-[var(--el-color-success)]" style="vertical-align: -0.15em" @click="formData.params.push({ key: '', value: '' })">
                   <CirclePlusFilled />
                 </el-icon>
-                <el-icon class="ml-2 cursor-pointer color-[var(--el-color-danger)]" style="vertical-align: -0.15em"
-                  @click="formData.params.splice(formData.params.indexOf(item), 1)">
+                <el-icon class="ml-2 cursor-pointer color-[var(--el-color-danger)]" style="vertical-align: -0.15em" @click="formData.params.splice(formData.params.indexOf(item), 1)">
                   <DeleteFilled />
                 </el-icon>
               </div>

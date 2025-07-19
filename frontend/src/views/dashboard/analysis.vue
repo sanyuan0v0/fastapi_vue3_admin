@@ -287,8 +287,7 @@
           <template #header>
             <div class="flex-x-between">
               <span class="header-title">最新动态</span>
-              <el-link type="primary" underline="never" href="https://gitee.com/youlaiorg/vue3-element-admin/releases"
-                target="_blank">
+              <el-link type="primary" underline="never" href="https://gitee.com/youlaiorg/vue3-element-admin/releases" target="_blank">
                 完整记录
                 <el-icon class="link-icon">
                   <TopRight />
@@ -299,8 +298,7 @@
 
           <el-scrollbar height="400px">
             <el-timeline class="p-3">
-              <el-timeline-item v-for="(item, index) in vesionList" :key="index" :timestamp="item.date" placement="top"
-                :color="index === 0 ? '#67C23A' : '#909399'" :hollow="index !== 0" size="large">
+              <el-timeline-item v-for="(item, index) in vesionList" :key="index" :timestamp="item.date" placement="top" :color="index === 0 ? '#67C23A' : '#909399'" :hollow="index !== 0" size="large">
                 <div class="version-item" :class="{ 'latest-item': index === 0 }">
                   <div>
                     <el-text tag="strong">{{ item.title }}</el-text>
@@ -312,8 +310,7 @@
                   <el-text class="version-content">{{ item.content }}</el-text>
 
                   <div v-if="item.link">
-                    <el-link :type="index === 0 ? 'primary' : 'info'" :href="item.link" target="_blank"
-                      underline="never">
+                    <el-link :type="index === 0 ? 'primary' : 'info'" :href="item.link" target="_blank" underline="never">
                       详情
                       <el-icon class="link-icon">
                         <TopRight />

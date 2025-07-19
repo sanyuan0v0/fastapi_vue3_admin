@@ -59,37 +59,26 @@
       </div>
 
       <!-- 表格区域：系统配置列表 -->
-      <el-table ref="dataTableRef" v-loading="loading" :data="pageTableData" highlight-current-row
-        class="data-table__content" height="450" border stripe @selection-change="handleSelectionChange">
+      <el-table ref="dataTableRef" v-loading="loading" :data="pageTableData" highlight-current-row class="data-table__content" height="450" border stripe @selection-change="handleSelectionChange">
         <template #empty>
           <el-empty :image-size="80" description="暂无数据" />
         </template>
 
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" min-width="55"
-          align="center" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号"
-          min-width="60" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'session_id')?.show" key="session_id" label="会话编号"
-          prop="session_id" min-width="250" show-overflow-tooltip/>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'ipaddr')?.show" key="ipaddr" label="IP地址"
-          prop="ipaddr" min-width="120">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" min-width="55" align="center" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" min-width="60" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'session_id')?.show" key="session_id" label="会话编号" prop="session_id" min-width="250" show-overflow-tooltip/>
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'ipaddr')?.show" key="ipaddr" label="IP地址" prop="ipaddr" min-width="120">
           <template #default="scope">
             <el-text>{{ scope.row.ipaddr }}</el-text>
             <CopyButton v-if="scope.row.ipaddr" :text="scope.row.ipaddr" style="margin-left: 2px" />
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" key="name" label="用户名" prop="name"
-          min-width="80" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'user_name')?.show" key="user_name" label="用户姓名"
-          prop="user_name" min-width="80" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'login_location')?.show" key="login_location"
-          label="登录位置" prop="login_location" min-width="80" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'os')?.show" key="os" label="操作系统" prop="os"
-          min-width="80" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'login_time')?.show" key="login_time" label="登录时间"
-          prop="login_time" min-width="180" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" key="operation" fixed="right"
-          label="操作" min-width="100">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" key="name" label="用户名" prop="name" min-width="80" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'user_name')?.show" key="user_name" label="用户姓名" prop="user_name" min-width="80" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'login_location')?.show" key="login_location" label="登录位置" prop="login_location" min-width="80" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'os')?.show" key="os" label="操作系统" prop="os" min-width="80" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'login_time')?.show" key="login_time" label="登录时间" prop="login_time" min-width="180" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" key="operation" fixed="right" label="操作" min-width="100">
           <template #default="scope">
             <el-button type="danger" size="small" link icon="delete" @click="handleSubmit(scope.row.session_id)">强退
             </el-button>
@@ -99,8 +88,7 @@
 
       <!-- 分页区域 -->
       <template #footer>
-        <pagination v-model:total="total" v-model:page="queryFormData.page_no" v-model:limit="queryFormData.page_size"
-          @pagination="loadingData" />
+        <pagination v-model:total="total" v-model:page="queryFormData.page_no" v-model:limit="queryFormData.page_size" @pagination="loadingData" />
       </template>
     </el-card>
 

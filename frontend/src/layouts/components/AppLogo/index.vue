@@ -4,7 +4,6 @@
       <router-link :key="+collapse" class="wh-full flex-center" to="/">
         <img :src="configStore.configData.sys_web_logo.config_value" class="w20px h20px" />
         <span v-if="!collapse" class="title">
-          <!-- {{ defaultSettings.title }} -->
           {{ configStore.configData.sys_web_title.config_value }}
         </span>
       </router-link>
@@ -13,9 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defaultSettings } from "@/settings";
 import { useConfigStore } from "@/store";
-// import logo from "@/assets/logo.png";
 const configStore = useConfigStore();
 
 defineProps({

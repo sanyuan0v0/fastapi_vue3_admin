@@ -19,8 +19,7 @@
               </el-avatar>
               <el-button type="info" class="avatar-edit-btn" circle icon="Camera" size="small" @click="handleUpload" />
               <div class="avatar-upload-overlay">
-                <el-upload v-model:file-list="fileList" name="avatar" list-type="picture-card" :show-upload-list="false"
-                  :before-upload="beforeUpload" :custom-request="handleUploadCustomRequest">
+                <el-upload v-model:file-list="fileList" name="avatar" list-type="picture-card" :show-upload-list="false" :before-upload="beforeUpload" :custom-request="handleUploadCustomRequest">
                   <div>
                     <!-- <loading-outlined v-if="loading"></loading-outlined>
                     <plus-outlined v-else></plus-outlined> -->
@@ -31,8 +30,7 @@
             </div>
             <span class="user-name">
               {{ infoFormState.name }}
-              <el-button type="primary" link :loading="infoSubmitting" icon="edit"
-                @click="handleOpenDialog(DialogType.ACCOUNT)" />
+              <el-button type="primary" link :loading="infoSubmitting" icon="edit" @click="handleOpenDialog(DialogType.ACCOUNT)" />
             </span>
 
             <el-text>{{infoFormState.roles.map(item => item.name).join('、')}}</el-text>
@@ -141,7 +139,7 @@
 
                   <el-form-item label="性别" name="gender">
                     <el-radio-group v-model:value="infoFormState.gender">
-                      <el-radio v-for="item in DictDataStore['sys_user_sex']" :value="item.dict_value">
+                      <el-radio v-for="item in DictDataStore['sys_user_sex']" :key="item.dict_value" :value="item.dict_value" >
                         {{ item.dict_label }}
                       </el-radio>
                     </el-radio-group>
@@ -229,7 +227,7 @@ const infoSubmitting = ref(false);
 // 用户基础信息表单
 const infoFormState = reactive<InfoFormState>({
   name: '',
-  gender: null,
+  gender: 1,
   mobile: '',
   email: '',
   username: '',
@@ -326,7 +324,7 @@ const resetPasswordRules = {
       },
       {
         validator: (_: any, value: string) => {
-          return value === model.value.new_password;
+          return value === passwordFormState.newPassword;
         },
         trigger: "blur",
         message: t("login.message.password.inconformity"),

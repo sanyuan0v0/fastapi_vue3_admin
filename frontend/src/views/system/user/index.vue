@@ -26,8 +26,7 @@
             </el-form-item>
             <!-- 时间范围，收起状态下隐藏 -->
             <el-form-item v-if="isExpand" prop="start_time" label="创建时间">
-              <el-date-picker v-model="queryFormData.start_time" type="daterange" value-format="yyyy-MM-dd"
-                range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+              <el-date-picker v-model="queryFormData.start_time" type="daterange" value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
             </el-form-item>
             <!-- 查询、重置、展开/收起按钮 -->
             <el-form-item class="search-buttons">
@@ -67,8 +66,7 @@
           <div class="data-table__toolbar">
             <div class="data-table__toolbar--actions">
               <el-button type="success" icon="plus" @click="handleOpenDialog('create')">新增</el-button>
-              <el-button type="danger" icon="delete" :disabled="selectIds.length === 0"
-                @click="handleDelete(selectIds)">批量删除</el-button>
+              <el-button type="danger" icon="delete" :disabled="selectIds.length === 0" @click="handleDelete(selectIds)">批量删除</el-button>
               <el-dropdown trigger="click">
                 <el-button type="default" :disabled="selectIds.length === 0" icon="ArrowDown">
                   更多
@@ -117,35 +115,27 @@
           </div>
 
           <!-- 表格区域 -->
-          <el-table ref="dataFormRef" v-loading="loading" :data="pageTableData" highlight-current-row
-            class="data-table__content" height="450" border stripe @selection-change="handleSelectionChange">
+          <el-table ref="dataFormRef" v-loading="loading" :data="pageTableData" highlight-current-row class="data-table__content" height="450" border stripe @selection-change="handleSelectionChange">
             <template #empty>
               <el-empty :image-size="80" description="暂无数据" />
             </template>
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection"
-              min-width="55" align="center" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号"
-              align="center" min-width="60" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'avatar')?.show" label="头像" prop="avatar"
-              min-width="80" align="center">
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" min-width="55" align="center" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" align="center" min-width="60" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'avatar')?.show" label="头像" prop="avatar" min-width="80" align="center">
               <template #default="scope">
-                <el-avatar :src="scope.row.avatar" />
+                <el-avatar size="small" :src="scope.row.avatar" />
               </template>
             </el-table-column>
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'username')?.show" label="账号" prop="username"
-              min-width="100" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" label="用户名" prop="name"
-              min-width="100" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" label="状态" prop="status"
-              min-width="100">
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'username')?.show" label="账号" prop="username" min-width="100" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" label="用户名" prop="name" min-width="100" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" label="状态" prop="status" min-width="100">
               <template #default="scope">
                 <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
                   {{ scope.row.status === true ? "启用" : "停用" }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'is_superuser')?.show" label="是否超管"
-              prop="is_superuser" min-width="100">
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'is_superuser')?.show" label="是否超管" prop="is_superuser" min-width="100">
               <template #default="scope">
                 <el-tag :type="scope.row.is_superuser ? 'success' : 'info'">
                   {{ scope.row.is_superuser ? '是' : '否' }}
@@ -158,42 +148,35 @@
               </template>
             </el-table-column>
 
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'mobile')?.show" label="手机号" prop="mobile"
-              min-width="160" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'email')?.show" label="邮箱" prop="email"
-              min-width="160" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" label="创建时间"
-              prop="created_at" min-width="200" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" label="更新时间"
-              prop="updated_at" min-width="200" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" align="center"
-              min-width="280">
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'mobile')?.show" label="手机号" prop="mobile" min-width="160" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'email')?.show" label="邮箱" prop="email" min-width="160" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" label="创建时间" prop="created_at" min-width="200" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" label="更新时间" prop="updated_at" min-width="200" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'creator')?.show" key="creator" label="创建人" min-width="120">
               <template #default="scope">
-                <el-button type="primary" icon="RefreshLeft" size="small" link @click="hancleResetPassword(scope.row)">
-                  重置密码
-                </el-button>
-                <el-button type="info" size="small" link icon="document"
-                  @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
-                <el-button type="primary" size="small" link icon="edit"
-                  @click="handleOpenDialog('update', scope.row.id)">编辑</el-button>
-                <el-button type="danger" size="small" link icon="delete"
-                  @click="handleDelete([scope.row.id])">删除</el-button>
+                {{ scope.row.creator?.name }}
+              </template>
+            </el-table-column>
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" align="center" min-width="280">
+              <template #default="scope">
+                <el-button type="warning" icon="RefreshLeft" size="small" link @click="hancleResetPassword(scope.row)">重置密码</el-button>
+                <el-button type="info" size="small" link icon="document" @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
+                <el-button type="primary" size="small" link icon="edit" @click="handleOpenDialog('update', scope.row.id)">编辑</el-button>
+                <el-button type="danger" size="small" link icon="delete" @click="handleDelete([scope.row.id])">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
 
           <!-- 分页区域 -->
           <template #footer>
-            <pagination v-model:total="total" v-model:page="queryFormData.page_no"
-              v-model:limit="queryFormData.page_size" @pagination="loadingData" />
+            <pagination v-model:total="total" v-model:page="queryFormData.page_no" v-model:limit="queryFormData.page_size" @pagination="loadingData" />
           </template>
         </el-card>
       </el-col>
     </el-row>
 
     <!-- 弹窗区域 -->
-    <el-drawer v-model="dialogVisible.visible" :title="dialogVisible.title" append-to-body :size="drawerSize"
-      @close="handleCloseDialog">
+    <el-drawer v-model="dialogVisible.visible" :title="dialogVisible.title" append-to-body :size="drawerSize" @close="handleCloseDialog">
       <!-- 详情 -->
       <template v-if="dialogVisible.type === 'detail'">
         <el-descriptions :column="2" border>
@@ -212,12 +195,14 @@
           <el-descriptions-item label="邮箱" :span="2">{{ detailFormData.email }}</el-descriptions-item>
           <el-descriptions-item label="手机号" :span="2">{{ detailFormData.mobile }}</el-descriptions-item>
           <el-descriptions-item label="是否超管" :span="2">
-            <el-tag v-if="detailFormData.is_superuser" type="success">是</el-tag>
-            <el-tag v-else type="info">否</el-tag>
+            <el-tag :type="detailFormData.is_superuser ? 'success' : 'info'">
+              {{ detailFormData.is_superuser ? '是' : '否' }}
+            </el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="状态" :span="2">
-            <el-tag v-if="detailFormData.status" type="success">启用</el-tag>
-            <el-tag v-else type="danger">停用</el-tag>
+            <el-tag :type="detailFormData.status ? 'success' : 'danger'">
+              {{ detailFormData.status ? '启用' : '停用' }}
+            </el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="上次登录时间" :span="2">{{ detailFormData.last_login }}</el-descriptions-item>
           <el-descriptions-item label="创建人" :span="2">{{ detailFormData.creator?.name }}</el-descriptions-item>
@@ -250,8 +235,7 @@
           </el-form-item>
 
           <el-form-item label="部门" prop="dept_id">
-            <el-tree-select v-model="formData.dept_id" placeholder="请选择所属部门" :data="deptOptions" filterable
-              check-strictly :render-after-expand="false" />
+            <el-tree-select v-model="formData.dept_id" placeholder="请选择所属部门" :data="deptOptions" filterable check-strictly :render-after-expand="false" />
           </el-form-item>
 
           <el-form-item label="角色" prop="role_ids">
@@ -289,8 +273,7 @@
           <template #footer>
             <div class="dialog-footer">
               <!-- 详情弹窗不需要确定按钮的提交逻辑 -->
-              <el-button v-if="dialogVisible.type === 'create' || dialogVisible.type === 'update'" type="primary"
-                @click="handleSubmit">确定</el-button>
+              <el-button v-if="dialogVisible.type === 'create' || dialogVisible.type === 'update'" type="primary" @click="handleSubmit">确定</el-button>
               <el-button v-else type="primary" @click="handleCloseDialog">确定</el-button>
               <el-button @click="handleCloseDialog">取消</el-button>
             </div>
@@ -368,6 +351,7 @@ const tableColumns = ref([
   { prop: 'description', label: '描述', show: true },
   { prop: 'created_at', label: '创建时间', show: true },
   { prop: 'updated_at', label: '更新时间', show: true },
+  { prop: 'creator', label: '创建人', show: true },
   { prop: 'operation', label: '操作', show: true }
 ])
 

@@ -12,8 +12,7 @@
         </el-form-item>
         <!-- 时间范围，收起状态下隐藏 -->
         <el-form-item v-if="isExpand" prop="start_time" label="创建时间">
-          <el-date-picker v-model="queryFormData.start_time" type="daterange" value-format="yyyy-MM-dd"
-            range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+          <el-date-picker v-model="queryFormData.start_time" type="daterange" value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
         </el-form-item>
         <!-- 查询、重置、展开/收起按钮 -->
         <el-form-item class="search-buttons">
@@ -53,8 +52,7 @@
       <!-- 功能区域 -->
       <div class="data-table__toolbar">
         <div class="data-table__toolbar--actions">
-          <el-button type="danger" icon="delete" :disabled="selectIds.length === 0"
-            @click="handleDelete(selectIds)">批量删除</el-button>
+          <el-button type="danger" icon="delete" :disabled="selectIds.length === 0" @click="handleDelete(selectIds)">批量删除</el-button>
         </div>
         <div class="data-table__toolbar--tools">
           <el-tooltip content="导出">
@@ -79,70 +77,54 @@
       </div>
 
       <!-- 表格区域：系统配置列表 -->
-      <el-table ref="dataTableRef" v-loading="loading" :data="pageTableData" highlight-current-row
-        class="data-table__content" height="450" border stripe @selection-change="handleSelectionChange">
+      <el-table ref="dataTableRef" v-loading="loading" :data="pageTableData" highlight-current-row class="data-table__content" height="450" border stripe @selection-change="handleSelectionChange">
         <template #empty>
           <el-empty :image-size="80" description="暂无数据" />
         </template>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" prop='selection'
-          type="selection" min-width="55" align="center" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号"
-          min-width="60" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_path')?.show" label="请求路径"
-          prop="request_path" min-width="200" show-overflow-tooltip />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_method')?.show" label="请求方法"
-          prop="request_method" min-width="100">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" prop='selection' type="selection" min-width="55" align="center" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" min-width="60" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_path')?.show" label="请求路径" prop="request_path" min-width="200" show-overflow-tooltip />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_method')?.show" label="请求方法" prop="request_method" min-width="100">
           <template #default="scope">
             <el-tag :type="getMethodType(scope.row.request_method)">
               {{ scope.row.request_method }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'response_code')?.show" label="状态码"
-          prop="response_code" min-width="100">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'response_code')?.show" label="状态码" prop="response_code" min-width="100">
           <template #default="scope">
             <el-tag :type="getStatusCodeType(scope.row.response_code)">
               {{ scope.row.response_code }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_ip')?.show" label="请求IP" prop="request_ip"
-          min-width="150">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_ip')?.show" label="请求IP" prop="request_ip" min-width="150">
           <template #default="scope">
             <el-text>{{ scope.row.request_ip }}</el-text>
             <CopyButton v-if="scope.row.request_ip" :text="scope.row.request_ip" style="margin-left: 2px" />
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'process_time')?.show" label="处理时间"
-          prop="process_time" min-width="200" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_browser')?.show" label="浏览器"
-          prop="request_browser" min-width="100" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_os')?.show" label="系统" prop="request_os"
-          min-width="100" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" label="描述" prop="description"
-          min-width="120" show-overflow-tooltip />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" label="创建时间" prop="created_at"
-          min-width="200" sortable />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'creator')?.show" label="创建人" prop="creator"
-          min-width="120">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'process_time')?.show" label="处理时间" prop="process_time" min-width="200" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_browser')?.show" label="浏览器" prop="request_browser" min-width="100" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_os')?.show" label="系统" prop="request_os" min-width="100" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" label="描述" prop="description" min-width="120" show-overflow-tooltip />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" label="创建时间" prop="created_at" min-width="200" sortable />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'creator')?.show" label="创建人" prop="creator" min-width="120">
           <template #default="scope">
             {{ scope.row.creator?.name }}
           </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right" align="center" min-width="150">
           <template #default="scope">
-            <el-button type="info" size="small" link icon="document"
-              @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
-            <el-button type="danger" size="small" link icon="delete"
-              @click="handleDelete([scope.row.id])">删除</el-button>
+            <el-button type="info" size="small" link icon="document" @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
+            <el-button type="danger" size="small" link icon="delete" @click="handleDelete([scope.row.id])">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <!-- 分页区域 -->
       <template #footer>
-        <pagination v-model:total="total" v-model:page="queryFormData.page_no" v-model:limit="queryFormData.page_size"
-          @pagination="loadingData" />
+        <pagination v-model:total="total" v-model:page="queryFormData.page_no" v-model:limit="queryFormData.page_size" @pagination="loadingData" />
       </template>
     </el-card>
 
@@ -164,25 +146,10 @@
           </el-descriptions-item>
           <el-descriptions-item label="请求IP" :span="2">{{ detailFormData.request_ip }}</el-descriptions-item>
           <el-descriptions-item label="请求参数" :span="4">
-            <el-input v-model="detailFormData.request_payload" type="textarea" :rows="3" readonly
-              class="long-text-editor" />
+            <el-input v-model="detailFormData.request_payload" type="textarea" :rows="3" readonly class="long-text-editor" />
           </el-descriptions-item>
           <el-descriptions-item label="响应数据" :span="4">
-            <el-input v-model="detailFormData.response_json" type="textarea" :rows="5" readonly
-              class="long-text-editor" />
-            <!-- <el-scrollbar max-height="72vh">
-              <div class="absolute z-36 right-5 top-2">
-                <el-link type="primary" @click="handleCopyCode">
-                  <el-icon>
-                    <CopyDocument />
-                  </el-icon>
-                  一键复制
-                </el-link>
-              </div>
-
-              <Codemirror ref="cmRef" v-model:value="code" placeholder="请输入代码" :options="cmOptions" border
-                :readonly="true" :width="700" :height="100" />
-            </el-scrollbar> -->
+            <el-input v-model="detailFormData.response_json" type="textarea" :rows="5" readonly class="long-text-editor" />
           </el-descriptions-item>
           <el-descriptions-item label="处理时间" :span="2">{{ detailFormData.process_time }}</el-descriptions-item>
           <el-descriptions-item label="浏览器" :span="2">{{ detailFormData.request_browser }}</el-descriptions-item>
@@ -213,15 +180,10 @@ defineOptions({
   inheritAttrs: false,
 });
 
-import "codemirror/mode/javascript/javascript.js";
-import Codemirror, { type CmComponentRef } from "codemirror-editor-vue3";
-import type { EditorConfiguration } from "codemirror";
-
 import LogAPI, { LogTable, LogPageQuery } from "@/api/system/log";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useDebounceFn } from "@vueuse/core";
 
-const { copy, copied } = useClipboard();
 const queryFormRef = ref();
 const dataFormRef = ref();
 const total = ref(0);
@@ -365,7 +327,6 @@ async function handleOpenDialog(type: 'create' | 'update' | 'detail', id: number
     if (type === 'detail') {
       dialogVisible.title = "日志详情";
       Object.assign(detailFormData.value, response.data.data);
-      code.value = response.data.data.response_json
     }
   }
   dialogVisible.visible = true;
@@ -436,25 +397,6 @@ async function handleExport() {
     ElMessage.info('已取消导出');
   });
 }
-
-const cmOptions: EditorConfiguration = {
-  mode: "text/javascript",
-};
-const code = ref();
-const cmRef = ref<CmComponentRef>();
-
-/** 一键复制 */
-const handleCopyCode = () => {
-  if (code.value) {
-    copy(code.value);
-  }
-};
-
-watch(copied, () => {
-  if (copied.value) {
-    ElMessage.success("复制成功");
-  }
-});
 
 onMounted(() => {
   loadingData();

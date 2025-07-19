@@ -15,8 +15,7 @@
         </el-form-item>
         <!-- 时间范围，收起状态下隐藏 -->
         <el-form-item v-if="isExpand" prop="start_time" label="创建时间">
-          <el-date-picker v-model="queryFormData.start_time" type="daterange" value-format="yyyy-MM-dd"
-            range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+          <el-date-picker v-model="queryFormData.start_time" type="daterange" value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
         </el-form-item>
         <!-- 查询、重置、展开/收起按钮 -->
         <el-form-item class="search-buttons">
@@ -57,12 +56,9 @@
       <div class="data-table__toolbar">
         <div class="data-table__toolbar--actions">
           <el-button type="success" icon="plus" @click="handleOpenDialog('create')">新增</el-button>
-          <el-button type="danger" icon="delete" :disabled="selectIds.length === 0"
-            @click="handleDelete(selectIds)">批量删除</el-button>
+          <el-button type="danger" icon="delete" :disabled="selectIds.length === 0" @click="handleDelete(selectIds)">批量删除</el-button>
           <el-dropdown trigger="click">
-            <el-button type="default" :disabled="selectIds.length === 0" icon="ArrowDown">
-              更多
-            </el-button>
+            <el-button type="default" :disabled="selectIds.length === 0" icon="ArrowDown">更多</el-button>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item icon="Check" @click="handleMoreClick(true)">批量启用</el-dropdown-item>
@@ -94,57 +90,42 @@
       </div>
 
       <!-- 表格区域：系统配置列表 -->
-      <el-table ref="dataTableRef" v-loading="loading" :data="pageTableData" highlight-current-row
-        class="data-table__content" height="450" border stripe @selection-change="handleSelectionChange">
+      <el-table ref="dataTableRef" v-loading="loading" :data="pageTableData" highlight-current-row class="data-table__content" height="450" border stripe @selection-change="handleSelectionChange">
         <template #empty>
           <el-empty :image-size="80" description="暂无数据" />
         </template>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" width="55"
-          align="center" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号"
-          width="60" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" key="name" label="岗位名称" prop="name"
-          min-width="100" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" key="status" label="状态"
-          prop="status" min-width="80">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" min-width="55" align="center" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" min-width="60" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" key="name" label="岗位名称" prop="name" min-width="100" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" key="status" label="状态" prop="status" min-width="80">
           <template #default="scope">
             <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
               {{ scope.row.status === true ? "启用" : "停用" }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'order')?.show" key="order" label="岗位排序"
-          prop="order" min-width="80" show-overflow-tooltip />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" key="description" label="描述"
-          prop="description" min-width="120" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" key="created_at" label="创建时间"
-          prop="created_at" min-width="200" sortable />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at" label="更新时间"
-          prop="updated_at" min-width="200" sortable />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'creator')?.show" key="creator" label="创建人"
-          min-width="120">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'order')?.show" key="order" label="岗位排序" prop="order" min-width="80" show-overflow-tooltip />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" key="description" label="描述" prop="description" min-width="120" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" key="created_at" label="创建时间" prop="created_at" min-width="200" sortable />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at" label="更新时间" prop="updated_at" min-width="200" sortable />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'creator')?.show" key="creator" label="创建人" min-width="100">
           <template #default="scope">
             {{ scope.row.creator?.name }}
           </template>
         </el-table-column>
 
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" align="center"
-          min-width="200">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" align="center" min-width="200">
           <template #default="scope">
-            <el-button type="info" size="small" link icon="document"
-              @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
-            <el-button type="primary" size="small" link icon="edit"
-              @click="handleOpenDialog('update', scope.row.id)">编辑</el-button>
-            <el-button type="danger" size="small" link icon="delete"
-              @click="handleDelete([scope.row.id])">删除</el-button>
+            <el-button type="info" size="small" link icon="document" @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
+            <el-button type="primary" size="small" link icon="edit" @click="handleOpenDialog('update', scope.row.id)">编辑</el-button>
+            <el-button type="danger" size="small" link icon="delete" @click="handleDelete([scope.row.id])">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <!-- 分页区域 -->
       <template #footer>
-        <pagination v-model:total="total" v-model:page="queryFormData.page_no" v-model:limit="queryFormData.page_size"
-          @pagination="loadingData" />
+        <pagination v-model:total="total" v-model:page="queryFormData.page_no" v-model:limit="queryFormData.page_size" @pagination="loadingData" />
       </template>
     </el-card>
 
@@ -183,8 +164,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="描述" prop="description">
-            <el-input v-model="formData.description" :rows="4" :maxlength="100" show-word-limit type="textarea"
-              placeholder="请输入描述" />
+            <el-input v-model="formData.description" :rows="4" :maxlength="100" show-word-limit type="textarea" placeholder="请输入描述" />
           </el-form-item>
         </el-form>
       </template>
