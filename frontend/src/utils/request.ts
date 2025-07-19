@@ -88,7 +88,6 @@ httpRequest.interceptors.response.use(
         return Promise.reject(new Error(msg || "Refresh Token Invalid"));
 
       default:
-        ElMessage.error(msg || "响应错误");
         return Promise.reject(new Error(msg || "响应错误"));
     }
   }

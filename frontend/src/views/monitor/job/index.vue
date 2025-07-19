@@ -167,7 +167,7 @@
             </template>
             <!-- 新增、编辑表单 -->
             <template v-else>
-                <el-form ref="dataFormRef" :model="formData" :rules="rules" label-suffix=":" label-width="100px" >
+                <el-form ref="dataFormRef" :model="formData" :rules="rules" label-suffix=":" label-width="100px">
                     <el-form-item label="任务名称" prop="name">
                         <el-input v-model="formData.name" placeholder="请输入任务名称" :maxlength="50" />
                     </el-form-item>

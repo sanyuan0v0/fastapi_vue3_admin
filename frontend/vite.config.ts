@@ -94,6 +94,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
         "pinia",
         "axios",
         "@vueuse/core",
+        "@wangeditor-next/editor-for-vue",
         "codemirror-editor-vue3",
         "default-passive-events",
         "exceljs",
@@ -104,10 +105,8 @@ export default defineConfig(({ mode }: ConfigEnv) => {
         "echarts/components",
         "vue-i18n",
         "nprogress",
-        "sortablejs",
         "qs",
         "path-browserify",
-        "@stomp/stompjs",
         "@element-plus/icons-vue",
         "element-plus/es",
         "element-plus/es/locale/lang/en",
@@ -183,6 +182,9 @@ export default defineConfig(({ mode }: ConfigEnv) => {
         "element-plus/es/components/tree/style/index",
         "element-plus/es/components/upload/style/index",
         "element-plus/es/components/watermark/style/index",
+        "element-plus/es/components/tour/style/index",
+        "element-plus/es/components/tour-step/style/index",
+        "element-plus/es/components/popconfirm/style/index"
       ],
     },
     // 构建配置

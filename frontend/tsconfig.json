@@ -22,10 +22,7 @@
     // 调试和兼容性相关配置
     "sourceMap": true,
     "useDefineForClassFields": true,
-    "allowJs": true,
-
-    // 类型声明相关配置
-    "types": ["node", "vite/client", "element-plus/global"]
+    "allowJs": true
   },
 
   "include": ["mock/**/*.ts", "src/**/*.ts", "src/**/*.vue", "vite.config.ts"],

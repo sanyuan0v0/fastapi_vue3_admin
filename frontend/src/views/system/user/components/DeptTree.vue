@@ -11,7 +11,11 @@
 
     <el-tree ref="deptTreeRef" class="mt-2" :data="deptOptions"
       :props="{ children: 'children', label: 'label', disabled: '' }" :expand-on-click-node="false"
-      :filter-node-method="handleFilter" default-expand-all @node-click="handleNodeClick" />
+      :filter-node-method="handleFilter" default-expand-all @node-click="handleNodeClick" >
+      <template #empty>
+        <el-empty :image-size="80" description="暂无数据" />
+      </template>
+    </el-tree>
   </el-card>
 </template>
 
