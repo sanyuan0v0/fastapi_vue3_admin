@@ -55,17 +55,20 @@ class PositionService:
         return PositionOutSchema.model_validate(updated_position).model_dump()
 
     @classmethod
-    async def delete_position_service(cls, auth: AuthSchema, id: int) -> None:
+    async def delete_position_service(cls, auth: AuthSchema, ids: list[int]) -> None:
         """删除岗位"""
-        position = await PositionCRUD(auth).get_by_id_crud(id=id)
-        if not position:
-            raise CustomException(msg='删除失败，该岗位不存在')
-        await PositionCRUD(auth).delete(ids=[id])
+        if len(ids) < 1:
+            raise CustomException(msg='删除失败，删除对象不能为空')
+        for id in ids:
+            position = await PositionCRUD(auth).get_by_id_crud(id=id)
+            if not position:
+                raise CustomException(msg='删除失败，该岗位不存在')
+        await PositionCRUD(auth).delete(ids=ids)
 
     @classmethod
     async def set_position_available_service(cls, auth: AuthSchema, data: BatchSetAvailable) -> None:
         """设置岗位状态"""
-        await PositionCRUD(auth).set_available_crud(ids=data.ids, available=data.available)
+        await PositionCRUD(auth).set_available_crud(ids=data.ids, status=data.status)
 
     @classmethod
     async def export_post_list_service(cls, post_list: List[Dict[str, Any]]) -> bytes:
@@ -74,7 +77,7 @@ class PositionService:
             'id': '编号',
             'name': '岗位名称', 
             'order': '显示顺序',
-            'available': '状态',
+            'status': '状态',
             'description': '备注',
             'created_at': '创建时间',
             'updated_at': '更新时间',
@@ -85,6 +88,6 @@ class PositionService:
         # 复制数据并转换状态
         data = post_list.copy()
         for item in data:
-            item['available'] = '正常' if item.get('available') else '停用'
+            item['status'] = '正常' if item.get('status') else '停用'
 
         return ExcelUtil.export_list2excel(list_data=post_list, mapping_dict=mapping_dict)

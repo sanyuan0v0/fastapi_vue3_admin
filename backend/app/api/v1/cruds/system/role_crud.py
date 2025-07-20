@@ -49,6 +49,6 @@ class RoleCRUD(CRUDBase[RoleModel, RoleCreateSchema, RoleUpdateSchema]):
             related_objs=depts
         )
 
-    async def set_available_crud(self, ids: List[int], available: bool) -> None:
+    async def set_available_crud(self, ids: List[int], status: bool) -> None:
         """设置角色的可用状态"""
-        await self.set(ids=ids, available=available)
+        await self.set(ids=ids, status=status)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Body, Depends, Path, Query
 from fastapi.responses import JSONResponse
 
 from app.common.response import SuccessResponse
@@ -29,15 +29,14 @@ async def get_obj_list_controller(
 ) -> JSONResponse:
     result_dict_list = await MenuService.get_menu_list_service(search=search, auth=auth)
     menu_items = await MenuService.convert_to_menu(result_dict_list)
-    result_dict = await PaginationService.get_page_obj(data_list=menu_items, page_no=page.page_no,
-                                                       page_size=page.page_size)
+    result_dict = await PaginationService.get_page_obj(data_list=menu_items, page_no=page.page_no, page_size=page.page_size)
     logger.info(f"查询菜单成功")
     return SuccessResponse(data=result_dict, msg="查询菜单成功")
 
 
-@router.get("/detail", summary="查询菜单详情", description="查询菜单详情")
+@router.get("/detail/{id}", summary="查询菜单详情", description="查询菜单详情")
 async def get_obj_detail_controller(
-        id: int = Query(..., description="菜单ID"),
+        id: int = Path(..., description="菜单ID"),
         auth: AuthSchema = Depends(AuthPermission(permissions=["system:menu:query"]))
 ) -> JSONResponse:
     result_dict = await MenuService.get_menu_detail_service(id=id, auth=auth)
@@ -67,10 +66,10 @@ async def update_obj_controller(
 
 @router.delete("/delete", summary="删除菜单", description="删除菜单")
 async def delete_obj_controller(
-    id: int = Query(..., description="菜单ID"),
+    ids: list[int] = Body(..., description="ID列表"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:menu:delete"]))
 ) -> JSONResponse:
-    await MenuService.delete_menu_service(id=id, auth=auth)
+    await MenuService.delete_menu_service(ids=ids, auth=auth)
     logger.info(f"删除菜单成功: {id}")
     return SuccessResponse(msg="删除菜单成功")
 

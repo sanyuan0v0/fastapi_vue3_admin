@@ -21,7 +21,7 @@ class PositionModel(ModelBase):
     order = Column(Integer, nullable=False, default=1, comment="显示排序")
 
     # 状态字段
-    available = Column(Boolean, default=True, nullable=False, comment="是否启用(True:启用 False:禁用)")
+    status = Column(Boolean, default=True, nullable=False, comment="是否启用(True:启用 False:禁用)")
 
     users = relationship(
         "UserModel", 

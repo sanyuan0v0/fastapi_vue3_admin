@@ -34,7 +34,7 @@ class DeptModel(ModelBase):
     )
     
     # 状态字段
-    available = Column(Boolean, default=True, nullable=False, comment="是否启用(True:启用 False:禁用)")
+    status = Column(Boolean, default=True, nullable=False, comment="是否启用(True:启用 False:禁用)")
     
     # 审计字段
     description = Column(Text, nullable=True, comment="备注说明")

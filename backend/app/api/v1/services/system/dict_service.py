@@ -10,11 +10,11 @@ from app.api.v1.schemas.system.dict_schema import DictDataCreateSchema,DictDataO
 from app.common.enums import RedisInitKeyConfig
 from app.api.v1.params.system.dict_param import DictDataQueryParams, DictTypeQueryParams
 from app.api.v1.cruds.system.dict_crud import DictDataCRUD, DictTypeCRUD
+from app.core.base_schema import BatchSetAvailable
 from app.core.redis_crud import RedisCURD
 from app.core.exceptions import CustomException
 from app.utils.excel_util import ExcelUtil
 from app.core.logger import logger
-from app.config.setting import settings
 
 class DictTypeService:
     """
@@ -71,7 +71,7 @@ class DictTypeService:
         
         dict_data_list = []
         # 如果字典类型修改或状态变更，则修改对应字典数据的类型和状态，并更新Redis缓存
-        if exist_obj.dict_type != data.dict_type or exist_obj.available != data.available:
+        if exist_obj.dict_type != data.dict_type or exist_obj.status != data.status:
             # 检查字典数据类型是否被修改
             exist_obj_type_list = await DictDataCRUD(auth).list(search={'dict_type': exist_obj.dict_type})
             if exist_obj_type_list:
@@ -86,7 +86,7 @@ class DictTypeService:
                         css_class=item.css_class,
                         list_class=item.list_class,
                         is_default=item.is_default,
-                        available=data.available,
+                        status=data.status,
                         description=item.description
                     )
                     obj = await DictDataCRUD(auth).update_obj_crud(id=item.id, data=dict_data)
@@ -115,24 +115,31 @@ class DictTypeService:
         return new_obj_dict
     
     @classmethod
-    async def delete_obj_service(cls, auth: AuthSchema, redis: Redis, id: int) -> None:
-        exist_obj = await DictTypeCRUD(auth).get_obj_by_id_crud(id=id)
-        if not exist_obj:
-            raise CustomException(msg='删除失败，该数据字典类型不存在')
-        # 检查是否有字典数据
-        exist_obj_type_list = await DictDataCRUD(auth).list(search={'dict_type': id})
-        if len(exist_obj_type_list) > 0:
-            # 如果有字典数据，不能删除
-            raise CustomException(msg='删除失败，该数据字典类型下存在字典数据')
-        await DictTypeCRUD(auth).delete_obj_crud(ids=[id])
-        # 删除Redis缓存
-        redis_key = f"{RedisInitKeyConfig.SYSTEM_DICT.key}:{exist_obj.dict_type}"
-        try:
-            await RedisCURD(redis).delete(redis_key)
-            logger.info(f"删除字典类型成功: {id}")
-        except Exception as e:
-            logger.error(f"删除字典类型失败: {e}")
-            raise CustomException(msg=f"删除字典类型失败")
+    async def delete_obj_service(cls, auth: AuthSchema, redis: Redis, ids: list[int]) -> None:
+        if len(ids) < 1:
+            raise CustomException(msg='删除失败，删除对象不能为空')
+        for id in ids:
+            exist_obj = await DictTypeCRUD(auth).get_obj_by_id_crud(id=id)
+            if not exist_obj:
+                raise CustomException(msg='删除失败，该数据字典类型不存在')
+            # 检查是否有字典数据
+            exist_obj_type_list = await DictDataCRUD(auth).list(search={'dict_type': id})
+            if len(exist_obj_type_list) > 0:
+                # 如果有字典数据，不能删除
+                raise CustomException(msg='删除失败，该数据字典类型下存在字典数据')
+            # 删除Redis缓存
+            redis_key = f"{RedisInitKeyConfig.SYSTEM_DICT.key}:{exist_obj.dict_type}"
+            try:
+                await RedisCURD(redis).delete(redis_key)
+                logger.info(f"删除字典类型成功: {id}")
+            except Exception as e:
+                logger.error(f"删除字典类型失败: {e}")
+                raise CustomException(msg=f"删除字典类型失败")
+        await DictTypeCRUD(auth).delete_obj_crud(ids=ids)
+    
+    @classmethod
+    async def set_obj_available_service(cls, auth: AuthSchema, data: BatchSetAvailable) -> None:
+        await DictTypeCRUD(auth).set_obj_available_crud(ids=data.ids, status=data.status)
 
     @classmethod
     async def export_obj_service(cls, data_list: List[Dict[str, Any]]) -> bytes:
@@ -141,7 +148,7 @@ class DictTypeService:
             'id': '编号',
             'dict_name': '字典名称', 
             'dict_type': '字典类型',
-            'available': '状态',
+            'status': '状态',
             'description': '备注',
             'created_at': '创建时间',
             'updated_at': '更新时间',
@@ -153,7 +160,7 @@ class DictTypeService:
         data = data_list.copy()
         for item in data:
             # 处理状态
-            item['available'] = '正常' if item.get('available') else '停用'
+            item['status'] = '正常' if item.get('status') else '停用'
 
         return ExcelUtil.export_list2excel(list_data=data_list, mapping_dict=mapping_dict)
     
@@ -250,14 +257,14 @@ class DictDataService:
             raise CustomException(msg='更新失败，数据字典数据重复')
             
         # 如果状态变更，需要同步更新字典类型状态并刷新缓存
-        if exist_obj.available != data.available:
+        if exist_obj.status != data.status:
             dict_type = await DictTypeCRUD(auth).get(dict_type=exist_obj.dict_type)
             if dict_type:
                 update_data = DictTypeUpdateSchema(
                     id=dict_type.id,
                     dict_name=dict_type.dict_name,
                     dict_type=dict_type.dict_type,
-                    available=data.available,
+                    status=data.status,
                     description=dict_type.description
                 )
                 await DictTypeCRUD(auth).update_obj_crud(id=dict_type.id, data=update_data)
@@ -294,20 +301,27 @@ class DictDataService:
         return DictDataOutSchema.model_validate(obj).model_dump()
     
     @classmethod
-    async def delete_obj_service(cls, auth: AuthSchema, redis: Redis, id: int) -> None:
-        exist_obj = await DictDataCRUD(auth).get_obj_by_id_crud(id=id)
-        if not exist_obj:
-            raise CustomException(msg='删除失败，该字典数据不存在')
-        await DictDataCRUD(auth).delete_obj_crud(ids=[id])
-        # 删除Redis缓存
-        redis_key = f"{RedisInitKeyConfig.SYSTEM_DICT.key}:{exist_obj.dict_type}"
-        try:
+    async def delete_obj_service(cls, auth: AuthSchema, redis: Redis, ids: list[int]) -> None:
+        
+        for id in ids:
+
+            exist_obj = await DictDataCRUD(auth).get_obj_by_id_crud(id=id)
+            if not exist_obj:
+                raise CustomException(msg=f'{id} 删除失败，该字典数据不存在')
             # 删除Redis缓存
-            await RedisCURD(redis).delete(redis_key)
-            logger.info(f"删除字典数据成功: {id}")
-        except Exception as e:
-            logger.error(f"删除字典数据失败: {e}")
-            raise CustomException(msg=f"删除字典数据失败 {e}")
+            redis_key = f"{RedisInitKeyConfig.SYSTEM_DICT.key}:{exist_obj.dict_type}"
+            try:
+                # 删除Redis缓存
+                await RedisCURD(redis).delete(redis_key)
+                logger.info(f"删除字典数据成功: {id}")
+            except Exception as e:
+                logger.error(f"删除字典数据失败: {e}")
+                raise CustomException(msg=f"删除字典数据失败 {e}")
+        await DictDataCRUD(auth).delete_obj_crud(ids=ids)
+
+    @classmethod
+    async def set_obj_available_service(cls, auth: AuthSchema, data: BatchSetAvailable) -> None:
+        await DictDataCRUD(auth).set_obj_available_crud(ids=data.ids, status=data.status)
 
     @classmethod
     async def export_obj_service(cls, data_list: List[Dict[str, Any]]) -> bytes:
@@ -321,7 +335,7 @@ class DictDataService:
             'css_class': '样式属性', 
             'list_class': '表格回显样式', 
             'is_default': '是否默认', 
-            'available': '状态',
+            'status': '状态',
             'description': '备注',
             'created_at': '创建时间',
             'updated_at': '更新时间',
@@ -333,7 +347,7 @@ class DictDataService:
         data = data_list.copy()
         for item in data:
             # 处理状态
-            item['available'] = '正常' if item.get('available') else '停用'
+            item['status'] = '正常' if item.get('status') else '停用'
             # 处理是否默认
             item['is_default'] = '是' if item.get('is_default') else '否'
 

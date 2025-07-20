@@ -11,6 +11,7 @@ class OperationLogQueryParams:
 
     def __init__(
             self,
+            type: Optional[int] = Query(None, description="日志类型(1:登录日志, 2:操作日志)"),
             request_path: Optional[str] = Query(None, description="请求路径"),
             request_method: Optional[str] = Query(None, description="请求方法"),
             request_ip: Optional[str] = Query(None, description="请求IP"),
@@ -29,6 +30,7 @@ class OperationLogQueryParams:
         self.request_method = request_method
         self.request_ip = request_ip
         self.response_code = response_code
+        self.type = type
         
         # 时间范围查询
         if start_time and end_time:

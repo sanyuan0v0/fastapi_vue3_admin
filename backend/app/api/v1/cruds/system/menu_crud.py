@@ -51,11 +51,11 @@ class MenuCRUD(CRUDBase[MenuModel, MenuCreateSchema, MenuUpdateSchema]):
                     obj.parent_name = parent_map.get(obj.parent_id)
         return obj_list
 
-    async def set_available_crud(self, ids: List[int], available: bool) -> None:
+    async def set_available_crud(self, ids: List[int], status: bool) -> None:
         """
         批量设置菜单可用状态
         
         :param ids: 菜单ID列表
-        :param available: 可用状态
+        :param status: 可用状态
         """
-        await self.set(ids=ids, available=available)
+        await self.set(ids=ids, status=status)

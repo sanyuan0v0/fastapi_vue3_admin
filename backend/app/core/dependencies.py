@@ -66,22 +66,22 @@ async def get_current_user(
     
     session_id = user_info.get("session_id")
     if not session_id:
-        raise CustomException(msg="认证已失效", status_code=403)
+        raise CustomException(msg="认证已失效", status_code=401)
 
     # 检查用户是否在线
     online_ok = await RedisCURD(redis).exists(key=f'{RedisInitKeyConfig.ACCESS_TOKEN.key}:{session_id}')
     if not online_ok:
-        raise CustomException(msg="认证已失效", status_code=403)
+        raise CustomException(msg="认证已失效", status_code=401)
 
     auth = AuthSchema(db=db)
     username = user_info.get("user_name")
     if not username:
-        raise CustomException(msg="认证已失效", status_code=403)
+        raise CustomException(msg="认证已失效", status_code=401)
     # 获取用户信息
     user = await UserCRUD(auth).get_by_username_crud(username=username)
     if not user:
         raise CustomException(msg="用户不存在", status_code=403)
-    if not user.available:
+    if not user.status:
         raise CustomException(msg="用户已被停用", status_code=403)
     
     # 设置请求上下文
@@ -90,9 +90,9 @@ async def get_current_user(
     
     # 过滤可用的角色和职位
     if hasattr(user, 'roles'):
-        user.roles = [role for role in user.roles if role.available]
+        user.roles = [role for role in user.roles if role.status]
     if hasattr(user, 'positions'):
-        user.positions = [pos for pos in user.positions if pos.available]
+        user.positions = [pos for pos in user.positions if pos.status]
 
     auth.user = user
     return auth
@@ -148,19 +148,19 @@ class AuthPermission:
             menu.permission 
             for role in auth.user.roles 
             for menu in role.menus 
-            if menu.permission and menu.available
+            if menu.permission and menu.status
         }
 
         # 权限验证
         if self.check_data_scope:
             # 严格模式:要求所有权限都满足
             if not all(perm in user_permissions for perm in self.permissions):
-                logger.error(f"用户 缺少所需的权限: {self.permissions}")
+                logger.error(f"用户缺少所需的权限: {self.permissions}")
                 raise CustomException(msg="无权限操作")
         else:
             # 非严格模式:满足任一权限即可
             if not any(perm in user_permissions for perm in self.permissions):
-                logger.error(f"用户 缺少任何所需的权限: {self.permissions}")
+                logger.error(f"用户缺少任何所需的权限: {self.permissions}")
                 raise CustomException(msg="无权限操作")
 
         return auth

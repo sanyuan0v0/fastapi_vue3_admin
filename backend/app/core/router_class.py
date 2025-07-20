@@ -60,9 +60,11 @@ class OperationLogRoute(APIRoute):
             process_time = time.time() - start_time
 
             # 获取当前用户ID,如果是登录接口则为空
+            log_type = 1 # 1:登录日志 2:操作日志
             current_user_id = None
             if "user_id" in request.scope:
                 current_user_id = request.scope.get("user_id")
+                log_type = 2
             
             request_ip = None
             x_forwarded_for = request.headers.get('X-Forwarded-For')
@@ -81,6 +83,7 @@ class OperationLogRoute(APIRoute):
                     auth = AuthSchema(db=session)
                     
                     await OperationLogService.create_log_service(data=OperationLogCreateSchema(
+                        type = log_type,
                         request_path = request.url.path,
                         request_method = request.method,
                         request_payload = payload,

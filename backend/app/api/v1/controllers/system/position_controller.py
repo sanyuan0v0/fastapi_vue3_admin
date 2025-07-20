@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Body, Depends, Path, Query
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from app.common.response import StreamResponse, SuccessResponse
@@ -35,9 +35,9 @@ async def get_obj_list_controller(
     return SuccessResponse(data=result_dict, msg="查询岗位列表成功")
 
 
-@router.get("/detail", summary="查询岗位详情", description="查询岗位详情")
+@router.get("/detail/{id}", summary="查询岗位详情", description="查询岗位详情")
 async def get_obj_detail_controller(
-    id: int = Query(..., description="岗位ID"),
+    id: int = Path(..., description="岗位ID"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:position:query"])),
 ) -> JSONResponse:
     result_dict = await PositionService.get_position_detail_service(id=id, auth=auth)
@@ -67,10 +67,10 @@ async def update_obj_controller(
 
 @router.delete("/delete", summary="删除岗位", description="删除岗位")
 async def delete_obj_controller(
-    id: int = Query(..., description="岗位ID"),
+    ids: list[int] = Body(..., description="ID列表"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:position:delete"])),
 ) -> JSONResponse:
-    await PositionService.delete_position_service(id=id, auth=auth)
+    await PositionService.delete_position_service(ids=ids, auth=auth)
     logger.info(f"删除岗位成功: {id}")
     return SuccessResponse(msg="删除岗位成功")
 

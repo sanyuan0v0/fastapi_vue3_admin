@@ -18,7 +18,6 @@ from app.utils.excel_util import ExcelUtil
 from app.utils.upload_util import UploadUtil
 from app.core.base_schema import UploadResponseSchema
 from app.core.exceptions import CustomException
-from app.config.setting import settings
 from app.core.logger import logger
 
 
@@ -100,16 +99,19 @@ class ConfigService:
         return new_obj_dict
 
     @classmethod
-    async def delete_obj_service(cls, auth: AuthSchema, redis: Redis, id: int) -> None:
-        exist_obj = await ConfigCRUD(auth).get_obj_by_id_crud(id=id)
-        if not exist_obj:
-            raise CustomException(msg='删除失败，该数据字典类型不存在')
-        # 检查是否是否初始化类型
-        if exist_obj.config_type:
-            # 如果有字典数据，不能删除
-            raise CustomException(msg='删除失败，系统初始化配置不可以删除')
+    async def delete_obj_service(cls, auth: AuthSchema, redis: Redis, ids: list[int]) -> None:
+        if len(ids) < 1:
+            raise CustomException(msg='删除失败，删除对象不能为空')
+        for id in ids:
+            exist_obj = await ConfigCRUD(auth).get_obj_by_id_crud(id=id)
+            if not exist_obj:
+                raise CustomException(msg='删除失败，该数据字典类型不存在')
+            # 检查是否是否初始化类型
+            if exist_obj.config_type:
+                # 如果有字典数据，不能删除
+                raise CustomException(msg=f'{exist_obj.config_name} 删除失败，系统初始化配置不可以删除')
         
-        await ConfigCRUD(auth).delete_obj_crud(ids=[id])
+        await ConfigCRUD(auth).delete_obj_crud(ids=ids)
         # 同步删除Redis缓存
         redis_key = f"{RedisInitKeyConfig.SYSTEM_CONFIG.key}:{exist_obj.config_key}"
         try:

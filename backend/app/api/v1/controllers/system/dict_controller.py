@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import json
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Body, Depends, Path, Query
 from fastapi.responses import JSONResponse, StreamingResponse
 from aioredis import Redis
 
 from app.common.response import StreamResponse, SuccessResponse
 from app.core.base_params import PaginationQueryParams
+from app.core.base_schema import BatchSetAvailable
 from app.core.dependencies import AuthPermission, redis_getter
 from app.core.router_class import OperationLogRoute
 from app.core.logger import logger
@@ -25,9 +26,9 @@ from app.api.v1.schemas.system.dict_schema import (
 
 router = APIRouter(route_class=OperationLogRoute)
 
-@router.get("/type/detail", summary="获取字典类型详情", description="获取字典类型详情")
+@router.get("/type/detail/{id}", summary="获取字典类型详情", description="获取字典类型详情")
 async def get_type_detail_controller(
-    id: int = Query(..., description="字典类型ID"),
+    id: int = Path(..., description="字典类型ID"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_type:query"]))
 ) -> JSONResponse:
     result_dict = await DictTypeService.get_obj_detail_service(id=id, auth=auth)
@@ -76,12 +77,21 @@ async def update_type_controller(
 @router.delete("/type/delete", summary="删除字典类型", description="删除字典类型")
 async def delete_type_controller(
     redis: Redis = Depends(redis_getter),
-    id: int = Query(..., description="字典类型ID"),
+    ids: list[int] = Body(..., description="ID列表"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_type:delete"]))
 ) -> JSONResponse:
-    await DictTypeService.delete_obj_service(auth=auth, redis=redis, id=id)
+    await DictTypeService.delete_obj_service(auth=auth, redis=redis, ids=ids)
     logger.info(f"删除字典类型成功: {id}")
     return SuccessResponse(msg="删除字典类型成功")
+
+@router.patch("/type/available/setting", summary="批量修改公告状态", description="批量修改公告状态")
+async def batch_set_available_obj_controller(
+    data: BatchSetAvailable,
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_type:patch"]))
+) -> JSONResponse:
+    await DictTypeService.set_obj_available_service(auth=auth, data=data)
+    logger.info(f"批量修改字典类型状态成功: {data.ids}")
+    return SuccessResponse(msg="批量修改字典类型状态成功")
 
 @router.post('/type/export', summary="导出字典类型", description="导出字典类型")
 async def export_type_list_controller(
@@ -101,9 +111,9 @@ async def export_type_list_controller(
         }
     )
 
-@router.get("/data/detail", summary="获取字典数据详情", description="获取字典数据详情")
+@router.get("/data/detail/{id}", summary="获取字典数据详情", description="获取字典数据详情")
 async def get_data_detail_controller(
-    id: int = Query(..., description="字典数据ID"),
+    id: int = Path(..., description="字典数据ID"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_data:query"]))
 ) -> JSONResponse:
     result_dict = await DictDataService.get_obj_detail_service(id=id, auth=auth)
@@ -144,12 +154,21 @@ async def update_data_controller(
 @router.delete("/data/delete", summary="删除字典数据", description="删除字典数据")
 async def delete_data_controller(
     redis: Redis = Depends(redis_getter),
-    id: int = Query(..., description="字典数据ID"),
+    ids: list[int] = Body(..., description="ID列表"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_data:delete"]))
 ) -> JSONResponse:
-    await DictDataService.delete_obj_service(auth=auth, redis=redis, id=id)
+    await DictDataService.delete_obj_service(auth=auth, redis=redis, ids=ids)
     logger.info(f"删除字典数据成功: {id}")
     return SuccessResponse(msg="删除字典数据成功")
+
+@router.patch("/data/available/setting", summary="批量修改字典数据状态", description="批量修改字典数据状态")
+async def batch_set_available_obj_controller(
+    data: BatchSetAvailable,
+    auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_data:patch"]))
+) -> JSONResponse:
+    await DictDataService.set_obj_available_service(auth=auth, data=data)
+    logger.info(f"批量修改字典数据状态成功: {data.ids}")
+    return SuccessResponse(msg="批量修改字典数据状态成功")
 
 @router.post('/data/export', summary="导出字典数据", description="导出字典数据")
 async def export_data_list_controller(

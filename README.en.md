@@ -230,12 +230,13 @@ fastapi_vue3_admin/devops/devops/nginx/nginx.conf
    <tr>
         <td><img src="./backend/static/image/job.png"/>Task Management</td>
         <td><img src="./backend/static/image/docs.png"/>API Management</td>
-        <td><img src="./backend/static/image/redoc.png"/>Document Management</td>
-        <td><img src="./backend/static/image/info.png"/>Personal Information</td>
+        <td><img src="./backend/static/image/analysis.png"/>Analysis Management</td>
+        <td><img src="./backend/static/image/dict.png"/>Dictionary Management</td>
    </tr>
    <tr>
+        <td><img src="./backend/static/image/theme.png"/>Theme Management</td>
+        <td><img src="./backend/static/image/lock.png"/>Lock Management</td>
         <td><img src="./backend/static/image/help.png"/>Online Documentation</td>
-        <td><img src="./backend/static/image/dict.png"/>Dictionary Management</td>
    </tr>
 </table>
 
@@ -253,7 +254,9 @@ Thanks to the contributions and support of the following projects, which have en
 - [RuoYi-Vue3-FastAPI Project](https://gitee.com/insistence2022/RuoYi-Vue3-FastAPI)
 - [APScheduler Project](https://github.com/agronholm/apscheduler)
 - [Vite Project](https://github.com/vitejs/vite)
-
+- [Vue3-element-admin Project](https://gitee.com/youlaiorg/vue3-element-admin)
+- [Vue3-element-plus-admin Project](https://gitee.com/kailong110120130/vue-element-plus-admin)
+- 
 ---
 
 ## 🎨 Community

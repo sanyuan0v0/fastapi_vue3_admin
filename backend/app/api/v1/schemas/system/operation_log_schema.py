@@ -8,6 +8,7 @@ from app.core.base_schema import BaseSchema
 
 class OperationLogCreateSchema(BaseModel):
     """日志创建模型"""
+    type: Optional[int] = Field(default=None, description="日志类型(1登录日志 2操作日志)")
     request_path: Optional[str] = Field(default=None, description="请求路径")
     request_method: Optional[str] = Field(default=None, description="请求方法")
     request_payload: Optional[str] = Field(default=None, description="请求负载")

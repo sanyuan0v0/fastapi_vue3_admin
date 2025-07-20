@@ -85,24 +85,27 @@ class DeptService:
         if exist_dept and exist_dept.id != data.id:
             raise CustomException(msg='更新失败，部门名称重复')
         dept = await DeptCRUD(auth).update(id=data.id, data=data)
-        if data.available:
-            await cls.batch_set_available_service(auth=auth, data=BatchSetAvailable(ids=[data.id], available=True))
+        if data.status:
+            await cls.batch_set_available_service(auth=auth, data=BatchSetAvailable(ids=[data.id], status=True))
         else:
-            await cls.batch_set_available_service(auth=auth, data=BatchSetAvailable(ids=[data.id], available=False))
+            await cls.batch_set_available_service(auth=auth, data=BatchSetAvailable(ids=[data.id], status=False))
         return DeptOutSchema.model_validate(dept).model_dump()
 
     @classmethod
-    async def delete_dept_service(cls, auth: AuthSchema, id: int) -> None:
+    async def delete_dept_service(cls, auth: AuthSchema, ids: list[int]) -> None:
         """
         删除部门service
         
         :param auth: 认证对象
         :param id: 部门ID
         """
-        dept = await DeptCRUD(auth).get_by_id_crud(id=id)
-        if not dept:
-            raise CustomException(msg='删除失败，该部门不存在')
-        await DeptCRUD(auth).delete(ids=[id])
+        if len(ids) < 1:
+            raise CustomException(msg='删除失败，删除对象不能为空')
+        for id in ids:
+            dept = await DeptCRUD(auth).get_by_id_crud(id=id)
+            if not dept:
+                raise CustomException(msg='删除失败，该部门不存在')
+        await DeptCRUD(auth).delete(ids=ids)
 
     @classmethod
     async def batch_set_available_service(cls, auth: AuthSchema, data: BatchSetAvailable) -> None:
@@ -115,7 +118,7 @@ class DeptService:
         dept_list = await DeptCRUD(auth).get_list_crud()
         total_ids = []
         
-        if data.available:
+        if data.status:
             id_map = get_parent_id_map(model_list=dept_list)
             for dept_id in data.ids:
                 enable_ids = get_parent_recursion(id=dept_id, id_map=id_map)
@@ -126,4 +129,4 @@ class DeptService:
                 disable_ids = get_child_recursion(id=dept_id, id_map=id_map)
                 total_ids.extend(disable_ids)
 
-        await DeptCRUD(auth).set_available_crud(ids=total_ids, available=data.available)
+        await DeptCRUD(auth).set_available_crud(ids=total_ids, status=data.status)

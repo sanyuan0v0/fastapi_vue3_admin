@@ -9,6 +9,7 @@ from app.api.v1.schemas.system.operation_log_schema import (
     OperationLogCreateSchema,
     OperationLogOutSchema
 )
+from app.core.exceptions import CustomException
 from app.utils.excel_util import ExcelUtil
 from app.api.v1.params.system.operation_log_param import OperationLogQueryParams
 
@@ -44,9 +45,11 @@ class OperationLogService:
         return new_log_dict
     
     @classmethod
-    async def delete_log_service(cls, auth: AuthSchema, id: int) -> None:
+    async def delete_log_service(cls, auth: AuthSchema, ids: list[int]) -> None:
         """删除日志"""
-        await OperationLogCRUD(auth).delete(ids=[id])
+        if len(ids) < 1:
+            raise CustomException(msg='删除失败，删除对象不能为空')
+        await OperationLogCRUD(auth).delete(ids=ids)
 
     @classmethod
     async def export_log_list_service(cls, operation_log_list: List[Dict[str, Any]]) -> bytes:
@@ -62,6 +65,7 @@ class OperationLogService:
         # 操作日志字段映射
         mapping_dict = {
             'id': '编号',
+            'type': '日志类型',
             'request_path': '请求URL',
             'request_method': '请求方式',
             'request_payload': '请求参数',
@@ -84,5 +88,7 @@ class OperationLogService:
         for item in data:
             # 处理状态
             item['response_code'] = '成功' if item.get('response_code') == 200 else '失败'
+            # 处理日志类型
+            item['type'] = '操作日志' if item.get('type') == 1 else '登录日志'
 
         return ExcelUtil.export_list2excel(list_data=operation_log_list, mapping_dict=mapping_dict)

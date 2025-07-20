@@ -19,6 +19,7 @@ from app.api.v1.schemas.system.auth_schema import AuthSchema
 from app.api.v1.schemas.system.menu_schema import MenuOutSchema
 from app.api.v1.schemas.system.user_schema import (
     CurrentUserUpdateSchema,
+    ResetPasswordSchema,
     UserOutSchema,
     UserCreateSchema,
     UserUpdateSchema,
@@ -109,7 +110,7 @@ class UserService:
             dept = await DeptCRUD(auth).get_by_id_crud(id=data.dept_id)
             if not dept:
                 raise CustomException(msg='部门不存在')
-            if not dept.available:
+            if not dept.status:
                 raise CustomException(msg='部门已被禁用')
 
         # 更新密码
@@ -126,7 +127,7 @@ class UserService:
             roles = await RoleCRUD(auth).get_list_crud(search={"id": ("in", data.role_ids)})
             if len(roles) != len(data.role_ids):
                 raise CustomException(msg='部分角色不存在')
-            if not all(role.available for role in roles):
+            if not all(role.status for role in roles):
                 raise CustomException(msg='部分角色已被禁用')
             await UserCRUD(auth).set_user_roles_crud(user_ids=[data.id], role_ids=data.role_ids)
 
@@ -135,7 +136,7 @@ class UserService:
             positions = await PositionCRUD(auth).list(search={"id": ("in", data.position_ids)})
             if len(positions) != len(data.position_ids):
                 raise CustomException(msg='部分岗位不存在')
-            if not all(position.available for position in positions):
+            if not all(position.status for position in positions):
                 raise CustomException(msg='部分岗位已被禁用')
             await UserCRUD(auth).set_user_positions_crud(user_ids=[data.id], position_ids=data.position_ids)
 
@@ -143,25 +144,28 @@ class UserService:
         return user_dict
 
     @classmethod
-    async def delete_user_service(cls, auth: AuthSchema, id: int) -> None:
+    async def delete_user_service(cls, auth: AuthSchema, ids: list[int]) -> None:
         """删除用户"""
-        user = await UserCRUD(auth).get_by_id_crud(id=id)
-        if not user:
-            raise CustomException(msg="用户不存在")
-        if user.is_superuser:
-            raise CustomException(msg="超级管理员不能删除")
-        if user.available:
-            raise CustomException(msg="用户已启用,不能删除")
-        if auth.user.id == id:
-            raise CustomException(msg="不能删除当前登陆用户")
+        if len(ids) < 1:
+            raise CustomException(msg='删除失败，删除对象不能为空')
+        for id in ids:
+            user = await UserCRUD(auth).get_by_id_crud(id=id)
+            if not user:
+                raise CustomException(msg="用户不存在")
+            if user.is_superuser:
+                raise CustomException(msg="超级管理员不能删除")
+            if user.status:
+                raise CustomException(msg="用户已启用,不能删除")
+            if auth.user.id == id:
+                raise CustomException(msg="不能删除当前登陆用户")
         # 删除用户角色关联数据
-        await UserCRUD(auth).set_user_roles_crud(user_ids=[id], role_ids=[])
+        await UserCRUD(auth).set_user_roles_crud(user_ids=ids, role_ids=[])
         
         # 删除用户岗位关联数据
-        await UserCRUD(auth).set_user_positions_crud(user_ids=[id], position_ids=[])
+        await UserCRUD(auth).set_user_positions_crud(user_ids=ids, position_ids=[])
         
         # 删除用户
-        await UserCRUD(auth).delete(ids=[id])
+        await UserCRUD(auth).delete(ids=ids)
 
     @classmethod
     async def get_current_user_info_service(cls, auth: AuthSchema) -> Dict:
@@ -178,14 +182,14 @@ class UserService:
 
         # 获取菜单权限
         if auth.user.is_superuser:
-            menu_all = await MenuCRUD(auth).get_list_crud(search={'type': ('in', [1, 2]), 'available': True})
+            menu_all = await MenuCRUD(auth).get_list_crud(search={'type': ('in', [1, 2, 4]), 'status': True})
             menus = [MenuOutSchema.model_validate(menu).model_dump() for menu in menu_all]
         else:
             menus = [
                 MenuOutSchema.model_validate(menu).model_dump()
                 for role in auth.user.roles
                 for menu in role.menus
-                if menu.available and menu.type in [1, 2]
+                if menu.status and menu.type in [1, 2]
             ]
         user_dict["menus"] = menus
         return user_dict
@@ -208,7 +212,7 @@ class UserService:
                 raise CustomException(msg=f"用户ID {id} 不存在")
             if user.is_superuser:
                 raise CustomException(msg="超级管理员状态不能修改")
-        await UserCRUD(auth).set_available_crud(ids=data.ids, available=data.available)
+        await UserCRUD(auth).set_available_crud(ids=data.ids, status=data.status)
 
     @classmethod
     async def upload_avatar_service(cls, base_url: str, file: UploadFile) -> Dict:
@@ -241,6 +245,22 @@ class UserService:
         new_password_hash = PwdUtil.set_password_hash(password=data.new_password)
         new_user = await UserCRUD(auth).change_password_crud(id=user.id, password_hash=new_password_hash)
         return UserOutSchema.model_validate(new_user).model_dump()
+    
+    @classmethod
+    async def reset_user_password_service(cls, auth: AuthSchema, data: ResetPasswordSchema) -> Dict:
+        """修改用户密码"""
+        if not data.password:
+            raise CustomException(msg='密码不能为空')
+
+        # 验证用户
+        user = await UserCRUD(auth).get_by_id_crud(id=data.id)
+        if not user:
+            raise CustomException(msg="用户不存在")
+
+        # 更新密码
+        new_password_hash = PwdUtil.set_password_hash(password=data.new_password)
+        new_user = await UserCRUD(auth).change_password_crud(id=user.id, password_hash=new_password_hash)
+        return UserOutSchema.model_validate(new_user).model_dump()
 
     @classmethod
     async def register_user_service(cls, auth: AuthSchema, data: UserRegisterSchema) -> Dict:
@@ -268,7 +288,7 @@ class UserService:
         user = await UserCRUD(auth).get_by_username_crud(username=data.username)
         if not user:
             raise CustomException(msg="用户不存在")
-        if not user.available:
+        if not user.status:
             raise CustomException(msg="用户已停用")
         new_password_hash = PwdUtil.set_password_hash(password=data.new_password)
         new_user = await UserCRUD(auth).forget_password_crud(id=user.id, password_hash=new_password_hash)
@@ -285,7 +305,7 @@ class UserService:
             '邮箱': 'email',
             '手机号': 'mobile',
             '性别': 'gender',
-            '状态': 'available'
+            '状态': 'status'
         }
 
         try:
@@ -333,7 +353,7 @@ class UserService:
                     
                     # 数据转换
                     gender = 1 if row['gender'] == '男' else (2 if row['gender'] == '女' else 1)
-                    available = True if row['available'] == '正常' else False
+                    status = True if row['status'] == '正常' else False
                     
                     # 构建用户数据
                     user_data = {
@@ -342,7 +362,7 @@ class UserService:
                         "email": str(row['email']).strip() if not pd.isna(row['email']) else None,
                         "mobile": str(row['mobile']).strip() if not pd.isna(row['mobile']) else None,
                         "gender": gender,
-                        "available": available,
+                        "status": status,
                         "dept_id": dept_id,
                         "password": PwdUtil.set_password_hash(password="123456")  # 设置默认密码
                     }
@@ -400,7 +420,7 @@ class UserService:
             'email': '邮箱地址',
             'mobile': '手机号码',
             'gender': '性别',
-            'available': '状态',
+            'status': '状态',
             'description': '备注',
             'created_at': '创建时间',
             'updated_at': '更新时间',
@@ -411,7 +431,7 @@ class UserService:
         # 复制数据并转换
         data = user_list.copy()
         for item in data:
-            item['available'] = '正常' if item.get('available') else '停用'
+            item['status'] = '正常' if item.get('status') else '停用'
             gender = item.get('gender')
             item['gender'] = '男' if gender == 1 else ('女' if gender == 2 else '未知')
 

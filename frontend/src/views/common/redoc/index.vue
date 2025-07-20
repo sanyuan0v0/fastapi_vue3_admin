@@ -1,28 +1,35 @@
+<!-- 接口文档 -->
 <template>
-
-    <a-spin :spinning="loading">
-        <div :style="'height:' + height">
-            <iframe :src="url" frameborder="no" style="width: 100%; height: 100%" scrolling="auto" />
-        </div>
-    </a-spin>
-
+  <div class="app-container">
+    <Frame :src="url" />
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-const height = ref(document.documentElement.clientHeight - 94.5 + "px;")
-const loading = ref(true)
+defineOptions({
+  name: "Redoc",
+  inheritAttrs: false,
+});
+
 const url = ref(import.meta.env.VITE_APP_BASE_API + "/redoc")
 
-onMounted(() => {
-    setTimeout(() => {
-        loading.value = false;
-    }, 300);
-    window.onresize = () => {
-        height.value = document.documentElement.clientHeight - 94.5 + "px;";
-    };
-})
 onBeforeUnmount(() => {
     window.onresize = null;
 })
 </script>
+
+<style lang="scss" scoped>
+/** 关闭tag标签  */
+.app-container {
+  /* 50px = navbar = 50px */
+  height: calc(100vh - 50px);
+}
+
+/** 开启tag标签  */
+.hasTagsView {
+  .app-container {
+    /* 84px = navbar + tags-view = 50px + 34px */
+    height: calc(100vh - 84px);
+  }
+}
+</style>

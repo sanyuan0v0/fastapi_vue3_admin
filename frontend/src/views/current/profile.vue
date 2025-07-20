@@ -1,492 +1,350 @@
 <template>
-  <div class="profile-container">
-    <div class="profile-content">
-      <a-row :gutter="[12, 24]">
-        <!-- 左侧信息卡片 -->
-        <a-col :xs="24" :sm="24" :md="16" :lg="6">
-          <a-card class="info-card" >
-            <div class="user-info-header">
-              <div class="avatar-wrapper">
-                <a-avatar v-if="infoFormState.avatar" :src="infoFormState.avatar" :size="120" />
-                <a-avatar v-else :size="120">
-                  <template #icon><UserOutlined /></template>
-                </a-avatar>
-                <div class="avatar-upload-overlay">
-                  <a-upload
-                    name="avatar"
-                    v-model:file-list="fileList"
-                    list-type="picture-card"
-                    :show-upload-list="false"
-                    :before-upload="beforeUpload"
-                    :custom-request="(options) => handleUpload(options)"
-                  >                    
-                    <div>
-                      <loading-outlined v-if="loading"></loading-outlined>
-                      <plus-outlined v-else></plus-outlined>
-                      <!-- <UploadOutlined /> -->
-                      <div style="margin-top: 8px">上传头像</div>
-                    </div>
-                  </a-upload>
-                </div>
-              </div>
-              <h2 class="user-name">{{ infoFormState.name }}</h2>
-              <p class="user-role">{{ infoFormState.roles.join('、') }}</p>
+  <div class="app-container">
+    <el-row :gutter="12">
+      <!-- 左侧信息卡片 -->
+      <el-col :span="6" class="mb-4">
+        <el-card :loading="loading" shadow="hover">
+          <template #header>
+            <div class="card-header">
+              <span>基本信息</span>
             </div>
-            
-            <a-divider />
-            
-            <a-descriptions :column="1" size="small" class="user-details">
-              <a-descriptions-item>
-                <template #label>
-                  <span class="detail-label">
-                    <IdcardOutlined />
-                    <span>账号</span>
-                  </span>
+          </template>
+          <div class="user-info-header">
+            <div class="avatar-wrapper">
+              <el-avatar v-if="infoFormState.avatar" :src="infoFormState.avatar" :size="120" />
+              <el-avatar v-else :size="120">
+                <template #icon>
+                  <User />
                 </template>
-                {{ infoFormState.username }}
-              </a-descriptions-item>
-              <a-descriptions-item>
-                <template #label>
-                  <span class="detail-label">
-                    <TeamOutlined />
-                    <span>部门</span>
-                  </span>
-                </template>
-                {{ infoFormState.deptName }}
-              </a-descriptions-item>
-              <a-descriptions-item>
-                <template #label>
-                  <span class="detail-label">
-                    <ApartmentOutlined />
-                    <span>岗位</span>
-                  </span>
-                </template>
-                {{ infoFormState.positions.join('、') }}
-              </a-descriptions-item>
-              <a-descriptions-item>
-                <template #label>
-                  <span class="detail-label">
-                    <PhoneOutlined />
-                    <span>手机</span>
-                  </span>
-                </template>
-                {{ infoFormState.mobile }}
-              </a-descriptions-item>
-              <a-descriptions-item>
-                <template #label>
-                  <span class="detail-label">
-                    <MailOutlined />
-                    <span>邮箱</span>
-                  </span>
-                </template>
-                {{ infoFormState.email }}
-              </a-descriptions-item>
-              <a-descriptions-item>
-                <template #label>
-                  <span class="detail-label">
-                    <ClockCircleOutlined />
-                    <span>加入时间</span>
-                  </span>
-                </template>
-                {{ infoFormState.created_at }}
-              </a-descriptions-item>
-            </a-descriptions>
-          </a-card>
-        </a-col>
+              </el-avatar>
+              <el-button type="info" class="avatar-edit-btn" circle icon="Camera" size="small" @click="handleUpload" />
+              <div class="avatar-upload-overlay">
+                <el-upload v-model:file-list="fileList" name="avatar" list-type="picture-card" :show-upload-list="false" :before-upload="beforeUpload" :custom-request="handleUploadCustomRequest">
+                  <div>
+                    <!-- <loading-outlined v-if="loading"></loading-outlined>
+                    <plus-outlined v-else></plus-outlined> -->
+                    <div style="margin-top: 8px">上传头像</div>
+                  </div>
+                </el-upload>
+              </div>
+            </div>
+            <span class="user-name">
+              {{ infoFormState.name }}
+              <el-button type="primary" link :loading="infoSubmitting" icon="edit" @click="handleOpenDialog(DialogType.ACCOUNT)" />
+            </span>
 
-        <!-- 右侧设置区域 -->
-        <a-col :xs="24" :sm="24" :md="16" :lg="18">
-          <a-card class="settings-card" >
-            <a-tabs v-model:activeKey="selectedKeys[0]" @change="handleTabChange">
-              <a-tab-pane key="1">
-                <template #tab>
-                  <span class="tab-label">
-                    <UserOutlined />
-                    <span>基本设置</span>
-                  </span>
-                </template>
-                <div class="settings-form">
-                  <a-form
-                    layout="vertical"
-                    :model="infoFormState"
-                    @finish="onInfoFormFinish"
-                    class="info-form"
-                  >
-                    <a-row :gutter="16">
-                      <a-col :span="12">
-                        <a-form-item
-                          label="姓名"
-                          name="name"
-                          :rules="[{ required: true, message: '请输入姓名' }]"
-                        >
-                          <a-tooltip title="请输入您的真实姓名" placement="topLeft">
-                            <a-input
-                              v-model:value="infoFormState.name"
-                              placeholder="请输入姓名"
-                              allow-clear
-                            >
-                              <template #prefix><UserOutlined /></template>
-                            </a-input>
-                          </a-tooltip>
-                        </a-form-item>
-                      </a-col>
-                      
-                      <a-col :span="12">
-                        <a-form-item
-                          label="性别"
-                          name="gender"
-                        >
-                          <a-radio-group v-model:value="infoFormState.gender" class="gender-group">
-                                <a-radio v-for="item in DictDataStore['sys_user_sex']" :value="item.dict_value">
-                                    {{ item.dict_label }}
-                                </a-radio>
-                            </a-radio-group>
-                        </a-form-item>
-                      </a-col>
-                      
-                      <a-col :span="12">
-                        <a-form-item
-                          label="手机号码"
-                          name="mobile"
-                          :rules="[
-                            { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号码' }
-                          ]"
-                        >
-                          <a-tooltip title="用于接收系统通知" placement="topLeft">
-                            <a-input
-                              v-model:value="infoFormState.mobile"
-                              placeholder="请输入手机号码"
-                              allow-clear
-                            >
-                              <template #prefix><PhoneOutlined /></template>
-                            </a-input>
-                          </a-tooltip>
-                        </a-form-item>
-                      </a-col>
-                      
-                      <a-col :span="12">
-                        <a-form-item
-                          label="邮箱"
-                          name="email"
-                          :rules="[{ type: 'email', message: '请输入有效的邮箱地址' }]"
-                        >
-                          <a-tooltip title="用于接收重要通知" placement="topLeft">
-                            <a-input
-                              v-model:value="infoFormState.email"
-                              placeholder="请输入邮箱"
-                              allow-clear
-                            >
-                              <template #prefix><MailOutlined /></template>
-                            </a-input>
-                          </a-tooltip>
-                        </a-form-item>
-                      </a-col>
-                    </a-row>
+            <el-text>{{infoFormState.roles.map(item => item.name).join('、')}}</el-text>
+          </div>
 
-                    <a-form-item>
-                      <a-button
-                        type="primary"
-                        html-type="submit"
-                        :loading="infoSubmitting"
-                        class="submit-button"
-                      >
-                        <template #icon><SaveOutlined /></template>
-                        保存更改
-                      </a-button>
-                    </a-form-item>
-                  </a-form>
-                </div>
-              </a-tab-pane>
+          <el-divider />
 
-              <a-tab-pane key="2">
-                <template #tab>
-                  <span class="tab-label">
-                    <LockOutlined />
-                    <span>安全设置</span>
-                  </span>
-                </template>
-                <div class="settings-form">
-                  <a-form
-                    layout="vertical"
-                    :model="passwordFormState"
-                    @finish="onPasswordFormFinish"
-                    class="password-form"
-                  >
-                    <a-form-item
-                      label="当前密码"
-                      name="oldPassword"
-                      :rules="[{ required: true, message: '请输入当前密码' }]"
-                    >
-                      <a-input-password
-                        v-model:value="passwordFormState.oldPassword"
-                        placeholder="请输入当前密码"
-                        allow-clear
-                      >
-                        <template #prefix><LockOutlined /></template>
-                      </a-input-password>
-                    </a-form-item>
+          <el-descriptions :column="1" size="small" class="user-details">
 
-                    <a-form-item
-                      label="新密码"
-                      name="newPassword"
-                      :rules="[
-                        { required: true, message: '请输入新密码' },
-                        { min: 6, message: '密码长度不能小于6位' }
-                      ]"
-                    >
-                      <a-input-password
-                        v-model:value="passwordFormState.newPassword"
-                        placeholder="请输入新密码"
-                        allow-clear
-                      >
-                        <template #prefix><KeyOutlined /></template>
-                      </a-input-password>
-                    </a-form-item>
+            <el-descriptions-item>
+              <template #label>
+                <el-icon style="vertical-align: middle;">
+                  <User />
+                </el-icon>
+                <span style="vertical-align: middle;">账号</span>
+              </template>
+              <span style="vertical-align: middle;">{{ infoFormState.username }}</span>
+            </el-descriptions-item>
 
-                    <a-form-item
-                      label="确认新密码"
-                      name="repeatPassword"
-                      :rules="[
-                        { required: true, message: '请确认新密码' },
-                        { validator: validateRepeatPassword }
-                      ]"
-                    >
-                      <a-input-password
-                        v-model:value="passwordFormState.repeatPassword"
-                        placeholder="请再次输入新密码"
-                        allow-clear
-                      >
-                        <template #prefix><CheckOutlined /></template>
-                      </a-input-password>
-                    </a-form-item>
+            <el-descriptions-item>
+              <template #label>
+                <el-icon style="vertical-align: middle;">
+                  <Coordinate />
+                </el-icon>
+                <span style="vertical-align: middle;">部门</span>
+              </template>
+              <span style="vertical-align: middle;">{{ infoFormState.dept_name }}</span>
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>
+                <el-icon style="vertical-align: middle;">
+                  <OfficeBuilding />
+                </el-icon>
+                <span style="vertical-align: middle;">岗位</span>
+              </template>
+              <span style="vertical-align: middle;">{{infoFormState.positions.map(item => item.name).join('、')}}</span>
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>
+                <el-icon style="vertical-align: middle;">
+                  <Phone />
+                </el-icon>
+                <span style="vertical-align: middle;">手机</span>
+              </template>
+              <span style="vertical-align: middle;">{{ infoFormState.mobile }}</span>
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>
+                <el-icon style="vertical-align: middle;">
+                  <Message />
+                </el-icon>
+                <span style="vertical-align: middle;">邮箱</span>
+              </template>
+              <span style="vertical-align: middle;">{{ infoFormState.email }}</span>
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>
+                <el-icon style="vertical-align: middle;">
+                  <Clock />
+                </el-icon>
+                <span style="vertical-align: middle;">加入时间</span>
+              </template>
+              <span style="vertical-align: middle;">{{ infoFormState.created_at }}</span>
+            </el-descriptions-item>
+          </el-descriptions>
+        </el-card>
+      </el-col>
 
-                    <a-form-item>
-                      <a-button
-                        type="primary"
-                        html-type="submit"
-                        :loading="passwordChanging"
-                        class="submit-button"
-                      >
-                        <template #icon><SaveOutlined /></template>
-                        更新密码
-                      </a-button>
-                    </a-form-item>
-                  </a-form>
-                </div>
-              </a-tab-pane>
-            </a-tabs>
-          </a-card>
-        </a-col>
-      </a-row>
-    </div>
+      <!-- 右侧设置区域 -->
+      <el-col :span="18" class="mb-4">
+        <el-card :loading="loading" shadow="hover">
+          <el-tabs type="border-card">
+            <el-tab-pane>
+              <template #label>
+                <el-icon>
+                  <User />
+                </el-icon>
+                <span>基本设置</span>
+              </template>
+              <div>
+                <el-form ref="ruleFormRef" :model="infoFormState" :rules="rules" label-width="auto" :inline="true">
+                  
+                  <el-form-item label="姓名" name="name">
+                    <el-input v-model:value="infoFormState.name" placeholder="请输入姓名" allow-clear>
+                      <template #prefix>
+                        <User />
+                      </template>
+                    </el-input>
+                  </el-form-item>
+
+                  <el-form-item label="手机号" name="mobile">
+                    <el-input v-model:value="infoFormState.mobile" placeholder="请输入手机号码" allow-clear>
+                      <template #prefix>
+                        <Phone />
+                      </template>
+                    </el-input>
+                  </el-form-item>
+
+                  <el-form-item label="邮箱" name="email">
+                    <el-input v-model:value="infoFormState.email" placeholder="请输入邮箱" allow-clear>
+                      <template #prefix>
+                        <Message />
+                      </template>
+                    </el-input>
+                  </el-form-item>
+
+                  <el-form-item label="性别" name="gender">
+                    <el-radio-group v-model:value="infoFormState.gender">
+                      <el-radio v-for="item in DictDataStore['sys_user_sex']" :key="item.dict_value" :value="item.dict_value" >
+                        {{ item.dict_label }}
+                      </el-radio>
+                    </el-radio-group>
+                  </el-form-item>
+
+                  <el-form-item>
+                    <el-button type="primary" :loading="infoSubmitting" icon="edit">保存更改</el-button>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </el-tab-pane>
+
+            <el-tab-pane>
+              <template #label>
+                <el-icon>
+                  <Lock />
+                </el-icon>
+                <span>安全设置</span>
+              </template>
+              <div>
+                <el-form ref="ruleFormRef" :model="passwordFormState" :rules="resetPasswordRules" label-width="auto">
+                  <el-form-item label="当前密码" name="oldPassword">
+                    <el-input v-model.trim="passwordFormState.oldPassword" :placeholder="t('login.password')" type="password" show-password clearable>
+                      <template #prefix>
+                        <Lock />
+                      </template>
+                    </el-input>
+                  </el-form-item>
+
+                  <el-form-item label="新密码" name="newPassword">
+                    <el-input v-model.trim="passwordFormState.newPassword" type="password" :placeholder="t('login.newPassword')" show-password clearable>
+                      <template #prefix>
+                        <Key />
+                      </template>
+                    </el-input>
+                  </el-form-item>
+
+                  <el-form-item label="确认新密码" name="confirmPassword">
+                    <el-input v-model.trim="passwordFormState.confirmPassword" type="password" :placeholder="t('login.message.password.confirm')" show-password clearable>
+                      <template #prefix>
+                        <Check />
+                      </template>
+                    </el-input>
+                  </el-form-item>
+
+                  <el-form-item>
+                    <el-button type="primary" :loading="passwordChanging" icon="edit">更新密码</el-button>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted, h, watch, computed } from 'vue';
-import { message } from 'ant-design-vue';
-import { 
-  UserOutlined, 
-  LockOutlined,
-  PhoneOutlined,
-  MailOutlined,
-  IdcardOutlined,
-  TeamOutlined,
-  ApartmentOutlined,
-  KeyOutlined,
-  CheckOutlined,
-  SaveOutlined,
-  CloseCircleOutlined,
-  ClockCircleOutlined,
-  PlusOutlined,
-  LoadingOutlined
-} from '@ant-design/icons-vue';
-import { useUserStore } from "@/store/index";
-import storage from 'store';
-import { updateCurrentUserInfo, changeCurrentUserPassword, uploadCurrentUserAvatar } from '@/api/system/user';
-import type { InfoFormState, PasswordFormState } from './types';
-import { useDictStore } from "@/store/index";
-import { logout } from '@/api/system/auth';
-import { useRouter } from "vue-router";
+import type { FormInstance } from 'element-plus'
+import UserAPI, { type InfoFormState, type PasswordFormState } from '@/api/system/user';
+import { useUserStore, useDictStore } from "@/store";
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
+const userStore = useUserStore();
+const dictStore = useDictStore();
+const ruleFormRef = ref<FormInstance>();
 const loading = ref<boolean>(false);
 
-const dictStore = useDictStore();
-
 const DictDataStore = computed(() => {
-  return dictStore.dictObj;
-})
+  return dictStore.dictData;
+});
 
+// 字典数据
 const getOptions = async () => {
-    const dictOptions = await dictStore.getDict(['sys_user_sex'])
-    return dictOptions
-}
+  const dictOptions = await dictStore.getDict(['sys_user_sex']);
+  return dictOptions;
+};
 
 // 状态定义
 const passwordChanging = ref(false);
 const infoSubmitting = ref(false);
-const selectedKeys = ref<string[]>(['1']);
 
-// 表单状态
+// 用户基础信息表单
 const infoFormState = reactive<InfoFormState>({
   name: '',
-  gender: null,
+  gender: 1,
   mobile: '',
   email: '',
   username: '',
-  deptName: '',
+  dept_name: '',
   positions: [],
   roles: [],
   avatar: '',
   created_at: ''
 });
 
+// 修改密码表单
 const passwordFormState = reactive<PasswordFormState>({
   oldPassword: '',
   newPassword: '',
-  repeatPassword: ''
+  confirmPassword: ''
 });
 
-
-// 监听selectedKeys变化
-watch(selectedKeys, (newVal) => {
-  if (newVal[0] === '1') {
-    initInfoForm();
-  } else {
-    initPasswordForm();
-  }
-});
-
-const userStore = useUserStore();
-
-// 基本信息表单提交
-const onInfoFormFinish = async (values: any) => {
-  try {
-    infoSubmitting.value = true;
-    values.avatar = infoFormState.avatar;
-    await updateCurrentUserInfo(values);
-    await userStore.getUserInfo;
-  } catch (error) {
-    console.error(error);
-    
-  } finally {
-    infoSubmitting.value = false;
-  }
-};
-
-// 路由相关
-const router = useRouter();
-
-// 密码表单提交
-const onPasswordFormFinish = async (values: any) => {
-  try {
-    if (values.newPassword !== values.repeatPassword) {
-      message.error({
-        content: '两次密码输入不一致',
-        icon: h(CloseCircleOutlined, { style: "color: #ff4d4f" })
-      });
-      return;
-    }
-
-    passwordChanging.value = true;
-    const data = { 
-      old_password: values.oldPassword, 
-      new_password: values.newPassword 
-    };
-    
-    await changeCurrentUserPassword(data);
-    await logout({ token: storage.get('Access-Token') });
-    
-    // 重置 store 状态
-    userStore.$reset();
-
-    storage.remove('Access-Token');
-    storage.remove('Refresh-Token');
-    await userStore.clearUserInfo;
-    // 强制刷新页面
-    router.push('/login');
-  } catch (error) {
-    console.error('修改密码失败',error);
-  } finally {
-    passwordChanging.value = false;
-  }
-};
-
-// 图片上传前的校验
-const beforeUpload = (file: File) => {
-  const isImage = file.type.startsWith('image/');
-  if (!isImage) {
-    message.error('只能上传图片文件！');
-  }
-  return isImage;
-};
-
+// 头像上传处理优化
 const fileList = ref<any[]>([]);
-// 头像上传处理
-const handleUpload = async (options: any) => {
-  const { file, onSuccess, onError } = options;
-  loading.value = true; // 开始上传，显示加载状态
 
+// 上传文件处理
+const handleUploadCustomRequest = async (options: any) => {
+  const { file, onSuccess, onError } = options;
   try {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await uploadCurrentUserAvatar(formData);
+    const response = await UserAPI.uploadCurrentUserAvatar(formData);
     const fileUrl = response.data.data.file_url;
     infoFormState.avatar = fileUrl;
     fileList.value = [{ url: fileUrl }];
-    
+
     onSuccess(response, file);
   } catch (error) {
     onError(error);
     console.error('上传失败:', error);
-  } finally {
-    loading.value = false; // 上传结束，隐藏加载状态
   }
 };
 
+// 邮箱校验规则优化
+const rules = {
+  name: [
+    { required: true, message: "请输入姓名", trigger: "blur" },
+  ],
+  mobile: [
+    { required: true, message: "请输入手机号", trigger: "blur" },
+    {
+      pattern: /^1[3-9]\d{9}$/,
+      message: "手机号格式不正确，请输入有效的中国大陆手机号",
+      trigger: "blur",
+    },
+  ],
+  email: [
+    { required: true, message: "请输入邮箱", trigger: "blur" },
+    {
+      pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
+      message: "邮箱格式不正确，请输入有效的邮箱地址",
+      trigger: "blur",
+    },
+  ],
+};
+
+
+const resetPasswordRules = {
+    oldPassword: [
+      {
+        required: true,
+        trigger: "blur",
+        message: t("login.password"),
+      },
+    ],
+    newPassword: [
+      {
+        required: true,
+        trigger: "blur",
+        message: t("login.message.password.required"),
+      },
+      {
+        min: 6,
+        message: t("login.message.password.min"),
+        trigger: "blur",
+      },
+    ],
+    confirmPassword: [
+      {
+        required: true,
+        trigger: "blur",
+        message: t("login.message.password.required"),
+      },
+      {
+        min: 6,
+        message: t("login.message.password.min"),
+        trigger: "blur",
+      },
+      {
+        validator: (_: any, value: string) => {
+          return value === passwordFormState.newPassword;
+        },
+        trigger: "blur",
+        message: t("login.message.password.inconformity"),
+      },
+    ],
+};
 
 // 初始化表单
 const initInfoForm = () => {
   const basicInfo = userStore.basicInfo;
-  Object.assign(infoFormState, {
-    name: basicInfo.name,
-    gender: basicInfo.gender,
-    mobile: basicInfo.mobile,
-    email: basicInfo.email,
-    username: basicInfo.username,
-    deptName: basicInfo.dept_name,
-    positions: basicInfo.positions.map(item => item.name),
-    roles: basicInfo.roles.map(item => item.name),
-    avatar: basicInfo.avatar,
-    created_at: basicInfo.created_at
-  });
+  Object.assign(infoFormState, { ...basicInfo });
 };
 
+// 初始化密码表单
 const initPasswordForm = () => {
   Object.assign(passwordFormState, {
     oldPassword: '',
     newPassword: '',
-    repeatPassword: ''
+    confirmPassword: ''
   });
-};
-
-// 新增密码验证函数
-const validateRepeatPassword = async (_rule: any, value: string) => {
-  if (value !== passwordFormState.newPassword) {
-    return Promise.reject('两次输入的密码不一致');
-  }
-  return Promise.resolve();
-};
-
-// 替换菜单点击为标签页切换
-const handleTabChange = (key: string) => {
-  selectedKeys.value = [key];
-  if (key === '1') {
-    initInfoForm();
-  } else {
-    initPasswordForm();
-  }
 };
 
 onMounted(async () => {
@@ -496,185 +354,40 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
-.profile-container {
+/* 样式调整 */
+.user-info-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 
-  .info-card {
-    border-radius: var(--border-radius);
-    box-shadow: var(--card-shadow);
-    transition: all var(--transition-duration);
-    
-    &:hover {
-      box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12);
+  .avatar-wrapper {
+    position: relative;
+    margin-bottom: 16px;
+
+    .avatar-edit-btn {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      cursor: pointer;
     }
 
-    .user-info-header {
-      text-align: center;
-      padding: 24px 0;
-
-      .avatar-wrapper {
-        position: relative;
-        border-radius: 50%;
-        overflow: hidden;
-        
-        &::after {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          opacity: 0;
-          transition: opacity var(--transition-duration);
-        }
-        
-        .avatar-upload-overlay {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          background: var(--hover-bg-color);
-          padding: 12px 0;
-          opacity: 0;
-          transition: all var(--transition-duration);
-          transform: translateY(100%);
-          z-index: 1;
-          
-          .ant-btn {
-            color: #fff;
-            font-weight: 500;
-            font-size: 14px;
-            
-            &:hover {
-              color: #40a9ff;
-            }
-            
-            .anticon {
-              margin-right: 4px;
-              font-size: 16px;
-            }
-          }
-        }
-
-        &:hover {
-          &::after {
-            opacity: 1;
-          }
-          
-          .avatar-upload-overlay {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .ant-avatar {
-          width: 100%;
-          height: 100%;
-        }
-      }
-
-      .user-name {
-        margin: 8px 0 4px;
-        font-size: 20px;
-        line-height: 28px;
-        font-weight: 500;
-      }
-
-      .user-role {
-        font-size: 14px;
-      }
+    .avatar-upload-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      z-index: 10;
     }
 
-    .user-details {
-      :deep(.ant-descriptions-item) {
-        padding-bottom: 12px;
-
-        .detail-label {
-          display: inline-flex;
-          align-items: center;
-          white-space: nowrap;
-          
-          .anticon {
-            margin-right: 8px;
-            font-size: 16px;
-          }
-        }
-
-        .ant-descriptions-item-content {
-          display: inline-block;
-        }
-
-        .ant-descriptions-item-colon {
-          display: inline-block;
-          margin: 0 8px;
-        }
-      }
+    &:hover .avatar-upload-overlay {
+      display: block;
     }
   }
 
-  .settings-card {
-    border-radius: var(--border-radius);
-    box-shadow: var(--card-shadow);
-    
-    :deep(.ant-tabs-nav) {
-      margin-bottom: 24px;
-    }
-
-    .settings-form {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 24px;
-      
-      @media (max-width: 768px) {
-        padding: 16px 0;
-      }
-
-      .submit-button {
-        min-width: 120px;
-      }
-    }
-
-    .info-form, .password-form {
-      .ant-form-item {
-        margin-bottom: 24px;
-      }
-
-      .ant-input-affix-wrapper {
-        border-radius: 4px;
-        
-        &:hover, &:focus {
-          border-color: var(--primary-color);
-        }
-      }
-
-      .gender-group {
-        width: 100%;
-      }
-    }
-
-    .password-form {
-      max-width: 400px;
-    }
-
-    .tab-label {
-      display: flex;
-      align-items: center;
-      
-      .anticon {
-        margin-right: 8px;
-        font-size: 16px;
-      }
-    }
-  }
-}
-
-// 添加过渡动画
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>

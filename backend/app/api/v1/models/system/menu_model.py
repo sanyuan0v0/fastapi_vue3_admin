@@ -14,6 +14,7 @@ class MenuModel(ModelBase):
     1: 目录
     2: 菜单 
     3: 按钮/权限
+    4: 链接
     """
     __tablename__ = "system_menu"
     __table_args__ = ({'comment': '菜单表'})
@@ -26,7 +27,7 @@ class MenuModel(ModelBase):
     
     # 权限相关
     permission = Column(String(100), nullable=True, comment="权限标识(如：system:user:list)")
-    available = Column(Boolean, default=True, nullable=False, comment="是否启用(True:启用 False:禁用)")
+    status = Column(Boolean, default=True, nullable=False, comment="是否启用(True:启用 False:禁用)")
     
     # 前端路由相关
     icon = Column(String(50), nullable=True, comment="菜单图标")
@@ -38,7 +39,8 @@ class MenuModel(ModelBase):
     keep_alive = Column(Boolean, default=True, nullable=False, comment="是否缓存(True:是 False:否)")
     always_show = Column(Boolean, default=False, nullable=False, comment="是否始终显示(True:是 False:否)")
     title = Column(String(50), nullable=True, comment="菜单标题")
-    parmas = Column(String(200), nullable=True, comment="路由参数")
+    params = Column(Text, nullable=True, comment="路由参数(JSON数组: [{\"key\": \"\", \"value\": \"\"}])")
+    affix = Column(Boolean, default=False, nullable=False, comment="是否固定标签页(True:是 False:否)")
 
     # 层级关系
     parent_id = Column(

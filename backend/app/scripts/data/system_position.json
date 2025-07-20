@@ -2,7 +2,7 @@
   {
     "id": 1,
     "name": "董事长岗",
-    "available": true,
+    "status": true,
     "order": 1,
     "description": "董事长岗位",
     "creator_id": 1
@@ -10,7 +10,7 @@
   {
     "id": 2,
     "name": "运营岗",
-    "available": true,
+    "status": true,
     "order": 2,
     "description": "运营岗位",
     "creator_id": 1
@@ -18,7 +18,7 @@
   {
     "id": 3,
     "name": "销售岗",
-    "available": true,
+    "status": true,
     "order": 3,
     "description": "销售岗",
     "creator_id": 1
@@ -26,7 +26,7 @@
   {
     "id": 4,
     "name": "人事行政岗",
-    "available": true,
+    "status": true,
     "order": 4,
     "description": "人事行政岗",
     "creator_id": 1
@@ -34,7 +34,7 @@
   {
     "id": 5,
     "name": "开发岗",
-    "available": true,
+    "status": true,
     "order": 5,
     "description": "开发岗",
     "creator_id": 1
@@ -42,7 +42,7 @@
   {
     "id": 6,
     "name": "测试岗",
-    "available": true,
+    "status": true,
     "order": 6,
     "description": "测试岗",
     "creator_id": 1
@@ -50,7 +50,7 @@
   {
     "id": 7,
     "name": "演示岗",
-    "available": true,
+    "status": true,
     "order": 7,
     "description": "演示岗",
     "creator_id": 1

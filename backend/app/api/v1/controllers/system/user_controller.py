@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from fastapi import APIRouter, Depends, Query, UploadFile, Request
+from fastapi import APIRouter, Body, Depends, Path, Query, UploadFile, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 import urllib.parse
@@ -14,6 +14,7 @@ from app.api.v1.params.system.user_param import UserQueryParams
 from app.api.v1.schemas.system.auth_schema import AuthSchema
 from app.api.v1.schemas.system.user_schema import (
     CurrentUserUpdateSchema,
+    ResetPasswordSchema,
     UserCreateSchema,
     UserForgetPasswordSchema,
     UserRegisterSchema,
@@ -66,6 +67,14 @@ async def change_current_user_password_controller(
     logger.info(f"修改密码成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg='修改密码成功, 请重新登录')
 
+@router.put("/reset/password", summary="重置密码", description="重置密码")
+async def change_current_user_password_controller(
+    data: ResetPasswordSchema,
+    auth: AuthSchema = Depends(get_current_user)
+) -> JSONResponse:
+    result_dict = await UserService.reset_user_password_service(data=data, auth=auth)
+    logger.info(f"重置密码成功: {result_dict}")
+    return SuccessResponse(data=result_dict, msg='重置密码成功')
 
 @router.post('/register', summary="注册用户", description="注册用户")
 async def register_user_controller(
@@ -101,9 +110,9 @@ async def get_obj_list_controller(
     return SuccessResponse(data=result_dict, msg="查询用户成功")
 
 
-@router.get("/detail", summary="查询用户详情", description="查询用户详情")
+@router.get("/detail/{id}", summary="查询用户详情", description="查询用户详情")
 async def get_obj_detail_controller(
-    id: int = Query(..., description="用户ID"),
+    id: int = Path(..., description="用户ID"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:query"])),
 ) -> JSONResponse:
     result_dict = await UserService.get_detail_by_id_service(id=id, auth=auth)
@@ -133,10 +142,10 @@ async def update_obj_controller(
 
 @router.delete("/delete", summary="删除用户", description="删除用户")
 async def delete_obj_controller(
-    id: int = Query(..., description="用户ID"),
+    ids: list[int] = Body(..., description="ID列表"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:user:delete"])),
 ) -> JSONResponse:
-    await UserService.delete_user_service(id=id, auth=auth)
+    await UserService.delete_user_service(ids=ids, auth=auth)
     logger.info(f"删除用户成功: {id}")
     return SuccessResponse(msg="删除用户成功")
 

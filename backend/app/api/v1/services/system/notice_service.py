@@ -23,7 +23,7 @@ class NoticeService:
     
     @classmethod
     async def get_notice_list_available_service(cls, auth: AuthSchema) -> List[Dict]:
-        config_obj_list = await NoticeCRUD(auth).get_list_crud(search={'available': True})
+        config_obj_list = await NoticeCRUD(auth).get_list_crud(search={'status': True})
         return [NoticeOutSchema.model_validate(config_obj).model_dump() for config_obj in config_obj_list]
 
     @classmethod
@@ -53,15 +53,18 @@ class NoticeService:
         return NoticeOutSchema.model_validate(config_obj).model_dump()
     
     @classmethod
-    async def delete_notice_service(cls, auth: AuthSchema, id: int) -> None:
-        config = await NoticeCRUD(auth).get_by_id_crud(id=id)
-        if not config:
-            raise CustomException(msg='删除失败，该公告通知不存在')
-        await NoticeCRUD(auth).delete_crud(ids=[id])
+    async def delete_notice_service(cls, auth: AuthSchema, ids: list[int]) -> None:
+        if len(ids) < 1:
+            raise CustomException(msg='删除失败，删除对象不能为空')
+        for id in ids:
+            config = await NoticeCRUD(auth).get_by_id_crud(id=id)
+            if not config:
+                raise CustomException(msg='删除失败，该公告通知不存在')
+        await NoticeCRUD(auth).delete_crud(ids=ids)
     
     @classmethod
     async def set_notice_available_service(cls, auth: AuthSchema, data: BatchSetAvailable) -> None:
-        await NoticeCRUD(auth).set_available_crud(ids=data.ids, available=data.available)
+        await NoticeCRUD(auth).set_available_crud(ids=data.ids, status=data.status)
     
     @classmethod
     async def export_notice_service(cls, notice_list: List[Dict[str, Any]]) -> bytes:
@@ -71,7 +74,7 @@ class NoticeService:
             'notice_title': '公告标题', 
             'notice_type': '公告类型（1通知 2公告）',
             'notice_content': '公告内容',
-            'available': '状态',
+            'status': '状态',
             'description': '备注',
             'created_at': '创建时间',
             'updated_at': '更新时间',
@@ -83,7 +86,7 @@ class NoticeService:
         data = notice_list.copy()
         for item in data:
             # 处理状态
-            item['available'] = '正常' if item.get('available') else '停用'
+            item['status'] = '正常' if item.get('status') else '停用'
             # 处理公告类型
             item['notice_type'] = '通知' if item.get('notice_type') == 1 else '公告'
 

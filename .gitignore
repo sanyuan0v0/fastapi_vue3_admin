@@ -19,10 +19,5 @@ frontend/.idea
 frontend/.DS_Store
 frontend/node_modules
 frontend/dist
-
-uni-app/__pycache__
-uni-app/.vscode
-uni-app/.idea
-uni-app/.DS_Store
-uni-app/node_modules
-uni-app/dist
+frontend/dist
+frontend/.husky
