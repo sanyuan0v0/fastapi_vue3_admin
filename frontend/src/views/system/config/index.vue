@@ -88,7 +88,11 @@
           <el-empty :image-size="80" description="暂无数据" />
         </template>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" min-width="55" align="center" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" min-width="60" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" min-width="60">
+          <template #default="scope">
+            {{ (queryFormData.page_no - 1) * queryFormData.page_size + scope.$index + 1 }}
+          </template>
+        </el-table-column>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'config_name')?.show" key="config_name" label="配置名称" prop="config_name" min-width="100" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'config_key')?.show" key="config_key" label="配置键" prop="config_key" min-width="200" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'config_value')?.show" key="config_value" label="配置值" prop="config_value" min-width="120" show-overflow-tooltip />

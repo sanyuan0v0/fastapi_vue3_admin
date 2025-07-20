@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import DeptAPI, { DeptPageQuery } from "@/api/system/dept";
-import { formatDeptTree, listToTree } from "@/utils/common";
+import { formatTree, listToTree } from "@/utils/common";
 
 const props = defineProps({
   modelValue: {
@@ -76,7 +76,7 @@ onBeforeMount(() => {
   loading.value = true;
   DeptAPI.getDeptList(queryFormData).then((response) => {
     const treeData = listToTree(response.data.data.items);
-    deptOptions.value = formatDeptTree(treeData);
+    deptOptions.value = formatTree(treeData);
   }).finally(() => {
     loading.value = false;
   });

@@ -11,7 +11,6 @@ export const useNoticeStore = defineStore("notice", {
   actions: {
     async getNotice() {
       const response = await NoticeAPI.getNoticeListAvailable();
-      console.log('获取我的通知公告', response);
       this.noticeList = response.data.data.items;
       this.total = response.data.data.total;
       this.isNoticeLoaded = true;

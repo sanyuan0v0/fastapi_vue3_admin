@@ -106,26 +106,26 @@ export interface RoleForm {
 }
 
 export interface permissionDataType {
-  role_ids?: RoleTable["id"][];
-  menu_ids?: permissionMenuType["id"][];
-  data_scope?: number;
-  dept_ids?: number[];
+  role_ids: RoleTable["id"][];
+  menu_ids: permissionMenuType["id"][];
+  data_scope: number;
+  dept_ids: permissionDeptType["id"][];
 }
 
 export interface permissionDeptType {
-  id?: number;
-  name?: string;
-  parent_id?: number;
-  children?: permissionDeptType[];
+  id: number;
+  name: string;
+  parent_id: number;
+  children: permissionDeptType[];
 }
 
 export interface permissionMenuType {
-  id?: number;
-  name?: string;
-  type?: number;
-  permission?: string;
+  id: number;
+  name: string;
+  type: number;
+  permission: string;
   parent_id?: number;
-  status?: boolean;
+  status: boolean;
   description?: string;
   children?: permissionMenuType[];
 }

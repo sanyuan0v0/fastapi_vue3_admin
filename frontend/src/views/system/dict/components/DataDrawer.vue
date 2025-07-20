@@ -1,6 +1,6 @@
 <!-- 字典数据 -->
 <template>
-  <el-drawer v-model="drawerVisible" :title="`${props.dictLabel}-字典数据`" size="70%">
+  <el-drawer v-model="drawerVisible" :title="'【' + props.dictLabel + '】字典数据'" :size="drawerSize">
     <!-- 搜索区域 -->
     <div class="search-container">
       <el-form ref="queryFormRef" :model="queryFormData" :inline="true">
@@ -96,7 +96,11 @@
           <el-empty :image-size="80" description="暂无数据" />
         </template>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" min-width="55" align="center" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" min-width="60" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" min-width="60">
+          <template #default="scope">
+            {{ (queryFormData.page_no - 1) * queryFormData.page_size + scope.$index + 1 }}
+          </template>
+        </el-table-column>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_label')?.show" key="dict_label" label="标签" prop="dict_label" min-width="100" show-overflow-tooltip />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" key="status" label="状态" prop="status" min-width="100" show-overflow-tooltip>
           <template #default="scope">
@@ -242,6 +246,11 @@ import DictAPI, { DictDataTable, DictDataForm, DictDataPageQuery } from "@/api/s
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useDebounceFn } from "@vueuse/core";
 import { Check, Close } from '@element-plus/icons-vue'
+import { useAppStore } from "@/store/modules/app.store";
+import { DeviceEnum } from "@/enums/settings/device.enum";
+
+const appStore = useAppStore();
+const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "80%" : "60%"));
 
 const queryFormRef = ref();
 const dataFormRef = ref();

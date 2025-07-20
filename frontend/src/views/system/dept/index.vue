@@ -181,7 +181,7 @@ defineOptions({
 
 import DeptAPI, { DeptTable, DeptForm, DeptPageQuery } from "@/api/system/dept";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { listToTree, formatDeptTree } from "@/utils/common";
+import { listToTree, formatTree } from "@/utils/common";
 
 const queryFormRef = ref();
 const dataFormRef = ref();
@@ -246,13 +246,8 @@ const rules = reactive({
   status: [{ required: true, message: "请选择状态", trigger: "blur" }],
 });
 
-// 刷新数据(防抖)
-const handleRefresh = () => {
-  refreshTable();
-};
-
-// 刷新列表数据
-async function refreshTable() {
+// 列表刷新
+async function handleRefresh () {
   loading.value = true;
   try {
     const response = await DeptAPI.getDeptList(queryFormData);
@@ -264,7 +259,7 @@ async function refreshTable() {
   } finally {
     loading.value = false;
   }
-}
+};
 
 // 加载表格数据
 async function loadingData() {
@@ -275,7 +270,7 @@ async function loadingData() {
     pageTableData.value = treeData;
     total.value = response.data.data.total;
     // 加载部门选项
-    deptOptions.value = formatDeptTree(treeData);
+    deptOptions.value = formatTree(treeData);
   }
   catch (error: any) {
     ElMessage.error(error.message);

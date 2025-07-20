@@ -1,7 +1,7 @@
 import request from "@/utils/request";
 
 const MenuAPI = {
-  getMenuList(query: MenuPageQuery) {
+  getMenuList(query?: MenuPageQuery) {
     return request<ApiResponse<PageResult<MenuTable[]>>>({
       url: `/system/menu/list`,
       method: "get",
@@ -78,7 +78,7 @@ export interface MenuTable {
   hidden?: boolean;
   always_show?: boolean;
   title?: string;
-  params?: string;
+  params?: { key: string; value: string; }[];
   affix?: boolean;
   status?: boolean;
   description?: string;
@@ -103,7 +103,7 @@ export interface MenuForm {
   hidden?: boolean;
   always_show?: boolean;
   title?: string;
-  params?: string;
+  params?: { key: string; value: string; }[];
   affix?: boolean;
   status?: boolean;
   description?: string;

@@ -4,8 +4,8 @@
     <!-- 搜索区域 -->
     <div class="search-container">
       <el-form ref="queryFormRef" :model="queryFormData" :inline="true">
-        <el-form-item prop="notice_title" label="标题">
-          <el-input v-model="queryFormData.name" placeholder="请输入标题" clearable />
+        <el-form-item prop="name" label="菜单名称">
+          <el-input v-model="queryFormData.name" placeholder="请输入菜单名称" clearable />
         </el-form-item>
         <el-form-item prop="status" label="状态">
           <el-select v-model="queryFormData.status" placeholder="请选择状态" style="width: 167.5px" clearable>
@@ -69,23 +69,19 @@
         </div>
         <div class="data-table__toolbar--tools">
           <el-tooltip content="刷新">
-            <el-button type="default" icon="refresh" circle @click="handleRefresh" />
+            <el-button type="primary" icon="refresh" circle @click="handleRefresh" />
           </el-tooltip>
         </div>
       </div>
 
       <!-- 表格区域 -->
-      <el-table ref="dataTableRef" v-loading="loading" row-key="id" :data="pageTableData" :tree-props="{children: 'children',hasChildren: 'hasChildren'}" class="data-table__content" height="450" border stripe @selection-change="handleSelectionChange" @row-click="handleRowClick">
+      <el-table ref="dataTableRef" v-loading="loading" row-key="id" :data="pageTableData" :tree-props="{children: 'children',hasChildren: 'hasChildren'}" class="data-table__content" height="540" border stripe @selection-change="handleSelectionChange" @row-click="handleRowClick">
         <template #empty>
           <el-empty :image-size="80" description="暂无数据" />
         </template>
         <el-table-column type="selection" min-width="55" align="center" />
         <el-table-column type="index" fixed label="序号" min-width="60" />
-        <el-table-column label="菜单名称" prop="name" min-width="120">
-          <template #default="scope">
-            {{ scope.row.name }}
-          </template>
-        </el-table-column>
+        <el-table-column label="菜单名称" prop="name" min-width="240" />
         <el-table-column label="图标" prop="icon" min-width="80" align="center">
           <template #default="scope">
             <template v-if="scope.row.icon && scope.row.icon.startsWith('el-icon')">
@@ -114,23 +110,26 @@
           </template>
         </el-table-column>
         <el-table-column label="排序" prop="order" min-width="80" />
-        <el-table-column label="重定向" prop="redirect" min-width="100" />
+        <el-table-column label="重定向" prop="redirect" min-width="200" />
         <el-table-column label="是否缓存" prop="keep_alive" min-width="100">
           <template #default="scope">
-            <el-tag v-if="scope.row.keep_alive" type="success">是</el-tag>
-            <el-tag v-else type="danger">否</el-tag>
+            <el-tag :type="scope.row.keep_alive ? 'success' : 'danger'">
+              {{ scope.row.keep_alive ? '是' : '否' }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="是否隐藏" prop="hidden" min-width="100">
           <template #default="scope">
-            <el-tag v-if="scope.row.hidden" type="success">是</el-tag>
-            <el-tag v-else type="danger">否</el-tag>
+            <el-tag :type="scope.row.hidden ? 'success' : 'danger'">
+              {{ scope.row.hidden ? '是' : '否' }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="显示根路由" prop="always_show" min-width="120">
           <template #default="scope">
-            <el-tag v-if="scope.row.always_show" type="success">是</el-tag>
-            <el-tag v-else type="danger">否</el-tag>
+            <el-tag :type="scope.row.always_show ? 'success' : 'danger'">
+              {{ scope.row.always_show ? '是' : '否' }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="固定路由" prop="affix" min-width="100">
@@ -140,30 +139,26 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="菜单标题" prop="title" min-width="100"/>
-        <el-table-column label="权限标识" prop="permission" min-width="100"  />
-        <el-table-column label="路由名称" prop="router_name" min-width="100" />
-        <el-table-column label="路由路径" prop="router_name" min-width="100" />
-        <el-table-column label="组件路径" prop="component_path" min-width="100"  />
+        <el-table-column label="菜单标题" prop="title" min-width="200"/>
+        <el-table-column label="权限标识" prop="permission" min-width="220"  />
+        <el-table-column label="路由名称" prop="route_name" min-width="200" />
+        <el-table-column label="路由路径" prop="route_path" min-width="200" />
+        <el-table-column label="组件路径" prop="component_path" min-width="200"  />
         <el-table-column label="路由参数" prop="params" min-width="100" />
-        <el-table-column label="描述" prop="description" min-width="100" />
+        <el-table-column label="描述" prop="description" min-width="200" />
         <el-table-column label="创建时间" prop="created_at" min-width="200" sortable />
         <el-table-column label="更新时间" prop="updated_at" min-width="200" sortable />
 
         <el-table-column fixed="right" label="操作" align="center" min-width="260">
           <template #default="scope">
-            <el-button v-if="scope.row.type == MenuTypeEnum.CATALOG || scope.row.type == MenuTypeEnum.MENU" type="success" link size="small" icon="plus" @click.stop="handleOpenDialog(scope.row.id)">新增</el-button>
-            <el-button type="info" size="small" link icon="document" @click.stop="handleOpenDialog('detail', scope.row.id)">详情</el-button>
-            <el-button type="primary" size="small" link icon="edit" @click.stop="handleOpenDialog('update', scope.row.id)">编辑</el-button>
-            <el-button type="danger" size="small" link icon="delete" @click.stop="handleDelete([scope.row.id])">删除</el-button>
+            <el-button v-if="scope.row.type == MenuTypeEnum.CATALOG || scope.row.type == MenuTypeEnum.MENU" type="success" link size="small" icon="plus" @click.stop="handleOpenDialog('create', undefined, scope.row.id)">新增</el-button>
+            <el-button type="info" size="small" link icon="document" @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
+            <el-button type="primary" size="small" link icon="edit" @click="handleOpenDialog('update', scope.row.id)">编辑</el-button>
+            <el-button type="danger" size="small" link icon="delete" @click="handleDelete([scope.row.id])">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <!-- 分页区域 -->
-      <template #footer>
-        <pagination v-if="total > 0" v-model:total="total" v-model:page="queryFormData.page_no" v-model:limit="queryFormData.page_size" @pagination="loadingData" />
-      </template>
     </el-card>
 
     <!-- 弹窗区域 -->
@@ -179,7 +174,18 @@
             <el-tag v-if="detailFormData.type === MenuTypeEnum.BUTTON" type="danger">按钮</el-tag>
             <el-tag v-if="detailFormData.type === MenuTypeEnum.EXTLINK" type="info">外链</el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="图标" :span="2">{{ detailFormData.icon }}</el-descriptions-item>
+          <el-descriptions-item label="图标" :span="2">
+            <template #default="scope">
+              <template v-if=" detailFormData.icon &&  detailFormData.icon.startsWith('el-icon')">
+                <el-icon style="vertical-align: -0.15em">
+                  <component :is="detailFormData.icon.replace('el-icon-', '')" />
+                </el-icon>
+              </template>
+              <template v-else-if=" detailFormData.icon">
+                <div :class="`i-svg:${detailFormData.icon}`" />
+              </template>
+            </template>
+          </el-descriptions-item>
           <el-descriptions-item label="排序" :span="2">{{ detailFormData.order }}</el-descriptions-item>
           <el-descriptions-item label="权限标识" :span="2">{{ detailFormData.permission }}</el-descriptions-item>
           <el-descriptions-item label="路由名称" :span="2">{{ detailFormData.route_name }}</el-descriptions-item>
@@ -216,9 +222,9 @@
             </el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="排序" :span="2">{{ detailFormData.order }}</el-descriptions-item>
-          <el-descriptions-item label="描述" :span="2">{{ detailFormData.description }}</el-descriptions-item>
           <el-descriptions-item label="创建时间" :span="2">{{ detailFormData.created_at }}</el-descriptions-item>
           <el-descriptions-item label="更新时间" :span="2">{{ detailFormData.updated_at }}</el-descriptions-item>
+          <el-descriptions-item label="描述" :span="4">{{ detailFormData.description }}</el-descriptions-item>
         </el-descriptions>
       </template>
 
@@ -260,7 +266,7 @@
                 </el-tooltip>
               </div>
             </template>
-            <el-input v-model="formData.route_name" placeholder="User" />
+            <el-input v-model="formData.route_name" placeholder="请输入路由名称" />
           </el-form-item>
 
           <el-form-item v-if="formData.type == MenuTypeEnum.CATALOG || formData.type == MenuTypeEnum.MENU" prop="routePath">
@@ -279,7 +285,7 @@
               </div>
             </template>
             <el-input v-if="formData.type == MenuTypeEnum.CATALOG" v-model="formData.route_path" placeholder="system" />
-            <el-input v-else v-model="formData.route_path" placeholder="user" />
+            <el-input v-else v-model="formData.route_path" placeholder="请输入路由路径" />
           </el-form-item>
 
           <el-form-item v-if="formData.type == MenuTypeEnum.MENU" prop="component">
@@ -297,7 +303,7 @@
               </div>
             </template>
 
-            <el-input v-model="formData.component_path" placeholder="system/user/index" style="width: 95%">
+            <el-input v-model="formData.component_path" placeholder="请输入组件路径，如system/user/index" style="width: 95%">
               <template v-if="formData.type == MenuTypeEnum.MENU" #prepend>src/views/</template>
               <template v-if="formData.type == MenuTypeEnum.MENU" #append>.vue</template>
             </el-input>
@@ -318,7 +324,7 @@
               </div>
             </template>
 
-            <div v-if="!formData.params || formData.params.length === 0">
+            <div v-if="!formData.params || (Array.isArray(formData.params) && formData.params.length === 0)">
               <el-button type="success" plain @click="formData.params = [{ key: '', value: '' }]">
                 添加路由参数
               </el-button>
@@ -342,10 +348,27 @@
             </div>
           </el-form-item>
 
-          <el-form-item v-if="formData.type !== MenuTypeEnum.BUTTON" prop="hidden" label="显示状态">
+          <el-form-item v-if="formData.type !== MenuTypeEnum.BUTTON">
+            <template #label>
+              <div class="flex-y-center">
+                是否隐藏
+                <el-tooltip placement="bottom" effect="light">
+                  <template #content>
+                    选择"是", 菜单中隐藏
+                    <br />
+                    选择"否"，菜单中显示。
+                    <br />
+                  </template>
+                  <el-icon class="ml-1 cursor-pointer">
+                    <QuestionFilled />
+                  </el-icon>
+                </el-tooltip>
+              </div>
+            </template>
+
             <el-radio-group v-model="formData.hidden">
-              <el-radio :value="true">显示</el-radio>
-              <el-radio :value="false">隐藏</el-radio>
+              <el-radio :value="true">是</el-radio>
+              <el-radio :value="false">否</el-radio>
             </el-radio-group>
           </el-form-item>
 
@@ -382,12 +405,12 @@
           </el-form-item>
 
           <el-form-item label="排序" prop="order">
-            <el-input-number v-model="formData.order" style="width: 100px" controls-position="right" :min="0" />
+            <el-input-number v-model="formData.order"  controls-position="right" :min="1" />
           </el-form-item>
 
           <!-- 权限标识 -->
-          <el-form-item v-if="formData.type == MenuTypeEnum.BUTTON" label="权限标识" prop="perm">
-            <el-input v-model="formData.permission" placeholder="sys:user:add" />
+          <el-form-item v-if="formData.type == MenuTypeEnum.BUTTON || formData.type === MenuTypeEnum.MENU" label="权限标识" prop="perm">
+            <el-input v-model="formData.permission" placeholder="请输入权限标识，如sys:user:add" />
           </el-form-item>
 
           <el-form-item v-if="formData.type !== MenuTypeEnum.BUTTON" label="图标" prop="icon">
@@ -395,8 +418,26 @@
             <icon-select v-model="formData.icon" />
           </el-form-item>
 
-          <el-form-item v-if="formData.type == MenuTypeEnum.CATALOG" label="跳转路由">
-            <el-input v-model="formData.redirect" placeholder="跳转路由" />
+          <el-form-item v-if="formData.type == MenuTypeEnum.CATALOG || formData.type === MenuTypeEnum.MENU" label="重定向" prop="redirect">
+            <el-input v-model="formData.redirect" placeholder="请输入重定向路由" />
+          </el-form-item>
+
+          <el-form-item v-if="formData.type != MenuTypeEnum.BUTTON" label="常驻标签栏" prop="affix">
+            <el-radio-group v-model="formData.affix">
+              <el-radio :value="true">是</el-radio>
+              <el-radio :value="false">否</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <el-form-item label="状态" prop="status">
+            <el-radio-group v-model="formData.status">
+              <el-radio :value="true">启用</el-radio>
+              <el-radio :value="false">禁用</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <el-form-item label="描述" prop="description">
+            <el-input v-model="formData.description" :rows="4" :maxlength="100" show-word-limit type="textarea" placeholder="请输入描述" />
           </el-form-item>
         </el-form>
       </template>
@@ -424,7 +465,7 @@ import { DeviceEnum } from "@/enums/settings/device.enum";
 
 import MenuAPI, { MenuPageQuery, MenuForm, MenuTable } from "@/api/system/menu";
 import { MenuTypeEnum } from "@/enums/system/menu.enum";
-import { listToTree } from "@/utils/common";
+import { formatTree, listToTree } from "@/utils/common";
 
 const appStore = useAppStore();
 
@@ -459,18 +500,18 @@ const formData = reactive<MenuForm>({
   name: undefined,
   type: MenuTypeEnum.MENU,
   icon: undefined,
-  order: undefined,
+  order: 1,
   permission: '',
   route_name: '',
   route_path: '',
   component_path: '',
   redirect: '',
   parent_id: undefined,
-  keep_alive: undefined,
-  hidden: undefined,
-  always_show: undefined,
+  keep_alive: false,
+  hidden: false,
+  always_show: false,
   title: '',
-  params: '',
+  params: [] as { key: string; value: string }[],
   affix: false,
   status: true,
   description: undefined,
@@ -508,19 +549,41 @@ const rules = reactive({
 // 选择表格的行菜单ID
 const selectedMenuId = ref<number | undefined>();
 
-// 刷新数据(防抖)
-const handleRefresh = useDebounceFn(() => {
-  loadingData();
-  ElMessage.success("刷新成功");
-}, 1000);
+// 列表刷新
+async function handleRefresh () {
+  loading.value = true;
+  try {
+    const response = await MenuAPI.getMenuList(queryFormData);
+    const treeData = listToTree(response.data.data.items);
+    pageTableData.value = treeData;
+    total.value = response.data.data.total;
+  } catch (error: any) {
+    ElMessage.error(error.message);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// 修改菜单选项过滤逻辑，添加递归过滤函数
+const filterMenuTypes = (nodes: MenuTable[]) => {
+  return nodes
+    .filter(node => node.type === MenuTypeEnum.CATALOG || node.type === MenuTypeEnum.MENU)
+    .map((node: any): any => ({
+      ...node,
+      children: node.children ? filterMenuTypes(node.children) : []
+    }));
+};
 
 // 加载表格数据
 async function loadingData() {
   loading.value = true;
   try {
     const response = await MenuAPI.getMenuList(queryFormData);
-    pageTableData.value = listToTree(response.data.data.items);
+    const treeData = listToTree(response.data.data.items);
+    pageTableData.value = treeData;
     total.value = response.data.data.total;
+    // 加载部门选项，只显示目录、菜单
+    menuOptions.value = formatTree(filterMenuTypes(treeData));
   }
   catch (error: any) {
     ElMessage.error(error.message);
@@ -566,10 +629,10 @@ async function handleCloseDialog() {
 }
 
 //打开弹窗
-async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: number) {
+async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: number, parentId?: number) {
   dialogVisible.type = type;
   if (id) {
-    const response = await MenuAPI.getMenuDetail({ id });
+    const response = await MenuAPI.getMenuDetail(id);
     if (type === 'detail') {
       dialogVisible.title = "菜单详情";
       Object.assign(detailFormData.value, response.data.data);
@@ -580,6 +643,10 @@ async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: numbe
   } else {
     dialogVisible.title = "新增菜单";
     formData.id = undefined;
+    // 设置父级部门
+    if (parentId) {
+      formData.parent_id = parentId;
+    }
   }
   dialogVisible.visible = true;
 }
@@ -632,48 +699,44 @@ async function handleSubmit() {
 
 // 删除、批量删除
 async function handleDelete(ids: number[]) {
-  if (!ids && !selectIds.value.length) {
-    ElMessageBox.confirm("确认删除该项数据?", "警告", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    }).then(async () => {
-      try {
-        loading.value = true;
-        await DictAPI.deleteDictType({ ids });
-        handleResetQuery();
-      } catch (error: any) {
-        ElMessage.error(error.message);
-      } finally {
-        loading.value = false;
-      }
-    }).catch(() => {
-      ElMessage.info('已取消删除');
-    });
-  }
+  ElMessageBox.confirm("确认删除该项数据?", "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(async () => {
+    try {
+      loading.value = true;
+      await MenuAPI.deleteMenu(ids);
+      handleResetQuery();
+    } catch (error: any) {
+      ElMessage.error(error.message);
+    } finally {
+      loading.value = false;
+    }
+  }).catch(() => {
+    ElMessage.info('已取消删除');
+  });
 }
 
 // 批量启用/停用
 async function handleMoreClick(status: boolean) {
-  if (selectIds.value.length) {
-    ElMessageBox.confirm(`确认${status ? '启用' : '停用'}该项数据?`, "警告", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    }).then(async () => {
-      try {
-        loading.value = true;
-        await MenuAPI.batchAvailableMenu({ ids: selectIds.value, status });
-        handleResetQuery();
-      } catch (error: any) {
-        ElMessage.error(error.message);
-      } finally {
-        loading.value = false;
-      }
-    }).catch(() => {
-      ElMessage.info('已取消批量操作');
-    });
-  }
+  ElMessageBox.confirm(`确认${status ? '启用' : '停用'}该项数据?`, "警告", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(async () => {
+    try {
+      loading.value = true;
+      await MenuAPI.batchAvailableMenu({ ids: selectIds.value, status });
+      handleResetQuery();
+    } catch (error: any) {
+      ElMessage.error(error.message);
+    } finally {
+      loading.value = false;
+    }
+  }).catch(() => {
+    ElMessage.info('已取消批量操作');
+  });
 }
 
 onMounted(() => {

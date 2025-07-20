@@ -1,5 +1,3 @@
-
-
 // 问候语：根据当前小时返回不同问候语
 export function greetings () {
   // 当前时间（用于计算问候语）
@@ -145,7 +143,7 @@ export function listToTree(list: any[]) {
 }
 
 // 加载部门选项
-export function formatDeptTree(nodes: any[]): any[] {
+export function formatTree(nodes: any[]): any[] {
   return nodes.map(node => {
     const formattedNode = {
       value: node.id,
@@ -153,7 +151,7 @@ export function formatDeptTree(nodes: any[]): any[] {
     };
     
     if (node.children && node.children.length > 0) {
-      Object.assign(formattedNode, { children: formatDeptTree(node.children) });
+      Object.assign(formattedNode, { children: formatTree(node.children) });
     }
     
     return formattedNode;

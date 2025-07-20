@@ -22,7 +22,7 @@ export interface Meta {
   /** 排序 */
   order?: number;
   /** 参数 */
-  params?: string;
+  params?: { key: string; value: string; }[];
   /** 是否固定路由 */
   affix?: boolean;
 }

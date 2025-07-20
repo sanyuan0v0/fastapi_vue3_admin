@@ -1,7 +1,7 @@
 import request from "@/utils/request";
 
 const DeptAPI = {
-  getDeptList(query: DeptPageQuery) {
+  getDeptList(query?: DeptPageQuery) {
     return request<ApiResponse<PageResult<DeptTable[]>>>({
       url: `/system/dept/list`,
       method: "get",

@@ -120,7 +120,11 @@
               <el-empty :image-size="80" description="暂无数据" />
             </template>
             <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" min-width="55" align="center" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" align="center" min-width="60" />
+            <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" align="center" min-width="60" >
+              <template #default="scope">
+                {{ (queryFormData.page_no - 1) * queryFormData.page_size + scope.$index + 1 }}
+              </template>
+            </el-table-column>
             <el-table-column v-if="tableColumns.find(col => col.prop === 'avatar')?.show" label="头像" prop="avatar" min-width="80" align="center">
               <template #default="scope">
                 <el-avatar size="small" :src="scope.row.avatar" />
@@ -179,7 +183,7 @@
     <el-drawer v-model="dialogVisible.visible" :title="dialogVisible.title" append-to-body :size="drawerSize" @close="handleCloseDialog">
       <!-- 详情 -->
       <template v-if="dialogVisible.type === 'detail'">
-        <el-descriptions :column="2" border>
+        <el-descriptions :column="4" border>
           <el-descriptions-item label="编号" :span="2">{{ detailFormData.id }}</el-descriptions-item>
           <el-descriptions-item label="头像" :span="2">
             <el-avatar :src="detailFormData.avatar" size="small"></el-avatar>
@@ -208,7 +212,7 @@
           <el-descriptions-item label="创建人" :span="2">{{ detailFormData.creator?.name }}</el-descriptions-item>
           <el-descriptions-item label="创建时间" :span="2">{{ detailFormData.created_at }}</el-descriptions-item>
           <el-descriptions-item label="更新时间" :span="2">{{ detailFormData.updated_at }}</el-descriptions-item>
-          <el-descriptions-item label="描述" :span="2">{{ detailFormData.description }}</el-descriptions-item>
+          <el-descriptions-item label="描述" :span="4">{{ detailFormData.description }}</el-descriptions-item>
         </el-descriptions>
       </template>
       <!-- 新增、编辑表单 -->

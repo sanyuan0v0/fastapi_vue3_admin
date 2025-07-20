@@ -37,6 +37,7 @@ const LogAPI = {
 export default LogAPI;
 
 export interface LogPageQuery extends PageQuery {
+  type?: number;
   request_path?: string;
   creator_name?: string;
   /** 开始时间 */
@@ -47,6 +48,7 @@ export interface LogPageQuery extends PageQuery {
 
 export interface LogTable {
   id?: number;
+  type?: number; // 1 登录日志 2 操作日志
   request_path?: string;
   request_method?: string;
   request_ip?: string;

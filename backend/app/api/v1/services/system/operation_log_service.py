@@ -65,6 +65,7 @@ class OperationLogService:
         # 操作日志字段映射
         mapping_dict = {
             'id': '编号',
+            'type': '日志类型',
             'request_path': '请求URL',
             'request_method': '请求方式',
             'request_payload': '请求参数',
@@ -87,5 +88,7 @@ class OperationLogService:
         for item in data:
             # 处理状态
             item['response_code'] = '成功' if item.get('response_code') == 200 else '失败'
+            # 处理日志类型
+            item['type'] = '操作日志' if item.get('type') == 1 else '登录日志'
 
         return ExcelUtil.export_list2excel(list_data=operation_log_list, mapping_dict=mapping_dict)

@@ -39,7 +39,7 @@ class MenuModel(ModelBase):
     keep_alive = Column(Boolean, default=True, nullable=False, comment="是否缓存(True:是 False:否)")
     always_show = Column(Boolean, default=False, nullable=False, comment="是否始终显示(True:是 False:否)")
     title = Column(String(50), nullable=True, comment="菜单标题")
-    params = Column(String(200), nullable=True, comment="路由参数")
+    params = Column(Text, nullable=True, comment="路由参数(JSON数组: [{\"key\": \"\", \"value\": \"\"}])")
     affix = Column(Boolean, default=False, nullable=False, comment="是否固定标签页(True:是 False:否)")
 
     # 层级关系

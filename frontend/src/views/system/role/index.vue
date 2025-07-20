@@ -1,11 +1,11 @@
-<!-- 岗位管理 -->
+<!-- 角色管理 -->
 <template>
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="search-container">
       <el-form ref="queryFormRef" :model="queryFormData" :inline="true">
-        <el-form-item prop="name" label="岗位名称">
-          <el-input v-model="queryFormData.name" placeholder="请输入岗位名称" clearable />
+        <el-form-item prop="name" label="角色名称">
+          <el-input v-model="queryFormData.name" placeholder="请输入角色名称" clearable />
         </el-form-item>
         <el-form-item prop="status" label="状态">
           <el-select v-model="queryFormData.status" placeholder="请选择状态" style="width: 167.5px" clearable>
@@ -96,11 +96,23 @@
           <el-empty :image-size="80" description="暂无数据" />
         </template>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" width="55" align="center" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" width="60" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" width="60" >
+          <template #default="scope">
+            {{ (queryFormData.page_no - 1) * queryFormData.page_size + scope.$index + 1 }}
+          </template>
+        </el-table-column>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" key="name" label="角色名称" prop="name" min-width="100" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'data_scope')?.show" key="data_scope" label="数据权限" prop="data_scope" min-width="100" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'data_scope')?.show" key="data_scope" label="数据权限" prop="data_scope" min-width="200">
+          <template #default="scope">
+            <el-tag v-if="scope.row.data_scope === 1" type="primary">仅本人数据权限</el-tag>
+            <el-tag v-else-if="scope.row.data_scope === 2" type="info">本部门数据权限</el-tag>
+            <el-tag v-else-if="scope.row.data_scope === 3" type="warning">本部门及以下数据权限</el-tag>
+            <el-tag v-else-if="scope.row.data_scope === 4" type="success">全部数据权限</el-tag>
+            <el-tag v-else type="danger" >自定义数据权限</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'order')?.show" key="order" label="排序" prop="order" min-width="80" show-overflow-tooltip />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" key="status" label="状态" prop="status" min-width="60">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" key="status" label="状态" prop="status" min-width="80">
           <template #default="scope">
             <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
               {{ scope.row.status === true ? "启用" : "停用" }}
@@ -118,7 +130,7 @@
 
         <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" align="center" min-width="280">
           <template #default="scope">
-            <el-button type="primary" size="small" link icon="position" @click="handleOpenAssignPermDialog(scope.row)">分配权限</el-button>
+            <el-button type="primary" size="small" link icon="position" @click="handleOpenAssignPermDialog(scope.row.id, scope.row.name)">分配权限</el-button>
             <el-button type="info" size="small" link icon="document" @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
             <el-button type="primary" size="small" link icon="edit" @click="handleOpenDialog('update', scope.row.id)">编辑</el-button>
             <el-button type="danger" size="small" link icon="delete" @click="handleDelete([scope.row.id])">删除</el-button>
@@ -133,26 +145,30 @@
     </el-card>
 
     <!-- 角色表单弹窗 -->
-    <el-dialog v-model="dialogVisible.visible" :title="dialogVisible.title" width="500px" @close="handleCloseDialog">
+    <el-dialog v-model="dialogVisible.visible" :title="dialogVisible.title" @close="handleCloseDialog">
       <!-- 详情 -->
       <template v-if="dialogVisible.type === 'detail'">
-        <el-descriptions :column="2" border>
+        <el-descriptions :column="4" border>
           <el-descriptions-item label="角色名称" :span="2">{{ detailFormData.name }}</el-descriptions-item>
           <el-descriptions-item label="排序" :span="2">
             {{ detailFormData.order }}
           </el-descriptions-item>
           <el-descriptions-item label="数据权限" :span="2">
-            {{ detailFormData.data_scope }}
+            <el-tag v-if="detailFormData.data_scope === 1" type="primary">仅本人数据权限</el-tag>
+            <el-tag v-else-if="detailFormData.data_scope === 2" type="info">本部门数据权限</el-tag>
+            <el-tag v-else-if="detailFormData.data_scope === 3" type="warning">本部门及以下数据权限</el-tag>
+            <el-tag v-else-if="detailFormData.data_scope === 4" type="success">全部数据权限</el-tag>
+            <el-tag v-else type="danger" >自定义数据权限</el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="状态" :span="2">
             <el-tag :type="detailFormData.status ? 'success' : 'danger'">
               {{ detailFormData.status ? '启用' : '停用' }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="描述" :span="2">{{ detailFormData.description }}</el-descriptions-item>
           <el-descriptions-item label="创建人" :span="2">{{ detailFormData.creator?.name }}</el-descriptions-item>
           <el-descriptions-item label="创建时间" :span="2">{{ detailFormData.created_at }}</el-descriptions-item>
           <el-descriptions-item label="更新时间" :span="2">{{ detailFormData.updated_at }}</el-descriptions-item>
+          <el-descriptions-item label="描述" :span="4">{{ detailFormData.description }}</el-descriptions-item>
         </el-descriptions>
       </template>
       <!-- 新增、编辑表单 -->
@@ -189,148 +205,33 @@
       </template>
     </el-dialog>
 
-    <!-- 分配权限弹窗 -->
-    <el-drawer v-model="assignPermDialogVisible" :title="'【' + checkedRole.name + '】权限分配'" :size="drawerSize">
-      <!-- 使用 element-plus 的 row 和 col 组件实现左右两部分并排显示 -->
-      <el-row :gutter="20" style="height: calc(100% - 60px);">
-        <!-- 左侧数据权限设置，占据 8 列 -->
-        <el-col :span="8">
-          <div style="display: flex; gap: 10px; ">
-            <div style="width: 10px; background-color: #1677ff;"></div>
-            <div>
-              <span style="font-size: 16px;">数据授权</span>
-              <a-tooltip placement="right">
-                <template #title>
-                  <span>授权用户可操作的数据范围</span>
-                </template>
-                <QuestionCircleOutlined style="margin-left: 5px;" />
-              </a-tooltip>
-            </div>
-          </div>
+    <PermissonDrawer v-if="drawerVisible" v-model="drawerVisible" :role-name="checkedRole.name" :role-id="checkedRole.id" />
 
-          <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
-            <el-form-item label="数据权限" prop="data_scope">
-              <el-select v-model="permissionState.data_scope">
-                <el-option :key="1" label="全部数据" :value="1" />
-                <el-option :key="2" label="部门及子部门数据" :value="2" />
-                <el-option :key="3" label="本部门数据" :value="3" />
-                <el-option :key="4" label="仅本人数据" :value="4" />
-                <el-option :key="5" label="自定义数据" :value="5" />
-              </el-select>
-            </el-form-item>
-          </el-form>
-
-          <el-tree 
-            v-if="permissionState.data_scope === 5 && deptTreeData.length"
-            :checked-keys="permissionState.dept_ids" 
-            :row-key="record => record.id" 
-            :tree-data="deptTreeData"
-            :default-expand-all=true 
-            :field-names="{ children: 'children', title: 'name', key: 'id' }" 
-            checkable
-            check-strictly style="margin-top: 15px; height: calc(100% - 100px); overflow: auto;"
-            @check="deptTreeCheck" />
-        </el-col>
-
-        <!-- 右侧菜单功能权限设置，占据 16 列 -->
-        <el-col :span="16">
-          <div class="flex-x-between">
-            <div style="width: 10px; background-color: #1677ff;"></div>
-            <span style="font-size: 16px;">菜单授权</span>
-            <el-input v-model="permKeywords" clearable class="w-[150px]" placeholder="菜单权限名称">
-              <template #prefix>
-                <Search />
-              </template>
-            </el-input>
-
-            <div class="flex-center ml-5">
-              <el-button type="primary" size="small" plain @click="togglePermTree">
-                <template #icon>
-                  <Switch />
-                </template>
-                {{ isExpanded ? "收缩" : "展开" }}
-              </el-button>
-              <el-checkbox v-model="parentChildLinked" class="ml-5" @change="handleparentChildLinkedChange">
-                父子联动
-              </el-checkbox>
-
-              <el-tooltip placement="bottom">
-                <template #content>
-                  如果只需勾选菜单权限，不需要勾选子菜单或者按钮权限，请关闭父子联动
-                </template>
-                <el-icon class="ml-1 color-[--el-color-primary] inline-block cursor-pointer">
-                  <QuestionFilled />
-                </el-icon>
-              </el-tooltip>
-            </div>
-          </div>
-
-          <el-tree 
-            ref="permTreeRef" 
-            node-key="value" 
-            show-checkbox 
-            :data="menuTreeData"
-            :filter-node-method="handlePermFilter" 
-            :default-expand-all="true" 
-            :check-strictly="!parentChildLinked"
-            class="mt-5" 
-            style="height: calc(100% - 60px); 
-            overflow: auto;">
-            <template #default="{ data }">
-              {{ data.label }}
-            </template>
-          </el-tree>
-        </el-col>
-      </el-row>
-
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button type="primary" @click="handleAssignPermSubmit">确 定</el-button>
-          <el-button @click="assignPermDialogVisible = false">取 消</el-button>
-        </div>
-      </template>
-    </el-drawer>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ElMessage, ElMessageBox } from "element-plus";
-import { useAppStore } from "@/store/modules/app.store";
-import { DeviceEnum } from "@/enums/settings/device.enum";
-
-import RoleAPI, { RoleTable, RoleForm, TablePageQuery, permissionDataType, permissionDeptType, permissionMenuType } from "@/api/system/role";
-import MenuAPI from "@/api/system/menu";
-
 defineOptions({
   name: "Role",
   inheritAttrs: false,
 });
 
-const appStore = useAppStore();
+import { ElMessage, ElMessageBox } from "element-plus";
+import RoleAPI, { RoleTable, RoleForm, TablePageQuery } from "@/api/system/role";
 
 const queryFormRef = ref();
 const dataFormRef = ref();
-const permTreeRef = ref();
 const selectIds = ref<number[]>([]);
 const loading = ref(false);
-const ids = ref<number[]>([]);
 const total = ref(0);
 const isExpand = ref(false);
 const isExpandable = ref(true);
 
-
-const permissionState = ref<permissionDataType>({
-  role_ids: [],
-  menu_ids: [],
-  data_scope: 1,
-  dept_ids: []
-});
-const deptTreeData = ref<permissionDeptType[]>([]);
-const menuTreeData = ref<permissionMenuType[]>([]);
-
 // 分页表单
 const pageTableData = ref<RoleTable[]>([]);
 
+// 抽屉显隐
+const drawerVisible = ref(false);
 
 // 表格列配置
 const tableColumns = ref([
@@ -347,10 +248,11 @@ const tableColumns = ref([
   { prop: 'operation', label: '操作', show: true }
 ])
 
-const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
-
 // 详情表单
 const detailFormData = ref<RoleTable>({});
+
+// 选中的角色
+const checkedRole = ref<RoleTable>({});
 
 const queryFormData = reactive<TablePageQuery>({
   page_no: 1,
@@ -384,19 +286,6 @@ const rules = reactive({
   status: [{ required: true, message: "请选择状态", trigger: "blur" }],
 });
 
-// 选中的角色
-interface CheckedRole {
-  id?: number;
-  name?: string;
-}
-
-const checkedRole = ref<CheckedRole>({});
-const assignPermDialogVisible = ref(false);
-
-const permKeywords = ref("");
-const isExpanded = ref(true);
-
-const parentChildLinked = ref(true);
 
 // 加载表格数据
 async function loadingData() {
@@ -594,83 +483,12 @@ async function handleMoreClick(status: boolean) {
 }
 
 // 打开分配菜单权限弹窗
-async function handleOpenAssignPermDialog(row: RoleTable) {
-  const roleId = row.id;
+async function handleOpenAssignPermDialog(roleId: number, roleName: string) {
   if (roleId) {
-    assignPermDialogVisible.value = true;
-    loading.value = true;
-
+    drawerVisible.value = true;
     checkedRole.value.id = roleId;
-    checkedRole.value.name = row.name;
-
-    // 获取所有的菜单
-    menuTreeData.value = await MenuAPI.getMenuList();
-
-    // 回显角色已拥有的菜单
-    RoleAPI.getRoleMenuIds(roleId)
-      .then((data) => {
-        const checkedMenuIds = data;
-        checkedMenuIds.forEach((menuId) => permTreeRef.value!.setChecked(menuId, true, false));
-      })
-      .finally(() => {
-        loading.value = false;
-      });
+    checkedRole.value.name = roleName;
   }
-}
-
-// 分配菜单权限提交
-function handleAssignPermSubmit() {
-  const roleId = checkedRole.value.id;
-  if (roleId) {
-    const checkedMenuIds: number[] = permTreeRef
-      .value!.getCheckedNodes(false, true)
-      .map((node: any) => node.value);
-
-    loading.value = true;
-    RoleAPI.setPermission(roleId, checkedMenuIds)
-      .then(() => {
-        ElMessage.success("分配权限成功");
-        assignPermDialogVisible.value = false;
-        handleResetQuery();
-      })
-      .finally(() => {
-        loading.value = false;
-      });
-  }
-}
-
-// 展开/收缩 菜单权限树
-function togglePermTree() {
-  isExpanded.value = !isExpanded.value;
-  if (permTreeRef.value) {
-    Object.values(permTreeRef.value.store.nodesMap).forEach((node: any) => {
-      if (isExpanded.value) {
-        node.expand();
-      } else {
-        node.collapse();
-      }
-    });
-  }
-}
-
-// 权限筛选
-watch(permKeywords, (val) => {
-  permTreeRef.value!.filter(val);
-});
-
-function handlePermFilter(
-  value: string,
-  data: {
-    [key: string]: any;
-  }
-) {
-  if (!value) return true;
-  return data.label.includes(value);
-}
-
-// 父子菜单节点是否联动
-function handleparentChildLinkedChange(val: any) {
-  parentChildLinked.value = val;
 }
 
 onMounted(() => {

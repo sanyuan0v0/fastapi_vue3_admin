@@ -1500,7 +1500,7 @@
     "route_name": null,
     "route_path": null,
     "component_path": null,
-    "parent_id": 62,
+    "parent_id": 71,
     "status": true,
     "keep_alive": false,
     "hidden": false,
@@ -1535,7 +1535,7 @@
   {
     "id": 74,
     "name": "接口管理",
-    "type": 2,
+    "type": 4,
     "icon": "api",
     "order": 1,
     "permission": "common:docs:query",
@@ -1556,7 +1556,7 @@
   {
     "id": 75,
     "name": "文档管理",
-    "type": 2,
+    "type": 4,
     "icon": "el-icon-Document",
     "order": 2,
     "permission": "common:redoc:query",

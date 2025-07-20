@@ -10,6 +10,12 @@
         <el-form-item prop="creator_name" label="创建人">
           <el-input v-model="queryFormData.creator_name" placeholder="请输入创建人" clearable />
         </el-form-item>
+        <el-form-item prop="type" label="日志类型">
+          <el-select v-model="queryFormData.type" placeholder="请选择日志类型" style="width: 167.5px" clearable>
+            <el-option label="登录日志" value=1 />
+            <el-option label="操作日志" value=2 />
+          </el-select>
+        </el-form-item>
         <!-- 时间范围，收起状态下隐藏 -->
         <el-form-item v-if="isExpand" prop="start_time" label="创建时间">
           <el-date-picker v-model="queryFormData.start_time" type="daterange" value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
@@ -82,7 +88,18 @@
           <el-empty :image-size="80" description="暂无数据" />
         </template>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" prop='selection' type="selection" min-width="55" align="center" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" min-width="60" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" min-width="60" >
+          <template #default="scope">
+            {{ (queryFormData.page_no - 1) * queryFormData.page_size + scope.$index + 1 }}
+          </template>
+        </el-table-column>
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'type')?.show" label="日志类型" prop="type" min-width="100">
+          <template #default="scope">
+            <el-tag :type="scope.row.type === 1 ? 'success' : 'primary'">
+              {{ scope.row.type === 1 ? '登录日志' : '操作日志' }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'request_path')?.show" label="请求路径" prop="request_path" min-width="200" show-overflow-tooltip />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'request_method')?.show" label="请求方法" prop="request_method" min-width="100">
           <template #default="scope">
@@ -133,6 +150,11 @@
       <!-- 详情 -->
       <template v-if="dialogVisible.type === 'detail'">
         <el-descriptions :column="4" border>
+          <el-descriptions-item label="日志类型" :span="2">
+            <el-tag :type="detailFormData.type === 1 ? 'success' : 'primary'">
+              {{ detailFormData.type === 1 ? '登录日志' : '操作日志' }}
+            </el-tag>
+          </el-descriptions-item>
           <el-descriptions-item label="请求路径" :span="2">{{ detailFormData.request_path }}</el-descriptions-item>
           <el-descriptions-item label="请求方法" :span="2">
             <el-tag :type="getMethodType(detailFormData.request_method)">
@@ -145,15 +167,15 @@
             </el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="请求IP" :span="2">{{ detailFormData.request_ip }}</el-descriptions-item>
+          <el-descriptions-item label="处理时间" :span="2">{{ detailFormData.process_time }}</el-descriptions-item>
+          <el-descriptions-item label="浏览器" :span="2">{{ detailFormData.request_browser }}</el-descriptions-item>
+          <el-descriptions-item label="操作系统" :span="2">{{ detailFormData.request_os }}</el-descriptions-item>
           <el-descriptions-item label="请求参数" :span="4">
             <el-input v-model="detailFormData.request_payload" type="textarea" :rows="3" readonly class="long-text-editor" />
           </el-descriptions-item>
           <el-descriptions-item label="响应数据" :span="4">
             <el-input v-model="detailFormData.response_json" type="textarea" :rows="5" readonly class="long-text-editor" />
           </el-descriptions-item>
-          <el-descriptions-item label="处理时间" :span="2">{{ detailFormData.process_time }}</el-descriptions-item>
-          <el-descriptions-item label="浏览器" :span="2">{{ detailFormData.request_browser }}</el-descriptions-item>
-          <el-descriptions-item label="操作系统" :span="2">{{ detailFormData.request_os }}</el-descriptions-item>
           <el-descriptions-item label="登录地点" :span="2">{{ detailFormData.login_location }}</el-descriptions-item>
           <el-descriptions-item label="创建人" :span="2">{{ detailFormData.creator?.name }}</el-descriptions-item>
           <el-descriptions-item label="创建时间" :span="2">{{ detailFormData.created_at }}</el-descriptions-item>
@@ -199,6 +221,7 @@ const pageTableData = ref<LogTable[]>([]);
 const tableColumns = ref([
   { prop: 'selection', label: '选择框', show: true },
   { prop: 'index', label: '序号', show: true },
+  { prop: 'type', label: '日志类型', show: true },
   { prop: 'request_path', label: '请求路径', show: true },
   { prop: 'request_method', label: '请求方法', show: true },
   { prop: 'response_code', label: '响应状态码', show: true },
@@ -221,6 +244,7 @@ const detailFormData = ref<LogTable>({});
 const queryFormData = reactive<LogPageQuery>({
   page_no: 1,
   page_size: 10,
+  type: undefined,
   request_path: undefined,
   creator_name: undefined,
   start_time: undefined,
