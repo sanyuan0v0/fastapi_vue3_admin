@@ -115,14 +115,14 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_ip')?.show" label="请求IP" prop="request_ip" min-width="150">
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_ip')?.show" label="请求IP" prop="request_ip" min-width="180" show-overflow-tooltip>
           <template #default="scope">
             <el-text>{{ scope.row.request_ip }}</el-text>
             <CopyButton v-if="scope.row.request_ip" :text="scope.row.request_ip" style="margin-left: 2px" />
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'process_time')?.show" label="处理时间" prop="process_time" min-width="200" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_browser')?.show" label="浏览器" prop="request_browser" min-width="100" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'process_time')?.show" label="处理时间" prop="process_time" min-width="120" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_browser')?.show" label="浏览器" prop="request_browser" min-width="220" show-overflow-tooltip/>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'request_os')?.show" label="系统" prop="request_os" min-width="100" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" label="描述" prop="description" min-width="120" show-overflow-tooltip />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" label="创建时间" prop="created_at" min-width="200" sortable />

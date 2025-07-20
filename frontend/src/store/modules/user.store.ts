@@ -80,6 +80,8 @@ export const useUserStore = defineStore("user", {
     resetAllState() {
       // 重置用户状态
       Auth.clearAuth();
+      // 重置用户信息
+      this.clearUserInfo();
       // 重置路由
       usePermissionStoreHook().resetRouter();
       // 清除标签视图

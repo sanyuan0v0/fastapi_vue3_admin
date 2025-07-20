@@ -1,7 +1,7 @@
 <template>
   <el-drawer
     v-model="drawerVisible"
-    size="380"
+    :size="drawerSize"
     :title="t('settings.project')"
     :before-close="handleCloseDrawer"
     class="settings-drawer"
@@ -163,6 +163,11 @@ const { t } = useI18n();
 import { LayoutMode, SidebarColor, ThemeMode } from "@/enums";
 import { useSettingsStore } from "@/store";
 import { themeColorPresets } from "@/settings";
+import { useAppStore } from "@/store/modules/app.store";
+import { DeviceEnum } from "@/enums/settings/device.enum";
+
+const appStore = useAppStore();
+const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "400px" : "90%"));
 
 // 按钮图标
 const copyIcon = markRaw(DocumentCopy);

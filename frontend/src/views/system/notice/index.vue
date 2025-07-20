@@ -127,7 +127,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'notice_content')?.show" label="内容" prop="notice_content" min-width="100" show-overflow-tooltip />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'notice_content')?.show" label="内容" prop="notice_content" min-width="200" show-overflow-tooltip />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" label="描述" prop="description" min-width="140" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" label="创建时间" prop="created_at" min-width="180" sortable />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" label="更新时间" prop="updated_at" min-width="180" sortable />
@@ -153,7 +153,7 @@
     </el-card>
 
     <!-- 弹窗区域 -->
-    <el-dialog v-model="dialogVisible.visible" :title="dialogVisible.title" top="3vh" @close="handleCloseDialog">
+    <el-dialog v-model="dialogVisible.visible" :title="dialogVisible.title"  @close="handleCloseDialog">
       <!-- 详情 -->
       <template v-if="dialogVisible.type === 'detail'">
         <el-descriptions :column="4" border>

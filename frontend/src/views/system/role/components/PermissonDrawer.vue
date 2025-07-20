@@ -1,7 +1,7 @@
   <!-- 角色授权 -->
 <template>
   <!-- 分配权限弹窗 -->
-  <el-drawer v-model="drawerVisible" :title="'【' + props.roleName + '】权限分配'" size="50%">
+  <el-drawer v-model="drawerVisible" :title="'【' + props.roleName + '】权限分配'" :size="drawerSize">
     <el-container>
       <!-- 数据权限 -->
       <el-aside >
@@ -149,7 +149,11 @@ import RoleAPI, { permissionDataType, permissionDeptType, permissionMenuType } f
 import DeptAPI from "@/api/system/dept";
 import MenuAPI from "@/api/system/menu";
 import type { TreeInstance } from 'element-plus'
+import { useAppStore } from "@/store/modules/app.store";
+import { DeviceEnum } from "@/enums/settings/device.enum";
 
+const appStore = useAppStore();
+const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "800px" : "90%"));
 const emit = defineEmits(['update:modelValue'])
 
 const permTreeRef = ref<TreeInstance>();
