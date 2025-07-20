@@ -53,6 +53,12 @@ class UserChangePasswordSchema(BaseModel):
     new_password: str = Field(default=None, max_length=128, description="新密码")
 
 
+class ResetPasswordSchema(BaseModel):
+    """修改密码"""
+    id: int = Field(..., description="主键ID")
+    password: str = Field(default=None, min_length=6, max_length=128, description="新密码")
+
+
 class UserCreateSchema(CurrentUserUpdateSchema):
     """新增"""
     model_config = ConfigDict(from_attributes=True)

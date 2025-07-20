@@ -14,6 +14,7 @@ from app.api.v1.params.system.user_param import UserQueryParams
 from app.api.v1.schemas.system.auth_schema import AuthSchema
 from app.api.v1.schemas.system.user_schema import (
     CurrentUserUpdateSchema,
+    ResetPasswordSchema,
     UserCreateSchema,
     UserForgetPasswordSchema,
     UserRegisterSchema,
@@ -66,6 +67,14 @@ async def change_current_user_password_controller(
     logger.info(f"修改密码成功: {result_dict}")
     return SuccessResponse(data=result_dict, msg='修改密码成功, 请重新登录')
 
+@router.put("/reset/password", summary="重置密码", description="重置密码")
+async def change_current_user_password_controller(
+    data: ResetPasswordSchema,
+    auth: AuthSchema = Depends(get_current_user)
+) -> JSONResponse:
+    result_dict = await UserService.reset_user_password_service(data=data, auth=auth)
+    logger.info(f"重置密码成功: {result_dict}")
+    return SuccessResponse(data=result_dict, msg='重置密码成功')
 
 @router.post('/register', summary="注册用户", description="注册用户")
 async def register_user_controller(

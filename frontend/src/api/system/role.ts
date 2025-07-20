@@ -1,7 +1,7 @@
 import request from "@/utils/request";
 
 const RoleAPI = {
-  getRoleList(query: TablePageQuery) {
+  getRoleList(query?: TablePageQuery) {
     return request<ApiResponse<PageResult<RoleTable[]>>>({
       url: `/system/role/list`,
       method: "get",

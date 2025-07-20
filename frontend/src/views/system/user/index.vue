@@ -80,21 +80,14 @@
               </el-dropdown>
             </div>
 
-            <!-- <div class="data-table__toolbar--tools">
-              <el-button icon="upload" @click="handleOpenImportDialog">
-                导入
-              </el-button>
-
-              <el-button icon="download" @click="handleExport">
-                导出
-              </el-button>
-            </div> -->
             <div class="data-table__toolbar--tools">
               <el-tooltip content="导入">
-                <el-button type="info" icon="upload" circle @click="handleOperation('import')" />
+                <!-- <el-button type="info" icon="upload" circle @click="handleOperation('import')" /> -->
+                <el-button type="info" icon="upload" circle @click="handleOpenImportDialog" />
               </el-tooltip>
               <el-tooltip content="导出">
-                <el-button type="warning" icon="download" circle @click="handleOperation('export')" />
+                <!-- <el-button type="warning" icon="download" circle @click="handleOperation('export')" /> -->
+                <el-button type="warning" icon="download" circle @click="handleExport" />
               </el-tooltip>
               <el-tooltip content="刷新">
                 <el-button type="primary" icon="refresh" circle @click="handleRefresh" />
@@ -148,7 +141,9 @@
             </el-table-column>
             <el-table-column v-if="tableColumns.find(col => col.prop === 'gender')?.show" label="性别" min-width="100">
               <template #default="scope">
-                <DictLabel v-model="scope.row.gender" code="gender" />
+                <el-tag v-if="scope.row.gender ==='0'" type="success">男</el-tag>
+                <el-tag v-else-if="scope.row.gender ==='1'" type="warning">女</el-tag>
+                <el-tag v-else type="info">未知</el-tag>
               </template>
             </el-table-column>
 
@@ -191,11 +186,13 @@
           <el-descriptions-item label="账号" :span="2">{{ detailFormData.username }}</el-descriptions-item>
           <el-descriptions-item label="用户名" :span="2">{{ detailFormData.name }}</el-descriptions-item>
           <el-descriptions-item label="性别" :span="2">
-            <DictLabel v-model="detailFormData.gender" code="gender" />
+            <el-tag v-if="detailFormData.gender ==='0'" type="success">男</el-tag>
+            <el-tag v-else-if="detailFormData.gender ==='1'" type="warning">女</el-tag>
+            <el-tag v-else type="info">未知</el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="部门" :span="2">{{ detailFormData.dept_name }}</el-descriptions-item>
-          <el-descriptions-item label="角色" :span="2">{{ detailFormData.roleNames }}</el-descriptions-item>
-          <el-descriptions-item label="岗位" :span="2">{{ detailFormData.positionNames }}</el-descriptions-item>
+          <el-descriptions-item label="角色" :span="2">{{ detailFormData.roles ? detailFormData.roles.map(item => item.name).join('、') : '' }}</el-descriptions-item>
+          <el-descriptions-item label="岗位" :span="2">{{ detailFormData.positions ? detailFormData.positions.map(item => item.name).join('、') : '' }}</el-descriptions-item>  
           <el-descriptions-item label="邮箱" :span="2">{{ detailFormData.email }}</el-descriptions-item>
           <el-descriptions-item label="手机号" :span="2">{{ detailFormData.mobile }}</el-descriptions-item>
           <el-descriptions-item label="是否超管" :span="2">
@@ -227,7 +224,11 @@
           </el-form-item>
 
           <el-form-item label="性别" prop="gender">
-            <Dict v-model="formData.gender" code="gender" />
+            <el-select v-model="formData.gender" placeholder="请选择性别">
+              <el-option label="男" value="0" />
+              <el-option label="女" value="1" />
+              <el-option label="未知" value="2" />
+            </el-select>
           </el-form-item>
 
           <el-form-item label="手机号码" prop="mobile">
@@ -239,17 +240,17 @@
           </el-form-item>
 
           <el-form-item label="部门" prop="dept_id">
-            <el-tree-select v-model="formData.dept_id" placeholder="请选择所属部门" :data="deptOptions" filterable check-strictly :render-after-expand="false" />
+            <el-tree-select v-model="formData.dept_id" placeholder="请选择上级部门" :data="deptOptions" filterable check-strictly :render-after-expand="false" />
           </el-form-item>
 
           <el-form-item label="角色" prop="role_ids">
-            <el-select v-model="formData.roleNames" multiple placeholder="请选择角色">
+            <el-select v-model="formData.role_ids" multiple placeholder="请选择角色">
               <el-option v-for="item in roleOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
 
           <el-form-item label="岗位" prop="position_ids">
-            <el-select v-model="formData.positionNames" multiple placeholder="请选择岗位">
+            <el-select v-model="formData.position_ids" multiple placeholder="请选择岗位">
               <el-option v-for="item in positionOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
@@ -264,8 +265,8 @@
 
           <el-form-item label="状态" prop="status">
             <el-radio-group v-model="formData.status">
-              <el-radio label="true">启用</el-radio>
-              <el-radio label="false">停用</el-radio>
+              <el-radio :value="true">启用</el-radio>
+              <el-radio :value="false">停用</el-radio>
             </el-radio-group>
           </el-form-item>
 
@@ -310,6 +311,8 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { useDebounceFn } from "@vueuse/core";
 
 import UserAPI, { type UserForm, type UserInfo, type UserPageQuery } from "@/api/system/user";
+import { listToTree, formatTree } from "@/utils/common";
+import PositionAPI from "@/api/system/position";
 import DeptAPI from "@/api/system/dept";
 import RoleAPI from "@/api/system/role";
 
@@ -333,6 +336,8 @@ const selectIds = ref<number[]>([]);
 const deptOptions = ref<OptionType[]>();
 // 角色下拉数据源
 const roleOptions = ref<OptionType[]>();
+// 岗位下拉数据源
+const positionOptions = ref<OptionType[]>();
 // 导入弹窗显示状态
 const importDialogVisible = ref(false);
 // 分页表单
@@ -387,7 +392,7 @@ const formData = reactive<UserForm>({
   email: undefined,
   mobile: undefined,
   is_superuser: undefined,
-  status: undefined,
+  status: true,
   description: undefined,
 })
 
@@ -461,8 +466,8 @@ async function handleResetQuery() {
 
 // 重置表单
 async function resetForm() {
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
+  userFormRef.value.resetFields();
+  userFormRef.value.clearValidate();
   formData.id = undefined;
 }
 
@@ -482,7 +487,7 @@ function hancleResetPassword(row: UserInfo) {
         ElMessage.warning("密码至少需要6位字符，请重新输入");
         return false;
       }
-      UserAPI.changeCurrentUserPassword(row.id, value).then(() => {
+      UserAPI.resetUserPassword({id: row.id!, password: value}).then(() => {
         ElMessage.success("密码重置成功，新密码是：" + value);
       });
     },
@@ -515,6 +520,26 @@ async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: numbe
     formData.id = undefined;
   }
   dialogVisible.visible = true;
+
+  const deptResponse = await DeptAPI.getDeptList(queryFormData);
+  const treeData = listToTree(deptResponse.data.data.items);
+  deptOptions.value = formatTree(treeData);
+
+  const roleResponse = await RoleAPI.getRoleList();
+  roleOptions.value = roleResponse.data.data.items
+    .filter(item => item.id !== undefined && item.name !== undefined)
+    .map(item => ({
+      value: item.id as number,
+      label: item.name as string
+    }));
+
+  const positionResponse = await PositionAPI.getPositionList();
+  positionOptions.value = positionResponse.data.data.items
+    .filter(item => item.id !== undefined && item.name !== undefined)
+    .map(item => ({
+      value: item.id as number,
+      label: item.name as string
+    }));
 }
 
 // 提交表单（防抖）
@@ -695,6 +720,28 @@ async function handleMoreClick(status: boolean) {
 // 打开导入弹窗
 function handleOpenImportDialog() {
   importDialogVisible.value = true;
+}
+
+// 导出用户
+function handleExport() {
+  UserAPI.exportUser(queryFormData).then((response: any) => {
+    const fileData = response.data;
+    const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
+    const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
+
+    const blob = new Blob([fileData], { type: fileType });
+    const downloadUrl = window.URL.createObjectURL(blob);
+
+    const downloadLink = document.createElement("a");
+    downloadLink.href = downloadUrl;
+    downloadLink.download = fileName;
+
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+
+    document.body.removeChild(downloadLink);
+    window.URL.revokeObjectURL(downloadUrl);
+  });
 }
 
 onMounted(() => {

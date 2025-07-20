@@ -184,7 +184,10 @@ export default defineConfig(({ mode }: ConfigEnv) => {
         "element-plus/es/components/watermark/style/index",
         "element-plus/es/components/tour/style/index",
         "element-plus/es/components/tour-step/style/index",
-        "element-plus/es/components/popconfirm/style/index"
+        "element-plus/es/components/popconfirm/style/index",
+        "element-plus/es/components/container/style/index",
+        "element-plus/es/components/main/style/index",
+        "element-plus/es/components/aside/style/index"
       ],
     },
     // 构建配置

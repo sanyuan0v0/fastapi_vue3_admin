@@ -229,13 +229,14 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
    </tr>
    <tr>
         <td><img src="./backend/static/image/job.png"/>任务管理</td>
-        <td><img src="./backend/static/image/docs.png"/>接口管理</td>
-        <td><img src="./backend/static/image/redoc.png"/>文档管理</td>
-        <td><img src="./backend/static/image/info.png"/>个人信息</td>
-   </tr>
-   </tr>
-        <td><img src="./backend/static/image/help.png"/>在线文档</td>
         <td><img src="./backend/static/image/dict.png"/>字典管理</td>
+        <td><img src="./backend/static/image/analysis.png"/>分析管理</td>
+        <td><img src="./backend/static/image/docs.png"/>接口管理</td>
+   </tr>
+   </tr>
+        <td><img src="./backend/static/image/theme.png"/>系统主题</td>
+        <td><img src="./backend/static/image/help.png"/>在线文档</td>
+        <td><img src="./backend/static/image/lock.png"/>系统锁屏</td>
    </tr>
 </table>
 
@@ -253,17 +254,8 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 - [RuoYi-Vue3-FastAPI 项目](https://gitee.com/insistence2022/RuoYi-Vue3-FastAPI)
 - [APScheduler 项目](https://github.com/agronholm/apscheduler)
 - [Vite 项目](https://github.com/vitejs/vite)
-## Project Source Code
-
-| Project | Gitee   | Github    | GitCode|
-| ---- | ----| ---- | ---- |
-| vue3-element-admin ✅| [vue3-element-admin](https://gitee.com/youlaiorg/vue3-element-admin) | [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin) | [vue3-element-admin](https://gitcode.com/youlai/vue3-element-admin) |
-| vue3-element-admin JS Version| [vue3-element-admin-js](https://gitee.com/youlaiorg/vue3-element-admin-js) | [vue3-element-admin-js](https://github.com/youlaitech/vue3-element-admin-js) | [vue3-element-admin-js](https://gitcode.com/youlai/vue3-element-admin-js) |
-| vue3-element-admin Lite Version | [vue3-element-template](https://gitee.com/youlaiorg/vue3-element-template) | [vue3-element-template](https://github.com/youlaitech/vue3-element-template) |[vue3-element-template](https://gitcode.com/youlai/vue3-element-template)|
-| vue-uniapp-admin Mobile Version | [vue-uniapp-admin](https://gitee.com/youlaiorg/vue-uniapp-admin) | [vue-uniapp-admin](https://github.com/youlaitech/vue-uniapp-admin) |[vue-uniapp-admin](https://gitcode.com/youlai/vue-uniapp-admin)|
-| Java Backend | [youlai-boot](https://gitee.com/youlaiorg/youlai-boot)       | [youlai-boot](https://github.com/haoxianrui/youlai-boot.git) |[youlai-boot](https://gitcode.com/youlai/youlai-boot.git)|
-| Node Backend | [youlai-nest](https://gitee.com/youlaiorg/youlai-nest)       | [youlai-nest](https://github.com/haoxianrui/youlai-nest.git) |[youlai-nest](https://gitcode.com/youlai/youlai-nest.git)|
----
+- [Vue3-element-admin 项目](https://gitee.com/youlaiorg/vue3-element-admin)
+- [Vue3-element-plus-admin 项目](https://gitee.com/kailong110120130/vue-element-plus-admin)
 
 ## 🎨 社区
 

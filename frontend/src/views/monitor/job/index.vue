@@ -16,6 +16,7 @@
             v-model="queryFormData.status"
             placeholder="请选择状态"
             clearable
+            style="width: 167.5px"
           >
             <el-option value="true" label="启用" />
             <el-option value="false" label="暂停" />

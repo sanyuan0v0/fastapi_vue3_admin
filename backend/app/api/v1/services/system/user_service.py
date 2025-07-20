@@ -19,6 +19,7 @@ from app.api.v1.schemas.system.auth_schema import AuthSchema
 from app.api.v1.schemas.system.menu_schema import MenuOutSchema
 from app.api.v1.schemas.system.user_schema import (
     CurrentUserUpdateSchema,
+    ResetPasswordSchema,
     UserOutSchema,
     UserCreateSchema,
     UserUpdateSchema,
@@ -239,6 +240,22 @@ class UserService:
             raise CustomException(msg="用户不存在")
         if not PwdUtil.verify_password(plain_password=data.old_password, password_hash=user.password):
             raise CustomException(msg='原密码输入错误')
+
+        # 更新密码
+        new_password_hash = PwdUtil.set_password_hash(password=data.new_password)
+        new_user = await UserCRUD(auth).change_password_crud(id=user.id, password_hash=new_password_hash)
+        return UserOutSchema.model_validate(new_user).model_dump()
+    
+    @classmethod
+    async def reset_user_password_service(cls, auth: AuthSchema, data: ResetPasswordSchema) -> Dict:
+        """修改用户密码"""
+        if not data.password:
+            raise CustomException(msg='密码不能为空')
+
+        # 验证用户
+        user = await UserCRUD(auth).get_by_id_crud(id=data.id)
+        if not user:
+            raise CustomException(msg="用户不存在")
 
         # 更新密码
         new_password_hash = PwdUtil.set_password_hash(password=data.new_password)

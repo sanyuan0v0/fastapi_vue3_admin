@@ -1,7 +1,7 @@
 import request from "@/utils/request";
 
 const PositionAPI = {
-  getPositionList(query: PositionPageQuery) {
+  getPositionList(query?: PositionPageQuery) {
     return request<ApiResponse<PageResult<PositionTable[]>>>({
       url: `/system/position/list`,
       method: "get",

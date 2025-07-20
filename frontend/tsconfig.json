@@ -25,7 +25,7 @@
     "allowJs": true,
 
     // 类型检查相关配置
-    "types": ["vite/client"] // 添加 Vite 客户端类型
+    "types": ["node", "vite/client", "element-plus/global"]
   },
 
   "include": ["mock/**/*.ts", "src/**/*.ts", "src/**/*.vue", "vite.config.ts"],

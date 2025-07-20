@@ -34,6 +34,14 @@ export const UserAPI = {
     });
   },
 
+  resetUserPassword(body: ResetPasswordForm) {
+    return request<ApiResponse>({
+      url: `/system/user/reset/password`,
+      method: "put",
+      data: body,
+    });
+  },
+
   registerUser(body: RegisterForm) {
     return request<ApiResponse>({
       url: `/system/user/register`,
@@ -171,10 +179,10 @@ export interface UserInfo {
   dept_id?: deptTreeType["id"];
   dept_name?: deptTreeType["name"];
   roles?: roleSelectorType[];
-  roleNames?: string;
+  roleNames?: roleSelectorType["name"][];
   role_ids?: roleSelectorType["id"][];
   positions?: positionSelectorType[];
-  positionNames?: string;
+  positionNames?: positionSelectorType["name"][];
   position_ids?: positionSelectorType["id"][];
   is_superuser?: boolean;
   status?: boolean;
@@ -226,8 +234,13 @@ export interface PasswordFormState {
   confirmPassword: string;
 }
 
+export interface ResetPasswordForm {
+  id: number;
+  password: string;
+}
+
 export interface UserForm {
-  id: undefined;
+  id?: number;
   username?: string;
   name?: string;
   dept_id?:  number;
