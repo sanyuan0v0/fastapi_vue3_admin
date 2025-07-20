@@ -105,8 +105,12 @@
             {{ (queryFormData.page_no - 1) * queryFormData.page_size + scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_name')?.show" key="dict_name" label="字典名称" prop="dict_name" min-width="120" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_type')?.show" key="dict_type" label="字典类型" prop="dict_type" min-width="160" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_name')?.show" key="dict_name" label="字典名称" prop="dict_name" min-width="140" show-overflow-tooltip/>
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_type')?.show" key="dict_type" label="字典类型" prop="dict_type" min-width="180">
+          <template #default="scope">
+            <el-tag type="primary">{{ scope.row.dict_type }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" key="status" label="状态" prop="status" min-width="80">
           <template #default="scope">
             <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
@@ -114,7 +118,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" key="description" label="描述" prop="description" min-width="140" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" key="description" label="描述" prop="description" min-width="140" show-overflow-tooltip/>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" key="created_at" label="创建时间" prop="created_at" min-width="200" sortable />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at" label="更新时间" prop="updated_at" min-width="200" sortable />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'creator')?.show" label="创建人" prop="creator" min-width="120">
@@ -142,7 +146,7 @@
     <el-dialog v-model="dialogVisible.visible" :title="dialogVisible.title" @close="handleCloseDialog">
       <!-- 详情 -->
       <template v-if="dialogVisible.type === 'detail'">
-        <el-descriptions :column="2" border>
+        <el-descriptions :column="4" border>
           <el-descriptions-item label="字典名称" :span="2">{{ detailFormData.dict_name }}</el-descriptions-item>
           <el-descriptions-item label="字典类型" :span="2">
             <el-tag type="primary">{{ detailFormData.dict_type }}</el-tag>

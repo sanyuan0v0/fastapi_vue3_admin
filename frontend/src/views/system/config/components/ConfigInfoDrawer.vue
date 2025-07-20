@@ -1,5 +1,5 @@
 <template>
-  <el-drawer v-model="drawerVisible" title="配置中心" size="30%">
+  <el-drawer v-model="drawerVisible" title="配置中心" :size="drawerSize">
     <el-form :model="configState" label-width="auto" style="width: 100%">
       <!-- 系统配置 -->
       <el-divider>系统配置</el-divider>
@@ -51,6 +51,11 @@ import { useConfigStore } from "@/store";
 import { useI18n } from 'vue-i18n';
 import { ElMessage } from 'element-plus';
 import SingleImageUpload from '@/components/Upload/SingleImageUpload.vue';
+import { useAppStore } from "@/store/modules/app.store";
+import { DeviceEnum } from "@/enums/settings/device.enum";
+
+const appStore = useAppStore();
+const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "500px" : "90%"));
 
 const t = useI18n().t;
 const configStore = useConfigStore();

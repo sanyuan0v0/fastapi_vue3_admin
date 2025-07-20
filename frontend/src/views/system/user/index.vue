@@ -178,7 +178,7 @@
     <el-drawer v-model="dialogVisible.visible" :title="dialogVisible.title" append-to-body :size="drawerSize" @close="handleCloseDialog">
       <!-- 详情 -->
       <template v-if="dialogVisible.type === 'detail'">
-        <el-descriptions :column="4" border>
+        <el-descriptions :column="2" border>
           <el-descriptions-item label="编号" :span="2">{{ detailFormData.id }}</el-descriptions-item>
           <el-descriptions-item label="头像" :span="2">
             <el-avatar :src="detailFormData.avatar" size="small"></el-avatar>
@@ -329,7 +329,7 @@ const total = ref(0);
 const loading = ref(false);
 const isExpand = ref(false);
 const isExpandable = ref(true);
-const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "600px" : "90%"));
+const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "450px" : "90%"));
 // 选中的用户ID
 const selectIds = ref<number[]>([]);
 // 部门下拉数据源

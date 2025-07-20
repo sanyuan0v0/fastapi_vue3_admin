@@ -95,7 +95,7 @@
         </el-table-column>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'config_name')?.show" key="config_name" label="配置名称" prop="config_name" min-width="100" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'config_key')?.show" key="config_key" label="配置键" prop="config_key" min-width="200" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'config_value')?.show" key="config_value" label="配置值" prop="config_value" min-width="120" show-overflow-tooltip />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'config_value')?.show" key="config_value" label="配置值" prop="config_value" min-width="200" show-overflow-tooltip />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'config_type')?.show" key="config_type" label="系统内置" prop="config_type" min-width="100">
           <template #default="scope">
             <el-tag v-if="scope.row.config_type" type="success">是</el-tag>
@@ -129,7 +129,7 @@
     <el-dialog v-model="dialogVisible.visible" :title="dialogVisible.title" @close="handleCloseDialog">
       <!-- 详情 -->
       <template v-if="dialogVisible.type === 'detail'">
-        <el-descriptions :column="2" border>
+        <el-descriptions :column="4" border>
           <el-descriptions-item label="配置名称" :span="2">{{ detailFormData.config_name }}</el-descriptions-item>
           <el-descriptions-item label="系统内置" :span="2">
             <el-tag v-if="detailFormData.config_type" type="success">是</el-tag>

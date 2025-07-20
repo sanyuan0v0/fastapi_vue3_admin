@@ -101,7 +101,7 @@
             {{ (queryFormData.page_no - 1) * queryFormData.page_size + scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_label')?.show" key="dict_label" label="标签" prop="dict_label" min-width="100" show-overflow-tooltip />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_label')?.show" key="dict_label" label="标签" prop="dict_label" min-width="150" show-overflow-tooltip />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" key="status" label="状态" prop="status" min-width="100" show-overflow-tooltip>
           <template #default="scope">
             <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
@@ -109,7 +109,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_type')?.show" key="dict_type" label="类型" prop="dict_type" min-width="100" show-overflow-tooltip>
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_type')?.show" key="dict_type" label="类型" prop="dict_type" min-width="180" show-overflow-tooltip>
           <template #default="scope">
             <el-tag type="primary">{{ scope.row.dict_type }}</el-tag>
           </template>
@@ -117,14 +117,14 @@
         <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_value')?.show" key="dict_value" label="值" prop="dict_value" min-width="100" show-overflow-tooltip />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'css_class')?.show" key="css_class" label="样式属性" prop="css_class" min-width="100" show-overflow-tooltip />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'list_class')?.show" key="list_class" label="列表类样式" prop="list_class" min-width="100" show-overflow-tooltip />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_sort')?.show" key="dict_sort" label="排序" prop="dict_sort" min-width="100" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_sort')?.show" key="dict_sort" label="排序" prop="dict_sort" min-width="60" />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'is_default')?.show" key="is_default" label="是否默认" prop="is_default" min-width="100">
           <template #default="scope">
             <el-tag v-if="scope.row.is_default" type="success">是</el-tag>
             <el-tag v-else type="danger">否</el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" key="description" label="描述" prop="description" min-width="100" />
+        <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" key="description" label="描述" prop="description" min-width="100" show-overflow-tooltip/>
         <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" key="created_at" label="创建时间" prop="created_at" min-width="200" sortable />
         <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at" label="更新时间" prop="updated_at" min-width="200" sortable />
           <el-table-column v-if="tableColumns.find(col => col.prop === 'creator')?.show" label="创建人" prop="creator" min-width="100">

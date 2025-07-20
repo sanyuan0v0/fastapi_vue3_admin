@@ -169,11 +169,10 @@
               </el-tooltip>
             </div>
           </template>
-          <el-table 
-            :data="server.disks" 
-            border 
-            
-          >
+          <el-table :data="server.disks" border >
+            <template #empty>
+              <el-empty :image-size="80" description="暂无数据" />
+            </template>
             <el-table-column 
               label="盘符路径" 
               prop="dir_name" 
