@@ -26,8 +26,6 @@ export function setupPermission() {
       // 处理已登录用户的路由访问
       await handleAuthenticatedUser(to, from, next);
     } else {
-      console.log("❌ User not logged in");
-
       // 未登录用户的处理
       if (whiteList.includes(to.path)) {
         next();

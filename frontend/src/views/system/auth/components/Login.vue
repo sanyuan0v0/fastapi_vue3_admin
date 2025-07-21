@@ -39,26 +39,16 @@
       <!-- 验证码 -->
       <el-form-item v-if="captchaState.enable" prop="captcha">
         <div flex>
-          <el-input
-            v-model.trim="loginForm.captcha"
-            :placeholder="t('login.captchaCode')"
-            clearable
-            @keyup.enter="handleLoginSubmit"
-          >
+          <el-input v-model.trim="loginForm.captcha" :placeholder="t('login.captchaCode')" clearable @keyup.enter="handleLoginSubmit" >
             <template #prefix>
               <div class="i-svg:captcha" />
             </template>
           </el-input>
-          <div cursor-pointer  flex-center ml-10px @click="getCaptcha">
-            <el-icon v-if="codeLoading" class="is-loading"><Loading /></el-icon>
-
-            <el-image
-              v-else
-              object-cover
-
-              :src="captchaState.img_base"
-              
-            />
+          <div cursor-pointer flex-center ml-10px  >
+            <el-icon v-if="codeLoading" class="is-loading">
+              <Loading />
+            </el-icon>
+            <el-image v-else object-cover :src="captchaState.img_base" @click="getCaptcha" />
           </div>
         </div>
       </el-form-item>
@@ -184,8 +174,6 @@ async function getCaptcha() {
     const response = await AuthAPI.getCaptcha()
     loginForm.captcha_key = response.data.data.key;
     captchaState.img_base = response.data.data.img_base;
-  } catch (error: any) {
-    console.error(error.message);
   } finally {
     codeLoading.value = false;
   }
@@ -208,7 +196,6 @@ async function handleLoginSubmit() {
     // 3. 登录成功，让路由守卫处理跳转逻辑
     // 解析目标地址，但不直接跳转
     const redirect = resolveRedirectTarget(route.query);
-    console.log("🎉 Login successful, target redirect:", redirect);
 
     // 通过替换当前路由触发路由守卫，让守卫处理后续的路由生成和跳转
     await router.replace(redirect);
@@ -219,7 +206,6 @@ async function handleLoginSubmit() {
   } catch (error) {
     // 5. 统一错误处理
     getCaptcha(); // 刷新验证码
-    console.error(error);
   } finally {
     loading.value = false;
   }

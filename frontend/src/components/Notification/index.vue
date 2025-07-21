@@ -112,9 +112,7 @@ onMounted(() => {
   featchMyNotice();
 });
 
-onBeforeUnmount(() => {
-  featchMyNotice();
-});
+
 </script>
 
 <style lang="scss" scoped></style>
