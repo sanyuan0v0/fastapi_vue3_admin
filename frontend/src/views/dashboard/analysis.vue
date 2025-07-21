@@ -28,57 +28,20 @@
                 仓库
               </div>
               <div class="mt-3 whitespace-nowrap">
-                <el-link href="https://gitee.com/youlaiorg/vue3-element-admin" target="_blank">
+                <el-link href="https://gitee.com/tao__tao/fastapi_vue3_admin" target="_blank">
                   <div class="i-svg:gitee text-lg color-#F76560" />
                 </el-link>
                 <el-divider direction="vertical" />
-                <el-link href="https://github.com/youlaitech/vue3-element-admin" target="_blank">
+                <el-link href="https://github.com/1014TaoTao/fastapi_vue3_admin" target="_blank">
                   <div class="i-svg:github text-lg color-#4080FF" />
                 </el-link>
                 <el-divider direction="vertical" />
-                <el-link href="https://gitcode.com/youlai/vue3-element-admin" target="_blank">
+                <el-link href="https://gitcode.com/qq_36002987/fastapi_vue3_admin" target="_blank">
                   <div class="i-svg:gitcode text-lg color-#FF9A2E" />
                 </el-link>
               </div>
             </div>
 
-            <!-- 文档 -->
-            <div>
-              <div class="font-bold color-#4080ff text-sm flex items-center">
-                <el-icon class="mr-2px">
-                  <Document />
-                </el-icon>
-                文档
-              </div>
-              <div class="mt-3 whitespace-nowrap">
-                <el-link href="https://juejin.cn/post/7228990409909108793" target="_blank">
-                  <div class="i-svg:juejin text-lg" />
-                </el-link>
-                <el-divider direction="vertical" />
-                <el-link href="https://youlai.blog.csdn.net/article/details/130191394" target="_blank">
-                  <div class="i-svg:csdn text-lg" />
-                </el-link>
-                <el-divider direction="vertical" />
-                <el-link href="https://www.cnblogs.com/haoxianrui/p/17331952.html" target="_blank">
-                  <div class="i-svg:cnblogs text-lg" />
-                </el-link>
-              </div>
-            </div>
-
-            <!-- 视频 -->
-            <div>
-              <div class="font-bold color-#f76560 text-sm flex items-center">
-                <el-icon class="mr-2px">
-                  <VideoCamera />
-                </el-icon>
-                视频
-              </div>
-              <div class="mt-3 whitespace-nowrap">
-                <el-link href="https://www.bilibili.com/video/BV1eFUuYyEFj" target="_blank">
-                  <div class="i-svg:bilibili text-lg" />
-                </el-link>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -86,31 +49,16 @@
         <div class="w-full sm:hidden mt-3">
           <div class="flex justify-end space-x-4 overflow-x-auto">
             <!-- 仓库图标 -->
-            <el-link href="https://gitee.com/youlaiorg/vue3-element-admin" target="_blank">
+            <el-link href="https://gitee.com/tao__tao/fastapi_vue3_admin" target="_blank">
               <div class="i-svg:gitee text-lg color-#F76560" />
             </el-link>
-            <el-link href="https://github.com/youlaitech/vue3-element-admin" target="_blank">
+            <el-link href="https://github.com/1014TaoTao/fastapi_vue3_admin" target="_blank">
               <div class="i-svg:github text-lg color-#4080FF" />
             </el-link>
-            <el-link href="https://gitcode.com/youlai/vue3-element-admin" target="_blank">
+            <el-link href="https://gitcode.com/qq_36002987/fastapi_vue3_admin" target="_blank">
               <div class="i-svg:gitcode text-lg color-#FF9A2E" />
             </el-link>
 
-            <!-- 文档图标 -->
-            <el-link href="https://juejin.cn/post/7228990409909108793" target="_blank">
-              <div class="i-svg:juejin text-lg" />
-            </el-link>
-            <el-link href="https://youlai.blog.csdn.net/article/details/130191394" target="_blank">
-              <div class="i-svg:csdn text-lg" />
-            </el-link>
-            <el-link href="https://www.cnblogs.com/haoxianrui/p/17331952.html" target="_blank">
-              <div class="i-svg:cnblogs text-lg" />
-            </el-link>
-
-            <!-- 视频图标 -->
-            <el-link href="https://www.bilibili.com/video/BV1eFUuYyEFj" target="_blank">
-              <div class="i-svg:bilibili text-lg" />
-            </el-link>
           </div>
         </div>
       </div>
@@ -287,7 +235,7 @@
           <template #header>
             <div class="flex-x-between">
               <span class="header-title">最新动态</span>
-              <el-link type="primary" underline="never" href="https://gitee.com/youlaiorg/vue3-element-admin/releases" target="_blank">
+              <el-link type="primary" underline="never" href="https://gitee.com/tao__tao/fastapi_vue3_admin/releases" target="_blank">
                 完整记录
                 <el-icon class="link-icon">
                   <TopRight />
@@ -362,7 +310,7 @@ const vesionList = ref<VersionItem[]>([
     title: "v3.2.1",
     date: dayjs().format('YYYY-MM-DD HH:mm:ss'),
     content: "优化性能，修复若干小bug。",
-    link: "https://gitee.com/youlaiorg/vue3-element-admin/releases",
+    link: "https://gitee.com/tao__tao/fastapi_vue3_admin/releases",
     tag: "更新",
   },
   {
@@ -370,7 +318,7 @@ const vesionList = ref<VersionItem[]>([
     title: "v3.2.0",
     date: dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
     content: "新增用户行为分析功能。",
-    link: "https://gitee.com/youlaiorg/vue3-element-admin/releases",
+    link: "https://gitee.com/tao__tao/fastapi_vue3_admin/releases",
     tag: "新功能",
   },
   {
@@ -378,7 +326,7 @@ const vesionList = ref<VersionItem[]>([
     title: "v3.1.0",
     date: dayjs().subtract(3, 'day').format('YYYY-MM-DD HH:mm:ss'),
     content: "优化权限管理系统。",
-    link: "https://gitee.com/youlaiorg/vue3-element-admin/releases",
+    link: "https://gitee.com/tao__tao/fastapi_vue3_admin/releases",
     tag: "优化",
   },
 ]);

@@ -20,8 +20,4 @@ export const enum ResultEnum {
    */
   ACCESS_TOKEN_INVALID = 401,
 
-  /**
-   * 拒绝访问
-   */
-  ACCESS_DENIED = 403,
 }

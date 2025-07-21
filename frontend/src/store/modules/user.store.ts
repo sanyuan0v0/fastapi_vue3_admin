@@ -46,34 +46,16 @@ export const useUserStore = defineStore("user", {
     },
     
     // 登录
-    login(LoginFormData: LoginFormData) {
-      return new Promise<void>((resolve, reject) => {
-        AuthAPI.login(LoginFormData)
-          .then((response) => {
-            // 保存记住我状态和token
-            this.rememberMe = LoginFormData.remember;
-            Auth.setTokens(response.data.data.access_token, response.data.data.refresh_token, this.rememberMe);
-            resolve();
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      });
+    async login(LoginFormData: LoginFormData) {
+      const response =  await AuthAPI.login(LoginFormData)
+      this.rememberMe = LoginFormData.remember;
+      Auth.setTokens(response.data.data.access_token, response.data.data.refresh_token, this.rememberMe);
     },
 
     // 登出
-    logout() {
-      return new Promise<void>((resolve, reject) => {
-        AuthAPI.logout({token: Auth.getAccessToken()})
-          .then(() => {
-            // 重置所有系统状态
-            this.resetAllState();
-            resolve();
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      });
+    async logout() {
+      await AuthAPI.logout({token: Auth.getAccessToken()});
+      this.resetAllState();
     },
 
     // 重置所有状态
@@ -106,7 +88,6 @@ export const useUserStore = defineStore("user", {
             resolve();
           })
           .catch((error) => {
-            console.log(" refreshToken  刷新失败", error);
             reject(error);
           });
       });

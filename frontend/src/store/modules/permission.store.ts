@@ -127,11 +127,8 @@ export const usePermissionStore = defineStore("permission", () => {
       
       routesLoaded.value = true;
 
-      console.log("✅ 动态路由:", (dynamicRoutes));
       return dynamicRoutes;
-    } catch (error) {
-      console.error("❌ 生成路由失败:", error);
-
+    } catch (error: any) {
       // 即使失败也要设置状态，避免无限重试
       routesLoaded.value = false;
 

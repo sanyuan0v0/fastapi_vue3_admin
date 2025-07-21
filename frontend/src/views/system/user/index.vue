@@ -87,7 +87,8 @@
               </el-tooltip>
               <el-tooltip content="导出">
                 <!-- <el-button type="warning" icon="download" circle @click="handleOperation('export')" /> -->
-                <el-button type="warning" icon="download" circle @click="handleExport" />
+                <!-- <el-button type="warning" icon="download" circle @click="handleExport" /> -->
+                <el-button type="warning" icon="download" circle @click="handleOpenExportsDialog" />
               </el-tooltip>
               <el-tooltip content="刷新">
                 <el-button type="primary" icon="refresh" circle @click="handleRefresh" />
@@ -296,6 +297,10 @@
 
     <!-- 用户导入 -->
     <UserImport v-model="importDialogVisible" @import-success="handleQuery()" />
+
+    <!-- 用户导出 -->
+    <UserExport v-model="exportsDialogVisible" @export-success="handleQuery()" />
+
   </div>
 </template>
 
@@ -318,6 +323,7 @@ import RoleAPI from "@/api/system/role";
 
 import DeptTree from "./components/DeptTree.vue";
 import UserImport from "./components/UserImport.vue";
+import UserExport from "./components/UserExport.vue";
 
 
 const appStore = useAppStore();
@@ -340,6 +346,8 @@ const roleOptions = ref<OptionType[]>();
 const positionOptions = ref<OptionType[]>();
 // 导入弹窗显示状态
 const importDialogVisible = ref(false);
+// 导出弹窗显示状态
+const exportsDialogVisible = ref(false);
 // 分页表单
 const pageTableData = ref<UserInfo[]>([]);
 // 详情表单
@@ -743,6 +751,13 @@ function handleExport() {
     window.URL.revokeObjectURL(downloadUrl);
   });
 }
+
+// 打开导出弹窗
+function handleOpenExportsDialog() {
+  exportsDialogVisible.value = true;
+}
+
+
 
 onMounted(() => {
   handleQuery();
