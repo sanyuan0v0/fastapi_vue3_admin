@@ -2,7 +2,7 @@
      <p align="center">
           <img src="./backend/static/image/logo.png" width="100"/> 
      </p>
-     <h2 align="center">Fastapi-Vue3-Admin v1.0.0</h2>
+     <h2 align="center">Fastapi-Vue3-Admin v2.0.0</h2>
      <h4 align="center">A modern, open-source, full-stack integrated rapid development platform for mid - and back - end systems. Give a ⭐️ to support!</h4>
      <p align="center">
           <a href="https://gitee.com/tao__tao/fastapi_vue3_admin.git" target="_blank">
