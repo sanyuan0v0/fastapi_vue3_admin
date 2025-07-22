@@ -86,9 +86,7 @@
                 <el-button type="info" icon="upload" circle @click="handleOpenImportDialog" />
               </el-tooltip>
               <el-tooltip content="导出">
-                <!-- <el-button type="warning" icon="download" circle @click="handleOperation('export')" /> -->
-                <!-- <el-button type="warning" icon="download" circle @click="handleExport" /> -->
-                <el-button type="warning" icon="download" circle @click="handleOpenExportsDialog" />
+                <el-button type="warning" icon="download" circle @click="handleOperation('export')" />
               </el-tooltip>
               <el-tooltip content="刷新">
                 <el-button type="primary" icon="refresh" circle @click="handleRefresh" />
@@ -298,9 +296,6 @@
     <!-- 用户导入 -->
     <UserImport v-model="importDialogVisible" @import-success="handleQuery()" />
 
-    <!-- 用户导出 -->
-    <UserExport v-model="exportsDialogVisible" @export-success="handleQuery()" />
-
   </div>
 </template>
 
@@ -323,8 +318,6 @@ import RoleAPI from "@/api/system/role";
 
 import DeptTree from "./components/DeptTree.vue";
 import UserImport from "./components/UserImport.vue";
-import UserExport from "./components/UserExport.vue";
-
 
 const appStore = useAppStore();
 
@@ -346,8 +339,6 @@ const roleOptions = ref<OptionType[]>();
 const positionOptions = ref<OptionType[]>();
 // 导入弹窗显示状态
 const importDialogVisible = ref(false);
-// 导出弹窗显示状态
-const exportsDialogVisible = ref(false);
 // 分页表单
 const pageTableData = ref<UserInfo[]>([]);
 // 详情表单
@@ -614,58 +605,37 @@ async function handleOperation(type: 'import' | 'export') {
     }
   }
   else if (type === 'export') {
-    // UserAPI.exportUser(queryParams).then((response: any) => {
-    //   const fileData = response.data;
-    //   const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
-    //   const fileType =
-    //     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
-
-    //   const blob = new Blob([fileData], { type: fileType });
-    //   const downloadUrl = window.URL.createObjectURL(blob);
-
-    //   const downloadLink = document.createElement("a");
-    //   downloadLink.href = downloadUrl;
-    //   downloadLink.download = fileName;
-
-    //   document.body.appendChild(downloadLink);
-    //   downloadLink.click();
-
-    //   document.body.removeChild(downloadLink);
-    //   window.URL.revokeObjectURL(downloadUrl);
-    // });
-
-    ElMessageBox.confirm('是否确认导出当前用户?', '警告', {
+    ElMessageBox.confirm('是否确认导出当前查询结果用户数据?', '警告', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
     }).then(async () => {
       try {
         loading.value = true;
-        const body = {
-          ...queryFormData,
-          page_no: 1,
-          page_size: total.value
-        };
+
         ElMessage.warning('正在导出数据，请稍候...');
 
-        const response = await UserAPI.exportUser(body);
-        const blob = new Blob([JSON.stringify(response.data.data)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
-        // 从响应头获取文件名
-        const contentDisposition = response.headers['content-disposition'];
-        let fileName = '系统配置.xlsx';
-        if (contentDisposition) {
-          const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
-          if (fileNameMatch) {
-            fileName = decodeURIComponent(fileNameMatch[1]);
-          }
-        }
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        ElMessage.success('导出成功');
+        UserAPI.exportUser(queryFormData).then((response: any) => {
+          // const fileData = JSON.stringify(response.data.data;
+          const fileData = response.data.data;
+          const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
+          const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
+
+          const blob = new Blob([fileData], { type: fileType });
+
+          const downloadUrl = window.URL.createObjectURL(blob);
+
+          const downloadLink = document.createElement("a");
+          downloadLink.href = downloadUrl;
+          downloadLink.download = fileName;
+
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          ElMessage.success('导出成功');
+          document.body.removeChild(downloadLink);
+          window.URL.revokeObjectURL(downloadUrl);
+        });
+
       } catch (error: any) {
         ElMessage.error('文件处理失败', error.message);
         console.error('导出错误:', error);
@@ -729,34 +699,6 @@ async function handleMoreClick(status: boolean) {
 function handleOpenImportDialog() {
   importDialogVisible.value = true;
 }
-
-// 导出用户
-function handleExport() {
-  UserAPI.exportUser(queryFormData).then((response: any) => {
-    const fileData = response.data;
-    const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
-    const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
-
-    const blob = new Blob([fileData], { type: fileType });
-    const downloadUrl = window.URL.createObjectURL(blob);
-
-    const downloadLink = document.createElement("a");
-    downloadLink.href = downloadUrl;
-    downloadLink.download = fileName;
-
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-
-    document.body.removeChild(downloadLink);
-    window.URL.revokeObjectURL(downloadUrl);
-  });
-}
-
-// 打开导出弹窗
-function handleOpenExportsDialog() {
-  exportsDialogVisible.value = true;
-}
-
 
 
 onMounted(() => {

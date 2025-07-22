@@ -101,7 +101,7 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   content: "";
-  background: url("@/assets/images/login-bg.svg");
+  background: url("/login-bg.svg");
   background-position: center center;
   background-size: cover;
 }

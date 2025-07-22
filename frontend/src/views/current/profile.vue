@@ -11,26 +11,30 @@
           </template>
           <div class="user-info-header">
             <div class="avatar-wrapper">
-              <el-avatar v-if="infoFormState.avatar" :src="infoFormState.avatar" :size="120" />
-              <el-avatar v-else :size="120">
-                <template #icon>
-                  <User />
-                </template>
-              </el-avatar>
-              <el-button type="info" class="avatar-edit-btn" circle icon="Camera" size="small" @click="handleUpload" />
-              <div class="avatar-upload-overlay">
-                <el-upload v-model:file-list="fileList" name="avatar" list-type="picture-card" :show-upload-list="false" :before-upload="beforeUpload" :custom-request="handleUploadCustomRequest">
-                  <div>
-                    <!-- <loading-outlined v-if="loading"></loading-outlined>
-                    <plus-outlined v-else></plus-outlined> -->
-                    <div style="margin-top: 8px">上传头像</div>
-                  </div>
+              <el-avatar 
+                :src="infoFormState.avatar" 
+                :size="120"
+              />
+                
+              <el-upload
+                  class="el-upload"
+                  v-model:file-list="fileList"
+                  name="avatar"
+                  :show-file-list="false"
+                  :before-upload="handleBeforeUpload"
+                  :on-success="handleUploadSuccess"
+                  :disabled="loading"
+                  :limit="1"
+                  :auto-upload="false"
+                  action="/api/upload/avatar"
+                >
+                  <template #trigger>
+                    <el-button type="primary" :icon="Camera" class="upload-trigger"  />
+                  </template>
                 </el-upload>
-              </div>
             </div>
             <span class="user-name">
               {{ infoFormState.name }}
-              <el-button type="primary" link :loading="infoSubmitting" icon="edit" @click="handleOpenDialog(DialogType.ACCOUNT)" />
             </span>
 
             <el-text>{{infoFormState.roles.map(item => item.name).join('、')}}</el-text>
@@ -114,39 +118,27 @@
                 <el-form ref="ruleFormRef" :model="infoFormState" :rules="rules" label-width="auto" :inline="true">
                   
                   <el-form-item label="姓名" name="name">
-                    <el-input v-model:value="infoFormState.name" placeholder="请输入姓名" allow-clear>
-                      <template #prefix>
-                        <User />
-                      </template>
-                    </el-input>
+                    <el-input v-model:value="infoFormState.name" placeholder="请输入姓名" prefix-icon="User" clearable />
                   </el-form-item>
 
                   <el-form-item label="手机号" name="mobile">
-                    <el-input v-model:value="infoFormState.mobile" placeholder="请输入手机号码" allow-clear>
-                      <template #prefix>
-                        <Phone />
-                      </template>
-                    </el-input>
+                    <el-input v-model:value="infoFormState.mobile" placeholder="请输入手机号码" prefix-icon="Phone" clearable />
                   </el-form-item>
 
                   <el-form-item label="邮箱" name="email">
-                    <el-input v-model:value="infoFormState.email" placeholder="请输入邮箱" allow-clear>
-                      <template #prefix>
-                        <Message />
-                      </template>
-                    </el-input>
+                    <el-input v-model:value="infoFormState.email" placeholder="请输入邮箱" prefix-icon="Message" clearable />
                   </el-form-item>
 
                   <el-form-item label="性别" name="gender">
-                    <el-radio-group v-model:value="infoFormState.gender">
-                      <el-radio v-for="item in DictDataStore['sys_user_sex']" :key="item.dict_value" :value="item.dict_value" >
+                    <el-radio-group v-model="infoFormState.gender">
+                      <el-radio v-for="item in dictDataStore['sys_user_sex']" :key="item.dict_value" :value="item.dict_value" >
                         {{ item.dict_label }}
                       </el-radio>
                     </el-radio-group>
                   </el-form-item>
 
                   <el-form-item>
-                    <el-button type="primary" :loading="infoSubmitting" icon="edit">保存更改</el-button>
+                    <el-button type="primary" :loading="infoSubmitting" icon="edit" @click="handleSave">保存更改</el-button>
                   </el-form-item>
                 </el-form>
               </div>
@@ -202,6 +194,7 @@
 import type { FormInstance } from 'element-plus'
 import UserAPI, { type InfoFormState, type PasswordFormState } from '@/api/system/user';
 import { useUserStore, useDictStore } from "@/store";
+import { Camera } from '@element-plus/icons-vue';
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -210,14 +203,11 @@ const dictStore = useDictStore();
 const ruleFormRef = ref<FormInstance>();
 const loading = ref<boolean>(false);
 
-const DictDataStore = computed(() => {
-  return dictStore.dictData;
-});
+const dictDataStore = computed(() => dictStore.dictData);
 
 // 字典数据
 const getOptions = async () => {
-  const dictOptions = await dictStore.getDict(['sys_user_sex']);
-  return dictOptions;
+  return await dictStore.getDict(['sys_user_sex']);;
 };
 
 // 状态定义
@@ -248,24 +238,28 @@ const passwordFormState = reactive<PasswordFormState>({
 // 头像上传处理优化
 const fileList = ref<any[]>([]);
 
-// 上传文件处理
-const handleUploadCustomRequest = async (options: any) => {
-  const { file, onSuccess, onError } = options;
-  try {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const response = await UserAPI.uploadCurrentUserAvatar(formData);
-    const fileUrl = response.data.data.file_url;
-    infoFormState.avatar = fileUrl;
-    fileList.value = [{ url: fileUrl }];
-
-    onSuccess(response, file);
-  } catch (error) {
-    onError(error);
-    console.error('上传失败:', error);
+// 文件上传前校验
+const handleBeforeUpload = (file: File) => {
+  const isImage = file.type.startsWith('image/');
+  if (!isImage) {
+    ElMessage.error('只能上传图片文件');
+    return false;
   }
+  return true;
 };
+
+// 上传成功回调
+const handleUploadSuccess = (response: any) => {
+  updateAvatar(response.data.file_url);
+  ElMessage.success('头像上传成功');
+};
+
+// 更新头像信息
+const updateAvatar = (fileUrl: string) => {
+  infoFormState.avatar = fileUrl;
+  fileList.value = [{ url: fileUrl }];
+};
+
 
 // 邮箱校验规则优化
 const rules = {
@@ -347,6 +341,21 @@ const initPasswordForm = () => {
   });
 };
 
+// 基本信息表单提交
+const handleSave = async (values: any) => {
+  try {
+    infoSubmitting.value = true;
+    values.avatar = infoFormState.avatar;
+    await UserAPI.updateCurrentUserInfo(values);
+    await userStore.getUserInfo;
+  } catch (error) {
+    console.error(error);
+    
+  } finally {
+    infoSubmitting.value = false;
+  }
+};
+
 onMounted(async () => {
   await getOptions();
   initInfoForm();
@@ -359,35 +368,34 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
 
   .avatar-wrapper {
-    position: relative;
     margin-bottom: 16px;
+    position: relative;
 
-    .avatar-edit-btn {
+    .el-upload {
+
+      &:hover {
+        opacity: 0.8; /* 鼠标悬浮时稍微降低透明度 */
+      }
+    }
+
+    .upload-trigger {
+      // top: 50%;
+      // left: 50%;
       position: absolute;
-      bottom: 0;
-      right: 0;
-      background-color: rgba(0, 0, 0, 0.5);
+      transform: translate(-50%, -50%);
+      opacity: 0;
       border-radius: 50%;
-      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      background: var(--el-color-primary);
     }
 
-    .avatar-upload-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: none;
-      z-index: 10;
-    }
-
-    &:hover .avatar-upload-overlay {
-      display: block;
+    /* 提升 hover 样式优先级 */
+    &:hover .upload-trigger {
+      opacity: 1 !important; /* 强制生效 */
     }
   }
-
 }
 </style>
