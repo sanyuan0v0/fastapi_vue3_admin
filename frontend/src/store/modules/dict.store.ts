@@ -17,7 +17,7 @@ export const useDictStore = defineStore("dict", {
       try {
         for (const type of types) {
           const response = await DictAPI.getInitDict(type);
-          this.dictData[type] = response.data.data as unknown as DictDataTable[];
+          this.dictData[type] = response.data.data as DictDataTable[];
           this.isLoaded = true;
         }
       } catch (error) {
