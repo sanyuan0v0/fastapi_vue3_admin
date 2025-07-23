@@ -132,7 +132,6 @@ const drawerVisible = ref(false);
  * 打开配置中心页面
  */
 function handleConfigClick() {
-  // router.push({ name: "Configinfo" });
   drawerVisible.value = true;
 }
 

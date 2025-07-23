@@ -303,21 +303,13 @@ async function loadingData() {
   }
 }
 
-// 刷新数据(防抖)
-const handleRefresh = useDebounceFn(() => {
-  loadingData();
-  ElMessage.success("刷新成功");
-}, 1000);
+// 列表刷新
+async function handleRefresh () {
+  await loadingData();
+};
 
 // 查询（重置页码后获取数据）
 async function handleQuery() {
-  queryFormData.page_no = 1;
-  loadingData();
-}
-
-// 重置查询
-async function handleResetQuery() {
-  queryFormRef.value.resetFields();
   queryFormData.page_no = 1;
   loadingData();
 }
@@ -327,10 +319,19 @@ async function handleSelectionChange(selection: any) {
   selectIds.value = selection.map((item: any) => item.id);
 }
 
+// 重置查询
+async function handleResetQuery() {
+  queryFormRef.value.resetFields();
+  queryFormData.page_no = 1;
+  loadingData();
+}
+
 // 重置表单
 async function resetForm() {
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
+  if (dataFormRef.value) {
+    dataFormRef.value.resetFields();
+    dataFormRef.value.clearValidate();
+  }
   formData.id = undefined;
 }
 

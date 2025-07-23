@@ -92,6 +92,17 @@ const modelValue = defineModel("modelValue", {
 });
 
 /**
+ * 定义组件触发的事件
+ */
+const emit = defineEmits<{
+  (e: 'success', fileInfo: FileInfo): void;
+  (e: 'error', error: any): void;
+  (e: 'input', value: string): void;
+  (e: 'onSuccess', fileInfo: FileInfo): void;
+  (e: 'onError', error: any): void;
+}>();
+
+/**
  * 限制用户上传文件的格式和大小
  */
 function handleBeforeUpload(file: UploadRawFile) {
@@ -177,7 +188,7 @@ function handlePreview(imagePath: string) {
  */
 const onSuccess = (fileInfo: FileInfo) => {
   ElMessage.success("上传成功");
-  modelValue.value = fileInfo.url;
+  emit('onSuccess', fileInfo); // 触发 onSuccess 事件
 };
 
 /**
@@ -186,6 +197,7 @@ const onSuccess = (fileInfo: FileInfo) => {
 const onError = (error: any) => {
   console.log("onError");
   ElMessage.error("上传失败: " + error.message);
+  emit('onError', error); // 触发 onError 事件
 };
 
 </script>

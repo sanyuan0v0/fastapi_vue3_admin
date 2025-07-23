@@ -244,7 +244,6 @@ const props = defineProps({
 
 import DictAPI, { DictDataTable, DictDataForm, DictDataPageQuery } from "@/api/system/dict";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { useDebounceFn } from "@vueuse/core";
 import { Check, Close } from '@element-plus/icons-vue'
 import { useAppStore } from "@/store/modules/app.store";
 import { DeviceEnum } from "@/enums/settings/device.enum";
@@ -332,11 +331,10 @@ const rules = reactive({
   is_default: [{ required: true, message: "请选择是否默认", trigger: "blur" }],
 });
 
-// 刷新数据(防抖)
-const handleRefresh = useDebounceFn(() => {
-  loadingData();
-  ElMessage.success("刷新成功");
-}, 1000);
+// 列表刷新
+async function handleRefresh () {
+  await loadingData();
+};
 
 // 加载表格数据
 async function loadingData() {
@@ -371,8 +369,10 @@ async function handleResetQuery() {
 
 // 重置表单
 async function resetForm() {
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
+  if (dataFormRef.value) {
+    dataFormRef.value.resetFields();
+    dataFormRef.value.clearValidate();
+  }
   formData.id = undefined;
 }
 

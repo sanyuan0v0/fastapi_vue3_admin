@@ -194,7 +194,6 @@ defineOptions({
 
 import PositionAPI, { PositionTable, PositionForm, PositionPageQuery } from "@/api/system/position";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { useDebounceFn } from "@vueuse/core";
 
 const queryFormRef = ref();
 const dataFormRef = ref();
@@ -259,11 +258,11 @@ const rules = reactive({
   status: [{ required: true, message: "请选择岗位状态", trigger: "blur" }],
 });
 
-// 刷新数据(防抖)
-const handleRefresh = useDebounceFn(() => {
-  loadingData();
-  ElMessage.success("刷新成功");
-}, 1000);
+// 列表刷新
+async function handleRefresh () {
+  await loadingData();
+};
+
 
 // 加载表格数据
 async function loadingData() {
@@ -296,8 +295,10 @@ async function handleResetQuery() {
 
 // 重置表单
 async function resetForm() {
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
+  if (dataFormRef.value) {
+    dataFormRef.value.resetFields();
+    dataFormRef.value.clearValidate();
+  }
   formData.id = undefined;
 }
 

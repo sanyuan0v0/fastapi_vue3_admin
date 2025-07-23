@@ -37,7 +37,7 @@
       <!-- 功能区域 -->
       <div class="data-table__toolbar">
         <div class="data-table__toolbar--actions">
-          <el-button type="danger" icon="delete" @click="handleClear()">强退所有</el-button>
+          <el-button type="danger" icon="delete" @click="handleClear">强退所有</el-button>
         </div>
         <div class="data-table__toolbar--tools">
           <el-tooltip content="刷新">
@@ -104,7 +104,6 @@ defineOptions({
 
 import OnlineAPI, { type OnlineUserPageQuery, type OnlineUserTable } from "@/api/monitor/online";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { useDebounceFn } from "@vueuse/core";
 
 const queryFormRef = ref();
 const total = ref(0);
@@ -138,11 +137,10 @@ const queryFormData = reactive<OnlineUserPageQuery>({
   ipaddr: undefined
 });
 
-// 刷新数据(防抖)
-const handleRefresh = useDebounceFn(() => {
-  loadingData();
-  ElMessage.success("刷新成功");
-}, 1000);
+// 列表刷新
+async function handleRefresh () {
+  await loadingData();
+};
 
 // 加载表格数据
 async function loadingData() {
@@ -212,8 +210,12 @@ async function handleClear() {
       handleResetQuery();
     } catch (error: any) {
       ElMessage.error(error.message);
+    } finally {
+      loading.value = false;
     }
-  })
+  }).catch(() => {
+    ElMessage.info('已取消强退');
+  });
 }
 onMounted(() => {
   loadingData();

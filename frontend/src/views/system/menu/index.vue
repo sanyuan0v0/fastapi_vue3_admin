@@ -595,7 +595,6 @@ async function loadingData() {
 
 // 查询（重置页码后获取数据）
 async function handleQuery() {
-  queryFormData.page_no = 1;
   loadingData();
 }
 
@@ -607,8 +606,10 @@ async function handleResetQuery() {
 
 // 重置表单
 async function resetForm() {
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
+  if (dataFormRef.value) {
+    dataFormRef.value.resetFields();
+    dataFormRef.value.clearValidate();
+  }
   formData.id = undefined;
 }
 

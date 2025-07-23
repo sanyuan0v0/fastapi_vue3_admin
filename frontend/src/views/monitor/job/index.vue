@@ -175,50 +175,44 @@
 
         <el-table-column fixed="right" label="操作" min-width="240">
           <template #default="scope">
-            <el-button
-              type="info"
-              size="small"
-              link
-              icon="document"
-              @click="handleOpenDialog('detail', scope.row.id)"
-              >详情</el-button
-            >
-            <el-button
-              type="primary"
-              size="small"
-              link
-              icon="edit"
-              @click="handleOpenDialog('update', scope.row.id)"
-              >编辑</el-button
-            >
-            <el-button
-              type="danger"
-              size="small"
-              link
-              icon="delete"
-              @click="handleDelete([scope.row.id])"
-              >删除</el-button
-            >
-            <el-dropdown trigger="click">
-              <el-button type="default" size="small" link icon="ArrowDown"
-                >更多</el-button
+            <div class="flex">
+              <el-button
+                type="info"
+                size="small"
+                link
+                icon="document"
+                @click="handleOpenDialog('detail', scope.row.id)"
               >
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item
-                    icon="Check"
-                    @click="handleOption(scope.row, 1)"
-                    >暂停</el-dropdown-item
-                  >
-                  <el-dropdown-item
-                    icon="CircleClose"
-                    @click="handleOption(scope.row, 2)"
-                    >恢复</el-dropdown-item
-                  >
-                  <!-- <el-dropdown-item icon="CircleClose" @click="handleOption(scope.row, 3)">重启</el-dropdown-item> -->
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
+                详情
+              </el-button>
+              <el-button
+                type="primary"
+                size="small"
+                link
+                icon="edit"
+                @click="handleOpenDialog('update', scope.row.id)"
+              >
+                编辑
+              </el-button>
+              <el-button
+                type="danger"
+                size="small"
+                link
+                icon="delete"
+                @click="handleDelete([scope.row.id])"
+              >
+                删除
+              </el-button>
+              <el-dropdown trigger="click">
+                <el-button type="warning" size="small" link icon="ArrowDown">更多</el-button>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item icon="Check" @click="handleOption(scope.row, 1)">暂停</el-dropdown-item>
+                    <el-dropdown-item icon="CircleClose" @click="handleOption(scope.row, 2)">恢复</el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -506,7 +500,6 @@ defineOptions({
 
 import JobAPI, { JobTable, JobForm, JobPageQuery } from "@/api/monitor/job";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { useDebounceFn } from "@vueuse/core";
 
 import IntervalTab from "@/components/IntervalTab/index.vue";
 import "vue3-cron-plus-picker/style.css";
@@ -598,11 +591,10 @@ const rules = reactive({
   executor: [{ required: true, message: "请选择执行器", trigger: "blur" }],
 });
 
-// 刷新数据(防抖)
-const handleRefresh = useDebounceFn(() => {
-  loadingData();
-  ElMessage.success("刷新成功");
-}, 1000);
+// 列表刷新
+async function handleRefresh () {
+  await loadingData();
+};
 
 // 加载表格数据
 async function loadingData() {
@@ -633,8 +625,10 @@ async function handleResetQuery() {
 
 // 重置表单
 async function resetForm() {
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
+  if (dataFormRef.value) {
+    dataFormRef.value.resetFields();
+    dataFormRef.value.clearValidate();
+  }
   formData.id = undefined;
 }
 
