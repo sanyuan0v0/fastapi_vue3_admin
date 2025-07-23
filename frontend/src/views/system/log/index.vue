@@ -151,36 +151,36 @@
       <template v-if="dialogVisible.type === 'detail'">
         <el-descriptions :column="4" border>
           <el-descriptions-item label="日志类型" :span="2">
-            <el-tag :type="detailFormData.type === 1 ? 'success' : 'primary'">
-              {{ detailFormData.type === 1 ? '登录日志' : '操作日志' }}
+            <el-tag :type="formData.type === 1 ? 'success' : 'primary'">
+              {{ formData.type === 1 ? '登录日志' : '操作日志' }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="请求路径" :span="2">{{ detailFormData.request_path }}</el-descriptions-item>
+          <el-descriptions-item label="请求路径" :span="2">{{ formData.request_path }}</el-descriptions-item>
           <el-descriptions-item label="请求方法" :span="2">
-            <el-tag :type="getMethodType(detailFormData.request_method)">
-              {{ detailFormData.request_method }}
+            <el-tag :type="getMethodType(formData.request_method)">
+              {{ formData.request_method }}
             </el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="响应状态码" :span="2">
-            <el-tag :type="getStatusCodeType(detailFormData.response_code)">
-              {{ detailFormData.response_code }}
+            <el-tag :type="getStatusCodeType(formData.response_code)">
+              {{ formData.response_code }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="请求IP" :span="2">{{ detailFormData.request_ip }}</el-descriptions-item>
-          <el-descriptions-item label="处理时间" :span="2">{{ detailFormData.process_time }}</el-descriptions-item>
-          <el-descriptions-item label="浏览器" :span="2">{{ detailFormData.request_browser }}</el-descriptions-item>
-          <el-descriptions-item label="操作系统" :span="2">{{ detailFormData.request_os }}</el-descriptions-item>
+          <el-descriptions-item label="请求IP" :span="2">{{ formData.request_ip }}</el-descriptions-item>
+          <el-descriptions-item label="处理时间" :span="2">{{ formData.process_time }}</el-descriptions-item>
+          <el-descriptions-item label="浏览器" :span="2">{{ formData.request_browser }}</el-descriptions-item>
+          <el-descriptions-item label="操作系统" :span="2">{{ formData.request_os }}</el-descriptions-item>
           <el-descriptions-item label="请求参数" :span="4">
-            <el-input v-model="detailFormData.request_payload" type="textarea" :rows="3" readonly class="long-text-editor" />
+            <el-input v-model="formData.request_payload" type="textarea" :rows="3" readonly class="long-text-editor" />
           </el-descriptions-item>
           <el-descriptions-item label="响应数据" :span="4">
-            <el-input v-model="detailFormData.response_json" type="textarea" :rows="5" readonly class="long-text-editor" />
+            <el-input v-model="formData.response_json" type="textarea" :rows="5" readonly class="long-text-editor" />
           </el-descriptions-item>
-          <el-descriptions-item label="登录地点" :span="2">{{ detailFormData.login_location }}</el-descriptions-item>
-          <el-descriptions-item label="创建人" :span="2">{{ detailFormData.creator?.name }}</el-descriptions-item>
-          <el-descriptions-item label="创建时间" :span="2">{{ detailFormData.created_at }}</el-descriptions-item>
-          <el-descriptions-item label="更新时间" :span="2">{{ detailFormData.updated_at }}</el-descriptions-item>
-          <el-descriptions-item label="描述" :span="4">{{ detailFormData.description }}</el-descriptions-item>
+          <el-descriptions-item label="登录地点" :span="2">{{ formData.login_location }}</el-descriptions-item>
+          <el-descriptions-item label="创建人" :span="2">{{ formData.creator?.name }}</el-descriptions-item>
+          <el-descriptions-item label="创建时间" :span="2">{{ formData.created_at }}</el-descriptions-item>
+          <el-descriptions-item label="更新时间" :span="2">{{ formData.updated_at }}</el-descriptions-item>
+          <el-descriptions-item label="描述" :span="4">{{ formData.description }}</el-descriptions-item>
         </el-descriptions>
       </template>
 
@@ -204,7 +204,6 @@ defineOptions({
 
 import LogAPI, { LogTable, LogPageQuery } from "@/api/system/log";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { useDebounceFn } from "@vueuse/core";
 
 const queryFormRef = ref();
 const dataFormRef = ref();
@@ -238,7 +237,7 @@ const tableColumns = ref([
 ])
 
 // 详情表单
-const detailFormData = ref<LogTable>({});
+const formData = ref<LogTable>({});
 
 // 分页查询参数
 const queryFormData = reactive<LogPageQuery>({
@@ -258,11 +257,10 @@ const dialogVisible = reactive({
   type: 'create' as 'create' | 'update' | 'detail',
 });
 
-// 刷新数据(防抖)
-const handleRefresh = useDebounceFn(() => {
-  loadingData();
-  ElMessage.success("刷新成功");
-}, 1000);
+// 列表刷新
+async function handleRefresh () {
+  await loadingData();
+};
 
 const getStatusCodeType = (code?: number) => {
   if (code === undefined) {
@@ -327,9 +325,11 @@ async function handleResetQuery() {
 
 // 重置表单
 async function resetForm() {
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
-  detailFormData.value.id = undefined;
+  if (dataFormRef.value) {
+    dataFormRef.value.resetFields();
+    dataFormRef.value.clearValidate();
+  }
+  formData.value.id = undefined;
 }
 
 // 行复选框选中项变化
@@ -350,7 +350,7 @@ async function handleOpenDialog(type: 'create' | 'update' | 'detail', id: number
     const response = await LogAPI.getLogDetail(id);
     if (type === 'detail') {
       dialogVisible.title = "日志详情";
-      Object.assign(detailFormData.value, response.data.data);
+      Object.assign(formData.value, response.data.data);
     }
   }
   dialogVisible.visible = true;

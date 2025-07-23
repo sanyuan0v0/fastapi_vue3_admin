@@ -205,7 +205,6 @@ defineOptions({
 
 import DictAPI, { DictTable, DictForm, DictPageQuery } from "@/api/system/dict";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { useDebounceFn } from "@vueuse/core";
 import DataDrawer from "@/views/system/dict/components/DataDrawer.vue"
 
 const queryFormRef = ref();
@@ -272,11 +271,10 @@ const rules = reactive({
   status: [{ required: true, message: "请选择字典状态", trigger: "blur" }],
 });
 
-// 刷新数据(防抖)
-const handleRefresh = useDebounceFn(() => {
-  loadingData();
-  ElMessage.success("刷新成功");
-}, 1000);
+// 列表刷新
+async function handleRefresh () {
+  await loadingData();
+};
 
 
 // 抽屉显隐
@@ -319,8 +317,10 @@ async function handleResetQuery() {
 
 // 重置表单
 async function resetForm() {
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
+  if (dataFormRef.value) {
+    dataFormRef.value.resetFields();
+    dataFormRef.value.clearValidate();
+  }
   formData.id = undefined;
 }
 

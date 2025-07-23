@@ -21,7 +21,7 @@
     "id": 3,
     "config_name": "网页图标",
     "config_key": "sys_web_favicon",
-    "config_value": "http://service.fastapiadmin.com/api/v1/static/image/favicon.ico",
+    "config_value": "http://service.fastapiadmin.com/api/v1/static/image/favicon.png",
     "config_type": true,
     "description": "网页图标",
     "creator_id": 1

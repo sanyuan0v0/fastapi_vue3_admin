@@ -19,8 +19,23 @@
         <!-- 右侧图标区域 - PC端 -->
         <div class="hidden sm:block">
           <div class="flex items-end space-x-6">
+            <!-- 文档 -->
+            <div class="flex flex-col items-center">
+              <div class="font-bold color-#4080ff text-sm flex items-center">
+                <el-icon class="mr-2px"><Document /></el-icon>
+                文档
+              </div>
+              <div class="mt-3 whitespace-nowrap">
+                <el-link
+                  href="https://blog.csdn.net/weixin_46768253/article/details/149569141?spm=1001.2014.3001.5502"
+                  target="_blank"
+                >
+                  <div class="i-svg:csdn text-lg" />
+                </el-link>
+              </div>
+            </div>
             <!-- 仓库 -->
-            <div>
+            <div class="flex flex-col items-center">
               <div class="font-bold color-#ff9a2e text-sm flex items-center">
                 <el-icon class="mr-2px">
                   <Folder />
@@ -41,7 +56,6 @@
                 </el-link>
               </div>
             </div>
-
           </div>
         </div>
 
@@ -52,13 +66,14 @@
             <el-link href="https://gitee.com/tao__tao/fastapi_vue3_admin" target="_blank">
               <div class="i-svg:gitee text-lg color-#F76560" />
             </el-link>
+            <el-divider direction="vertical" />
             <el-link href="https://github.com/1014TaoTao/fastapi_vue3_admin" target="_blank">
               <div class="i-svg:github text-lg color-#4080FF" />
             </el-link>
+            <el-divider direction="vertical" />
             <el-link href="https://gitcode.com/qq_36002987/fastapi_vue3_admin" target="_blank">
               <div class="i-svg:gitcode text-lg color-#FF9A2E" />
             </el-link>
-
           </div>
         </div>
       </div>

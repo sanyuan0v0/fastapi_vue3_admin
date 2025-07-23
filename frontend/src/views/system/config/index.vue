@@ -189,7 +189,6 @@ defineOptions({
 
 import ConfigAPI, { ConfigTable, ConfigForm, ConfigPageQuery } from "@/api/system/config";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { useDebounceFn } from "@vueuse/core";
 
 const queryFormRef = ref();
 const dataFormRef = ref();
@@ -258,11 +257,10 @@ const rules = reactive({
   config_type: [{ required: true, message: "请选择系统配置类型", trigger: "blur" }],
 });
 
-// 刷新数据(防抖)
-const handleRefresh = useDebounceFn(() => {
-  loadingData();
-  ElMessage.success("刷新成功");
-}, 1000);
+// 列表刷新
+async function handleRefresh () {
+  await loadingData();
+};
 
 // 加载表格数据
 async function loadingData() {
@@ -295,8 +293,10 @@ async function handleResetQuery() {
 
 // 重置表单
 async function resetForm() {
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
+  if (dataFormRef.value) {
+    dataFormRef.value.resetFields();
+    dataFormRef.value.clearValidate();
+  }
   formData.id = undefined;
 }
 

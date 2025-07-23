@@ -107,7 +107,7 @@
           </div>
 
           <!-- 表格区域 -->
-          <el-table ref="dataFormRef" v-loading="loading" :data="pageTableData" highlight-current-row class="data-table__content" height="450" border stripe @selection-change="handleSelectionChange">
+          <el-table ref="dataTableRef" v-loading="loading" :data="pageTableData" highlight-current-row class="data-table__content" height="450" border stripe @selection-change="handleSelectionChange">
             <template #empty>
               <el-empty :image-size="80" description="暂无数据" />
             </template>
@@ -213,7 +213,7 @@
       </template>
       <!-- 新增、编辑表单 -->
       <template v-else>
-        <el-form ref="userFormRef" :model="formData" :rules="rules" label-width="80px">
+        <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="80px">
           <el-form-item label="账号" prop="username">
             <el-input v-model="formData.username" :readonly="!!formData.id" placeholder="请输入账号" />
           </el-form-item>
@@ -308,7 +308,6 @@ defineOptions({
 import { useAppStore } from "@/store/modules/app.store";
 import { DeviceEnum } from "@/enums/settings/device.enum";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { useDebounceFn } from "@vueuse/core";
 
 import UserAPI, { type UserForm, type UserInfo, type UserPageQuery } from "@/api/system/user";
 import { listToTree, formatTree } from "@/utils/common";
@@ -322,7 +321,6 @@ import UserImport from "./components/UserImport.vue";
 const appStore = useAppStore();
 
 const queryFormRef = ref();
-const userFormRef = ref();
 const dataFormRef = ref();
 const total = ref(0);
 const loading = ref(false);
@@ -428,11 +426,10 @@ const rules = reactive({
   status: [{ required: true, message: "请选择状态", trigger: "blur" }],
 });
 
-// 刷新数据(防抖)
-const handleRefresh = useDebounceFn(() => {
-  loadingData();
-  ElMessage.success("刷新成功");
-}, 1000);
+// 列表刷新
+async function handleRefresh () {
+  await loadingData();
+};
 
 // 加载表格数据
 async function loadingData() {
@@ -465,8 +462,10 @@ async function handleResetQuery() {
 
 // 重置表单
 async function resetForm() {
-  userFormRef.value.resetFields();
-  userFormRef.value.clearValidate();
+  if (dataFormRef.value) {
+    dataFormRef.value.resetFields();
+    dataFormRef.value.clearValidate();
+  }
   formData.id = undefined;
 }
 
@@ -520,10 +519,12 @@ async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: numbe
   }
   dialogVisible.visible = true;
 
+  // 获取部门树
   const deptResponse = await DeptAPI.getDeptList(queryFormData);
   const treeData = listToTree(deptResponse.data.data.items);
   deptOptions.value = formatTree(treeData);
 
+  // 获取角色列表
   const roleResponse = await RoleAPI.getRoleList();
   roleOptions.value = roleResponse.data.data.items
     .filter(item => item.id !== undefined && item.name !== undefined)
@@ -532,6 +533,7 @@ async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: numbe
       label: item.name as string
     }));
 
+  // 获取岗位列表
   const positionResponse = await PositionAPI.getPositionList();
   positionOptions.value = positionResponse.data.data.items
     .filter(item => item.id !== undefined && item.name !== undefined)
@@ -542,7 +544,7 @@ async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: numbe
 }
 
 // 提交表单（防抖）
-const handleSubmit = useDebounceFn(async () => {
+async function handleSubmit() {
   // 表单校验
   dataFormRef.value.validate(async (valid: any) => {
     if (valid) {
@@ -576,7 +578,7 @@ const handleSubmit = useDebounceFn(async () => {
       }
     }
   });
-}, 1000)
+}
 
 // 删除、导入、导出
 async function handleOperation(type: 'import' | 'export') {
