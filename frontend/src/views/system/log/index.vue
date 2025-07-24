@@ -3,7 +3,7 @@
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="search-container">
-      <el-form ref="queryFormRef" :model="queryFormData" :inline="true">
+      <el-form ref="queryFormRef" :model="queryFormData" :inline="true"  label-suffix=":" >
         <el-form-item prop="request_path" label="请求路径">
           <el-input v-model="queryFormData.request_path" placeholder="请输入请求路径" clearable />
         </el-form-item>

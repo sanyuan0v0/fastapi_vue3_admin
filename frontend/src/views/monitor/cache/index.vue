@@ -216,15 +216,15 @@
                   </div>
                 </div>
               </template>
-              <el-form :model="cacheForm" label-position="top">
-                <el-form-item label="缓存名称:">
-                  <el-input v-model="cacheForm.cache_name" readonly />
+              <el-form :model="cacheForm" label-suffix=":" label-width="auto" label-position="top">
+                <el-form-item label="缓存名称">
+                  <el-input v-model="cacheForm.cache_name" readonly placeholder="缓存名称" />
                 </el-form-item>
-                <el-form-item label="缓存键名:">
-                  <el-input v-model="cacheForm.cache_key" readonly />
+                <el-form-item label="缓存键名">
+                  <el-input v-model="cacheForm.cache_key" readonly placeholder="缓存键名" />
                 </el-form-item>
-                <el-form-item label="缓存内容:">
-                  <el-input v-model="cacheForm.cache_value" type="textarea" :rows="18" readonly />
+                <el-form-item label="缓存内容">
+                  <el-input v-model="cacheForm.cache_value" type="textarea" :rows="18" readonly placeholder="缓存内容" />
                 </el-form-item>
               </el-form>
             </el-card>

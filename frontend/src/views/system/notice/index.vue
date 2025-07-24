@@ -3,7 +3,7 @@
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="search-container">
-      <el-form ref="queryFormRef" :model="queryFormData" :inline="true">
+      <el-form ref="queryFormRef" :model="queryFormData" :inline="true"  label-suffix=":">
         <el-form-item prop="notice_title" label="标题">
           <el-input v-model="queryFormData.notice_title" placeholder="请输入标题" clearable />
         </el-form-item>
@@ -153,7 +153,7 @@
     </el-card>
 
     <!-- 弹窗区域 -->
-    <el-dialog v-model="dialogVisible.visible" :title="dialogVisible.title"  @close="handleCloseDialog">
+    <el-dialog v-model="dialogVisible.visible" :title="dialogVisible.title" @close="handleCloseDialog">
       <!-- 详情 -->
       <template v-if="dialogVisible.type === 'detail'">
         <el-descriptions :column="4" border>
@@ -189,7 +189,7 @@
       </template>
       <!-- 新增、编辑表单 -->
       <template v-else>
-        <el-form ref="dataFormRef" :model="formData" :rules="rules" label-suffix=":" label-width="100px">
+        <el-form ref="dataFormRef" :model="formData" :rules="rules" label-suffix=":" label-width="auto" label-position="right">
           <el-form-item label="标题" prop="notice_title">
             <el-input v-model="formData.notice_title" placeholder="请输入标题" :maxlength="50" />
           </el-form-item>
@@ -210,7 +210,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="内容" prop="notice_content">
-            <WangEditor v-model="formData.notice_content" />
+            <WangEditor v-model="formData.notice_content" height="300px" />
           </el-form-item>
           <el-form-item label="描述" prop="description">
             <el-input v-model="formData.description" :rows="4" :maxlength="100" show-word-limit type="textarea" placeholder="请输入描述" />

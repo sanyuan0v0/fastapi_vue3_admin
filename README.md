@@ -272,11 +272,3 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 ## ❤️ Star 支持我
 
    如果你喜欢这个项目，请给我一个 ⭐️ Star 支持一下吧！非常感谢！
-
----
-
-## 👀 访问统计
-
-![Visitor Count](https://profile-counter.glitch.me/1014TaoTao/count.svg)
-
----

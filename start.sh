@@ -38,9 +38,17 @@ check_dependencies() {
     log "✅ 所有依赖检查通过"
 }
 
+# 停止并删除容器
+stop_and_remove_containers() {
+    log "==========🗑️ 第三步：终止容器...=========="
+    [ -f "docker-compose.yaml" ] || { log "❌ docker-compose.yaml 文件未找到"; exit 1; }
+    docker compose down
+    log "✅ 容器已停止并删除"
+}
+
 # 更新代码
 update_code() {
-    log "==========🔍 第三步：检查项目...=========="
+    log "==========🔍 第四步：检查项目...=========="
     cd "${WORK_DIR}" || { log "❌ 无法进入工作目录：${WORK_DIR}"; exit 1; }
     if [ -d "${PROJECT_NAME}/" ]; then
         log "🔄 项目已存在，开始更新代码"
@@ -54,14 +62,6 @@ update_code() {
         cd "${PROJECT_NAME}" || { log "❌ 无法进入项目目录：${PROJECT_NAME}"; exit 1; }
         log "✅ 代码克隆成功"
     fi
-}
-
-# 停止并删除容器
-stop_and_remove_containers() {
-    log "==========🗑️ 第四步：终止容器...=========="
-    [ -f "docker-compose.yaml" ] || { log "❌ docker-compose.yaml 文件未找到"; exit 1; }
-    docker compose down
-    log "✅ 容器已停止并删除"
 }
 
 # 构建前端
@@ -107,8 +107,8 @@ main() {
     log "==========🚀 开始部署流程=========="
     check_permissions
     check_dependencies
-    update_code
     stop_and_remove_containers
+    update_code
     build_frontend
     build_image
     start_containers

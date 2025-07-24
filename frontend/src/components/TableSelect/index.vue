@@ -33,7 +33,7 @@
       <!-- 弹出框内容 -->
       <div ref="popoverContentRef">
         <!-- 表单 -->
-        <el-form ref="formRef" :model="queryParams" :inline="true">
+        <el-form ref="formRef" :model="queryParams" :inline="true" >
           <template v-for="item in selectConfig.formItems" :key="item.prop">
             <el-form-item :label="item.label" :prop="item.prop">
               <!-- Input 输入框 -->

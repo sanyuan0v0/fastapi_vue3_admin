@@ -1,6 +1,6 @@
 <template>
   <el-drawer v-model="drawerVisible" title="配置中心" :size="drawerSize">
-    <el-form :model="configState" label-width="auto" style="width: 100%">
+    <el-form :model="configState" label-suffix=":" label-width="auto" label-position="right">
       <!-- 系统配置 -->
       <el-divider>系统配置</el-divider>
       <div v-for="(item, key) in systemConfigs" :key="key">

@@ -3,7 +3,7 @@
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="search-container">
-      <el-form ref="queryFormRef" :model="queryFormData" :inline="true">
+      <el-form ref="queryFormRef" :model="queryFormData" :inline="true"  label-suffix=":" >
         <el-form-item prop="name" label="角色名称">
           <el-input v-model="queryFormData.name" placeholder="请输入角色名称" clearable />
         </el-form-item>
@@ -130,7 +130,7 @@
 
         <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" align="center" min-width="280">
           <template #default="scope">
-            <el-button type="primary" size="small" link icon="position" @click="handleOpenAssignPermDialog(scope.row.id, scope.row.name)">分配权限</el-button>
+            <el-button type="warning" size="small" link icon="position" @click="handleOpenAssignPermDialog(scope.row.id, scope.row.name)">分配权限</el-button>
             <el-button type="info" size="small" link icon="document" @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
             <el-button type="primary" size="small" link icon="edit" @click="handleOpenDialog('update', scope.row.id)">编辑</el-button>
             <el-button type="danger" size="small" link icon="delete" @click="handleDelete([scope.row.id])">删除</el-button>
@@ -173,7 +173,7 @@
       </template>
       <!-- 新增、编辑表单 -->
       <template v-else>
-        <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="100px">
+        <el-form ref="dataFormRef" :model="formData" :rules="rules" label-suffix=":" label-width="auto" label-position="right">
           <el-form-item label="角色名称" prop="name">
             <el-input v-model="formData.name" placeholder="请输入角色名称" />
           </el-form-item>

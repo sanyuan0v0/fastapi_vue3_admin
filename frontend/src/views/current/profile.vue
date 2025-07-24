@@ -115,7 +115,7 @@
                 <span>基本设置</span>
               </template>
               <div>
-                <el-form ref="ruleFormRef" :model="infoFormState" :rules="rules" label-width="auto" :inline="true">
+                <el-form ref="ruleFormRef" :model="infoFormState" :rules="rules" :inline="true" label-suffix=":" label-width="auto" label-position="right">
                   
                   <el-form-item label="姓名" name="name">
                     <el-input v-model:value="infoFormState.name" placeholder="请输入姓名" prefix-icon="User" clearable />
@@ -152,7 +152,7 @@
                 <span>安全设置</span>
               </template>
               <div>
-                <el-form ref="ruleFormRef" :model="passwordFormState" :rules="resetPasswordRules" label-width="auto">
+                <el-form ref="ruleFormRef" :model="passwordFormState" :rules="resetPasswordRules"  label-suffix=":" label-width="auto" label-position="right">
                   <el-form-item label="当前密码" name="oldPassword">
                     <el-input v-model.trim="passwordFormState.oldPassword" :placeholder="t('login.password')" type="password" show-password clearable>
                       <template #prefix>

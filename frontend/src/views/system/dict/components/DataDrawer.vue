@@ -3,7 +3,7 @@
   <el-drawer v-model="drawerVisible" :title="'【' + props.dictLabel + '】字典数据'" :size="drawerSize">
     <!-- 搜索区域 -->
     <div class="search-container">
-      <el-form ref="queryFormRef" :model="queryFormData" :inline="true">
+      <el-form ref="queryFormRef" :model="queryFormData" :inline="true"  label-suffix=":" >
 
         <el-form-item prop="dict_label" label="字典数据标签">
           <el-input v-model="queryFormData.dict_label" placeholder="请输入字典标签" clearable />
@@ -174,7 +174,7 @@
       </template>
       <!-- 新增、编辑表单 -->
       <template v-else>
-        <el-form ref="dataFormRef" :model="formData" :rules="rules" label-suffix=":" label-width="100px">
+        <el-form ref="dataFormRef" :model="formData" :rules="rules" label-suffix=":" label-width="auto" label-position="right">
           <el-form-item label="数据类型" prop="dict_type">
             <el-input v-model="formData.dict_type" placeholder="请输入数据类型" :maxlength="50" :disabled="true" />
           </el-form-item>
