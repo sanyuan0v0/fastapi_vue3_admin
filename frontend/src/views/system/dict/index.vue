@@ -3,7 +3,7 @@
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="search-container">
-      <el-form ref="queryFormRef" :model="queryFormData" :inline="true">
+      <el-form ref="queryFormRef" :model="queryFormData" :inline="true"  label-suffix=":" >
         <el-form-item prop="dict_name" label="字典名称">
           <el-input v-model="queryFormData.dict_name" placeholder="请输入字典名称" clearable />
         </el-form-item>
@@ -151,7 +151,7 @@
           <el-descriptions-item label="字典类型" :span="2">
             <el-tag type="primary">{{ detailFormData.dict_type }}</el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="字典状态" :span="2">
+          <el-descriptions-item label="状态" :span="2">
             <el-tag v-if="detailFormData.status" type="success">启用</el-tag>
             <el-tag v-else type="danger">停用</el-tag>
           </el-descriptions-item>
@@ -163,14 +163,14 @@
       </template>
       <!-- 新增、编辑表单 -->
       <template v-else>
-        <el-form ref="dataFormRef" :model="formData" :rules="rules" label-suffix=":" label-width="100px">
+        <el-form ref="dataFormRef" :model="formData" :rules="rules" label-suffix=":" label-width="auto" label-position="right">
           <el-form-item label="字典名称" prop="dict_name">
             <el-input v-model="formData.dict_name" placeholder="请输入字典名称" :maxlength="50" />
           </el-form-item>
           <el-form-item label="字典类型" prop="dict_type">
             <el-input v-model="formData.dict_type" placeholder="请输入字典类型" :maxlength="50" />
           </el-form-item>
-          <el-form-item label="字典状态" prop="status">
+          <el-form-item label="状态" prop="status">
             <el-radio-group v-model="formData.status">
               <el-radio :value="true">启用</el-radio>
               <el-radio :value="false">停用</el-radio>

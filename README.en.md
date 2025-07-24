@@ -274,11 +274,3 @@ Thanks to the contributions and support of the following projects, which have en
 ## ❤️ Star
 
 If you like this project, please give it a ⭐️ Star to show your support! Thank you very much!
-
----
-
-## 👀 Visitor Statistics
-
-![Visitor Count](https://profile-counter.glitch.me/1014TaoTao/count.svg)
-
----

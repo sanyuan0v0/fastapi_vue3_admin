@@ -3,7 +3,7 @@
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="search-container">
-      <el-form ref="queryFormRef" :model="queryFormData" :inline="true">
+      <el-form ref="queryFormRef" :model="queryFormData" :inline="true"  label-suffix=":" >
         <el-form-item prop="config_name" label="配置名称">
           <el-input v-model="queryFormData.config_name" placeholder="请输入配置名称" clearable />
         </el-form-item>
@@ -145,7 +145,7 @@
       </template>
       <!-- 新增、编辑表单 -->
       <template v-else>
-        <el-form ref="dataFormRef" :model="formData" :rules="rules" label-suffix=":" label-width="100px">
+        <el-form ref="dataFormRef" :model="formData" :rules="rules" label-suffix=":" label-width="auto" label-position="right">
           <el-form-item label="配置名称" prop="config_name">
             <el-input v-model="formData.config_name" placeholder="请输入配置名称" :maxlength="50" />
           </el-form-item>

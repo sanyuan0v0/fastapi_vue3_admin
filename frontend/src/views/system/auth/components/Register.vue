@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 text-center m-0 mb-20px>{{ t("login.reg") }}</h3>
-    <el-form ref="formRef" :model="model" :rules="rules" size="large">      
+    <el-form ref="formRef" :model="model" :rules="rules" size="large"  label-suffix=":" >      
       <!-- 账号 -->
       <el-form-item prop="username">
         <el-input v-model.trim="model.username" :placeholder="t('login.username')" clearable>

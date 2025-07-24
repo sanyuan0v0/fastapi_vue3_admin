@@ -11,7 +11,7 @@
       <el-col :lg="20" :xs="24">
         <!-- 搜索区域 -->
         <div class="search-container">
-          <el-form ref="queryFormRef" :model="queryFormData" :inline="true">
+          <el-form ref="queryFormRef" :model="queryFormData" :inline="true"  label-suffix=":" >
             <el-form-item prop="username" label="账号">
               <el-input v-model="queryFormData.username" placeholder="请输入账号" clearable />
             </el-form-item>
@@ -213,7 +213,7 @@
       </template>
       <!-- 新增、编辑表单 -->
       <template v-else>
-        <el-form ref="dataFormRef" :model="formData" :rules="rules" label-width="80px">
+        <el-form ref="dataFormRef" :model="formData" :rules="rules" label-suffix=":" label-width="auto" label-position="right">
           <el-form-item label="账号" prop="username">
             <el-input v-model="formData.username" :readonly="!!formData.id" placeholder="请输入账号" />
           </el-form-item>

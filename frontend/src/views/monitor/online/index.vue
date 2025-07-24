@@ -3,7 +3,7 @@
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="search-container">
-      <el-form ref="queryFormRef" :model="queryFormData" :inline="true">
+      <el-form ref="queryFormRef" :model="queryFormData" :inline="true"  label-suffix=":" >
         <el-form-item prop="ipaddr" label="IP地址">
           <el-input v-model="queryFormData.ipaddr" placeholder="请输入IP地址" clearable />
         </el-form-item>

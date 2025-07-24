@@ -214,6 +214,8 @@ function logout() {
     userStore.logout().then(() => {
       router.push(`/login?redirect=${route.fullPath}`);
     });
+  }).catch(() => {
+    ElMessage.info('已取消强退');
   });
 }
 
