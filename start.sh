@@ -41,9 +41,15 @@ check_dependencies() {
 # 停止并删除容器
 stop_and_remove_containers() {
     log "==========🗑️ 第三步：终止容器...=========="
-    [ -f "docker-compose.yaml" ] || { log "❌ docker-compose.yaml 文件未找到"; exit 1; }
-    docker compose down
-    log "✅ 容器已停止并删除"
+    cd "${WORK_DIR}" || { log "❌ 无法进入工作目录：${WORK_DIR}"; exit 1; }
+    if [ -d "${PROJECT_NAME}/" ]; then
+        cd "${PROJECT_NAME}" || { log "❌ 无法进入项目目录：${PROJECT_NAME}"; exit 1; }
+        [ -f "docker-compose.yaml" ] || { log "❌ docker-compose.yaml 文件未找到"; exit 1; }
+        docker compose down
+        log "✅ 容器已停止并删除"
+    else
+        log "⚠️ 项目目录不存在，跳过容器终止"
+    fi
 }
 
 # 更新代码
