@@ -88,7 +88,7 @@ def create_access_token(payload: JWTPayloadSchema) -> str:
 def decode_access_token(token: str) -> JWTPayloadSchema:
     """解析JWT访问令牌"""
     if not token:
-        raise CustomException(msg="认证不存在,请重新登录", status_code=403)
+        raise CustomException(msg="认证不存在,请重新登录", status_code=401)
 
     try:
         payload = jwt.decode(
@@ -99,15 +99,15 @@ def decode_access_token(token: str) -> JWTPayloadSchema:
 
         online_user_info = payload.get("sub")
         if not online_user_info:
-            raise CustomException(msg="无效认证,请重新登录", status_code=403)
+            raise CustomException(msg="无效认证,请重新登录", status_code=401)
 
         return JWTPayloadSchema(**payload)
 
     except (jwt.InvalidSignatureError, jwt.DecodeError):
-        raise CustomException(msg="无效认证,请重新登录", status_code=403)
+        raise CustomException(msg="无效认证,请重新登录", status_code=401)
 
     except jwt.ExpiredSignatureError:
-        raise CustomException(msg="认证已过期,请重新登录", status_code=403)
+        raise CustomException(msg="认证已过期,请重新登录", status_code=401)
 
     except jwt.InvalidTokenError:
-        raise CustomException(msg="token已失效,请重新登录", status_code=403)
+        raise CustomException(msg="token已失效,请重新登录", status_code=401)

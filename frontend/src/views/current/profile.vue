@@ -124,15 +124,15 @@
                 <el-form ref="ruleFormRef" :model="infoFormState" :rules="rules" :inline="true" label-suffix=":">
                   
                   <el-form-item label="姓名" name="name">
-                    <el-input v-model:value="infoFormState.name" placeholder="请输入姓名" prefix-icon="User" clearable />
+                    <el-input v-model="infoFormState.name" placeholder="请输入姓名" prefix-icon="User" clearable />
                   </el-form-item>
 
                   <el-form-item label="手机号" name="mobile">
-                    <el-input v-model:value="infoFormState.mobile" placeholder="请输入手机号码" prefix-icon="Phone" clearable />
+                    <el-input v-model="infoFormState.mobile" placeholder="请输入手机号码" prefix-icon="Phone" clearable />
                   </el-form-item>
 
                   <el-form-item label="邮箱" name="email">
-                    <el-input v-model:value="infoFormState.email" placeholder="请输入邮箱" prefix-icon="Message" clearable />
+                    <el-input v-model="infoFormState.email" placeholder="请输入邮箱" prefix-icon="Message" clearable />
                   </el-form-item>
 
                   <el-form-item label="性别" name="gender">
@@ -159,24 +159,24 @@
               </template>
               <div>
                 <el-form ref="ruleFormRef" :model="passwordFormState" :rules="resetPasswordRules"  label-suffix=":">
-                  <el-form-item label="当前密码" name="oldPassword">
-                    <el-input v-model.trim="passwordFormState.oldPassword" :placeholder="t('login.password')" type="password" show-password clearable>
+                  <el-form-item label="当前密码" name="old_password">
+                    <el-input v-model.trim="passwordFormState.old_password" :placeholder="t('login.password')" type="password" show-password clearable>
                       <template #prefix>
                         <Lock />
                       </template>
                     </el-input>
                   </el-form-item>
 
-                  <el-form-item label="新密码" name="newPassword">
-                    <el-input v-model.trim="passwordFormState.newPassword" type="password" :placeholder="t('login.newPassword')" show-password clearable>
+                  <el-form-item label="新密码" name="new_password">
+                    <el-input v-model.trim="passwordFormState.new_password" type="password" :placeholder="t('login.newPassword')" show-password clearable>
                       <template #prefix>
                         <Key />
                       </template>
                     </el-input>
                   </el-form-item>
 
-                  <el-form-item label="确认新密码" name="confirmPassword">
-                    <el-input v-model.trim="passwordFormState.confirmPassword" type="password" :placeholder="t('login.message.password.confirm')" show-password clearable>
+                  <el-form-item label="确认新密码" name="confirm_password">
+                    <el-input v-model.trim="passwordFormState.confirm_password" type="password" :placeholder="t('login.message.password.confirm')" show-password clearable>
                       <template #prefix>
                         <Check />
                       </template>
@@ -184,7 +184,7 @@
                   </el-form-item>
 
                   <el-form-item>
-                    <el-button type="primary" :loading="passwordChanging" icon="edit">更新密码</el-button>
+                    <el-button type="primary" :loading="passwordChanging" icon="edit" @click="handlePasswordChange">更新密码</el-button>
                   </el-form-item>
                 </el-form>
               </div>
@@ -200,8 +200,10 @@
 import type { FormInstance } from 'element-plus'
 import UserAPI, { type InfoFormState, type PasswordFormState } from '@/api/system/user';
 import { useUserStore, useDictStore } from "@/store";
+import { useUserStoreHook } from "@/store/modules/user.store";
 import { Camera } from '@element-plus/icons-vue';
 import { useI18n } from "vue-i18n";
+import router from "@/router";
 
 const { t } = useI18n();
 const userStore = useUserStore();
@@ -236,9 +238,9 @@ const infoFormState = reactive<InfoFormState>({
 
 // 修改密码表单
 const passwordFormState = reactive<PasswordFormState>({
-  oldPassword: '',
-  newPassword: '',
-  confirmPassword: ''
+  old_password: '',
+  new_password: '',
+  confirm_password: ''
 });
 
 // 头像上传处理优化
@@ -348,19 +350,54 @@ const initPasswordForm = () => {
 };
 
 // 基本信息表单提交
-const handleSave = async (values: any) => {
+const handleSave = async () => {
   try {
     infoSubmitting.value = true;
-    values.avatar = infoFormState.avatar;
-    await UserAPI.updateCurrentUserInfo(values);
-    await userStore.getUserInfo;
+    infoFormState.avatar = infoFormState.avatar;
+    const response = await UserAPI.updateCurrentUserInfo(infoFormState);
+    await userStore.setUserInfo(response.data.data);
   } catch (error) {
     console.error(error);
-    
   } finally {
     infoSubmitting.value = false;
   }
 };
+
+// 修改密码
+const handlePasswordChange = async () => {
+  try {
+    passwordChanging.value = true;
+    const response = await UserAPI.changeCurrentUserPassword(passwordFormState);
+    initPasswordForm();
+    await redirectToLogin(response.data.msg);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    passwordChanging.value = false;
+  }
+};
+
+/**
+ * 重定向到登录页面
+ */
+async function redirectToLogin(message: string = "请重新登录"): Promise<void> {
+  try {
+    ElNotification({
+      title: "提示",
+      message,
+      type: "warning",
+      duration: 3000,
+    });
+
+    await useUserStoreHook().resetAllState();
+
+    // 跳转到登录页，保留当前路由用于登录后跳转
+    const currentPath = router.currentRoute.value.fullPath;
+    await router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
+  } catch (error: any) {
+    ElMessage.error(error.message);
+  }
+}
 
 onMounted(async () => {
   await getOptions();
