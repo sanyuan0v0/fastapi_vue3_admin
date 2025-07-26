@@ -386,7 +386,7 @@ async function handleExport() {
       loading.value = false;
     }
   }).catch(() => {
-    ElMessage.info('已取消导出');
+    ElMessageBox.close();
   });
 }
 

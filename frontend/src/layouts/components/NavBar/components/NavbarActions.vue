@@ -220,7 +220,7 @@ function logout() {
       router.push(`/login?redirect=${route.fullPath}`);
     });
   }).catch(() => {
-    ElMessage.info('已取消强退');
+    ElMessageBox.close();
   });
 }
 

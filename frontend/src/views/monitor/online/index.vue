@@ -193,7 +193,7 @@ async function handleSubmit(session_id: string) {
       loading.value = false;
     }
   }).catch(() => {
-    ElMessage.info('已取消强退');
+    ElMessageBox.close();
   });
 }
 
@@ -214,7 +214,7 @@ async function handleClear() {
       loading.value = false;
     }
   }).catch(() => {
-    ElMessage.info('已取消强退');
+    ElMessageBox.close();
   });
 }
 onMounted(() => {

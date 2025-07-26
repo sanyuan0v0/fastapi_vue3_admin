@@ -119,7 +119,7 @@ const resetForm = () => {
     }
     delete modifiedFields[key];
   }
-  ElMessage.info('已撤销所有修改');
+  ElMessageBox.close();
 };
 
 // 系统配置项

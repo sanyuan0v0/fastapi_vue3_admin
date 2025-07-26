@@ -470,7 +470,7 @@ function hancleResetPassword(row: UserInfo) {
       });
     },
     () => {
-      ElMessage.info("已取消重置密码");
+      ElMessageBox.close();
     }
   );
 }
@@ -625,7 +625,7 @@ async function handleOperation(type: 'import' | 'export') {
         loading.value = false;
       }
     }).catch(() => {
-      ElMessage.info('已取消导出');
+      ElMessageBox.close();
     });
   }
   else {
@@ -672,7 +672,7 @@ async function handleMoreClick(status: boolean) {
         loading.value = false;
       }
     }).catch(() => {
-      ElMessage.info('已取消批量操作');
+      ElMessageBox.close();
     });
   }
 }
