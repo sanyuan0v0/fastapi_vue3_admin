@@ -326,7 +326,7 @@ const resetPasswordRules = {
       },
       {
         validator: (_: any, value: string) => {
-          return value === passwordFormState.newPassword;
+          return value === passwordFormState.new_password;
         },
         trigger: "blur",
         message: t("login.message.password.inconformity"),
