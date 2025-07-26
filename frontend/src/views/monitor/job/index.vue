@@ -1,4 +1,4 @@
-<!-- 公告通知配置 -->
+<!-- 定时任务 -->
 <template>
   <div class="app-container">
     <!-- 搜索区域 -->
@@ -232,7 +232,6 @@
     <el-dialog
       v-model="dialogVisible.visible"
       :title="dialogVisible.title"
-      top="3vh"
       @close="handleCloseDialog"
     >
       <!-- 详情 -->
@@ -303,81 +302,55 @@
       </template>
       <!-- 新增、编辑表单 -->
       <template v-else>
-        <el-form
-          ref="dataFormRef"
-          :model="formData"
-          :rules="rules"
-          label-suffix=":"
-          label-width="100px"
-        >
-          <el-form-item label="任务名称" prop="name">
-            <el-input
-              v-model="formData.name"
-              placeholder="请输入任务名称"
-              :maxlength="50"
-            />
+        <el-form ref="dataFormRef" :model="formData" :rules="rules" label-suffix=":" label-width="auto" inline>
+          <el-form-item label="任务名称" prop="name" style="width: 40%">
+            <el-input v-model="formData.name" placeholder="请输入任务名称" :maxlength="50"/>
           </el-form-item>
-          <el-form-item label="任务函数" prop="func">
-            <el-input
-              v-model="formData.func"
-              placeholder="请输入任务函数"
-              :maxlength="50"
-            />
+          <el-form-item label="任务函数" prop="func" style="width: 40%">
+            <el-input v-model="formData.func" placeholder="请输入任务函数" :maxlength="50"/>
           </el-form-item>
-          <el-form-item label="存储器" prop="jobstore">
-            <el-select v-model="formData.jobstore" placeholder="请选择存储器">
+          <el-form-item label="存储器" prop="jobstore" style="width: 40%">
+            <el-select v-model="formData.jobstore" placeholder="请选择存储器" >
               <el-option value="default" label="默认(Memory)" />
               <el-option value="sqlalchemy" label="数据库" />
               <el-option value="redis" label="Redis存储器" />
             </el-select>
           </el-form-item>
-          <el-form-item label="执行器" prop="executor">
+          <el-form-item label="执行器" prop="executor" style="width: 40%">
             <el-select v-model="formData.executor" placeholder="请选择执行器">
               <el-option value="default" label="默认" />
               <el-option value="processpool" label="进程池" />
             </el-select>
           </el-form-item>
-          <el-form-item label="位置参数" prop="args">
-            <el-input
-              v-model="formData.args"
-              placeholder="请输入位置参数"
-              :maxlength="50"
-            />
+          <el-form-item label="位置参数" prop="args" style="width: 40%">
+            <el-input v-model="formData.args" placeholder="请输入位置参数" :maxlength="50"/>
           </el-form-item>
-          <el-form-item label="关键字参数" prop="kwargs">
-            <el-input
-              v-model="formData.kwargs"
-              placeholder="请输入关键字参数"
-              :maxlength="50"
-            />
+          <el-form-item label="关键字参数" prop="kwargs" style="width: 40%">
+            <el-input v-model="formData.kwargs" placeholder="请输入关键字参数" :maxlength="50"/>
           </el-form-item>
-          <el-form-item label="并发执行" prop="coalesce">
+          <el-form-item label="并发执行" prop="coalesce" style="width: 40%">
             <el-radio-group v-model="formData.coalesce">
               <el-radio :value="true">是</el-radio>
               <el-radio :value="false">否</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="最大实例数" prop="max_instances">
-            <el-input-number
-              v-model="formData.max_instances"
-              controls-position="right"
-              :min="1"
-              :max="10"
-            />
+          <el-form-item label="最大实例数" prop="max_instances" style="width: 40%">
+            <el-input-number v-model="formData.max_instances" controls-position="right" :min="1" :max="10"/>
           </el-form-item>
-          <el-form-item label="触发器" prop="trigger">
+          <el-form-item label="触发器" prop="trigger" style="width: 40%">
             <el-select v-model="formData.trigger" placeholder="请选择触发器">
               <el-option value="date" label="指定日期(date)" />
               <el-option value="interval" label="间隔触发器(interval)" />
               <el-option value="cron" label="cron表达式" />
             </el-select>
           </el-form-item>
-
           <!-- 运行日期、间隔时间或 Cron 表达式 -->
           <el-form-item
             v-if="formData.trigger === 'date'"
             label="运行日期"
+            prop="trigger_args"
             :rules="[{ required: true, message: '请选择运行日期' }]"
+            style="width: 40%"
           >
             <el-date-picker
               v-model="formData.trigger_args"
@@ -385,13 +358,14 @@
               format="YYYY-MM-DD HH:mm:ss"
               value-format="YYYY-MM-DD HH:mm:ss"
               placeholder="请选择运行日期"
-              style="width: 100%"
             />
           </el-form-item>
           <el-form-item
             v-else-if="formData.trigger === 'interval'"
             label="间隔时间"
+            prop="trigger_args"
             :rules="[{ required: true, message: '请输入间隔时间' }]"
+            style="width: 40%"
           >
             <el-input
               v-model="formData.trigger_args"
@@ -403,7 +377,9 @@
           <el-form-item
             v-else-if="formData.trigger === 'cron'"
             label="Cron表达式"
+            prop="trigger_args"
             :rules="[{ required: true, message: '请输入Cron表达式' }]"
+            style="width: 40%"
           >
             <el-input
               v-model="formData.trigger_args"
@@ -411,14 +387,15 @@
               clearable
               readonly
               @click="handleShowCron"
-            >
-            </el-input>
+            />
           </el-form-item>
           <!-- 开始日期和结束日期 -->
           <el-form-item
             v-if="formData.trigger && formData.trigger != 'date'"
             label="开始日期"
+            prop="start_date"
             :rules="[{ required: false, message: '请选择开始日期' }]"
+            style="width: 40%"
           >
             <el-date-picker
               v-model="formData.start_date"
@@ -426,13 +403,14 @@
               format="YYYY-MM-DD HH:mm:ss"
               value-format="YYYY-MM-DD HH:mm:ss"
               placeholder="请选择开始日期"
-              style="width: 100%"
             />
           </el-form-item>
           <el-form-item
             v-if="formData.trigger && formData.trigger != 'date'"
             label="结束日期"
+            prop="end_date"
             :rules="[{ required: false, message: '请选择结束日期' }]"
+            style="width: 40%"
           >
             <el-date-picker
               v-model="formData.end_date"
@@ -440,11 +418,10 @@
               format="YYYY-MM-DD HH:mm:ss"
               value-format="YYYY-MM-DD HH:mm:ss"
               placeholder="请选择结束日期"
-              style="width: 100%"
             />
           </el-form-item>
 
-          <el-form-item label="描述" prop="description">
+          <el-form-item label="描述" prop="description" style="width: 85%">
             <el-input
               v-model="formData.description"
               :rows="4"
@@ -460,6 +437,7 @@
       <template #footer>
         <div class="dialog-footer">
           <!-- 详情弹窗不需要确定按钮的提交逻辑 -->
+          <el-button @click="handleCloseDialog">取消</el-button>
           <el-button
             v-if="dialogVisible.type !== 'detail'"
             type="primary"
@@ -469,20 +447,21 @@
           <el-button v-else type="primary" @click="handleCloseDialog"
             >确定</el-button
           >
-          <el-button @click="handleCloseDialog">取消</el-button>
         </div>
       </template>
     </el-dialog>
 
     <!-- 时间间隔组件 -->
-    <el-dialog
-      v-model="openIntervalTab"
-      title="间隔时间设置"
-      :width="600"
-      :destroy-on-close="true"
-      @ok="handleIntervalConfirm"
-    >
+    <el-dialog v-model="openIntervalTab" title="间隔时间设置" :width="700" align-center draggable>
       <IntervalTab ref="intervalTabRef" />
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="openIntervalTab = false">取消</el-button>
+          <el-button type="primary" @click="handleIntervalConfirm">
+            确认
+          </el-button>
+        </div>
+    </template>
     </el-dialog>
 
     <!-- core组件 -->

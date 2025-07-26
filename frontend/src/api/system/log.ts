@@ -58,7 +58,7 @@ export interface LogTable {
   response_code?: number;
   request_payload?: string;
   response_json?: string;
-  process_time?: number;
+  process_time?: string;
   description?: string;
   created_at?: string;
   updated_at?: string;

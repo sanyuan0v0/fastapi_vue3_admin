@@ -73,19 +73,7 @@
             <el-button type="warning" icon="download" circle @click="handleExport" />
           </el-tooltip>
           <el-tooltip content="刷新">
-            <el-button type="primary" icon="refresh" circle @click="handleRefresh" />
-          </el-tooltip>
-          <el-tooltip content="列表筛选">
-            <el-dropdown trigger="click">
-              <el-button type="default" icon="operation" circle />
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item v-for="column in tableColumns" :key="column.prop" :command="column">
-                    <el-checkbox v-model="column.show">{{ column.label }}</el-checkbox>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
+            <el-button type="default" icon="refresh" circle @click="handleRefresh" />
           </el-tooltip>
         </div>
       </div>
@@ -95,44 +83,44 @@
         <template #empty>
           <el-empty :image-size="80" description="暂无数据" />
         </template>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" min-width="55" align="center" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" min-width="60">
+        <el-table-column type="selection" min-width="55" align="center" />
+        <el-table-column type="index" fixed label="序号" min-width="60">
           <template #default="scope">
             {{ (queryFormData.page_no - 1) * queryFormData.page_size + scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_label')?.show" key="dict_label" label="标签" prop="dict_label" min-width="150" show-overflow-tooltip />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" key="status" label="状态" prop="status" min-width="100" show-overflow-tooltip>
+        <el-table-column label="标签" prop="dict_label" min-width="150" show-overflow-tooltip />
+        <el-table-column label="状态" prop="status" min-width="100" show-overflow-tooltip>
           <template #default="scope">
             <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
               {{ scope.row.status ? "启用" : "停用" }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_type')?.show" key="dict_type" label="类型" prop="dict_type" min-width="180" show-overflow-tooltip>
+        <el-table-column label="类型" prop="dict_type" min-width="180" show-overflow-tooltip>
           <template #default="scope">
             <el-tag type="primary">{{ scope.row.dict_type }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_value')?.show" key="dict_value" label="值" prop="dict_value" min-width="100" show-overflow-tooltip />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'css_class')?.show" key="css_class" label="样式属性" prop="css_class" min-width="100" show-overflow-tooltip />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'list_class')?.show" key="list_class" label="列表类样式" prop="list_class" min-width="100" show-overflow-tooltip />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'dict_sort')?.show" key="dict_sort" label="排序" prop="dict_sort" min-width="60" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'is_default')?.show" key="is_default" label="是否默认" prop="is_default" min-width="100">
+        <el-table-column label="值" prop="dict_value" min-width="100" show-overflow-tooltip />
+        <el-table-column label="样式属性" prop="css_class" min-width="100" show-overflow-tooltip />
+        <el-table-column label="列表类样式" prop="list_class" min-width="100" show-overflow-tooltip />
+        <el-table-column label="排序" prop="dict_sort" min-width="60" />
+        <el-table-column label="是否默认" prop="is_default" min-width="100">
           <template #default="scope">
             <el-tag v-if="scope.row.is_default" type="success">是</el-tag>
             <el-tag v-else type="danger">否</el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" key="description" label="描述" prop="description" min-width="100" show-overflow-tooltip/>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" key="created_at" label="创建时间" prop="created_at" min-width="200" sortable />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" key="updated_at" label="更新时间" prop="updated_at" min-width="200" sortable />
-          <el-table-column v-if="tableColumns.find(col => col.prop === 'creator')?.show" label="创建人" prop="creator" min-width="100">
+        <el-table-column label="描述" prop="description" min-width="100" show-overflow-tooltip/>
+        <el-table-column label="创建时间" prop="created_at" min-width="200" sortable />
+        <el-table-column label="更新时间" prop="updated_at" min-width="200" sortable />
+        <el-table-column label="创建人" prop="creator" min-width="100">
           <template #default="scope">
             {{ scope.row.creator?.name }}
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" align="center" min-width="200">
+        <el-table-column fixed="right" label="操作" align="center" min-width="200">
           <template #default="scope">
             <el-button type="info" size="small" link icon="document" @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
             <el-button type="primary" size="small" link icon="edit" @click="handleOpenDialog('update', scope.row.id)">编辑</el-button>
@@ -219,9 +207,9 @@
       <template #footer>
         <div class="dialog-footer">
           <!-- 详情弹窗不需要确定按钮的提交逻辑 -->
+          <el-button @click="handleCloseDialog">取消</el-button>
           <el-button v-if="dialogVisible.type !== 'detail'" type="primary" @click="handleSubmit">确定</el-button>
           <el-button v-else type="primary" @click="handleCloseDialog">确定</el-button>
-          <el-button @click="handleCloseDialog">取消</el-button>
         </div>
       </template>
     </el-dialog>
@@ -263,26 +251,6 @@ const drawerVisible = ref<boolean>(false);
 
 // 分页表单
 const pageTableData = ref<DictDataTable[]>([]);
-
-
-// 表格列配置
-const tableColumns = ref([
-  { prop: 'selection', label: '选择框', show: true },
-  { prop: 'index', label: '序号', show: true },
-  { prop: 'dict_sort', label: '字典排序', show: true },
-  { prop: 'dict_label', label: '字典标签', show: true },
-  { prop: 'dict_type', label: '字典类型', show: true },
-  { prop: 'dict_value', label: '字典键值', show: true },
-  { prop: 'css_class', label: '样式属性', show: false },
-  { prop: 'list_class', label: '表格回显属性', show: false },
-  { prop: 'is_default', label: '是否默认', show: true },
-  { prop: 'status', label: '状态', show: true },
-  { prop: 'description', label: '描述', show: true },
-  { prop: 'creator', label: '创建人', show: true },
-  { prop: 'created_at', label: '创建时间', show: true },
-  { prop: 'updated_at', label: '更新时间', show: true },
-  { prop: 'operation', label: '操作', show: true }
-])
 
 // 详情表单
 const detailFormData = ref<DictDataTable>({});

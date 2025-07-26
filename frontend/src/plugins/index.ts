@@ -6,6 +6,7 @@ import { setupStore } from "@/store";
 import { setupElIcons } from "./icons";
 import { setupPermission } from "./permission";
 import { InstallCodeMirror } from "codemirror-editor-vue3";
+import ElementPlus from 'element-plus'
 
 export default {
   install(app: App<Element>) {
@@ -21,5 +22,7 @@ export default {
     setupPermission();
     // 注册 CodeMirror
     app.use(InstallCodeMirror);
+    // 注册 ElementPlus
+    app.use(ElementPlus);
   },
 };

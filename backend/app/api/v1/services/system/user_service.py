@@ -414,13 +414,16 @@ class UserService:
         # 定义字段映射
         mapping_dict = {
             'id': '用户编号',
+            'avatar': '头像',
             'username': '用户名称',
             'name': '用户昵称', 
             'dept_name': '部门',
-            'email': '邮箱地址',
-            'mobile': '手机号码',
+            'email': '邮箱',
+            'mobile': '手机号',
             'gender': '性别',
             'status': '状态',
+            'is_superuser': '是否超级管理员',
+            'last_login': '最后登录时间',
             'description': '备注',
             'created_at': '创建时间',
             'updated_at': '更新时间',
@@ -431,7 +434,7 @@ class UserService:
         # 复制数据并转换
         data = user_list.copy()
         for item in data:
-            item['status'] = '正常' if item.get('status') else '停用'
+            item['status'] = '启用' if item.get('status') else '停用'
             gender = item.get('gender')
             item['gender'] = '男' if gender == 1 else ('女' if gender == 2 else '未知')
 

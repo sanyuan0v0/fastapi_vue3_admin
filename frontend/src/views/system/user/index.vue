@@ -89,19 +89,7 @@
                 <el-button type="warning" icon="download" circle @click="handleOperation('export')" />
               </el-tooltip>
               <el-tooltip content="刷新">
-                <el-button type="primary" icon="refresh" circle @click="handleRefresh" />
-              </el-tooltip>
-              <el-tooltip content="列表筛选">
-                <el-dropdown trigger="click">
-                  <el-button type="default" icon="operation" circle />
-                  <template #dropdown>
-                    <el-dropdown-menu>
-                      <el-dropdown-item v-for="column in tableColumns" :key="column.prop" :command="column">
-                        <el-checkbox v-model="column.show">{{ column.label }}</el-checkbox>
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
-                  </template>
-                </el-dropdown>
+                <el-button type="default" icon="refresh" circle @click="handleRefresh" />
               </el-tooltip>
             </div>
           </div>
@@ -111,34 +99,39 @@
             <template #empty>
               <el-empty :image-size="80" description="暂无数据" />
             </template>
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" type="selection" min-width="55" align="center" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" align="center" min-width="60" >
+            <el-table-column type="selection" min-width="55" align="center" />
+            <el-table-column type="index" fixed label="序号" align="center" min-width="60" >
               <template #default="scope">
                 {{ (queryFormData.page_no - 1) * queryFormData.page_size + scope.$index + 1 }}
               </template>
             </el-table-column>
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'avatar')?.show" label="头像" prop="avatar" min-width="80" align="center">
+            <el-table-column label="头像" prop="avatar" min-width="80" align="center">
               <template #default="scope">
-                <el-avatar size="small" :src="scope.row.avatar" />
+                <template v-if="scope.row.avatar">
+                  <el-avatar size="small" :src="scope.row.avatar" />
+                </template>
+                <template v-else>
+                  <el-avatar size="small" icon="UserFilled" />
+                </template>
               </template>
             </el-table-column>
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'username')?.show" label="账号" prop="username" min-width="100" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'name')?.show" label="用户名" prop="name" min-width="100" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'status')?.show" label="状态" prop="status" min-width="100">
+            <el-table-column label="账号" prop="username" min-width="100" />
+            <el-table-column label="用户名" prop="name" min-width="100" />
+            <el-table-column label="状态" prop="status" min-width="100">
               <template #default="scope">
                 <el-tag :type="scope.row.status === true ? 'success' : 'danger'">
                   {{ scope.row.status === true ? "启用" : "停用" }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'is_superuser')?.show" label="是否超管" prop="is_superuser" min-width="100">
+            <el-table-column label="是否超管" prop="is_superuser" min-width="100">
               <template #default="scope">
                 <el-tag :type="scope.row.is_superuser ? 'success' : 'info'">
                   {{ scope.row.is_superuser ? '是' : '否' }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'gender')?.show" label="性别" min-width="100">
+            <el-table-column label="性别" prop="gender" min-width="100">
               <template #default="scope">
                 <el-tag v-if="scope.row.gender ==='0'" type="success">男</el-tag>
                 <el-tag v-else-if="scope.row.gender ==='1'" type="warning">女</el-tag>
@@ -146,16 +139,16 @@
               </template>
             </el-table-column>
 
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'mobile')?.show" label="手机号" prop="mobile" min-width="160" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'email')?.show" label="邮箱" prop="email" min-width="160" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" label="创建时间" prop="created_at" min-width="200" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'updated_at')?.show" label="更新时间" prop="updated_at" min-width="200" />
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'creator')?.show" key="creator" label="创建人" min-width="120">
+            <el-table-column label="手机号" prop="mobile" min-width="160" />
+            <el-table-column label="邮箱" prop="email" min-width="160" />
+            <el-table-column label="创建时间" prop="created_at" min-width="200" />
+            <el-table-column label="更新时间" prop="updated_at" min-width="200" />
+            <el-table-column label="创建人" prop="creator" min-width="120">
               <template #default="scope">
                 {{ scope.row.creator?.name }}
               </template>
             </el-table-column>
-            <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" align="center" min-width="280">
+            <el-table-column fixed="right" label="操作" align="center" min-width="280">
               <template #default="scope">
                 <el-button type="warning" icon="RefreshLeft" size="small" link @click="hancleResetPassword(scope.row)">重置密码</el-button>
                 <el-button type="info" size="small" link icon="document" @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
@@ -180,7 +173,12 @@
         <el-descriptions :column="2" border>
           <el-descriptions-item label="编号" :span="2">{{ detailFormData.id }}</el-descriptions-item>
           <el-descriptions-item label="头像" :span="2">
-            <el-avatar :src="detailFormData.avatar" size="small"></el-avatar>
+            <template v-if="detailFormData.avatar">
+              <el-avatar :src="detailFormData.avatar" size="small"></el-avatar>
+            </template>
+            <template v-else>
+              <el-avatar icon="UserFilled" size="small"></el-avatar>
+            </template>
           </el-descriptions-item>
           <el-descriptions-item label="账号" :span="2">{{ detailFormData.username }}</el-descriptions-item>
           <el-descriptions-item label="用户名" :span="2">{{ detailFormData.name }}</el-descriptions-item>
@@ -342,25 +340,6 @@ const pageTableData = ref<UserInfo[]>([]);
 // 详情表单
 const detailFormData = ref<UserInfo>({});
 
-// 表格列配置
-const tableColumns = ref([
-  { prop: 'selection', label: '选择框', show: true },
-  { prop: 'index', label: '序号', show: true },
-  { prop: 'avatar', label: '头像', show: true },
-  { prop: 'username', label: '账号', show: true },
-  { prop: 'name', label: '用户名', show: true },
-  { prop: 'gender', label: '性别', show: true },
-  { prop: 'email', label: '邮箱', show: true },
-  { prop: 'mobile', label: '手机号', show: true },
-  { prop: 'is_superuser', label: '是否超管', show: true },
-  { prop: 'status', label: '状态', show: true },
-  { prop: 'description', label: '描述', show: true },
-  { prop: 'created_at', label: '创建时间', show: true },
-  { prop: 'updated_at', label: '更新时间', show: true },
-  { prop: 'creator', label: '创建人', show: true },
-  { prop: 'operation', label: '操作', show: true }
-])
-
 // 分页查询参数
 const queryFormData = reactive<UserPageQuery>({
   page_no: 1,
@@ -456,6 +435,7 @@ async function handleQuery() {
 // 重置查询
 async function handleResetQuery() {
   queryFormRef.value.resetFields();
+  queryFormData.dept_id = undefined;
   queryFormData.page_no = 1;
   loadingData();
 }

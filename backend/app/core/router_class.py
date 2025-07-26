@@ -57,7 +57,7 @@ class OperationLogRoute(APIRoute):
                 payload = str(oper_param)
             
             response_data = response.body if "application/json" in response.headers.get("Content-Type", "") else b"{}"
-            process_time = time.time() - start_time
+            process_time = f"{(time.time() - start_time):.4f}s"
 
             # 获取当前用户ID,如果是登录接口则为空
             log_type = 1 # 1:登录日志 2:操作日志

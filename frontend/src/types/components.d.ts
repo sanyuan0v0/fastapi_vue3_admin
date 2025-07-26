@@ -85,6 +85,7 @@ declare module 'vue' {
     ElTreeSelect: typeof import('element-plus/es')['ElTreeSelect']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     ElWatermark: typeof import('element-plus/es')['ElWatermark']
+    Vue3CronPlusPicker: typeof import('vue3-cron-plus-picker')['default']
     FileUpload: typeof import('./src/components/Upload/FileUpload.vue')['default']
     Frame: typeof import('./src/components/Frame/index.vue')['default']
     Fullscreen: typeof import('./src/components/Fullscreen/index.vue')['default']

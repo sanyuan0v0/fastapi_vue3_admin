@@ -187,7 +187,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
         "element-plus/es/components/popconfirm/style/index",
         "element-plus/es/components/container/style/index",
         "element-plus/es/components/main/style/index",
-        "element-plus/es/components/aside/style/index"
+        "element-plus/es/components/aside/style/index",
       ],
     },
     // 构建配置
