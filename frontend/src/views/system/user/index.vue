@@ -367,7 +367,7 @@ const formData = reactive<UserForm>({
   gender: undefined,
   email: undefined,
   mobile: undefined,
-  is_superuser: undefined,
+  is_superuser: false, //默认不是超管
   status: true,
   description: undefined,
 })
@@ -551,7 +551,7 @@ async function handleSubmit() {
           handleCloseDialog();
           handleResetQuery();
         } catch (error: any) {
-          ElMessage.error(error.message);
+          console.log(error.message);
         } finally {
           loading.value = false;
         }
@@ -650,7 +650,7 @@ async function handleDelete(ids: number[]) {
       loading.value = false;
     }
   }).catch(() => {
-    ElMessage.info('已取消删除');
+    ElMessageBox.close();
   });
 }
 

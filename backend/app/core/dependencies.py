@@ -80,9 +80,9 @@ async def get_current_user(
     # 获取用户信息
     user = await UserCRUD(auth).get_by_username_crud(username=username)
     if not user:
-        raise CustomException(msg="用户不存在", status_code=403)
+        raise CustomException(msg="用户不存在", status_code=401)
     if not user.status:
-        raise CustomException(msg="用户已被停用", status_code=403)
+        raise CustomException(msg="用户已被停用", status_code=401)
     
     # 设置请求上下文
     request.scope["user_id"] = user.id
@@ -156,11 +156,11 @@ class AuthPermission:
             # 严格模式:要求所有权限都满足
             if not all(perm in user_permissions for perm in self.permissions):
                 logger.error(f"用户缺少所需的权限: {self.permissions}")
-                raise CustomException(msg="无权限操作")
+                raise CustomException(msg="无权限操作", status_code=403)
         else:
             # 非严格模式:满足任一权限即可
             if not any(perm in user_permissions for perm in self.permissions):
                 logger.error(f"用户缺少任何所需的权限: {self.permissions}")
-                raise CustomException(msg="无权限操作")
+                raise CustomException(msg="无权限操作", status_code=403)
 
         return auth

@@ -47,11 +47,17 @@ httpRequest.interceptors.response.use((response: AxiosResponse<ApiResponse>) => 
 
     const data = response.data;
 
-    // 请求成功
-    if (data.code != ResultEnum.SUCCESS) {
+    // 检查请求是否失败
+    if (data.code !== ResultEnum.SUCCESS) {
       ElMessage.error(data.msg);
       return Promise.reject(response);
-    } 
+    }
+
+    // 如果请求不是 GET 请求，请求成功时显示成功提示
+    if (response.config.method?.toUpperCase() !== 'GET') {
+      ElMessage.success(data.msg);
+    }
+    
     return response;
   }, async (error: AxiosError<ApiResponse>) => {
     const data = error.response?.data;

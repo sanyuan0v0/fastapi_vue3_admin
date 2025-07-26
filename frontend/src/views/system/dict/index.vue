@@ -406,7 +406,7 @@ async function handleDelete(ids: number[]) {
       loading.value = false;
     }
   }).catch(() => {
-    ElMessage.info('已取消删除');
+    ElMessageBox.close();
   });
 }
 

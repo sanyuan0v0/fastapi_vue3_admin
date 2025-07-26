@@ -19,7 +19,7 @@ export const UserAPI = {
   },
 
   updateCurrentUserInfo(body: InfoFormState) {
-    return request<ApiResponse>({
+    return request<ApiResponse<UserInfo>>({
       url: `/system/user/current/info/update`,
       method: "put",
       data: body,
@@ -229,9 +229,9 @@ export interface InfoFormState {
 }
 
 export interface PasswordFormState {
-  oldPassword: string;
-  newPassword: string;
-  confirmPassword: string;
+  old_password: string;
+  new_password: string;
+  confirm_password: string;
 }
 
 export interface ResetPasswordForm {

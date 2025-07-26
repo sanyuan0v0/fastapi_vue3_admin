@@ -18,6 +18,6 @@ export const enum ResultEnum {
   /**
    * 访问令牌无效或过期
    */
-  ACCESS_TOKEN_INVALID = 403,
+  ACCESS_TOKEN_INVALID = 401,
 
 }

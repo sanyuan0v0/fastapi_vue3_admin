@@ -32,6 +32,11 @@ export const useUserStore = defineStore("user", {
       this.basicInfo = { ...this.basicInfo, ...response.data.data };
     },
 
+    // 设置用户信息
+    setUserInfo(info: UserInfo) {
+      this.basicInfo = info;
+    },
+
     setRoute(routers: any) {
       this.routeList = routers;
       this.hasGetRoute = true;
