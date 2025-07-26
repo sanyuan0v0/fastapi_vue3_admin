@@ -18,7 +18,7 @@ class OperationLogCreateSchema(BaseModel):
     request_browser: Optional[str] = Field(default=None, description="请求浏览器")
     response_code: Optional[int] = Field(default=None, description="响应状态码")
     response_json: Optional[str] = Field(default=None, description="响应 JSON 数据")
-    process_time: Optional[float] = Field(default=None, description="处理时间")
+    process_time: Optional[str] = Field(default=None, description="处理时间")
     description: Optional[str] = Field(default=None, max_length=255, description="备注")
     creator_id: Optional[int] = Field(default=None, description="创建人ID")
 

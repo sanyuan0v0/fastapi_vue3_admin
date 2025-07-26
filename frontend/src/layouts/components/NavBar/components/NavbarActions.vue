@@ -31,7 +31,12 @@
       <div class="navbar-actions__item">
         <el-dropdown trigger="click">
           <div class="user-profile">
-            <img class="user-profile__avatar" :src="userStore.basicInfo.avatar" />
+            <template v-if="userStore.basicInfo.avatar">
+              <el-avatar :src="userStore.basicInfo.avatar" />
+            </template>
+            <template v-else>
+              <el-avatar icon="UserFilled" />
+            </template>
             <span class="user-profile__name">{{ userStore.basicInfo.username }}</span>
           </div>
           <template #dropdown>

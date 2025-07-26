@@ -23,7 +23,7 @@ class OperationLogModel(ModelBase):
     request_browser = Column(String(64), nullable=True, comment="浏览器")
     response_code = Column(Integer, nullable=True, comment="响应状态码")
     response_json = Column(Text, nullable=True, comment="响应体")
-    process_time = Column(Float, nullable=True, comment="处理时间")
+    process_time = Column(String(20), nullable=True, comment="处理时间")
     
     # 审计字段
     description = Column(Text, nullable=True, comment="备注说明")

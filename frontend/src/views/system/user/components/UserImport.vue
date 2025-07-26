@@ -30,6 +30,7 @@
           <el-button v-if="resultData.length > 0" type="primary" @click="handleShowResult">
             错误信息
           </el-button>
+          <el-button @click="handleClose">取 消</el-button>
           <el-button
             type="primary"
             :disabled="importFormData.files.length === 0"
@@ -37,7 +38,6 @@
           >
             确 定
           </el-button>
-          <el-button @click="handleClose">取 消</el-button>
         </div>
       </template>
     </el-dialog>

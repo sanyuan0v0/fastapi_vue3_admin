@@ -12,7 +12,13 @@
           <div class="user-info-header">
             <div class="avatar-wrapper">
               <el-avatar 
+                v-if="infoFormState.avatar"
                 :src="infoFormState.avatar" 
+                :size="120"
+              />
+              <el-avatar 
+                v-else
+                icon="UserFilled" 
                 :size="120"
               />
                 
@@ -115,7 +121,7 @@
                 <span>基本设置</span>
               </template>
               <div>
-                <el-form ref="ruleFormRef" :model="infoFormState" :rules="rules" :inline="true" label-suffix=":" label-width="auto" label-position="right">
+                <el-form ref="ruleFormRef" :model="infoFormState" :rules="rules" :inline="true" label-suffix=":">
                   
                   <el-form-item label="姓名" name="name">
                     <el-input v-model:value="infoFormState.name" placeholder="请输入姓名" prefix-icon="User" clearable />
@@ -152,7 +158,7 @@
                 <span>安全设置</span>
               </template>
               <div>
-                <el-form ref="ruleFormRef" :model="passwordFormState" :rules="resetPasswordRules"  label-suffix=":" label-width="auto" label-position="right">
+                <el-form ref="ruleFormRef" :model="passwordFormState" :rules="resetPasswordRules"  label-suffix=":">
                   <el-form-item label="当前密码" name="oldPassword">
                     <el-input v-model.trim="passwordFormState.oldPassword" :placeholder="t('login.password')" type="password" show-password clearable>
                       <template #prefix>

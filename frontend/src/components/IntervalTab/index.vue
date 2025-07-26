@@ -1,43 +1,31 @@
 <template>
-  <div>
-    <el-row :gutter="16">
-      <el-col :span="4">
-        <el-form-item label="秒">
-          <el-select v-model:value="crontabValueObj.second" placeholder="秒">
-            <el-option v-for="second in seconds" :key="second" :value="second">{{ second }}</el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-      <el-col :span="4">
-        <el-form-item label="分">
-          <el-select v-model:value="crontabValueObj.min" placeholder="分">
-            <el-option v-for="min in minutes" :key="min" :value="min">{{min}}</el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-      <el-col :span="4">
-        <el-form-item label="时">
-          <el-select v-model:value="crontabValueObj.hour" placeholder="时">
-            <el-option v-for="hour in hours" :key="hour" :value="hour">{{hour}}</el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-      <el-col :span="4">
-        <el-form-item label="天">
-          <el-select v-model:value="crontabValueObj.day" placeholder="天">
-            <el-option v-for="day in days" :key="day" :value="day">{{day}}</el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-      <el-col :span="4">
-        <el-form-item label="周">
-          <el-select v-model:value="crontabValueObj.week" placeholder="周">
-            <el-option v-for="week in weeks" :key="week" :value="week">{{week}}</el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-    </el-row>
-  </div>
+  <el-form :model="crontabValueObj" ref="formRef" label-width="auto" label-suffix=":" :inline="true" class="flex">
+    <el-form-item label="秒" prop="second" style="width: 20%">
+      <el-select v-model:value="crontabValueObj.second" placeholder="秒">
+        <el-option v-for="second in seconds" :key="second" :value="second">{{ second }}</el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="分" prop="min" style="width: 20%">
+      <el-select v-model:value="crontabValueObj.min" placeholder="分">
+        <el-option v-for="min in minutes" :key="min" :value="min">{{min}}</el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="时" prop="hour" style="width: 20%">
+      <el-select v-model:value="crontabValueObj.hour" placeholder="时">
+        <el-option v-for="hour in hours" :key="hour" :value="hour">{{hour}}</el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="天" prop="day" style="width: 20%">
+      <el-select v-model:value="crontabValueObj.day" placeholder="天">
+        <el-option v-for="day in days" :key="day" :value="day">{{day}}</el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="周" prop="week" style="width: 20%">
+      <el-select v-model:value="crontabValueObj.week" placeholder="周">
+        <el-option v-for="week in weeks" :key="week" :value="week">{{week}}</el-option>
+      </el-select>
+    </el-form-item>
+  </el-form>
 </template>
 
 <script setup>

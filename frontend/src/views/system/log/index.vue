@@ -65,19 +65,7 @@
             <el-button type="warning" icon="download" circle @click="handleExport" />
           </el-tooltip>
           <el-tooltip content="刷新">
-            <el-button type="primary" icon="refresh" circle @click="handleRefresh" />
-          </el-tooltip>
-          <el-tooltip content="列表筛选">
-            <el-dropdown trigger="click">
-              <el-button type="default" icon="operation" circle />
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item v-for="column in tableColumns" :key="column.prop" :command="column">
-                    <el-checkbox v-model="column.show">{{ column.label }}</el-checkbox>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
+            <el-button type="default" icon="refresh" circle @click="handleRefresh" />
           </el-tooltip>
         </div>
       </div>
@@ -87,46 +75,46 @@
         <template #empty>
           <el-empty :image-size="80" description="暂无数据" />
         </template>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'selection')?.show" prop='selection' type="selection" min-width="55" align="center" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'index')?.show" type="index" fixed label="序号" min-width="60" >
+        <el-table-column prop='selection' type="selection" min-width="55" align="center" />
+        <el-table-column type="index" fixed label="序号" min-width="60" >
           <template #default="scope">
             {{ (queryFormData.page_no - 1) * queryFormData.page_size + scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'type')?.show" label="日志类型" prop="type" min-width="100">
+        <el-table-column label="日志类型" prop="type" min-width="100">
           <template #default="scope">
             <el-tag :type="scope.row.type === 1 ? 'success' : 'primary'">
               {{ scope.row.type === 1 ? '登录日志' : '操作日志' }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_path')?.show" label="请求路径" prop="request_path" min-width="200" show-overflow-tooltip />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_method')?.show" label="请求方法" prop="request_method" min-width="100">
+        <el-table-column label="请求路径" prop="request_path" min-width="200" show-overflow-tooltip />
+        <el-table-column label="请求方法" prop="request_method" min-width="100">
           <template #default="scope">
             <el-tag :type="getMethodType(scope.row.request_method)">
               {{ scope.row.request_method }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'response_code')?.show" label="状态码" prop="response_code" min-width="100">
+        <el-table-column label="状态码" prop="response_code" min-width="100">
           <template #default="scope">
             <el-tag :type="getStatusCodeType(scope.row.response_code)">
               {{ scope.row.response_code }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_ip')?.show" label="请求IP" prop="request_ip" min-width="180" show-overflow-tooltip>
+        <el-table-column label="请求IP" prop="request_ip" min-width="180" show-overflow-tooltip>
           <template #default="scope">
             <el-text>{{ scope.row.request_ip }}</el-text>
             <CopyButton v-if="scope.row.request_ip" :text="scope.row.request_ip" style="margin-left: 2px" />
           </template>
         </el-table-column>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'process_time')?.show" label="处理时间" prop="process_time" min-width="120" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_browser')?.show" label="浏览器" prop="request_browser" min-width="220" show-overflow-tooltip/>
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'request_os')?.show" label="系统" prop="request_os" min-width="100" />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'description')?.show" label="描述" prop="description" min-width="120" show-overflow-tooltip />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'created_at')?.show" label="创建时间" prop="created_at" min-width="200" sortable />
-        <el-table-column v-if="tableColumns.find(col => col.prop === 'creator')?.show" label="创建人" prop="creator" min-width="120">
+        <el-table-column label="处理时间" prop="process_time" min-width="120" />
+        <el-table-column label="浏览器" prop="request_browser" min-width="220" show-overflow-tooltip/>
+        <el-table-column label="系统" prop="request_os" min-width="100" />
+        <el-table-column label="描述" prop="description" min-width="120" show-overflow-tooltip />
+        <el-table-column label="创建时间" prop="created_at" min-width="200" sortable />
+        <el-table-column label="创建人" prop="creator" min-width="120">
           <template #default="scope">
             {{ scope.row.creator?.name }}
           </template>
@@ -187,8 +175,8 @@
       <template #footer>
         <div class="dialog-footer">
           <!-- 详情弹窗不需要确定按钮的提交逻辑 -->
-          <el-button type="primary" @click="handleCloseDialog">确定</el-button>
           <el-button @click="handleCloseDialog">取消</el-button>
+          <el-button type="primary" @click="handleCloseDialog">确定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -215,26 +203,6 @@ const isExpandable = ref(true);
 
 // 分页表单
 const pageTableData = ref<LogTable[]>([]);
-
-// 表格列配置
-const tableColumns = ref([
-  { prop: 'selection', label: '选择框', show: true },
-  { prop: 'index', label: '序号', show: true },
-  { prop: 'type', label: '日志类型', show: true },
-  { prop: 'request_path', label: '请求路径', show: true },
-  { prop: 'request_method', label: '请求方法', show: true },
-  { prop: 'response_code', label: '响应状态码', show: true },
-  { prop: 'request_ip', label: '请求IP', show: true },
-  { prop: 'process_time', label: '处理时间', show: true },
-  { prop: 'request_browser', label: '浏览器', show: true },
-  { prop: 'request_os', label: '操作系统', show: true },
-  { prop: 'login_location', label: '登录地点', show: true },
-  { prop: 'description', label: '描述', show: true },
-  { prop: 'creator', label: '创建人', show: true },
-  { prop: 'created_at', label: '创建时间', show: true },
-  { prop: 'updated_at', label: '更新时间', show: true },
-  { prop: 'operation', label: '操作', show: true }
-])
 
 // 详情表单
 const formData = ref<LogTable>({});
