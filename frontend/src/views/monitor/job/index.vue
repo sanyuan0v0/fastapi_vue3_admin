@@ -478,7 +478,6 @@ defineOptions({
 });
 
 import JobAPI, { JobTable, JobForm, JobPageQuery } from "@/api/monitor/job";
-import { ElMessage, ElMessageBox } from "element-plus";
 
 import IntervalTab from "@/components/IntervalTab/index.vue";
 import "vue3-cron-plus-picker/style.css";
@@ -700,7 +699,7 @@ async function handleDelete(ids: number[]) {
       }
     })
     .catch(() => {
-      ElMessage.info("已取消删除");
+      ElMessageBox.close();
     });
 }
 
@@ -710,46 +709,44 @@ async function handleExport() {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  })
-    .then(async () => {
-      try {
-        loading.value = true;
-        const body = {
-          ...queryFormData,
-          page_no: 1,
-          page_size: total.value,
-        };
-        ElMessage.warning("正在导出数据，请稍候...");
+  }).then(async () => {
+    try {
+      loading.value = true;
+      const body = {
+        ...queryFormData,
+        page_no: 1,
+        page_size: total.value,
+      };
+      ElMessage.warning("正在导出数据，请稍候...");
 
-        const response = await JobAPI.exportJob(body);
-        const blob = new Blob([JSON.stringify(response.data.data)], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
-        });
-        // 从响应头获取文件名
-        const contentDisposition = response.headers["content-disposition"];
-        let fileName = "系统配置.xlsx";
-        if (contentDisposition) {
-          const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
-          if (fileNameMatch) {
-            fileName = decodeURIComponent(fileNameMatch[1]);
-          }
+      const response = await JobAPI.exportJob(body);
+      const blob = new Blob([JSON.stringify(response.data.data)], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+      });
+      // 从响应头获取文件名
+      const contentDisposition = response.headers["content-disposition"];
+      let fileName = "系统配置.xlsx";
+      if (contentDisposition) {
+        const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
+        if (fileNameMatch) {
+          fileName = decodeURIComponent(fileNameMatch[1]);
         }
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-      } catch (error: any) {
-        ElMessage.error("文件处理失败", error.message);
-        console.error("导出错误:", error);
-      } finally {
-        loading.value = false;
       }
-    })
-    .catch(() => {
-      ElMessage.info("已取消导出");
-    });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+    } catch (error: any) {
+      ElMessage.error("文件处理失败", error.message);
+      console.error("导出错误:", error);
+    } finally {
+      loading.value = false;
+    }
+  }).catch(() => {
+    ElMessageBox.close();
+  });
 }
 
 function openIntervalTabHandle(value: any) {
@@ -781,22 +778,20 @@ const handleClear = () => {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  })
-    .then(async () => {
-      try {
-        loading.value = true;
-        await JobAPI.clearJob();
-        ElMessage.success("清空成功");
-        handleResetQuery();
-      } catch (error: any) {
-        ElMessage.error(error.message);
-      } finally {
-        loading.value = false;
-      }
-    })
-    .catch(() => {
-      ElMessage.info("已取消清空");
-    });
+  }).then(async () => {
+    try {
+      loading.value = true;
+      await JobAPI.clearJob();
+      ElMessage.success("清空成功");
+      handleResetQuery();
+    } catch (error: any) {
+      ElMessage.error(error.message);
+    } finally {
+      loading.value = false;
+    }
+  }).catch(() => {
+    ElMessageBox.close();
+  });
 };
 
 // 操作按钮:操作类型 1: 暂停 2: 恢复 3: 重启（暂时移除重启）

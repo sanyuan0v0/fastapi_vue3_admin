@@ -455,7 +455,7 @@ async function handleExport() {
       loading.value = false;
     }
   }).catch(() => {
-    ElMessage.info('已取消导出');
+    ElMessageBox.close();
   });
 }
 
@@ -477,7 +477,7 @@ async function handleMoreClick(status: boolean) {
         loading.value = false;
       }
     }).catch(() => {
-      ElMessage.info('已取消批量操作');
+      ElMessageBox.close();
     });
   }
 }
