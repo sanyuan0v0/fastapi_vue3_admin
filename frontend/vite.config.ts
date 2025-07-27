@@ -230,16 +230,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
               if (id.includes('exceljs')) {
                 return 'exceljs';
               }
-              // 添加更多大型库
-              if (id.includes('vue')) {
-                return 'vue';
-              }
-              if (id.includes('pinia')) {
-                return 'pinia';
-              }
-              if (id.includes('axios')) {
-                return 'axios';
-              }
+              
 
               // 其他模块保持当前拆分方式
               const module = id.toString().split('node_modules/')[1].split('/')[0]
