@@ -364,37 +364,62 @@
             v-else-if="formData.trigger === 'interval'"
             label="间隔时间"
             prop="trigger_args"
-            :rules="[{ required: true, message: '请输入间隔时间' }]"
+            :rules="[{ required: true, message: '请输入间隔时间', trigger: 'change' }]"
             style="width: 40%"
           >
-            <el-input
-              v-model="formData.trigger_args"
-              placeholder="请输入 秒-分-时-天-周 (* * * * 1)"
-              clearable
-              @click="openIntervalTabHandle('create')"
-            />
+            <el-popover
+              :visible="openIntervalTab"
+              width="600px"
+              trigger="click"
+              :persistent="false"
+            >
+              <template #reference>
+                <el-input
+                  v-model="formData.trigger_args"
+                  placeholder="请输入 秒-分-时-天-周"
+                  readonly
+                  @click="openIntervalTab = true"
+                />
+              </template>
+              <IntervalTab
+                ref="intervalTabRef"
+                @confirm="handleIntervalConfirm"
+                @cancel="openIntervalTab = false"
+                :cron-value="formData.trigger_args"
+              />
+            </el-popover>
           </el-form-item>
           <el-form-item
             v-else-if="formData.trigger === 'cron'"
             label="Cron表达式"
             prop="trigger_args"
-            :rules="[{ required: true, message: '请输入Cron表达式' }]"
+            :rules="[{ required: true, message: '请输入Cron表达式', trigger: 'change' }]"
             style="width: 40%"
           >
-            <el-input
-              v-model="formData.trigger_args"
-              placeholder="请输入 Cron表达式(*/3 * * * *)"
-              clearable
-              readonly
-              @click="handleShowCron"
-            />
+            <el-popover
+              :visible="openCron"
+              width="600px"
+              trigger="click"
+              :persistent="false"
+              placement="left"
+            >
+              <template #reference>
+                <el-input
+                  v-model="formData.trigger_args"
+                  placeholder="请输入 * * * * * ? *"
+                  readonly
+                  @click="openCron = true"
+                />
+              </template>
+              <vue3CronPlus @change="handlechangeCron" @close="openCron = false" max-height="500px" i18n="cn"></vue3CronPlus>
+            </el-popover>
           </el-form-item>
           <!-- 开始日期和结束日期 -->
           <el-form-item
             v-if="formData.trigger && formData.trigger != 'date'"
             label="开始日期"
             prop="start_date"
-            :rules="[{ required: false, message: '请选择开始日期' }]"
+            :rules="[{ required: false, message: '请选择开始日期', trigger: 'blur' }]"
             style="width: 40%"
           >
             <el-date-picker
@@ -409,7 +434,7 @@
             v-if="formData.trigger && formData.trigger != 'date'"
             label="结束日期"
             prop="end_date"
-            :rules="[{ required: false, message: '请选择结束日期' }]"
+            :rules="[{ required: false, message: '请选择结束日期', trigger: 'blur' }]"
             style="width: 40%"
           >
             <el-date-picker
@@ -451,23 +476,6 @@
       </template>
     </el-dialog>
 
-    <!-- 时间间隔组件 -->
-    <el-dialog v-model="openIntervalTab" title="间隔时间设置" :width="700" align-center draggable>
-      <IntervalTab ref="intervalTabRef" />
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="openIntervalTab = false">取消</el-button>
-          <el-button type="primary" @click="handleIntervalConfirm">
-            确认
-          </el-button>
-        </div>
-    </template>
-    </el-dialog>
-
-    <!-- core组件 -->
-    <el-dialog v-model="openCron">
-      <Vue3CronPlusPicker @hide="closeDialog" @fill="fillValue" :expression="expression" />
-    </el-dialog>
   </div>
 </template>
 
@@ -478,11 +486,10 @@ defineOptions({
 });
 
 import JobAPI, { JobTable, JobForm, JobPageQuery } from "@/api/monitor/job";
-
 import IntervalTab from "@/components/IntervalTab/index.vue";
-import "vue3-cron-plus-picker/style.css";
-import { Vue3CronPlusPicker } from "vue3-cron-plus-picker";
 import { useDictStore } from "@/store/index";
+import { vue3CronPlus } from 'vue3-cron-plus'
+import 'vue3-cron-plus/dist/index.css' // 引入样式
 
 const dictStore = useDictStore();
 
@@ -504,8 +511,7 @@ const isExpandable = ref(true);
 // const tableLoading = ref(false);
 // const openModal = ref(false);
 const openCron = ref(false);
-const cronMode = ref("create");
-const modalTitle = ref("");
+
 // const modalSubmitLoading = ref(false);
 // const detailStateLoading = ref(false);
 // const dataSource = ref<tableJobType[]>([]);
@@ -514,7 +520,6 @@ const modalTitle = ref("");
 // const detailState = ref<tableJobType>({})
 const openIntervalTab = ref(false);
 const intervalTabRef = ref();
-const expression = ref();
 
 // 分页表单
 const pageTableData = ref<JobTable[]>([]);
@@ -541,7 +546,7 @@ const formData = reactive<JobForm>({
   args: undefined,
   kwargs: undefined,
   coalesce: undefined,
-  max_instances: undefined,
+  max_instances: 1,
   jobstore: undefined,
   executor: undefined,
   trigger_args: undefined,
@@ -659,7 +664,7 @@ async function handleSubmit() {
           handleCloseDialog();
           handleResetQuery();
         } catch (error: any) {
-          ElMessage.error(error.message);
+          console.log(error);
         } finally {
           loading.value = false;
         }
@@ -671,7 +676,7 @@ async function handleSubmit() {
           handleCloseDialog();
           handleResetQuery();
         } catch (error: any) {
-          ElMessage.error(error.message);
+          console.log(error);
         } finally {
           loading.value = false;
         }
@@ -739,7 +744,6 @@ async function handleExport() {
       document.body.appendChild(link);
       link.click();
     } catch (error: any) {
-      ElMessage.error("文件处理失败", error.message);
       console.error("导出错误:", error);
     } finally {
       loading.value = false;
@@ -749,27 +753,16 @@ async function handleExport() {
   });
 }
 
-function openIntervalTabHandle(value: any) {
-  openIntervalTab.value = true;
-  modalTitle.value = value;
-}
-
-function handleIntervalConfirm() {
-  formData.trigger_args = intervalTabRef.value.handleConfirm();
+function handleIntervalConfirm(interval: string) {
+  formData.trigger_args = interval;
   openIntervalTab.value = false;
 }
 
-const handleShowCron = () => {
-  openCron.value = true;
-  expression.value = formData.trigger_args;
-};
-
-const closeDialog = () => {
-  openCron.value = false;
-};
-
-const fillValue = (cronValue: string) => {
-  formData.trigger_args = cronValue;
+const handlechangeCron = (cronStr: string) => {
+  // formData.trigger_args = cronStr;
+  if (typeof (cronStr) == "string") {
+    formData.trigger_args = cronStr;
+  }
 };
 
 // 清空按钮操作

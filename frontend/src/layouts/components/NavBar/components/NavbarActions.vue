@@ -152,7 +152,7 @@ function handleDocumentClick() {
  * Gitee 项目地址
  */
 function handleGiteeClick() {
-  window.open('https://element-plus-admin-doc.cn/')
+  window.open('https://gitee.com/tao__tao/fastapi_vue3_admin')
 }
 
 /**
@@ -283,7 +283,7 @@ function logout() {
     display: flex;
     align-items: center;
     justify-content: center;
-    // height: 100%;
+    height: 100%;
     padding: 0 8px;
 
     &__avatar {
@@ -344,4 +344,14 @@ function logout() {
   }
 }
 
+// 确保下拉菜单中的图标不受影响
+:deep(.el-dropdown-menu) {
+  [class^="i-svg:"] {
+    color: var(--el-text-color-regular) !important;
+
+    &:hover {
+      color: var(--el-color-primary) !important;
+    }
+  }
+}
 </style>

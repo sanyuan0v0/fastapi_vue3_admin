@@ -39,7 +39,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
     },
     server: {
       host: true,
-      port: env.VITE_APP_PORT,
+      port: Number(env.VITE_APP_PORT),
       open: true,
       proxy: {
         // 代理 /dev-api 的请求
@@ -69,8 +69,8 @@ export default defineConfig(({ mode }: ConfigEnv) => {
         },
         vueTemplate: true,
         // 导入函数类型声明文件路径 (false:关闭自动生成)
-        dts: false,
-        // dts: "src/types/auto-imports.d.ts",
+        // dts: true,
+        dts: "src/types/auto-imports.d.ts",
       }),
       // 组件自动导入
       Components({
@@ -81,8 +81,8 @@ export default defineConfig(({ mode }: ConfigEnv) => {
         // 指定自定义组件位置(默认:src/components)
         dirs: ["src/components", "src/**/components"],
         // 导入组件类型声明文件路径 (false:关闭自动生成)
-        dts: false,
-        // dts: "src/types/components.d.ts",
+        // dts: false,
+        dts: "src/types/components.d.ts",
       }),
     ],
     // 预加载项目必需的组件
@@ -192,7 +192,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
     },
     // 构建配置
     build: {
-      chunkSizeWarningLimit: 2000, // 消除打包大小超过500kb警告
+      chunkSizeWarningLimit: 4000, // 消除打包大小超过4000kb警告
       minify: isProduction ? "terser" : false, // 只在生产环境启用压缩
       terserOptions: isProduction
         ? {
@@ -203,7 +203,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
             pure_funcs: ["console.log", "console.info"], // 移除指定的函数调用
           },
           format: {
-            comments: false, // 删除注释
+            comments: true, // 删除注释
           },
         }
         : {},
@@ -212,6 +212,41 @@ export default defineConfig(({ mode }: ConfigEnv) => {
           // manualChunks: {
           //   "vue-i18n": ["vue-i18n"],
           // },
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              // 针对大型库进行单独拆分
+              if (id.includes('echarts')) {
+                return 'echarts';
+              }
+              if (id.includes('element-plus')) {
+                return 'element-plus';
+              }
+              if (id.includes('@wangeditor-next')) {
+                return 'wangeditor';
+              }
+              if (id.includes('codemirror')) {
+                return 'codemirror';
+              }
+              if (id.includes('exceljs')) {
+                return 'exceljs';
+              }
+              // 添加更多大型库
+              if (id.includes('vue')) {
+                return 'vue';
+              }
+              if (id.includes('pinia')) {
+                return 'pinia';
+              }
+              if (id.includes('axios')) {
+                return 'axios';
+              }
+
+              // 其他模块保持当前拆分方式
+              const module = id.toString().split('node_modules/')[1].split('/')[0]
+              if (['birpc', 'hookable'].includes(module)) return
+              return module
+            }
+          },
           // 用于从入口点创建的块的打包输出格式[name]表示文件名,[hash]表示该文件内容hash值
           entryFileNames: "js/[name].[hash].js",
           // 用于命名代码拆分时创建的共享块的输出命名

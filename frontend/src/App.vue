@@ -17,7 +17,6 @@ import { useAppStore, useSettingsStore } from "@/store";
 import { defaultSettings } from "@/settings";
 import { ThemeMode } from "@/enums/settings/theme.enum";
 import { ComponentSize } from "@/enums/settings/layout.enum";
-import { ElNotification } from 'element-plus'
 
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
