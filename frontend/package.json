@@ -37,7 +37,7 @@
     "vue-draggable-plus": "^0.6.0",
     "vue-i18n": "^11.1.10",
     "vue-router": "^4.5.1",
-    "vue3-cron-plus-picker": "^1.0.2"
+    "vue3-cron-plus": "^0.1.9"
   },
   "devDependencies": {
     "@iconify/utils": "^2.3.0",
@@ -45,7 +45,7 @@
     "@types/node": "^22.16.5",
     "@types/nprogress": "^0.2.3",
     "@types/qs": "^6.14.0",
-    "@vitejs/plugin-vue": "^6.0.0",
+    "@vitejs/plugin-vue": "^5.2.4",
     "sass": "^1.89.2",
     "terser": "^5.43.1",
     "typescript": "^5.8.3",
@@ -55,7 +55,7 @@
     "vite": "^6.3.5"
   },
   "engines": {
-    "node": ">=20.0.0",
+    "node": ">=18.0.0",
     "npm": ">=10.0.0"
   },
   "repository": "https://gitee.com/tao__tao/fastapi_vue3_admin.git",
