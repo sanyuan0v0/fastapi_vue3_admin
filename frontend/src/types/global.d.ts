@@ -84,6 +84,8 @@ declare global {
     watermarkContent: string;
     /** 侧边栏配色方案 */
     sidebarColorScheme: "classic-blue" | "minimal-white";
+    /** 项目引导 */
+    guideVisible: boolean;
   }
 
   /**

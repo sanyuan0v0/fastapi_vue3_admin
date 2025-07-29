@@ -33,6 +33,8 @@ export const defaultSettings: AppSettings = {
   watermarkContent: pkg.name,
   // 侧边栏配色方案
   sidebarColorScheme: SidebarColor.CLASSIC_BLUE,
+  // 项目引导
+  guideVisible: false,
 };
 
 // 主题色预设 - 经典配色方案

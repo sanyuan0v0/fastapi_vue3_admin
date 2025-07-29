@@ -3,7 +3,12 @@
   <div class="app-container">
     <!-- 搜索区域 -->
     <div class="search-container">
-      <el-form ref="queryFormRef" :model="queryFormData" :inline="true"  label-suffix=":" >
+      <el-form
+        ref="queryFormRef"
+        :model="queryFormData"
+        :inline="true"
+        label-suffix=":"
+      >
         <el-form-item prop="name" label="任务名称">
           <el-input
             v-model="queryFormData.name"
@@ -204,11 +209,21 @@
                 删除
               </el-button>
               <el-dropdown trigger="click">
-                <el-button type="warning" size="small" link icon="ArrowDown">更多</el-button>
+                <el-button type="warning" size="small" link icon="ArrowDown"
+                  >更多</el-button
+                >
                 <template #dropdown>
                   <el-dropdown-menu>
-                    <el-dropdown-item icon="Check" @click="handleOption(scope.row, 1)">暂停</el-dropdown-item>
-                    <el-dropdown-item icon="CircleClose" @click="handleOption(scope.row, 2)">恢复</el-dropdown-item>
+                    <el-dropdown-item
+                      icon="Check"
+                      @click="handleOption(scope.row, 1)"
+                      >暂停</el-dropdown-item
+                    >
+                    <el-dropdown-item
+                      icon="CircleClose"
+                      @click="handleOption(scope.row, 2)"
+                      >恢复</el-dropdown-item
+                    >
                   </el-dropdown-menu>
                 </template>
               </el-dropdown>
@@ -302,15 +317,30 @@
       </template>
       <!-- 新增、编辑表单 -->
       <template v-else>
-        <el-form ref="dataFormRef" :model="formData" :rules="rules" label-suffix=":" label-width="auto" inline>
+        <el-form
+          ref="dataFormRef"
+          :model="formData"
+          :rules="rules"
+          label-suffix=":"
+          label-width="auto"
+          inline
+        >
           <el-form-item label="任务名称" prop="name" style="width: 40%">
-            <el-input v-model="formData.name" placeholder="请输入任务名称" :maxlength="50"/>
+            <el-input
+              v-model="formData.name"
+              placeholder="请输入任务名称"
+              :maxlength="50"
+            />
           </el-form-item>
           <el-form-item label="任务函数" prop="func" style="width: 40%">
-            <el-input v-model="formData.func" placeholder="请输入任务函数" :maxlength="50"/>
+            <el-input
+              v-model="formData.func"
+              placeholder="请输入任务函数"
+              :maxlength="50"
+            />
           </el-form-item>
           <el-form-item label="存储器" prop="jobstore" style="width: 40%">
-            <el-select v-model="formData.jobstore" placeholder="请选择存储器" >
+            <el-select v-model="formData.jobstore" placeholder="请选择存储器">
               <el-option value="default" label="默认(Memory)" />
               <el-option value="sqlalchemy" label="数据库" />
               <el-option value="redis" label="Redis存储器" />
@@ -323,10 +353,18 @@
             </el-select>
           </el-form-item>
           <el-form-item label="位置参数" prop="args" style="width: 40%">
-            <el-input v-model="formData.args" placeholder="请输入位置参数" :maxlength="50"/>
+            <el-input
+              v-model="formData.args"
+              placeholder="请输入位置参数"
+              :maxlength="50"
+            />
           </el-form-item>
           <el-form-item label="关键字参数" prop="kwargs" style="width: 40%">
-            <el-input v-model="formData.kwargs" placeholder="请输入关键字参数" :maxlength="50"/>
+            <el-input
+              v-model="formData.kwargs"
+              placeholder="请输入关键字参数"
+              :maxlength="50"
+            />
           </el-form-item>
           <el-form-item label="并发执行" prop="coalesce" style="width: 40%">
             <el-radio-group v-model="formData.coalesce">
@@ -334,8 +372,17 @@
               <el-radio :value="false">否</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="最大实例数" prop="max_instances" style="width: 40%">
-            <el-input-number v-model="formData.max_instances" controls-position="right" :min="1" :max="10"/>
+          <el-form-item
+            label="最大实例数"
+            prop="max_instances"
+            style="width: 40%"
+          >
+            <el-input-number
+              v-model="formData.max_instances"
+              controls-position="right"
+              :min="1"
+              :max="10"
+            />
           </el-form-item>
           <el-form-item label="触发器" prop="trigger" style="width: 40%">
             <el-select v-model="formData.trigger" placeholder="请选择触发器">
@@ -364,7 +411,9 @@
             v-else-if="formData.trigger === 'interval'"
             label="间隔时间"
             prop="trigger_args"
-            :rules="[{ required: true, message: '请输入间隔时间', trigger: 'change' }]"
+            :rules="[
+              { required: true, message: '请输入间隔时间', trigger: 'change' },
+            ]"
             style="width: 40%"
           >
             <el-popover
@@ -393,7 +442,13 @@
             v-else-if="formData.trigger === 'cron'"
             label="Cron表达式"
             prop="trigger_args"
-            :rules="[{ required: true, message: '请输入Cron表达式', trigger: 'change' }]"
+            :rules="[
+              {
+                required: true,
+                message: '请输入Cron表达式',
+                trigger: 'change',
+              },
+            ]"
             style="width: 40%"
           >
             <el-popover
@@ -411,7 +466,12 @@
                   @click="openCron = true"
                 />
               </template>
-              <vue3CronPlus @change="handlechangeCron" @close="openCron = false" max-height="500px" i18n="cn"></vue3CronPlus>
+              <vue3CronPlus
+                @change="handlechangeCron"
+                @close="openCron = false"
+                max-height="500px"
+                i18n="cn"
+              ></vue3CronPlus>
             </el-popover>
           </el-form-item>
           <!-- 开始日期和结束日期 -->
@@ -419,7 +479,9 @@
             v-if="formData.trigger && formData.trigger != 'date'"
             label="开始日期"
             prop="start_date"
-            :rules="[{ required: false, message: '请选择开始日期', trigger: 'blur' }]"
+            :rules="[
+              { required: false, message: '请选择开始日期', trigger: 'blur' },
+            ]"
             style="width: 40%"
           >
             <el-date-picker
@@ -434,7 +496,9 @@
             v-if="formData.trigger && formData.trigger != 'date'"
             label="结束日期"
             prop="end_date"
-            :rules="[{ required: false, message: '请选择结束日期', trigger: 'blur' }]"
+            :rules="[
+              { required: false, message: '请选择结束日期', trigger: 'blur' },
+            ]"
             style="width: 40%"
           >
             <el-date-picker
@@ -475,7 +539,6 @@
         </div>
       </template>
     </el-dialog>
-
   </div>
 </template>
 
@@ -488,8 +551,8 @@ defineOptions({
 import JobAPI, { JobTable, JobForm, JobPageQuery } from "@/api/monitor/job";
 import IntervalTab from "@/components/IntervalTab/index.vue";
 import { useDictStore } from "@/store/index";
-import { vue3CronPlus } from 'vue3-cron-plus'
-import 'vue3-cron-plus/dist/index.css' // 引入样式
+import { vue3CronPlus } from "vue3-cron-plus";
+import "vue3-cron-plus/dist/index.css"; // 引入样式
 
 const dictStore = useDictStore();
 
@@ -575,9 +638,9 @@ const rules = reactive({
 });
 
 // 列表刷新
-async function handleRefresh () {
+async function handleRefresh() {
   await loadingData();
-};
+}
 
 // 加载表格数据
 async function loadingData() {
@@ -714,43 +777,41 @@ async function handleExport() {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  }).then(async () => {
-    try {
-      loading.value = true;
-      const body = {
-        ...queryFormData,
-        page_no: 1,
-        page_size: total.value,
-      };
-      ElMessage.warning("正在导出数据，请稍候...");
+  })
+    .then(async () => {
+      try {
+        loading.value = true;
 
-      const response = await JobAPI.exportJob(body);
-      const blob = new Blob([JSON.stringify(response.data.data)], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
-      });
-      // 从响应头获取文件名
-      const contentDisposition = response.headers["content-disposition"];
-      let fileName = "系统配置.xlsx";
-      if (contentDisposition) {
-        const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
-        if (fileNameMatch) {
-          fileName = decodeURIComponent(fileNameMatch[1]);
-        }
+        ElMessage.warning("正在导出数据，请稍候...");
+
+        const response = await JobAPI.exportJob(queryFormData);
+        const fileData = response.data;
+        const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
+        const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
+
+        const blob = new Blob([fileData], { type: fileType });
+
+        // 从响应头获取文件名
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const downloadLink = document.createElement("a");
+        downloadLink.href = downloadUrl;
+        downloadLink.download = fileName;
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        ElMessage.success('导出成功');
+        document.body.removeChild(downloadLink);
+        window.URL.revokeObjectURL(downloadUrl);
+      } catch (error: any) {
+        console.error("导出错误:", error);
+      } finally {
+        loading.value = false;
       }
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
-    } catch (error: any) {
-      console.error("导出错误:", error);
-    } finally {
-      loading.value = false;
-    }
-  }).catch(() => {
-    ElMessageBox.close();
-  });
+    })
+    .catch(() => {
+      ElMessageBox.close();
+    });
 }
 
 function handleIntervalConfirm(interval: string) {
@@ -760,7 +821,7 @@ function handleIntervalConfirm(interval: string) {
 
 const handlechangeCron = (cronStr: string) => {
   // formData.trigger_args = cronStr;
-  if (typeof (cronStr) == "string") {
+  if (typeof cronStr == "string") {
     formData.trigger_args = cronStr;
   }
 };
@@ -771,20 +832,22 @@ const handleClear = () => {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
-  }).then(async () => {
-    try {
-      loading.value = true;
-      await JobAPI.clearJob();
-      ElMessage.success("清空成功");
-      handleResetQuery();
-    } catch (error: any) {
-      ElMessage.error(error.message);
-    } finally {
-      loading.value = false;
-    }
-  }).catch(() => {
-    ElMessageBox.close();
-  });
+  })
+    .then(async () => {
+      try {
+        loading.value = true;
+        await JobAPI.clearJob();
+        ElMessage.success("清空成功");
+        handleResetQuery();
+      } catch (error: any) {
+        ElMessage.error(error.message);
+      } finally {
+        loading.value = false;
+      }
+    })
+    .catch(() => {
+      ElMessageBox.close();
+    });
 };
 
 // 操作按钮:操作类型 1: 暂停 2: 恢复 3: 重启（暂时移除重启）

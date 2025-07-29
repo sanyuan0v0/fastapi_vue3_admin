@@ -142,6 +142,7 @@ class ConfigService:
         for item in data:
             # 处理状态
             item['config_type'] = '是' if item.get('config_type') else '否'
+            item['creator'] = item.get('creator', {}).get('name', '未知') if isinstance(item.get('creator'), dict) else '未知'
 
         return ExcelUtil.export_list2excel(list_data=data_list, mapping_dict=mapping_dict)
     

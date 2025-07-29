@@ -105,11 +105,12 @@ import { LocationQuery, RouteLocationRaw, useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import AuthAPI, {type LoginFormData, type CaptchaInfo } from "@/api/system/auth";
 import router from "@/router";
-import { useUserStore } from "@/store";
+import { useAppStore, useUserStore } from "@/store";
 import CommonWrapper from "@/components/CommonWrapper/index.vue";
 
 const { t } = useI18n();
 const userStore = useUserStore();
+const appStore = useAppStore();
 
 const route = useRoute();
 
@@ -203,6 +204,10 @@ async function handleLoginSubmit() {
     // 4. 记住我功能已实现，根据用户选择决定token的存储方式:
     // - 选中"记住我": token存储在localStorage中，浏览器关闭后仍然有效
     // - 未选中"记住我": token存储在sessionStorage中，浏览器关闭后失效
+    
+    // 登录成功后自动开启项目引导
+    appStore.showGuide(true);
+
   } catch (error) {
     // 5. 统一错误处理
     getCaptcha(); // 刷新验证码

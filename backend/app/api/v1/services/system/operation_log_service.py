@@ -90,5 +90,6 @@ class OperationLogService:
             item['response_code'] = '成功' if item.get('response_code') == 200 else '失败'
             # 处理日志类型
             item['type'] = '操作日志' if item.get('type') == 1 else '登录日志'
+            item['creator'] = item.get('creator', {}).get('name', '未知') if isinstance(item.get('creator'), dict) else '未知'
 
         return ExcelUtil.export_list2excel(list_data=operation_log_list, mapping_dict=mapping_dict)

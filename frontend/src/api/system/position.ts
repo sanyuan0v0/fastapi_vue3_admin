@@ -49,7 +49,7 @@ const PositionAPI = {
   },
 
   exportPosition(body: PositionPageQuery) {
-    return request<ApiResponse>({
+    return request<Blob>({
       url: `/system/position/export`,
       method: "post",
       data: body,

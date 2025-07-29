@@ -56,7 +56,7 @@ const DictAPI = {
   },
 
   exportDictType(body: DictPageQuery) {
-    return request<ApiResponse>({
+    return request<Blob>({
       url: `/system/dict/type/export`,
       method: "post",
       data: body,
@@ -112,7 +112,7 @@ const DictAPI = {
   },
 
   exportDictData(body: DictDataPageQuery) {
-    return request<ApiResponse>({
+    return request<Blob>({
       url: `/system/dict/data/export`,
       method: "post",
       data: body,

@@ -173,10 +173,11 @@ async def batch_set_available_obj_controller(
 @router.post('/data/export', summary="导出字典数据", description="导出字典数据")
 async def export_data_list_controller(
     search: DictDataQueryParams = Depends(),
+    page: PaginationQueryParams = Depends(),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:dict_data:export"]))
 ) -> StreamingResponse:
     # 获取全量数据
-    result_dict_list = await DictDataService.get_obj_list_service(search=search, auth=auth)
+    result_dict_list = await DictDataService.get_obj_list_service(auth=auth, search=search, order_by=page.order_by)
     export_result = await DictDataService.export_obj_service(data_list=result_dict_list)
     logger.info('导出字典数据成功')
 

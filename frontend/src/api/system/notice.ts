@@ -56,7 +56,7 @@ const NoticeAPI = {
   },
 
   exportNotice(body: NoticePageQuery) {
-    return request<ApiResponse>({
+    return request<Blob>({
       url: `/system/notice/export`,
       method: "post",
       data: body,

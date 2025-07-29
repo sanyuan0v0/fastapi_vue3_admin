@@ -89,5 +89,6 @@ class NoticeService:
             item['status'] = '正常' if item.get('status') else '停用'
             # 处理公告类型
             item['notice_type'] = '通知' if item.get('notice_type') == 1 else '公告'
+            item['creator'] = item.get('creator', {}).get('name', '未知') if isinstance(item.get('creator'), dict) else '未知'
 
         return ExcelUtil.export_list2excel(list_data=notice_list, mapping_dict=mapping_dict)

@@ -112,16 +112,16 @@ export const usePermissionStore = defineStore("permission", () => {
       const routersTree = listToTree(userStore.routeList);
       const routerMap = generator(routersTree);
 
-      // 从用户绑定的路由列表获取数据
+      // 解析动态路由
       const dynamicRoutes = parseDynamicRoutes(routerMap);
 
       // 重置路由，移除旧的动态路由
-      resetRouter();
+      // resetRouter();
       
       // 重新添加所有路由
-      constantRoutes.forEach(route => {
-        router.addRoute(route);
-      });
+      // constantRoutes.forEach(route => {
+      //   router.addRoute(route);
+      // });
 
       routes.value = [...constantRoutes, ...dynamicRoutes];
       

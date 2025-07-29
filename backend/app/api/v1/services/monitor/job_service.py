@@ -113,6 +113,7 @@ class JobService:
         data = data_list.copy()
         for item in data:
             item['status'] = '已完成' if item['status'] == 0 else '运行中' if item['status'] == 1 else '暂停'
+            item['creator'] = item.get('creator', {}).get('name', '未知') if isinstance(item.get('creator'), dict) else '未知'
 
         return ExcelUtil.export_list2excel(list_data=data_list, mapping_dict=mapping_dict)
     

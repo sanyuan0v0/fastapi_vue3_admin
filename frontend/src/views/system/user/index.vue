@@ -86,7 +86,7 @@
                 <el-button type="info" icon="upload" circle @click="handleOpenImportDialog" />
               </el-tooltip>
               <el-tooltip content="导出">
-                <el-button type="warning" icon="download" circle @click="handleOperation('export')" />
+                <el-button type="warning" icon="download" circle @click="handleExport" />
               </el-tooltip>
               <el-tooltip content="刷新">
                 <el-button type="default" icon="refresh" circle @click="handleRefresh" />
@@ -560,77 +560,46 @@ async function handleSubmit() {
   });
 }
 
-// 删除、导入、导出
-async function handleOperation(type: 'import' | 'export') {
-  if (type === 'import') {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.xlsx, .xls';
-    input.click();
+// 导出
+async function handleExport() {
+  ElMessageBox.confirm('是否确认导出当前查询结果用户数据?', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(async () => {
+    try {
+      loading.value = true;
 
-    input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append('file', file);
-        try {
-          loading.value = true;
-          await UserAPI.importUser(formData);
-          ElMessage.success('导入成功');
-          handleResetQuery();
-        } catch (error: any) {
-          ElMessage.error(error.message);
-        } finally {
-          loading.value = false;
-        }
-      }
+      ElMessage.warning('正在导出数据，请稍候...');
+
+      const response = await UserAPI.exportUser(queryFormData);
+      const fileData = response.data;
+      const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
+      const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
+
+      const blob = new Blob([fileData], { type: fileType });
+
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const downloadLink = document.createElement("a");
+      downloadLink.href = downloadUrl;
+      downloadLink.download = fileName;
+
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      ElMessage.success('导出成功');
+      document.body.removeChild(downloadLink);
+      window.URL.revokeObjectURL(downloadUrl);
+
+    } catch (error: any) {
+      ElMessage.error('文件处理失败', error.message);
+      console.error('导出错误:', error);
+    } finally {
+      loading.value = false;
     }
-  }
-  else if (type === 'export') {
-    ElMessageBox.confirm('是否确认导出当前查询结果用户数据?', '警告', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }).then(async () => {
-      try {
-        loading.value = true;
-
-        ElMessage.warning('正在导出数据，请稍候...');
-
-        UserAPI.exportUser(queryFormData).then((response: any) => {
-          // const fileData = JSON.stringify(response.data.data;
-          const fileData = response.data.data;
-          const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
-          const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
-
-          const blob = new Blob([fileData], { type: fileType });
-
-          const downloadUrl = window.URL.createObjectURL(blob);
-
-          const downloadLink = document.createElement("a");
-          downloadLink.href = downloadUrl;
-          downloadLink.download = fileName;
-
-          document.body.appendChild(downloadLink);
-          downloadLink.click();
-          ElMessage.success('导出成功');
-          document.body.removeChild(downloadLink);
-          window.URL.revokeObjectURL(downloadUrl);
-        });
-
-      } catch (error: any) {
-        ElMessage.error('文件处理失败', error.message);
-        console.error('导出错误:', error);
-      } finally {
-        loading.value = false;
-      }
-    }).catch(() => {
-      ElMessageBox.close();
-    });
-  }
-  else {
-    ElMessage.error('未知操作类型');
-  }
+  }).catch(() => {
+    ElMessageBox.close();
+  });
 }
 
 // 删除、批量删除

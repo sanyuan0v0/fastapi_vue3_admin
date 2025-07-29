@@ -427,15 +427,17 @@ class UserService:
             'description': '备注',
             'created_at': '创建时间',
             'updated_at': '更新时间',
-            'creator_id': '创建者ID',
             'creator': '创建者',
         }
 
         # 复制数据并转换
+        # creator = {'id': 1, 'name': '管理员', 'username': 'admin'}
         data = user_list.copy()
         for item in data:
             item['status'] = '启用' if item.get('status') else '停用'
             gender = item.get('gender')
-            item['gender'] = '男' if gender == 1 else ('女' if gender == 2 else '未知')
+            item['gender'] = '男' if gender == '1' else ('女' if gender == '2' else '未知')
+            item['is_superuser'] = '是' if item.get('is_superuser') else '否'
+            item['creator'] = item.get('creator', {}).get('name', '未知') if isinstance(item.get('creator'), dict) else '未知'
 
         return ExcelUtil.export_list2excel(list_data=user_list, mapping_dict=mapping_dict)

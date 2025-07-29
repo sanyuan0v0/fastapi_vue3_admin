@@ -40,6 +40,11 @@ export const constantRoutes: RouteRecordRaw[] = [
     meta: { hidden: true, title: "500" },
     component: () => import("@/views/error/500.vue"),
   },
+  {
+    path: "/:pathMatch(.*)*",
+    component: () => import('@/views/error/404.vue'),
+    meta: { hidden: true, title: "404" },
+  },
   // 以下内容必须放在后面
   {
     path: "/",
