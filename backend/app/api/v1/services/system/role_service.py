@@ -118,6 +118,7 @@ class RoleService:
         for item in data:
             item['status'] = '正常' if item.get('status') else '停用'
             item['data_scope'] = data_scope_map.get(item.get('data_scope'))
+            item['creator'] = item.get('creator', {}).get('name', '未知') if isinstance(item.get('creator'), dict) else '未知'
 
         return ExcelUtil.export_list2excel(list_data=role_list, mapping_dict=mapping_dict)
         

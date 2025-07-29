@@ -445,30 +445,28 @@ async function handleExport() {
   }).then(async () => {
     try {
       loading.value = true;
-      const body = {
-        ...queryFormData,
-        page_no: 1,
-        page_size: total.value
-      };
+
       ElMessage.warning('正在导出数据，请稍候...');
 
-      const response = await NoticeAPI.exportNotice(body);
-      const blob = new Blob([JSON.stringify(response.data.data)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+      const response = await NoticeAPI.exportNotice(queryFormData);
+      const fileData = response.data;
+      const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
+      const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
+
+      const blob = new Blob([fileData], { type: fileType });
+
       // 从响应头获取文件名
-      const contentDisposition = response.headers['content-disposition'];
-      let fileName = '系统配置.xlsx';
-      if (contentDisposition) {
-        const fileNameMatch = contentDisposition.match(/filename=(.*?)(;|$)/);
-        if (fileNameMatch) {
-          fileName = decodeURIComponent(fileNameMatch[1]);
-        }
-      }
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const downloadLink = document.createElement("a");
+      downloadLink.href = downloadUrl;
+      downloadLink.download = fileName;
+
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      ElMessage.success('导出成功');
+      document.body.removeChild(downloadLink);
+      window.URL.revokeObjectURL(downloadUrl);
     } catch (error: any) {
       ElMessage.error('文件处理失败', error.message);
       console.error('导出错误:', error);

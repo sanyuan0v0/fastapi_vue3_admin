@@ -24,11 +24,11 @@ const LogAPI = {
     });
   },
 
-  exportLog(query: LogPageQuery) {
-    return request<ApiResponse>({
+  exportLog(body: LogPageQuery) {
+    return request<Blob>({
       url: `/system/log/export`,
       method: "post",
-      data: query,
+      data: body,
       responseType: "blob",
     });
   },

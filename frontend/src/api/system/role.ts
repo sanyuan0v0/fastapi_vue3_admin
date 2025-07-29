@@ -56,11 +56,11 @@ const RoleAPI = {
     });
   },
 
-  exportRole(query: TablePageQuery) {
-    return request<ApiResponse>({
+  exportRole(body: TablePageQuery) {
+    return request<Blob>({
       url: `/system/role/export`,
       method: "post",
-      data: query,
+      data: body,
       responseType: "blob",
     });
   },
@@ -79,8 +79,8 @@ export interface TablePageQuery extends PageQuery {
 
 export interface RoleTable {
   index?: number;
-  id?: number;
-  name?: string;
+  id: number;
+  name: string;
   order?: number;
   data_scope?: number;
   status?: boolean;

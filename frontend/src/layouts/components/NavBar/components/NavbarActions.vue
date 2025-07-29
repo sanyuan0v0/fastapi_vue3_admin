@@ -32,7 +32,7 @@
         <el-dropdown trigger="click">
           <div class="user-profile">
             <template v-if="userStore.basicInfo.avatar">
-              <el-avatar :src="userStore.basicInfo.avatar" />
+              <el-avatar size="small" :src="userStore.basicInfo.avatar" />
             </template>
             <template v-else>
               <el-avatar icon="UserFilled" />
@@ -158,7 +158,13 @@ function handleGiteeClick() {
 /**
  * 项目引导 
  */
-const guideVisible = ref<boolean>(false)
+// 使用ref而不是computed，以便可以修改引导可见性
+// 使用 computed 实现双向绑定，减少 watch 的使用
+const guideVisible = computed({
+  get: () => appStore.guideVisible,
+  set: (newValue) => appStore.showGuide(newValue)
+});
+
 function handleTourClick() {
   // 如果是移动端，直接跳转到引导页面
   if (appStore.device === DeviceEnum.MOBILE) {
@@ -283,13 +289,9 @@ function logout() {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100%;
     padding: 0 8px;
 
     &__avatar {
-      flex-shrink: 0;
-      width: 28px;
-      height: 28px;
       border-radius: 50%;
     }
 

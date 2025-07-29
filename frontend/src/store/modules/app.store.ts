@@ -23,6 +23,8 @@ export const useAppStore = defineStore("app", () => {
 
   // 顶部菜单激活路径
   const activeTopMenuPath = useStorage("activeTopMenuPath", "");
+  // 项目引导
+  const guideVisible = useStorage("guideVisible", defaultSettings.guideVisible);
 
   /**
    * 根据语言标识读取对应的语言包
@@ -35,32 +37,40 @@ export const useAppStore = defineStore("app", () => {
     }
   });
 
-  // 切换侧边栏
+  /**
+   * 切换侧边栏
+   */
   function toggleSidebar() {
     sidebar.opened = !sidebar.opened;
     sidebarStatus.value = sidebar.opened ? SidebarStatus.OPENED : SidebarStatus.CLOSED;
   }
 
-  // 关闭侧边栏
+  /**
+   * 关闭侧边栏
+   */
   function closeSideBar() {
     sidebar.opened = false;
     sidebarStatus.value = SidebarStatus.CLOSED;
   }
 
-  // 打开侧边栏
+  /**
+   * 打开侧边栏
+   */
   function openSideBar() {
     sidebar.opened = true;
     sidebarStatus.value = SidebarStatus.OPENED;
   }
 
-  // 切换设备
+  /**
+   * 切换设备
+   * @param val 设备类型
+   */
   function toggleDevice(val: string) {
     device.value = val;
   }
 
   /**
    * 改变布局大小
-   *
    * @param val 布局大小 default | small | large
    */
   function changeSize(val: string) {
@@ -68,7 +78,6 @@ export const useAppStore = defineStore("app", () => {
   }
   /**
    * 切换语言
-   *
    * @param val
    */
   function changeLanguage(val: string) {
@@ -76,9 +85,17 @@ export const useAppStore = defineStore("app", () => {
   }
   /**
    * 混合模式顶部切换
+   * @param val
    */
   function activeTopMenu(val: string) {
     activeTopMenuPath.value = val;
+  }
+  /**
+   * 显示或隐藏引导
+   * @param val 是否显示引导
+   */
+  function showGuide(val: boolean) {
+    guideVisible.value = val;
   }
   return {
     device,
@@ -88,12 +105,14 @@ export const useAppStore = defineStore("app", () => {
     size,
     activeTopMenu,
     toggleDevice,
+    showGuide,
     changeSize,
     changeLanguage,
     toggleSidebar,
     closeSideBar,
     openSideBar,
     activeTopMenuPath,
+    guideVisible,
   };
 });
 

@@ -14,9 +14,10 @@
                 <em>点击上传</em>
               </div>
               <template #tip>
-                <div class="el-upload__tip">
-                  格式为*.xlsx / *.xls，文件不超过一个
-                  <el-link type="primary" icon="download" underline="never" @click="handleDownloadTemplate">
+                <div class="el-upload__tip flex">
+                  <el-text type="warning" class="mx-1">注意事项：</el-text>
+                  <el-text type="danger" class="mx-1">格式为*.xlsx / *.xls，文件不超过 5MB </el-text>
+                  <el-link class="mx-1" type="primary" icon="download" underline="never" @click="handleDownloadTemplate">
                     下载模板
                   </el-link>
                 </div>
@@ -27,9 +28,6 @@
       </el-scrollbar>
       <template #footer>
         <div style="padding-right: var(--el-dialog-padding-primary)">
-          <el-button v-if="resultData.length > 0" type="primary" @click="handleShowResult">
-            错误信息
-          </el-button>
           <el-button @click="handleClose">取 消</el-button>
           <el-button
             type="primary"
@@ -41,27 +39,6 @@
         </div>
       </template>
     </el-dialog>
-
-    <el-dialog v-model="resultVisible" title="导入结果" width="600px">
-      <el-alert
-        :title="`导入结果：${invalidCount}条无效数据，${validCount}条有效数据`"
-        type="warning"
-        :closable="false"
-      />
-      <el-table :data="resultData" style="width: 100%; max-height: 400px">
-        <el-table-column prop="index" align="center" width="100" type="index" label="序号" />
-        <el-table-column prop="message" label="错误信息" width="400">
-          <template #default="scope">
-            {{ scope.row }}
-          </template>
-        </el-table-column>
-      </el-table>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="handleCloseResult">关闭</el-button>
-        </div>
-      </template>
-    </el-dialog>    
   </div>
 </template>
 
@@ -77,10 +54,6 @@ const importModalVisible = defineModel("modelValue", {
   default: false,
 });
 
-const resultVisible = ref(false);
-const resultData = ref<string[]>([]);
-const invalidCount = ref(0);
-const validCount = ref(0);
 
 const importFormRef = ref(null);
 const uploadRef = ref(null);
@@ -89,15 +62,6 @@ const importFormData = reactive<{
   files: UploadUserFile[];
 }>({
   files: [],
-});
-
-watch(importModalVisible, (newValue) => {
-  if (newValue) {
-    resultData.value = [];
-    resultVisible.value = false;
-    invalidCount.value = 0;
-    validCount.value = 0;
-  }
 });
 
 const importFormRules = {
@@ -112,7 +76,7 @@ const handleFileExceed = () => {
 // 下载导入模板
 const handleDownloadTemplate = () => {
   UserAPI.downloadTemplate().then((response: any) => {
-    const fileData = response.data.data;
+    const fileData = response.data;
     const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
 
@@ -137,34 +101,20 @@ const handleUpload = async () => {
     ElMessage.warning("请选择文件");
     return;
   }
-
   try {
-    const response = await UserAPI.importUser(importFormData.files[0].raw as File);
-    if (response.data.code === ResultEnum.SUCCESS) {
-      ElMessage.success("导入成功，导入数据：" + response.data.data.count + "条");
-      emit("import-success");
-      handleClose();
-    } else {
-      ElMessage.error("上传失败");
-      resultVisible.value = true;
-      resultData.value = response.data.data.messageList;
-      invalidCount.value = response.data.data.invalidCount;
-      validCount.value = response.data.data.validCount;
+      const file = importFormData.files[0].raw as File;
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await UserAPI.importUser(formData);
+      if (response.data.code === ResultEnum.SUCCESS) {
+        ElMessage.success(`${response.data.msg}，${response.data.data}`);
+        emit("import-success");
+        handleClose();
+      }
+    } catch (error: any) {
+      console.error(error);
+      ElMessage.error("上传失败：" + error);
     }
-  } catch (error: any) {
-    console.error(error);
-    ElMessage.error("上传失败：" + error);
-  }
-};
-
-// 显示错误信息
-const handleShowResult = () => {
-  resultVisible.value = true;
-};
-
-// 关闭错误信息弹窗
-const handleCloseResult = () => {
-  resultVisible.value = false;
 };
 
 // 关闭弹窗

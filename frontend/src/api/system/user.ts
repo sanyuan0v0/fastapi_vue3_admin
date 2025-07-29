@@ -105,11 +105,11 @@ export const UserAPI = {
     });
   },
 
-  exportUser(query: UserPageQuery) {
-    return request<ApiResponse>({
+  exportUser(body: UserPageQuery) {
+    return request<Blob>({
       url: `/system/user/export`,
       method: "post",
-      params: query,
+      data: body,
       responseType: "blob",
     });
   },

@@ -41,7 +41,7 @@ const JobAPI = {
   },
 
   exportJob(body: JobPageQuery) {
-    return request<ApiResponse>({
+    return request<Blob>({
       url: `/monitor/job/export`,
       method: "post",
       data: body,

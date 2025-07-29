@@ -57,7 +57,7 @@ const ConfigAPI = {
   },
 
   exportConfig(body: ConfigPageQuery) {
-    return request<ApiResponse>({
+    return request<Blob>({
       url: `/system/config/export`,
       method: "post",
       data: body,
