@@ -325,13 +325,23 @@ async function handleResetQuery() {
   loadingData();
 }
 
+// 定义初始表单数据常量
+const initialFormData: RoleForm = {
+  id: undefined,
+  name: undefined,
+  order: 1,
+  status: true,
+  description: undefined,
+}
+
 // 重置表单
 async function resetForm() {
   if (dataFormRef.value) {
     dataFormRef.value.resetFields();
     dataFormRef.value.clearValidate();
   }
-  formData.id = undefined;
+  // 完全重置 formData 为初始状态
+  Object.assign(formData, initialFormData);
 }
 
 // 关闭弹窗

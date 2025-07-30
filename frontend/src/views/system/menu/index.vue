@@ -604,13 +604,37 @@ async function handleResetQuery() {
   handleQuery();
 }
 
+// 定义初始表单数据常量
+const initialFormData: MenuForm = {
+  id: undefined,
+  name: undefined,
+  type: MenuTypeEnum.MENU,
+  icon: undefined,
+  order: 1,
+  permission: '',
+  route_name: '',
+  route_path: '',
+  component_path: '',
+  redirect: '',
+  parent_id: undefined,
+  keep_alive: false,
+  hidden: false,
+  always_show: false,
+  title: '',
+  params: [] as { key: string; value: string }[],
+  affix: false,
+  status: true,
+  description: undefined,
+}
+
 // 重置表单
 async function resetForm() {
   if (dataFormRef.value) {
     dataFormRef.value.resetFields();
     dataFormRef.value.clearValidate();
   }
-  formData.id = undefined;
+  // 完全重置 formData 为初始状态
+  Object.assign(formData, initialFormData);
 }
 
 // 行复选框选中项变化

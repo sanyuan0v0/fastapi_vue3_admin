@@ -210,7 +210,8 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="内容" prop="notice_content">
-            <WangEditor v-model="formData.notice_content" height="300px" />
+            <!-- <WangEditor v-model="formData.notice_content" height="300px" /> -->
+            <el-input v-model="formData.notice_content" :rows="4" :maxlength="100" show-word-limit type="textarea" placeholder="请输入内容" />
           </el-form-item>
           <el-form-item label="描述" prop="description">
             <el-input v-model="formData.description" :rows="4" :maxlength="100" show-word-limit type="textarea" placeholder="请输入描述" />
@@ -339,13 +340,24 @@ async function handleResetQuery() {
   loadingData();
 }
 
+// 定义初始表单数据常量
+const initialFormData: NoticeForm = {
+  id: undefined,
+  notice_title: '',
+  notice_type: '',
+  notice_content: '',
+  status: true,
+  description: undefined,
+}
+
 // 重置表单
 async function resetForm() {
   if (dataFormRef.value) {
     dataFormRef.value.resetFields();
     dataFormRef.value.clearValidate();
   }
-  formData.id = undefined;
+  // 完全重置 formData 为初始状态
+  Object.assign(formData, initialFormData);
 }
 
 // 行复选框选中项变化

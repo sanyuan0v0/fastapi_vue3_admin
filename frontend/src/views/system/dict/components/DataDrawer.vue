@@ -334,13 +334,28 @@ async function handleResetQuery() {
   loadingData();
 }
 
+// 定义初始表单数据常量
+const initialFormData: DictDataForm = {
+  id: undefined,
+  dict_sort: 1,
+  dict_label: '',
+  dict_value: '',
+  dict_type: '',
+  css_class: '',
+  list_class: undefined,
+  is_default: false,
+  status: true,
+  description: ''
+}
+
 // 重置表单
 async function resetForm() {
   if (dataFormRef.value) {
     dataFormRef.value.resetFields();
     dataFormRef.value.clearValidate();
   }
-  formData.id = undefined;
+  // 完全重置 formData 为初始状态
+  Object.assign(formData, initialFormData);
 }
 
 // 行复选框选中项变化
