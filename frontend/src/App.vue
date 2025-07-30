@@ -30,12 +30,4 @@ const fontColor = computed(() => {
   return settingsStore.theme === ThemeMode.DARK ? "rgba(255, 255, 255, .15)" : "rgba(0, 0, 0, .15)";
 });
 
-ElNotification({
-  title: '提示',
-  type: 'warning',
-  duration: 0,
-  dangerouslyUseHTMLString: true,
-  message:
-    '<div><p><strong>遇事不决，请先查阅常见问题，说不定你能找到相关解答</strong></p><p><a href="https://gitee.com/tao__tao/fastapi_vue3_admin" target="_blank">链接地址</a></p></div>'
-})
 </script>

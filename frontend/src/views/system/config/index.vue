@@ -291,13 +291,24 @@ async function handleResetQuery() {
   loadingData();
 }
 
+// 定义初始表单数据常量
+const initialFormData: ConfigForm = {
+  id: undefined,
+  config_name: '',
+  config_key: '',
+  config_value: '',
+  config_type: false,
+  description: ''
+}
+
 // 重置表单
 async function resetForm() {
   if (dataFormRef.value) {
     dataFormRef.value.resetFields();
     dataFormRef.value.clearValidate();
   }
-  formData.id = undefined;
+  // 完全重置 formData 为初始状态
+  Object.assign(formData, initialFormData);
 }
 
 // 行复选框选中项变化

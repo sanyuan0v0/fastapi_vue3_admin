@@ -107,7 +107,7 @@
             />
           </el-tooltip>
           <el-tooltip content="清除">
-            <el-button type="danger" icon="plus" circle @click="handleClear" />
+            <el-button type="danger" icon="delete" circle @click="handleClear" />
           </el-tooltip>
           <el-tooltip content="刷新">
             <el-button
@@ -669,13 +669,34 @@ async function handleResetQuery() {
   loadingData();
 }
 
+// 定义初始表单数据常量
+const initialFormData: JobForm = {
+  id: undefined,
+  name: undefined,
+  func: undefined,
+  trigger: undefined,
+  args: undefined,
+  kwargs: undefined,
+  coalesce: undefined,
+  max_instances: 1,
+  jobstore: undefined,
+  executor: undefined,
+  trigger_args: undefined,
+  start_date: undefined,
+  end_date: undefined,
+  status: undefined,
+  message: undefined,
+  description: undefined,
+}
+
 // 重置表单
 async function resetForm() {
   if (dataFormRef.value) {
     dataFormRef.value.resetFields();
     dataFormRef.value.clearValidate();
   }
-  formData.id = undefined;
+  // 完全重置 formData 为初始状态
+  Object.assign(formData, initialFormData);
 }
 
 // 行复选框选中项变化

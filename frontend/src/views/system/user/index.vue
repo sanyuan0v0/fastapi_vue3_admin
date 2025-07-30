@@ -440,13 +440,34 @@ async function handleResetQuery() {
   loadingData();
 }
 
+// 定义初始表单数据常量
+const initialFormData: UserForm = {
+  id: undefined,
+  username: undefined,
+  name: undefined,
+  dept_id: undefined,
+  dept_name: undefined,
+  role_ids: undefined,
+  roleNames: undefined,
+  position_ids: undefined,
+  positionNames: undefined,
+  password: undefined,
+  gender: undefined,
+  email: undefined,
+  mobile: undefined,
+  is_superuser: false, //默认不是超管
+  status: true,
+  description: undefined,
+}
+
 // 重置表单
 async function resetForm() {
   if (dataFormRef.value) {
     dataFormRef.value.resetFields();
     dataFormRef.value.clearValidate();
   }
-  formData.id = undefined;
+  // 完全重置 formData 为初始状态
+  Object.assign(formData, initialFormData);
 }
 
 // 选中项发生变化
