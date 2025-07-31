@@ -136,15 +136,37 @@ export const usePermissionStore = defineStore("permission", () => {
     }
   }
 
+  // 用于存储路由路径到路由项的映射，提高查找效率
+  const routePathMap = ref<Record<string, RouteRecordRaw>>({});
+
+  // 当routes更新时，同步更新routePathMap
+  watch(routes, (newRoutes) => {
+    const newMap: Record<string, RouteRecordRaw> = {};
+    const buildMap = (routes: RouteRecordRaw[]) => {
+      routes.forEach(route => {
+        if (route.path) newMap[route.path] = route;
+        if (route.children) buildMap(route.children);
+      });
+    };
+    buildMap(newRoutes);
+    routePathMap.value = newMap;
+  }, { immediate: true });
+
   /**
    * 根据父菜单路径设置侧边菜单
    *
    * @param parentPath 父菜单的路径，用于查找对应的菜单项
    */
   const updateSideMenu = (parentPath: string) => {
-    const matchedItem = routes.value.find((item) => item.path === parentPath);
+    // 使用映射表进行O(1)时间复杂度的查找
+    const matchedItem = routePathMap.value[parentPath];
     if (matchedItem && matchedItem.children) {
-      sideMenuRoutes.value = matchedItem.children;
+      // 只有当子菜单发生变化时才更新，避免不必要的重渲染
+      if (JSON.stringify(matchedItem.children) !== JSON.stringify(sideMenuRoutes.value)) {
+        sideMenuRoutes.value = matchedItem.children;
+      }
+    } else {
+      sideMenuRoutes.value = [];
     }
   };
 
@@ -166,6 +188,7 @@ export const usePermissionStore = defineStore("permission", () => {
     routes.value = [...constantRoutes];
     sideMenuRoutes.value = [];
     routesLoaded.value = false;
+    routePathMap.value = {};
   };
 
   return {
@@ -175,6 +198,7 @@ export const usePermissionStore = defineStore("permission", () => {
     generateRoutes,
     updateSideMenu,
     resetRouter,
+    routePathMap,
   };
 });
 

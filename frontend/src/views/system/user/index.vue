@@ -588,19 +588,17 @@ async function handleExport() {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(async () => {
+    let downloadUrl = '';
     try {
       loading.value = true;
 
-      ElMessage.warning('正在导出数据，请稍候...');
-
       const response = await UserAPI.exportUser(queryFormData);
       const fileData = response.data;
-      const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
+      const fileName = decodeURI(response.headers["content-disposition"].split("; ")[1].split("=")[1]);
       const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
 
       const blob = new Blob([fileData], { type: fileType });
-
-      const downloadUrl = window.URL.createObjectURL(blob);
+      downloadUrl = window.URL.createObjectURL(blob);
 
       const downloadLink = document.createElement("a");
       downloadLink.href = downloadUrl;
@@ -608,16 +606,18 @@ async function handleExport() {
 
       document.body.appendChild(downloadLink);
       downloadLink.click();
-      ElMessage.success('导出成功');
+      
       document.body.removeChild(downloadLink);
-      window.URL.revokeObjectURL(downloadUrl);
-
     } catch (error: any) {
-      ElMessage.error('文件处理失败', error.message);
-      console.error('导出错误:', error);
+      // 错误信息已经在响应拦截器中处理并显示
+      console.error('导出失败:', error);
     } finally {
+      if (downloadUrl) {
+        window.URL.revokeObjectURL(downloadUrl);
+      }
       loading.value = false;
     }
+
   }).catch(() => {
     ElMessageBox.close();
   });

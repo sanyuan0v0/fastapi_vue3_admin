@@ -60,7 +60,30 @@ httpRequest.interceptors.response.use((response: AxiosResponse<ApiResponse>) => 
     
     return response;
   }, async (error: AxiosError<ApiResponse>) => {
+    console.log(error);
+
     const data = error.response?.data;
+    
+    // 处理blob类型的错误响应
+    if (error.response?.config.responseType === 'blob' && error.response.data instanceof Blob) {
+      try {
+        // 将blob转换为JSON
+        const text = await new Response(error.response.data).text();
+        const jsonData: ApiResponse = JSON.parse(text);
+        
+        if (jsonData.code === ResultEnum.ERROR) {
+          ElMessage.error(jsonData.msg || "请求错误");
+          return Promise.reject(new Error(jsonData.msg || "请求错误"));
+        } else if (jsonData.code === ResultEnum.EXCEPTION) {
+          ElMessage.error(jsonData.msg || "服务异常");
+          return Promise.reject(new Error(jsonData.msg || "服务异常"));
+        }
+      } catch (e) {
+        // 如果无法解析为JSON，则使用默认错误处理
+        ElMessage.error(error.message || "请求异常");
+        return Promise.reject(new Error(error.message || "请求异常"));
+      }
+    }
 
     if (data?.status_code === ResultEnum.ACCESS_TOKEN_INVALID) {
       await redirectToLogin("登录已过期，请重新登录");

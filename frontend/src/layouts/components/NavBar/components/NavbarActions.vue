@@ -22,58 +22,59 @@
         <LangSelect />
       </div>
 
-      <!-- 通知 -->
-      <div class="navbar-actions__item">
-        <Notification />
-      </div>
-
-      <!-- 用户菜单 -->
-      <div class="navbar-actions__item">
-        <el-dropdown trigger="click">
-          <div class="user-profile">
-            <template v-if="userStore.basicInfo.avatar">
-              <el-avatar size="small" :src="userStore.basicInfo.avatar" />
-            </template>
-            <template v-else>
-              <el-avatar icon="UserFilled" />
-            </template>
-            <span class="user-profile__name">{{ userStore.basicInfo.username }}</span>
-          </div>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item @click="handleProfileClick">
-                <el-icon><User /></el-icon>
-                {{ t("navbar.profile") }}
-              </el-dropdown-item>
-              <el-dropdown-item @click="handleConfigClick">
-                <el-icon><Setting /></el-icon>
-                {{ t("navbar.config") }}
-              </el-dropdown-item>
-              <el-dropdown-item @click="handleDocumentClick">
-                <el-icon><Document /></el-icon>
-                {{ t("navbar.document") }}
-              </el-dropdown-item>
-              <el-dropdown-item @click="handleGiteeClick">
-                <el-icon><Reading /></el-icon>
-                {{ t("navbar.gitee") }}
-              </el-dropdown-item>
-              <el-dropdown-item @click="handleTourClick">
-                <el-icon><Position /></el-icon>
-                {{ t("navbar.tour") }}
-              </el-dropdown-item>
-              <el-dropdown-item divided @click="handlelockScreen">
-                <el-icon><Lock /></el-icon>
-                {{ t("navbar.lock") }}
-              </el-dropdown-item>
-              <el-dropdown-item  @click="logout">
-                <el-icon><SwitchButton /></el-icon>
-                {{ t("navbar.logout") }}
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-      </div>
     </template>
+
+    <!-- 通知 -->
+    <div class="navbar-actions__item">
+      <Notification />
+    </div>
+
+    <!-- 用户菜单,不管桌面还是移动端都显示 -->
+    <div class="navbar-actions__item">
+      <el-dropdown trigger="click">
+        <div class="user-profile">
+          <template v-if="userStore.basicInfo.avatar">
+            <el-avatar size="small" :src="userStore.basicInfo.avatar" />
+          </template>
+          <template v-else>
+            <el-avatar icon="UserFilled" />
+          </template>
+          <span class="user-profile__name">{{ userStore.basicInfo.username }}</span>
+        </div>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item @click="handleProfileClick">
+              <el-icon><User /></el-icon>
+              {{ t("navbar.profile") }}
+            </el-dropdown-item>
+            <el-dropdown-item @click="handleConfigClick">
+              <el-icon><Setting /></el-icon>
+              {{ t("navbar.config") }}
+            </el-dropdown-item>
+            <el-dropdown-item @click="handleDocumentClick">
+              <el-icon><Document /></el-icon>
+              {{ t("navbar.document") }}
+            </el-dropdown-item>
+            <el-dropdown-item @click="handleGiteeClick">
+              <el-icon><Reading /></el-icon>
+              {{ t("navbar.gitee") }}
+            </el-dropdown-item>
+            <el-dropdown-item @click="handleTourClick">
+              <el-icon><Position /></el-icon>
+              {{ t("navbar.tour") }}
+            </el-dropdown-item>
+            <el-dropdown-item divided @click="handlelockScreen">
+              <el-icon><Lock /></el-icon>
+              {{ t("navbar.lock") }}
+            </el-dropdown-item>
+            <el-dropdown-item  @click="logout">
+              <el-icon><SwitchButton /></el-icon>
+              {{ t("navbar.logout") }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
   </div>
   
   <!-- 引导 -->

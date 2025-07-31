@@ -58,31 +58,51 @@ const topMenus = ref<RouteRecordRaw[]>([]);
 
 // 处理后的顶部菜单列表 - 智能显示唯一子菜单的标题
 const processedTopMenus = computed(() => {
-  return topMenus.value.map((route) => {
-    // 如果路由设置了 alwaysShow=true，或者没有子菜单，直接返回原路由
-    if (route.meta?.alwaysShow || !route.children || route.children.length === 0) {
+  return topMenus.value
+    .map((route) => {
+      // 如果路由本身设置了hidden=true，直接返回null
+      if (route.meta?.hidden === true) {
+        return null;
+      }
+
+      // 如果路由设置了 alwaysShow=true，或者没有子菜单，直接返回原路由
+      if (route.meta?.alwaysShow || !route.children || route.children.length === 0) {
+        return route;
+      }
+
+      // 过滤出非隐藏的子菜单
+      const visibleChildren = route.children.filter((child) => !child.meta?.hidden);
+
+      // 如果没有可见子菜单，返回null
+      if (visibleChildren.length === 0) {
+        return null;
+      }
+
+      // 如果只有一个非隐藏的子菜单，显示子菜单的信息
+      if (visibleChildren.length === 1) {
+        const onlyChild = visibleChildren[0];
+        // 检查子菜单是否应该显示在顶部菜单
+        if (onlyChild.meta?.hidden !== true) {
+          return {
+            ...route,
+            meta: {
+              ...route.meta,
+              title: onlyChild.meta?.title || route.meta?.title,
+              icon: onlyChild.meta?.icon || route.meta?.icon,
+            },
+            // 使用子菜单的path确保路由匹配正确
+            path: onlyChild.path
+          };
+        }
+        // 如果子菜单应该隐藏，则不显示该顶级菜单
+        return null;
+      }
+
+      // 其他情况返回原路由
       return route;
-    }
-
-    // 过滤出非隐藏的子菜单
-    const visibleChildren = route.children.filter((child) => !child.meta?.hidden);
-
-    // 如果只有一个非隐藏的子菜单，显示子菜单的信息
-    if (visibleChildren.length === 1) {
-      const onlyChild = visibleChildren[0];
-      return {
-        ...route,
-        meta: {
-          ...route.meta,
-          title: onlyChild.meta?.title || route.meta?.title,
-          icon: onlyChild.meta?.icon || route.meta?.icon,
-        },
-      };
-    }
-
-    // 其他情况返回原路由
-    return route;
-  });
+    })
+    // 过滤掉null值
+    .filter((route) => route !== null);
 });
 
 /**
@@ -99,15 +119,18 @@ const handleMenuSelect = (routePath: string) => {
  * @param skipNavigation 是否跳过导航（路由变化时为true，点击菜单时为false）
  */
 const updateMenuState = (topMenuPath: string, skipNavigation = false) => {
-  // 不相同才更新，避免重复操作
-  if (topMenuPath !== appStore.activeTopMenuPath) {
+  // 确保路径有效且不相同才更新，避免重复操作
+  if (topMenuPath && topMenuPath !== appStore.activeTopMenuPath) {
     appStore.activeTopMenu(topMenuPath); // 设置激活的顶部菜单
-    permissionStore.updateSideMenu(topMenuPath); // 更新左侧菜单
+    // 只有当路由映射表中存在该路径时才更新侧边菜单
+    if (permissionStore.routePathMap && permissionStore.routePathMap[topMenuPath]) {
+      permissionStore.updateSideMenu(topMenuPath); // 更新左侧菜单
+    }
   }
 
   // 如果是点击菜单且状态已变更，才进行导航
-  if (!skipNavigation) {
-    navigateToFirstLeftMenu(permissionStore.sideMenuRoutes); // 跳转到左侧第一个菜单
+  if (!skipNavigation && topMenuPath === appStore.activeTopMenuPath) {
+    navigateToFirstLeftMenu(permissionStore.sideMenuRoutes || []); // 跳转到左侧第一个菜单
   }
 };
 
