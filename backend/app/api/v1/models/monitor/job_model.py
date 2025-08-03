@@ -12,7 +12,7 @@ class JobModel(ModelBase):
     定时任务调度表
     """
 
-    __tablename__ = 'system_job'
+    __tablename__ = 'monitor_job'
     __table_args__ = ({'comment': '定时任务调度表'})
 
     id=Column(Integer, primary_key=True, autoincrement=True, comment='任务ID')

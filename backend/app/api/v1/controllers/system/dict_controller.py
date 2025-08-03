@@ -107,7 +107,7 @@ async def export_type_list_controller(
         data=bytes2file_response(export_result),
         media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         headers = {
-            'Content-Disposition': 'attachment; filename=data.xlsx'
+            'Content-Disposition': 'attachment; filename=dict_type.xlsx'
         }
     )
 
@@ -185,7 +185,7 @@ async def export_data_list_controller(
         data=bytes2file_response(export_result),
         media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         headers = {
-            'Content-Disposition': 'attachment; filename=data.xlsx'
+            'Content-Disposition': 'attachment; filename=dice_data.xlsx'
         }
     )
 

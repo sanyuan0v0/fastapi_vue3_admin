@@ -238,6 +238,28 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 
 ---
 
+## 🛠️ 二开教程
+
+### 后端部分
+
+1. **编写实体类层**：在 `backend/app/v1/models/demo/demo_model.py` 中创建 demo 的 ORM 模型（对应 Spring Boot 中的实体类层）
+2. **编写数据模型层**：在 `backend/app/v1/schemas/demo/demo_schema.py` 中创建 demo 数据模型（对应 Spring Boot 中的 DTO 层）
+3. **编写查询参数模型层**：在 `backend/app/v1/params/demo/demo_param.py` 中创建 demo 的查询参数模型（对应 Spring Boot 中的 DTO 层）
+4. **编写持久化层**：在 `backend/app/v1/cruds/demo/demo_crud.py` 中创建 demo 数据层（对应 Spring Boot 中的 Mapper 或 DAO 层）
+5. **编写业务层**：在 `backend/app/v1/services/demo/demo_service.py` 中创建 demo 数据层（对应 Spring Boot 中的 Service 层）
+6. **编写接口层**：在 `backend/app/v1/controllers/demo/demo_controller.py` 中创建 demo 数据层（对应 Spring Boot 中的 Controller 层）
+7. **注册后端路由**：在 `backend/app/v1/urls/demo/demo_url.py` 中注册 demo 路由
+8. **注册路由到 FastAPI 服务中**：在 `backend/plugin/init_app.py` 中注册路由
+9. **将 demo 模块添加至系统初始化脚本**：在 `backend/app/scripts/initialize.py` 中添加（如果需要可以把 demo 的菜单权限，配置到 `backend/app/scripts/data/system_menu.json` 和 `backend/app/scripts/data/system_role_menus.json` 或从前端页面菜单中新增）
+10. **将 demo 模块添加至数据库迁移脚本中**：在 `backend/app/alembic/env.py` 中添加
+
+### 前端部分
+
+1. **前端接入后端接口地址**：在 `frontend/src/api/demo/example.ts` 中配置
+2. **编写前端页面**：在 `frontend/src/views/demo/example/index.vue` 中编写
+
+---
+
 ## 🙏 特别鸣谢
 
 感谢以下项目的贡献和支持，使本项目得以顺利完成：
@@ -268,11 +290,3 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 ## ❤️ Star 支持我
 
    如果你喜欢这个项目，请给我一个 ⭐️ Star 支持一下吧！非常感谢！
-
----
-
-## 👀 访问统计
-
-![Visitor Count](https://profile-counter.glitch.me/1014TaoTao/count.svg)
-
----

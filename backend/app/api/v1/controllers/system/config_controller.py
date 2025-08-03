@@ -89,7 +89,7 @@ async def export_type_list_controller(
         data=bytes2file_response(export_result),
         media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         headers = {
-            'Content-Disposition': 'attachment; filename=data.xlsx'
+            'Content-Disposition': 'attachment; filename=config.xlsx'
         }
     )
 

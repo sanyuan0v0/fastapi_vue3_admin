@@ -425,6 +425,39 @@
         <li class="md-nav__item">
   <a href="#_12" class="md-nav__link">
     <span class="md-ellipsis">
+      🛠️ 二开教程
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🛠️ 二开教程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      后端部分
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      前端部分
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
       🙏 特别鸣谢
     </span>
   </a>
@@ -432,7 +465,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_13" class="md-nav__link">
+  <a href="#_16" class="md-nav__link">
     <span class="md-ellipsis">
       🎨 社区
     </span>
@@ -444,15 +477,6 @@
   <a href="#star" class="md-nav__link">
     <span class="md-ellipsis">
       ❤️ Star 支持我
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_14" class="md-nav__link">
-    <span class="md-ellipsis">
-      👀 访问统计
     </span>
   </a>
   
@@ -835,7 +859,27 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 </table>
 
 <hr />
-<h2 id="_12">🙏 特别鸣谢</h2>
+<h2 id="_12">🛠️ 二开教程</h2>
+<h3 id="_13">后端部分</h3>
+<ol>
+<li><strong>编写实体类层</strong>：在 <code>backend/app/v1/models/demo/demo_model.py</code> 中创建 demo 的 ORM 模型（对应 Spring Boot 中的实体类层）</li>
+<li><strong>编写数据模型层</strong>：在 <code>backend/app/v1/schemas/demo/demo_schema.py</code> 中创建 demo 数据模型（对应 Spring Boot 中的 DTO 层）</li>
+<li><strong>编写查询参数模型层</strong>：在 <code>backend/app/v1/params/demo/demo_param.py</code> 中创建 demo 的查询参数模型（对应 Spring Boot 中的 DTO 层）</li>
+<li><strong>编写持久化层</strong>：在 <code>backend/app/v1/cruds/demo/demo_crud.py</code> 中创建 demo 数据层（对应 Spring Boot 中的 Mapper 或 DAO 层）</li>
+<li><strong>编写业务层</strong>：在 <code>backend/app/v1/services/demo/demo_service.py</code> 中创建 demo 数据层（对应 Spring Boot 中的 Service 层）</li>
+<li><strong>编写接口层</strong>：在 <code>backend/app/v1/controllers/demo/demo_controller.py</code> 中创建 demo 数据层（对应 Spring Boot 中的 Controller 层）</li>
+<li><strong>注册后端路由</strong>：在 <code>backend/app/v1/urls/demo/demo_url.py</code> 中注册 demo 路由</li>
+<li><strong>注册路由到 FastAPI 服务中</strong>：在 <code>backend/plugin/init_app.py</code> 中注册路由</li>
+<li><strong>将 demo 模块添加至系统初始化脚本</strong>：在 <code>backend/app/scripts/initialize.py</code> 中添加（如果需要可以把 demo 的菜单权限，配置到 <code>backend/app/scripts/data/system_menu.json</code> 和 <code>backend/app/scripts/data/system_role_menus.json</code> 或从前端页面菜单中新增）</li>
+<li><strong>将 demo 模块添加至数据库迁移脚本中</strong>：在 <code>backend/app/alembic/env.py</code> 中添加</li>
+</ol>
+<h3 id="_14">前端部分</h3>
+<ol>
+<li><strong>前端接入后端接口地址</strong>：在 <code>frontend/src/api/demo/example.ts</code> 中配置</li>
+<li><strong>编写前端页面</strong>：在 <code>frontend/src/views/demo/example/index.vue</code> 中编写</li>
+</ol>
+<hr />
+<h2 id="_15">🙏 特别鸣谢</h2>
 <p>感谢以下项目的贡献和支持，使本项目得以顺利完成：</p>
 <ul>
 <li><a href="https://fastapi.tiangolo.com/">FastAPI 项目</a></li>
@@ -849,7 +893,7 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 <li><a href="https://gitee.com/youlaiorg/vue3-element-admin">Vue3-element-admin 项目</a></li>
 <li><a href="https://gitee.com/kailong110120130/vue-element-plus-admin">Vue3-element-plus-admin 项目</a></li>
 </ul>
-<h2 id="_13">🎨 社区</h2>
+<h2 id="_16">🎨 社区</h2>
 <table>
     <tr>
         <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/wechat.jpg"/></td>
@@ -861,10 +905,6 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 <hr />
 <h2 id="star">❤️ Star 支持我</h2>
 <p>如果你喜欢这个项目，请给我一个 ⭐️ Star 支持一下吧！非常感谢！</p>
-<hr />
-<h2 id="_14">👀 访问统计</h2>
-<p><img alt="Visitor Count" src="https://profile-counter.glitch.me/1014TaoTao/count.svg" /></p>
-<hr />
 
 
 
