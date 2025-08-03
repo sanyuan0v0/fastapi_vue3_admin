@@ -18,7 +18,10 @@
         </el-form-item>
         <!-- 时间范围，收起状态下隐藏 -->
         <el-form-item v-if="isExpand" prop="start_time" label="创建时间">
-          <el-date-picker v-model="queryFormData.start_time" type="daterange" value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+          <DatePicker
+            v-model="dateRange"
+            @update:model-value="handleDateRangeChange"
+          />
         </el-form-item>
         <!-- 查询、重置、展开/收起按钮 -->
         <el-form-item class="search-buttons">
@@ -270,6 +273,21 @@ const rules = reactive({
   dict_type: [{ required: true, message: "请选择字典类型", trigger: "blur" }],
   status: [{ required: true, message: "请选择字典状态", trigger: "blur" }],
 });
+
+// 日期范围临时变量
+const dateRange = ref<[Date, Date] | []>([]);
+
+// 处理日期范围变化
+function handleDateRangeChange(range: [Date, Date]) {
+  dateRange.value = range;
+  if (range && range.length === 2) {
+    queryFormData.start_time = range[0].toISOString();
+    queryFormData.end_time = range[1].toISOString();
+  } else {
+    queryFormData.start_time = undefined;
+    queryFormData.end_time = undefined;
+  }
+}
 
 // 列表刷新
 async function handleRefresh () {

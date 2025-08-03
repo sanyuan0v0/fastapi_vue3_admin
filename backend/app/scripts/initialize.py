@@ -24,6 +24,9 @@ from app.api.v1.models.system import (
 from app.api.v1.models.monitor import (
     job_model
 )
+from app.api.v1.models.demo import (
+    example_model
+)
 
 class InitializeData:
     """
@@ -47,6 +50,7 @@ class InitializeData:
             dict_model.DictTypeModel,
             dict_model.DictDataModel,
             job_model.JobModel,
+            example_model.ExampleModel
         ]
         self.created_tables = set()
     async def __get_existing_tables(self, db: AsyncSession) -> List[str]:

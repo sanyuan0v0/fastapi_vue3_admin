@@ -35,6 +35,7 @@ from app.api.v1.models.system.notice_model import *
 from app.api.v1.models.system.config_model import *
 from app.api.v1.models.system.dict_model import *
 from app.api.v1.models.monitor.job_model import *
+from app.api.v1.models.demo.example_model import *
 from app.core.base_model import ModelBase
 target_metadata = ModelBase.metadata
 

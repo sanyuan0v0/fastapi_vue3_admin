@@ -66,6 +66,6 @@ async def export_obj_list_controller(
         data=bytes2file_response(operation_log_export_result),
         media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         headers = {
-            'Content-Disposition': 'attachment; filename=data.xlsx'
+            'Content-Disposition': 'attachment; filename=log.xlsx'
         }
     )

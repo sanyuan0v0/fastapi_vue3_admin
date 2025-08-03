@@ -26,7 +26,10 @@
             </el-form-item>
             <!-- 时间范围，收起状态下隐藏 -->
             <el-form-item v-if="isExpand" prop="start_time" label="创建时间">
-              <el-date-picker v-model="queryFormData.start_time" type="daterange" value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+              <DatePicker
+                  v-model="dateRange"
+                  @update:model-value="handleDateRangeChange"
+              />
             </el-form-item>
             <!-- 查询、重置、展开/收起按钮 -->
             <el-form-item class="search-buttons">
@@ -82,7 +85,6 @@
 
             <div class="data-table__toolbar--tools">
               <el-tooltip content="导入">
-                <!-- <el-button type="info" icon="upload" circle @click="handleOperation('import')" /> -->
                 <el-button type="info" icon="upload" circle @click="handleOpenImportDialog" />
               </el-tooltip>
               <el-tooltip content="导出">
@@ -292,7 +294,7 @@
     </el-drawer>
 
     <!-- 用户导入 -->
-    <UserImport v-model="importDialogVisible" @import-success="handleQuery()" />
+    <ImportModal v-model="importDialogVisible" title="导入用户" @import-success="handleQuery()" @download-template="handleDownloadTemplate" @upload="handleUpload" />
 
   </div>
 </template>
@@ -305,7 +307,7 @@ defineOptions({
 
 import { useAppStore } from "@/store/modules/app.store";
 import { DeviceEnum } from "@/enums/settings/device.enum";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ResultEnum } from "@/enums/api/result.enum";
 
 import UserAPI, { type UserForm, type UserInfo, type UserPageQuery } from "@/api/system/user";
 import { listToTree, formatTree } from "@/utils/common";
@@ -404,6 +406,21 @@ const rules = reactive({
   is_superuser: [{ required: true, message: "请选择是否超管", trigger: "blur" }],
   status: [{ required: true, message: "请选择状态", trigger: "blur" }],
 });
+
+// 日期范围临时变量
+const dateRange = ref<[Date, Date] | []>([]);
+
+// 处理日期范围变化
+function handleDateRangeChange(range: [Date, Date]) {
+  dateRange.value = range;
+  if (range && range.length === 2) {
+    queryFormData.start_time = range[0].toISOString();
+    queryFormData.end_time = range[1].toISOString();
+  } else {
+    queryFormData.start_time = undefined;
+    queryFormData.end_time = undefined;
+  }
+}
 
 // 列表刷新
 async function handleRefresh () {
@@ -671,6 +688,45 @@ async function handleMoreClick(status: boolean) {
 function handleOpenImportDialog() {
   importDialogVisible.value = true;
 }
+
+const emit = defineEmits(['import-success']);
+
+// 上传文件
+const handleUpload = async (formData: FormData, file: File) => {
+  try {
+    const response = await UserAPI.importUser(formData);
+    if (response.data.code === ResultEnum.SUCCESS) {
+      ElMessage.success(`${response.data.msg}，${response.data.data}`);
+      emit('import-success');
+    }
+  } catch (error: any) {
+    console.error(error);
+    ElMessage.error('上传失败：' + error);
+  }
+};
+
+
+// 下载导入模板
+const handleDownloadTemplate = () => {
+  UserAPI.downloadTemplate().then((response: any) => {
+    const fileData = response.data;
+    const fileName = decodeURI(response.headers["content-disposition"].split(";")[1].split("=")[1]);
+    const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8";
+
+    const blob = new Blob([fileData], { type: fileType });
+    const downloadUrl = window.URL.createObjectURL(blob);
+
+    const downloadLink = document.createElement("a");
+    downloadLink.href = downloadUrl;
+    downloadLink.download = fileName;
+
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+
+    document.body.removeChild(downloadLink);
+    window.URL.revokeObjectURL(downloadUrl);
+  });
+};
 
 
 onMounted(() => {

@@ -9,10 +9,10 @@ from app.api.v1.schemas.system.auth_schema import AuthSchema
 
 
 class NoticeCRUD(CRUDBase[NoticeModel, NoticeCreateSchema, NoticeUpdateSchema]):
-    """操作日志数据层"""
+    """公告数据层"""
 
     def __init__(self, auth: AuthSchema) -> None:
-        """初始化操作日志CRUD"""
+        """初始化CRUD"""
         self.auth = auth
         super().__init__(model=NoticeModel, auth=auth)
 
