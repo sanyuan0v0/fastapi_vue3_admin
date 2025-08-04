@@ -134,18 +134,30 @@
         <el-table-column type="selection" align="center" min-width="55" />
         <el-table-column type="index" label="序号" fixed min-width="60">
           <template #default="scope">
-            {{
-              (queryFormData.page_no - 1) * queryFormData.page_size +
-              scope.$index +
-              1
-            }}
+            {{ (queryFormData.page_no - 1) * queryFormData.page_size + scope.$index + 1 }}
           </template>
         </el-table-column>
         <el-table-column label="任务名称" prop="name" min-width="140" />
-        <el-table-column label="执行函数" prop="func" min-width="140" />
-        <el-table-column label="触发器" prop="trigger" min-width="100" />
-        <el-table-column label="存储器" prop="jobstore" min-width="100" />
-        <el-table-column label="执行器" prop="executor" min-width="100" />
+        <el-table-column label="执行函数" prop="func" min-width="140" >
+          <template #default="scope">
+            {{ (dictStore.getDictLabel('sys_job_function',scope.row.func) as any)?.dict_label || scope.row.func }}
+          </template>
+        </el-table-column>
+        <el-table-column label="触发器" prop="trigger" min-width="100">
+          <template #default="scope">
+            {{ (dictStore.getDictLabel('sys_job_trigger',scope.row.trigger) as any)?.dict_label || scope.row.trigger }}
+          </template>
+        </el-table-column>
+        <el-table-column label="存储器" prop="jobstore" min-width="120">
+          <template #default="scope">
+            {{ (dictStore.getDictLabel('sys_job_store',scope.row.jobstore) as any)?.dict_label || scope.row.jobstore }}
+          </template>
+        </el-table-column>
+        <el-table-column label="执行器" prop="executor" min-width="100">
+          <template #default="scope">
+            {{ (dictStore.getDictLabel('sys_job_executor',scope.row.executor) as any)?.dict_label || scope.row.executor }}
+          </template>
+        </el-table-column>
         <el-table-column label="并发执行" prop="coalesce" min-width="100">
           <template #default="scope">
             <el-tag :type="scope.row.coalesce === true ? 'success' : 'danger'">
@@ -329,24 +341,31 @@
             />
           </el-form-item>
           <el-form-item label="任务函数" prop="func" style="width: 40%">
-            <el-input
-              v-model="formData.func"
-              placeholder="请输入任务函数"
-              :maxlength="50"
-            />
+            <el-select v-model="formData.func" placeholder="请选择任务函数">
+                <el-option v-for="item in dictStore.getDictArray('sys_job_function')"
+                  :key="item.dict_value"
+                  :label="item.dict_label"
+                  :value="item.dict_value"
+                />
+              </el-select>
           </el-form-item>
           <el-form-item label="存储器" prop="jobstore" style="width: 40%">
             <el-select v-model="formData.jobstore" placeholder="请选择存储器">
-              <el-option value="default" label="默认(Memory)" />
-              <el-option value="sqlalchemy" label="数据库" />
-              <el-option value="redis" label="Redis存储器" />
-            </el-select>
+                <el-option v-for="item in dictStore.getDictArray('sys_job_store')"
+                  :key="item.dict_value"
+                  :label="item.dict_label"
+                  :value="item.dict_value"
+                />
+              </el-select>
           </el-form-item>
           <el-form-item label="执行器" prop="executor" style="width: 40%">
             <el-select v-model="formData.executor" placeholder="请选择执行器">
-              <el-option value="default" label="默认" />
-              <el-option value="processpool" label="进程池" />
-            </el-select>
+                <el-option v-for="item in dictStore.getDictArray('sys_job_executor')"
+                  :key="item.dict_value"
+                  :label="item.dict_label"
+                  :value="item.dict_value"
+                />
+              </el-select>
           </el-form-item>
           <el-form-item label="位置参数" prop="args" style="width: 40%">
             <el-input
@@ -382,10 +401,12 @@
           </el-form-item>
           <el-form-item label="触发器" prop="trigger" style="width: 40%">
             <el-select v-model="formData.trigger" placeholder="请选择触发器">
-              <el-option value="date" label="指定日期(date)" />
-              <el-option value="interval" label="间隔触发器(interval)" />
-              <el-option value="cron" label="cron表达式" />
-            </el-select>
+                <el-option v-for="item in dictStore.getDictArray('sys_job_trigger')"
+                  :key="item.dict_value"
+                  :label="item.dict_label"
+                  :value="item.dict_value"
+                />
+              </el-select>
           </el-form-item>
           <!-- 运行日期、间隔时间或 Cron 表达式 -->
           <el-form-item
@@ -552,10 +573,6 @@ import "vue3-cron-plus/dist/index.css"; // 引入样式
 
 const dictStore = useDictStore();
 
-// const DictDataStore = computed(() => {
-//     return dictStore.dictData;
-// })
-
 const queryFormRef = ref();
 const dataFormRef = ref();
 const total = ref(0);
@@ -565,18 +582,8 @@ const loading = ref(false);
 const isExpand = ref(false);
 const isExpandable = ref(true);
 
-// const createForm = ref();
-// const updateForm = ref();
-// const tableLoading = ref(false);
-// const openModal = ref(false);
 const openCron = ref(false);
 
-// const modalSubmitLoading = ref(false);
-// const detailStateLoading = ref(false);
-// const dataSource = ref<tableJobType[]>([]);
-// const selectedRowKeys = ref<tableJobType['id'][]>([]);
-// const queryState = reactive<searchType>({});
-// const detailState = ref<tableJobType>({})
 const openIntervalTab = ref(false);
 const intervalTabRef = ref();
 
@@ -689,7 +696,7 @@ const initialFormData: JobForm = {
   trigger: undefined,
   args: undefined,
   kwargs: undefined,
-  coalesce: undefined,
+  coalesce: false,
   max_instances: 1,
   jobstore: undefined,
   executor: undefined,
@@ -892,7 +899,10 @@ const handleOption = (id: number, option: number) => {
   });
 };
 
-onMounted(() => {
+onMounted(async () => {
+  // 加载字典数据
+  await dictStore.getDict(['sys_job_function','sys_job_executor','sys_job_store', 'sys_job_trigger']);
+  // 加载表格数据
   loadingData();
 });
 </script>

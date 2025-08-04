@@ -258,7 +258,7 @@ class UserService:
             raise CustomException(msg="用户不存在")
 
         # 更新密码
-        new_password_hash = PwdUtil.set_password_hash(password=data.new_password)
+        new_password_hash = PwdUtil.set_password_hash(password=data.password)
         new_user = await UserCRUD(auth).change_password_crud(id=user.id, password_hash=new_password_hash)
         return UserOutSchema.model_validate(new_user).model_dump()
 

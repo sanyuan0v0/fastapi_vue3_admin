@@ -33,8 +33,8 @@
   },
   {
     "id": 5,
-    "dict_name": "任务分组",
-    "dict_type": "sys_job_group",
+    "dict_name": "任务存储器",
+    "dict_type": "sys_job_store",
     "status": true,
     "description": "任务分组列表",
     "creator_id": 1

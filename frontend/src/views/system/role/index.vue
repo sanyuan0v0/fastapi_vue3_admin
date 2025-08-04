@@ -133,10 +133,38 @@
 
         <el-table-column v-if="tableColumns.find(col => col.prop === 'operation')?.show" fixed="right" label="操作" align="center" min-width="280">
           <template #default="scope">
-            <el-button type="warning" size="small" link icon="position" @click="handleOpenAssignPermDialog(scope.row.id, scope.row.name)">分配权限</el-button>
-            <el-button type="info" size="small" link icon="document" @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
-            <el-button type="primary" size="small" link icon="edit" @click="handleOpenDialog('update', scope.row.id)">编辑</el-button>
-            <el-button type="danger" size="small" link icon="delete" @click="handleDelete([scope.row.id])">删除</el-button>
+            <el-button 
+              type="warning" 
+              size="small" 
+              link 
+              icon="position" 
+              @click="scope.row.id === 1 ? ElMessage.warning('系统默认角色，不可操作') : handleOpenAssignPermDialog(scope.row.id, scope.row.name)"
+              :disabled="scope.row.id === 1"
+            >分配权限</el-button>
+            <el-button 
+              type="info" 
+              size="small" 
+              link 
+              icon="document" 
+              @click="scope.row.id === 1 ? ElMessage.warning('系统默认角色，不可操作') : handleOpenDialog('detail', scope.row.id)"
+              :disabled="scope.row.id === 1"
+            >详情</el-button>
+            <el-button 
+              type="primary" 
+              size="small" 
+              link 
+              icon="edit" 
+              @click="scope.row.id === 1 ? ElMessage.warning('系统默认角色，不可操作') : handleOpenDialog('update', scope.row.id)"
+              :disabled="scope.row.id === 1"
+            >编辑</el-button>
+            <el-button 
+              type="danger" 
+              size="small" 
+              link 
+              icon="delete" 
+              @click="scope.row.id === 1 ? ElMessage.warning('系统默认角色，不可操作') : handleDelete([scope.row.id])"
+              :disabled="scope.row.id === 1"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
