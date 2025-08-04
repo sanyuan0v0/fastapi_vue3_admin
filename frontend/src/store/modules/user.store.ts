@@ -1,4 +1,4 @@
-import { store, useTagsViewStore, usePermissionStoreHook } from "@/store";
+import { store, useTagsViewStore, usePermissionStoreHook, useDictStoreHook } from "@/store";
 
 import AuthAPI, {type LoginFormData } from "@/api/system/auth";
 import UserAPI, {type UserInfo }  from "@/api/system/user";
@@ -73,6 +73,8 @@ export const useUserStore = defineStore("user", {
       usePermissionStoreHook().resetRouter();
       // 清除标签视图
       useTagsViewStore().delAllViews();
+      // 重置字典
+      useDictStoreHook().clearDictData()
 
       return Promise.resolve();
     },

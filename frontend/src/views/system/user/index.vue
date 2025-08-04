@@ -152,10 +152,37 @@
             </el-table-column>
             <el-table-column fixed="right" label="操作" align="center" min-width="280">
               <template #default="scope">
-                <el-button type="warning" icon="RefreshLeft" size="small" link @click="hancleResetPassword(scope.row)">重置密码</el-button>
-                <el-button type="info" size="small" link icon="document" @click="handleOpenDialog('detail', scope.row.id)">详情</el-button>
-                <el-button type="primary" size="small" link icon="edit" @click="handleOpenDialog('update', scope.row.id)">编辑</el-button>
-                <el-button type="danger" size="small" link icon="delete" @click="handleDelete([scope.row.id])">删除</el-button>
+                <el-button 
+                  v-if="scope.row.username !== 'admin'" 
+                  type="warning" 
+                  icon="RefreshLeft" 
+                  size="small" 
+                  link 
+                  @click="hancleResetPassword(scope.row)"
+                >重置密码</el-button>
+                <el-button 
+                  type="info" 
+                  size="small" 
+                  link 
+                  icon="document" 
+                  @click="handleOpenDialog('detail', scope.row.id)"
+                >详情</el-button>
+                <el-button 
+                  v-if="scope.row.username !== 'admin'" 
+                  type="primary" 
+                  size="small" 
+                  link 
+                  icon="edit" 
+                  @click="handleOpenDialog('update', scope.row.id)"
+                >编辑</el-button>
+                <el-button 
+                  v-if="scope.row.username !== 'admin'" 
+                  type="danger" 
+                  size="small" 
+                  link 
+                  icon="delete" 
+                  @click="handleDelete([scope.row.id])"
+                >删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -316,7 +343,6 @@ import DeptAPI from "@/api/system/dept";
 import RoleAPI from "@/api/system/role";
 
 import DeptTree from "./components/DeptTree.vue";
-import UserImport from "./components/UserImport.vue";
 
 const appStore = useAppStore();
 
