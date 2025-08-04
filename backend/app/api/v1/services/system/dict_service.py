@@ -2,7 +2,7 @@
 
 import json
 from typing import Any, List, Dict
-from aioredis import Redis
+from redis.asyncio.client import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.v1.schemas.system.auth_schema import AuthSchema

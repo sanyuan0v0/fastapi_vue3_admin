@@ -2,7 +2,7 @@
 
 import json
 from typing import Dict, List, Optional
-from aioredis import Redis
+from redis.asyncio.client import Redis
 
 from app.common.enums import RedisInitKeyConfig
 from app.core.exceptions import CustomException

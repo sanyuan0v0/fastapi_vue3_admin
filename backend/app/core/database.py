@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import aioredis
+from redis import asyncio as aioredis
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi import FastAPI
 from sqlalchemy import create_engine, inspect, text

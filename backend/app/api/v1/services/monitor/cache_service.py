@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from aioredis import Redis
+from redis.asyncio.client import Redis
 
 from app.common.enums import RedisInitKeyConfig
 from app.api.v1.schemas.monitor.cache_schema import CacheMonitorSchema, CacheInfoSchema

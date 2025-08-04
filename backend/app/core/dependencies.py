@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
-from aioredis import Redis
+from redis.asyncio.client import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import AsyncGenerator, Optional
 from fastapi import Depends, Request

@@ -3,7 +3,7 @@
 from typing import Optional
 from fastapi import APIRouter, Body, Depends
 from fastapi.responses import JSONResponse
-from aioredis import Redis
+from redis.asyncio.client import Redis
 
 from app.core.dependencies import AuthPermission, redis_getter
 from app.core.logger import logger

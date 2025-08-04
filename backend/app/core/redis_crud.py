@@ -2,7 +2,7 @@
 
 import pickle
 from typing import Any, Optional
-from aioredis import Redis
+from redis.asyncio.client import Redis
 
 from app.core.logger import logger
 
