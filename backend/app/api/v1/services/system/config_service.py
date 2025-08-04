@@ -3,10 +3,10 @@
 import json
 from typing import Any, Dict, List, Union
 
-from aioredis import Redis
+from redis.asyncio.client import Redis
 from fastapi import UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
-from aioredis import Redis
+from redis.asyncio.client import Redis
 
 from app.api.v1.params.system.config_param import ConfigQueryParams
 from app.api.v1.schemas.system.auth_schema import AuthSchema

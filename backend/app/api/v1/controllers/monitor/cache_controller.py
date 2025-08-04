@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
-from aioredis import Redis
+from redis.asyncio.client import Redis
 
 from app.core.dependencies import AuthPermission, redis_getter
 from app.api.v1.services.monitor.cache_service import CacheService

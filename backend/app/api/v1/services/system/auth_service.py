@@ -4,7 +4,7 @@ import json
 import uuid
 from typing import Dict, Union, NewType
 from fastapi import Request
-from aioredis import Redis
+from redis.asyncio.client import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timedelta
 from user_agents import parse

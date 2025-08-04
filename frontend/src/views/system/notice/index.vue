@@ -9,8 +9,12 @@
         </el-form-item>
         <el-form-item prop="notice_type" label="类型">
           <el-select v-model="queryFormData.notice_type" placeholder="请选择类型" style="width: 167.5px" clearable>
-            <el-option value="1" label="通知" />
-            <el-option value="2" label="公告" />
+            <el-option
+              v-for="item in dictStore.getDictArray('sys_notice_type')"
+              :key="item.dict_value"
+              :value="item.dict_value"
+              :label="item.dict_label"
+            />
           </el-select>
         </el-form-item>
         <el-form-item prop="status" label="状态">
@@ -126,7 +130,7 @@
         <el-table-column v-if="tableColumns.find(col => col.prop === 'notice_type')?.show" label="类型" prop="notice_type" min-width="80">
           <template #default="scope">
             <el-tag :type="scope.row.notice_type === '1' ? 'primary' : 'warning'">
-              {{ scope.row.notice_type === '1' ? "通知" : "公告" }}
+              {{ (scope.row.notice_type ? dictStore.getDictLabel('sys_notice_type', scope.row.notice_type) as any : undefined)?.dict_label || scope.row.notice_type }}
             </el-tag>
           </template>
         </el-table-column>
@@ -165,7 +169,7 @@
           </el-descriptions-item>
           <el-descriptions-item label="类型" :span="2">
             <el-tag :type="detailFormData.notice_type === '1' ? 'primary' : 'warning'">
-              {{ detailFormData.notice_type === '1' ? '通知' : '公告' }}
+              {{ (detailFormData.notice_type ? dictStore.getDictLabel('sys_notice_type', detailFormData.notice_type) as any : undefined)?.dict_label || detailFormData.notice_type }}
             </el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="状态" :span="2">
@@ -198,8 +202,12 @@
           </el-form-item>
           <el-form-item label="类型" prop="notice_type">
             <el-select v-model="formData.notice_type" placeholder="请选择类型" clearable>
-              <el-option value="1" label="公告" />
-              <el-option value="2" label="通知" />
+              <el-option v-for="item in dictStore.getDictArray('sys_notice_type')"
+                :key="item.dict_value"
+                :value="item.dict_value"
+                :label="item.dict_label"
+              />
+
             </el-select>
           </el-form-item>
           <el-form-item label="状态" prop="status">
@@ -236,6 +244,9 @@
 </template>
 
 <script setup lang="ts">
+import { useDictStore } from "@/store/index";
+
+const dictStore = useDictStore();
 defineOptions({
   name: "Notice",
   inheritAttrs: false,
@@ -530,7 +541,11 @@ async function handleMoreClick(status: boolean) {
   }
 }
 
-onMounted(() => {
+
+onMounted(async () => {
+  // 加载字典数据
+  await dictStore.getDict(['sys_notice_type']);
+  // 加载表格数据
   loadingData();
 });
 </script>

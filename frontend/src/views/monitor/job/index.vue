@@ -145,17 +145,17 @@
         </el-table-column>
         <el-table-column label="触发器" prop="trigger" min-width="100">
           <template #default="scope">
-            {{ (dictStore.getDictLabel('sys_job_trigger',scope.row.trigger) as any)?.dict_label || scope.row.trigger }}
+            {{ (dictStore.getDictLabel('sys_job_trigger',scope.row.trigger) as any)?.dict_label }}
           </template>
         </el-table-column>
         <el-table-column label="存储器" prop="jobstore" min-width="120">
           <template #default="scope">
-            {{ (dictStore.getDictLabel('sys_job_store',scope.row.jobstore) as any)?.dict_label || scope.row.jobstore }}
+            {{ (dictStore.getDictLabel('sys_job_store',scope.row.jobstore) as any)?.dict_label }}
           </template>
         </el-table-column>
         <el-table-column label="执行器" prop="executor" min-width="100">
           <template #default="scope">
-            {{ (dictStore.getDictLabel('sys_job_executor',scope.row.executor) as any)?.dict_label || scope.row.executor }}
+            {{ (dictStore.getDictLabel('sys_job_executor',scope.row.executor) as any)?.dict_label }}
           </template>
         </el-table-column>
         <el-table-column label="并发执行" prop="coalesce" min-width="100">
@@ -224,12 +224,12 @@
                   <el-dropdown-menu>
                     <el-dropdown-item
                       icon="Check"
-                      @click="handleOption(scope.row, 1)"
+                      @click="handleOption(scope.row.id, 1)"
                       >暂停</el-dropdown-item
                     >
                     <el-dropdown-item
                       icon="CircleClose"
-                      @click="handleOption(scope.row, 2)"
+                      @click="handleOption(scope.row.id, 2)"
                       >恢复</el-dropdown-item
                     >
                   </el-dropdown-menu>
@@ -267,16 +267,16 @@
             detailFormData.name
           }}</el-descriptions-item>
           <el-descriptions-item label="任务函数" :span="2">{{
-            detailFormData.func
+            (detailFormData.func ? dictStore.getDictLabel('sys_job_function', detailFormData.func) as any : undefined)?.dict_label || detailFormData.func
           }}</el-descriptions-item>
           <el-descriptions-item label="存储器" :span="2">{{
-            detailFormData.jobstore
+            (detailFormData.jobstore ? dictStore.getDictLabel('sys_job_store', detailFormData.jobstore) as any : undefined)?.dict_label || detailFormData.jobstore
           }}</el-descriptions-item>
           <el-descriptions-item label="执行器" :span="2">{{
-            detailFormData.executor
+            (detailFormData.executor ? dictStore.getDictLabel('sys_job_executor', detailFormData.executor) as any : undefined)?.dict_label || detailFormData.executor
           }}</el-descriptions-item>
           <el-descriptions-item label="触发器" :span="2">{{
-            detailFormData.trigger
+            (detailFormData.trigger ? dictStore.getDictLabel('sys_job_trigger', detailFormData.trigger) as any : undefined)?.dict_label || detailFormData.trigger
           }}</el-descriptions-item>
           <el-descriptions-item label="位置参数" :span="2">{{
             detailFormData.args

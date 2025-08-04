@@ -10,7 +10,7 @@ export const UserAPI = {
   },
 
   uploadCurrentUserAvatar(body: any) {
-    return request<ApiResponse>({
+    return request<ApiResponse<UploadFilePath>>({
       url: `/system/user/current/avatar/upload`,
       method: "post",
       data: body,

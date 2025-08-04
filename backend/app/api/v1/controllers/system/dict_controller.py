@@ -3,7 +3,7 @@
 import json
 from fastapi import APIRouter, Body, Depends, Path, Query
 from fastapi.responses import JSONResponse, StreamingResponse
-from aioredis import Redis
+from redis.asyncio.client import Redis
 
 from app.common.response import StreamResponse, SuccessResponse
 from app.core.base_params import PaginationQueryParams

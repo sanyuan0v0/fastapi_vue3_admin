@@ -27,7 +27,8 @@
               :data="{ type: key }"
               :name="'file'"
               :max-file-size="item.maxFileSize"
-              @on-success="(fileInfo: any) => handleUploadSuccess(fileInfo, key)"
+              :file-list="fileLists[key] || []"
+              @on-success="(fileInfo: UploadFilePath) => handleUploadSuccess(fileInfo, key)"
               @on-error="handleUploadError"
               @input="markModified(key)"
             />
@@ -49,10 +50,16 @@ import { ref, reactive, onMounted, computed } from 'vue';
 import ConfigAPI, { type ConfigTable } from '@/api/system/config';
 import { useConfigStore } from "@/store";
 import { useI18n } from 'vue-i18n';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import SingleImageUpload from '@/components/Upload/SingleImageUpload.vue';
 import { useAppStore } from "@/store/modules/app.store";
 import { DeviceEnum } from "@/enums/settings/device.enum";
+
+// 文件列表类型定义
+interface FileListItem {
+  url: string;
+}
+
 
 const appStore = useAppStore();
 const drawerSize = computed(() => (appStore.device === DeviceEnum.DESKTOP ? "500px" : "90%"));
@@ -72,7 +79,7 @@ const configState = reactive<ConfigTable>({
 });
 
 // 存储文件上传列表
-const fileLists = reactive<Record<string, any[]>>({});
+const fileLists = reactive<Record<string, FileListItem[]>>({});
 
 // 记录修改过的字段
 const modifiedFields = reactive<Record<string, boolean>>({});
@@ -91,20 +98,24 @@ const submitChanges = async () => {
   if (keysToSubmit.length === 0) return;
 
   try {
-    for (const key of keysToSubmit) {
+    // 并行处理所有修改请求，提高性能
+    const updatePromises = keysToSubmit.map(key => {
       const item = systemConfigs.value[key as keyof typeof systemConfigs.value] || logoConfigs.value[key as keyof typeof logoConfigs.value];
-      if (item) {
-        await ConfigAPI.updateConfig({ ...item });
-      }
-    }
+      return item ? ConfigAPI.updateConfig({ ...item }) : Promise.resolve();
+    });
+
+    await Promise.all(updatePromises);
     ElMessage.success('保存成功');
+
     // 清除已提交的修改标记
-    for (const key of keysToSubmit) {
+    keysToSubmit.forEach(key => {
       delete modifiedFields[key];
-    }
+    });
   } catch (error) {
     console.error('保存失败:', error);
-    ElMessage.error('保存失败');
+    // 提供更详细的错误信息
+    const errorMessage = error instanceof Error ? error.message : '更新配置时发生错误';
+    ElMessage.error(`保存失败：${errorMessage}`);
   }
 };
 
@@ -152,12 +163,27 @@ const logoConfigs = computed(() => ({
 }));
 
 // 图片上传成功的回调处理
-const handleUploadSuccess = (fileInfo: any, type: string) => {
+const handleUploadSuccess = (fileInfo: UploadFilePath, type: string) => {
+  // 使用正确的file_url属性
+  const fileUrl = fileInfo.file_url;
+  
+  // 更新store中的数据
   if (type in configStore.configData) {
-    configStore.configData[type as keyof typeof configStore.configData].config_value = fileInfo.url;
+    configStore.configData[type as keyof typeof configStore.configData].config_value = fileUrl;
   }
-  fileLists[type] = [{ url: fileInfo.url }];
-  ElMessage.success('上传成功');
+  
+  // 更新对应的item.config_value，确保v-model绑定生效
+  if (type in systemConfigs.value) {
+    systemConfigs.value[type as keyof typeof systemConfigs.value].config_value = fileUrl;
+  } else if (type in logoConfigs.value) {
+    logoConfigs.value[type as keyof typeof logoConfigs.value].config_value = fileUrl;
+  }
+  
+  // 更新文件列表
+  fileLists[type] = [{ url: fileUrl }];
+  
+  // 标记为已修改
+  markModified(type);
 };
 
 // 图片上传失败的回调处理

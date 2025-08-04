@@ -23,19 +23,20 @@
               />
                 
               <el-upload
+                  ref="uploadRef"
                   class="el-upload"
                   v-model:file-list="fileList"
-                  name="avatar"
+                  name="file"
                   :show-file-list="false"
                   :before-upload="handleBeforeUpload"
-                  :on-success="handleUploadSuccess"
+                  :http-request="handleUpload"
                   :disabled="loading"
                   :limit="1"
                   :auto-upload="false"
-                  action="/api/upload/avatar"
+                  @change="handleFileChange"
                 >
                   <template #trigger>
-                    <el-button type="primary" :icon="Camera" class="upload-trigger"  />
+                    <el-button type="primary" :icon="Camera" class="upload-trigger"/>
                   </template>
                 </el-upload>
             </div>
@@ -197,12 +198,14 @@
 </template>
 
 <script lang="ts" setup>
-import type { FormInstance } from 'element-plus'
+import type { FormInstance, UploadRequestOptions, UploadFile } from 'element-plus'
 import UserAPI, { type InfoFormState, type PasswordFormState } from '@/api/system/user';
 import { useUserStore, useDictStore } from "@/store";
 import { useUserStoreHook } from "@/store/modules/user.store";
 import { Camera } from '@element-plus/icons-vue';
+import { ElUpload, ElMessage } from 'element-plus';
 import { useI18n } from "vue-i18n";
+import { nextTick } from 'vue';
 import router from "@/router";
 
 const { t } = useI18n();
@@ -245,27 +248,88 @@ const passwordFormState = reactive<PasswordFormState>({
 
 // 头像上传处理优化
 const fileList = ref<any[]>([]);
+const uploadRef = ref<InstanceType<typeof ElUpload>>();
 
 // 文件上传前校验
 const handleBeforeUpload = (file: File) => {
   const isImage = file.type.startsWith('image/');
+  const isLt2M = file.size / 1024 / 1024 < 2;
+
   if (!isImage) {
     ElMessage.error('只能上传图片文件');
+    return false;
+  }
+  if (!isLt2M) {
+    ElMessage.error('上传图片大小不能超过 2MB!');
     return false;
   }
   return true;
 };
 
-// 上传成功回调
-const handleUploadSuccess = (response: any) => {
-  updateAvatar(response.data.file_url);
-  ElMessage.success('头像上传成功');
+// 自定义上传处理
+const handleUpload = async (options: UploadRequestOptions) => {
+  try {
+    const file = options.file;
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await UserAPI.uploadCurrentUserAvatar(formData);
+
+    if (response.data.code === 0 && response.data.data) {
+        const fileUrl = response.data.data.file_url;
+        updateAvatar(fileUrl);
+        options.onSuccess(response);
+      } else {
+      const errorMsg = response.data.msg || '上传失败';
+      ElMessage.error(errorMsg);
+      options.onError({
+        ...new Error(errorMsg),
+        status: response.status || 500,
+        method: 'POST',
+        url: '/system/user/current/avatar/upload'
+      });
+    }
+  } catch (error) {
+    ElMessage.error('头像上传失败，请重试');
+    const errorObj = error instanceof Error ? error : new Error(String(error));
+    options.onError({
+      ...errorObj,
+      status: 500,
+      method: 'POST',
+      url: '/system/user/current/avatar/upload'
+    });
+    console.error('Upload error:', error);
+  }
+};
+
+// 处理文件选择变化
+const handleFileChange = (file: UploadFile, files: UploadFile[]) => {
+  // 当有新文件被添加且状态为ready时触发上传
+  if (file) {
+    // 更新文件列表
+    fileList.value = [...files];
+    // 提交上传
+    if (uploadRef.value) {
+      uploadRef.value.submit();
+    }
+  }
 };
 
 // 更新头像信息
 const updateAvatar = (fileUrl: string) => {
-  infoFormState.avatar = fileUrl;
-  fileList.value = [{ url: fileUrl }];
+  if (fileUrl) {
+    // 更新头像状态
+    infoFormState.avatar = fileUrl;
+    // 更新文件列表
+    fileList.value = [{ url: fileUrl }];
+    // 确保DOM正确更新
+    nextTick(() => {
+      console.log('头像已更新:', infoFormState.avatar);
+    });
+  } else {
+    ElMessage.error('无效的头像URL');
+    console.error('Invalid fileUrl:', fileUrl);
+  }
 };
 
 
@@ -353,11 +417,13 @@ const initPasswordForm = () => {
 const handleSave = async () => {
   try {
     infoSubmitting.value = true;
-    infoFormState.avatar = infoFormState.avatar;
-    const response = await UserAPI.updateCurrentUserInfo(infoFormState);
+    // 确保avatar字段被正确处理
+    const response = await UserAPI.updateCurrentUserInfo({...infoFormState});
     await userStore.setUserInfo(response.data.data);
+    ElMessage.success('保存成功');
   } catch (error) {
     console.error(error);
+    ElMessage.error('保存失败，请重试');
   } finally {
     infoSubmitting.value = false;
   }

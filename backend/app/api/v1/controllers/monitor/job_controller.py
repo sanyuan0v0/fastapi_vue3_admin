@@ -97,8 +97,8 @@ async def clear_obj_log_controller(
 
 @router.put("/option", summary="暂停/恢复/重启定时任务", description="暂停/恢复/重启定时任务")
 async def option_obj_controller(
-    id: int = Query(..., description="定时任务ID"),
-    option: int = Query(..., description="操作类型 1: 暂停 2: 恢复 3: 重启"),
+    id: int = Body(..., description="定时任务ID"),
+    option: int = Body(..., description="操作类型 1: 暂停 2: 恢复 3: 重启"),
     auth: AuthSchema = Depends(AuthPermission(permissions=["system:job:update"]))
 ) -> JSONResponse:
     await JobService.option_job_service(auth=auth, id=id, option=option)

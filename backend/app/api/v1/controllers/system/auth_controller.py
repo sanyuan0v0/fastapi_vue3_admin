@@ -5,7 +5,7 @@ from typing import Union, Dict
 from fastapi import APIRouter, Depends, Request, BackgroundTasks, WebSocket
 from fastapi.responses import JSONResponse, StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-from aioredis import Redis
+from redis.asyncio.client import Redis
 
 from app.config.setting import settings
 from app.common.response import ErrorResponse, SuccessResponse
