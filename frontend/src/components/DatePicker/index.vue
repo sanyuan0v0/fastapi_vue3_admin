@@ -14,7 +14,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
 
 // 定义组件属性
 defineProps({

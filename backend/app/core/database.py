@@ -65,7 +65,6 @@ def session_connect() -> AsyncSession:
             raise CustomException(msg="请先开启数据库连接", data="请启用 app/config/setting.py: SQL_DB_ENABLE")
         return async_session()
     except Exception as e:
-        logger.error(f"数据库连接失败: {e}")
         raise CustomException(msg=f"数据库连接失败: {e}")
 
 async def test_db_connection(session: AsyncSession) -> bool:
@@ -74,38 +73,27 @@ async def test_db_connection(session: AsyncSession) -> bool:
         await session.execute(text("SELECT 1"))
         return True
     except OperationalError as e:
-        logger.error(f"数据库操作失败，请检查数据库服务是否正常运行")
-        raise CustomException(msg="数据库操作失败，请检查数据库服务是否正常运行")
+        raise CustomException(msg=f"数据库操作失败: {e}，请检查数据库服务是否正常运行")
     except TimeoutError as e:
-        logger.error(f"数据库连接超时，请检查网络连接或增加连接超时时间")
-        raise CustomException(msg="数据库连接超时，请检查网络连接或增加连接超时时间")
+        raise CustomException(msg=f"数据库连接超时: {e}，请检查网络连接或增加连接超时时间")
     except DisconnectionError as e:
-        logger.error(f"数据库连接中断: {e}")
-        raise CustomException(msg="数据库连接中断，请检查数据库服务状态")
+        raise CustomException(msg=f"数据库连接中断: {e}，请检查数据库服务状态")
     except InterfaceError as e:
-        logger.error(f"数据库接口错误: {e}")
-        raise CustomException(msg="数据库接口错误，请检查数据库驱动配置")
+        raise CustomException(msg=f"数据库接口错误: {e}，请检查数据库驱动配置")
     except ProgrammingError as e:
-        logger.error(f"SQL语句错误: {e}")
-        raise CustomException(msg="SQL语句错误，请检查SQL语法")
+        raise CustomException(msg=f"SQL语句错误: {e}，请检查SQL语法")
     except IntegrityError as e:
-        logger.error(f"数据完整性错误: {e}")
-        raise CustomException(msg="数据完整性错误，请检查数据约束条件")
+        raise CustomException(msg=f"数据完整性错误: {e}，请检查数据约束条件")
     except DataError as e:
-        logger.error(f"数据类型错误: {e}")
-        raise CustomException(msg="数据类型错误，请检查数据格式")
+        raise CustomException(msg=f"数据类型错误: {e}，请检查数据格式")
     except InternalError as e:
-        logger.error(f"数据库内部错误: {e}")
-        raise CustomException(msg="数据库内部错误，请联系数据库管理员")
+        raise CustomException(msg=f"数据库内部错误: {e}，请联系数据库管理员")
     except NotSupportedError as e:
-        logger.error(f"数据库不支持的操作: {e}")
-        raise CustomException(msg="数据库不支持该操作，请检查数据库版本")
+        raise CustomException(msg=f"数据库不支持该操作: {e}，请检查数据库版本")
     except InvalidRequestError as e:
-        logger.error(f"无效的数据库请求: {e}")
-        raise CustomException(msg="无效的数据库请求，请检查请求参数")
+        raise CustomException(msg=f"无效的数据库请求: {e}，请检查请求参数")
     except Exception as e:
-        logger.error(f"数据库操作异常: {e}")
-        raise CustomException(msg="数据库操作异常，请联系管理员")
+        raise CustomException(msg=f"数据库操作异常: {e}，请联系管理员")
 
 async def redis_connect(app: FastAPI, status: bool) -> aioredis.Redis:
     """创建或关闭Redis连接"""
@@ -129,13 +117,10 @@ async def redis_connect(app: FastAPI, status: bool) -> aioredis.Redis:
                 return rd
             raise CustomException(msg="Redis连接失败")
         except aioredis.AuthenticationError as e:
-            logger.error(f'Redis认证失败: {e}')
             raise aioredis.AuthenticationError(f"Redis认证失败: {e}")
         except aioredis.TimeoutError as e:
-            logger.error(f'Redis连接超时: {e}')
             raise aioredis.TimeoutError(f"Redis连接超时: {e}")
         except aioredis.RedisError as e:
-            logger.error(f'Redis连接错误: {e}')
             raise aioredis.RedisError(f"Redis连接错误: {e}")
     else:
         await app.state.redis.close()
@@ -159,10 +144,9 @@ async def mongodb_connect(app: FastAPI, status: bool) -> AsyncIOMotorClient:
             app.state.mongo_client = client
             app.state.mongo = client[settings.MONGO_DB_NAME]
             data = await client.server_info()
-            logger.info("MongoDB连接成功", data)
+            logger.info("MongoDB连接成功...", data)
             return data
         except Exception as e:
-            logger.error(f"MongoDB连接失败: {e}")
             raise ValueError(f"MongoDB连接失败: {e}")
     else:
         app.state.mongo_client.close()

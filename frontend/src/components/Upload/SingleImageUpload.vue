@@ -8,8 +8,6 @@
     :accept="props.accept"
     :before-upload="handleBeforeUpload"
     :http-request="handleUpload"
-    :on-success="onSuccess"
-    :on-error="onError"
   >
     <template #default>
       <el-image v-if="modelValue" :src="modelValue" />
@@ -36,8 +34,8 @@
 </template>
 
 <script setup lang="ts">
-import { UploadRawFile, UploadRequestOptions, ElImageViewer } from "element-plus";
-import FileAPI, { FileInfo } from "@/api/file.api";
+import { UploadRawFile, UploadRequestOptions, ElMessage } from "element-plus";
+import ConfigAPI from '@/api/system/config';
 
 const props = defineProps({
   /**
@@ -95,10 +93,10 @@ const modelValue = defineModel("modelValue", {
  * 定义组件触发的事件
  */
 const emit = defineEmits<{
-  (e: 'success', fileInfo: FileInfo): void;
+  (e: 'success', fileInfo: UploadFilePath): void;
   (e: 'error', error: any): void;
   (e: 'input', value: string): void;
-  (e: 'onSuccess', fileInfo: FileInfo): void;
+  (e: 'onSuccess', fileInfo: UploadFilePath): void;
   (e: 'onError', error: any): void;
 }>();
 
@@ -139,26 +137,34 @@ function handleBeforeUpload(file: UploadRawFile) {
 /*
  * 上传图片
  */
-function handleUpload(options: UploadRequestOptions) {
-  return new Promise((resolve, reject) => {
+async function handleUpload(options: UploadRequestOptions) {
+  try {
     const file = options.file;
-
     const formData = new FormData();
+    
     formData.append(props.name, file);
 
     // 处理附加参数
-    Object.keys(props.data).forEach((key) => {
-      formData.append(key, props.data[key]);
-    });
+    for (const [key, value] of Object.entries(props.data)) {
+      formData.append(key, String(value));
+    }
 
-    FileAPI.upload(formData)
-      .then((data) => {
-        resolve(data);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
+    const response = await ConfigAPI.uploadFile(formData);
+
+    if (response.data.code === 0 && response.data) {
+      const fileInfo: UploadFilePath = response.data.data;
+      // 调用成功回调
+      onSuccess(fileInfo);
+      return fileInfo;
+    } else {
+      const errorMsg = response.data.msg || '上传失败';
+      ElMessage.error(errorMsg);
+      throw new Error(errorMsg);
+    }
+  } catch (error) {
+    onError(error instanceof Error ? error : new Error(String(error)));
+    throw error;
+  }
 }
 
 /**
@@ -186,18 +192,20 @@ function handlePreview(imagePath: string) {
  *
  * @param fileInfo 上传成功后的文件信息
  */
-const onSuccess = (fileInfo: FileInfo) => {
-  ElMessage.success("上传成功");
+const onSuccess = (fileInfo: UploadFilePath) => {
+  modelValue.value = fileInfo.file_url; // 更新绑定的值为文件URL
   emit('onSuccess', fileInfo); // 触发 onSuccess 事件
+  emit('success', fileInfo); // 触发 success 事件
+  emit('input', fileInfo.file_url); // 触发 input 事件，通知父组件值变化
 };
 
 /**
  * 上传失败回调
  */
 const onError = (error: any) => {
-  console.log("onError");
-  ElMessage.error("上传失败: " + error.message);
+  console.log("onError", error);
   emit('onError', error); // 触发 onError 事件
+  emit('error', error); // 触发 error 事件
 };
 
 </script>

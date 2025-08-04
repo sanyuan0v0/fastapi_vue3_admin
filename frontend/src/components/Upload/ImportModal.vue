@@ -7,7 +7,16 @@
         <!-- 表单 -->
         <el-form ref="importFormRef" style="padding-right: var(--el-dialog-padding-primary)" :model="importFormData" :rules="importFormRules">
           <el-form-item label="文件名" prop="files">
-            <el-upload ref="uploadRef" v-model:file-list="importFormData.files" class="w-full" :accept="props.accept" :drag="true" :limit="props.limit" :auto-upload="false" :on-exceed="handleFileExceed">
+            <el-upload 
+              ref="uploadRef" 
+              v-model:file-list="importFormData.files" 
+              class="w-full" 
+              :accept="props.accept" 
+              :drag="true" 
+              :limit="props.limit" 
+              :auto-upload="false" 
+              :on-exceed="handleFileExceed"
+            >
               <el-icon class="el-icon--upload"><upload-filled /></el-icon>
               <div class="el-upload__text">
                 {{ props.dropText || '将文件拖到此处，或' }}
@@ -45,7 +54,7 @@
 
 <script lang="ts" setup>
 import { ElMessage, type UploadUserFile } from "element-plus";
-import { ref, reactive, defineProps, defineEmits, defineModel } from "vue";
+import { ref, reactive } from "vue";
 
 // 定义props
 const props = defineProps({

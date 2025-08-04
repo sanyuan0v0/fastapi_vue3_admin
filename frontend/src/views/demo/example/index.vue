@@ -235,7 +235,7 @@ defineOptions({
     inheritAttrs: false,
 });
 
-import { ref, reactive, onMounted, defineEmits } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 import { ResultEnum } from "@/enums/api/result.enum";
 import ExampleAPI, { ExampleTable, ExampleForm, ExamplePageQuery } from "@/api/demo/example";
