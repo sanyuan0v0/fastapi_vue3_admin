@@ -17,8 +17,8 @@ class UserQueryParams:
             email: Optional[str] = Query(None, description="邮箱", pattern=r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'), 
             dept_id: Optional[int] = Query(None, description="部门ID"),
             status: Optional[bool] = Query(None, description="是否可用"),
-            start_time: Optional[str] = Query(None, description="开始时间"),
-            end_time: Optional[str] = Query(None, description="结束时间"),
+            start_time: Optional[DateTimeStr] = Query(None, description="开始时间", example="2023-01-01 00:00:00"),
+            end_time: Optional[DateTimeStr] = Query(None, description="结束时间", example="2023-12-31 23:59:59"),
             creator: Optional[int] = Query(None, description="创建人"),
     ) -> None:
         super().__init__()

@@ -334,7 +334,7 @@ async function loadingData() {
         total.value = response.data.data.total;
     }
     catch (error: any) {
-        ElMessage.error(error.message);
+        console.error(error);
     }
     finally {
         loading.value = false;
@@ -422,7 +422,7 @@ async function handleSubmit() {
                     handleCloseDialog();
                     handleResetQuery();
                 } catch (error: any) {
-                    ElMessage.error(error.message);
+                    console.error(error);
                 } finally {
                     loading.value = false;
                 }
@@ -434,7 +434,7 @@ async function handleSubmit() {
                     handleCloseDialog();
                     handleResetQuery();
                 } catch (error: any) {
-                    ElMessage.error(error.message);
+                    console.error(error);
                 } finally {
                     loading.value = false;
                 }
@@ -455,7 +455,7 @@ async function handleDelete(ids: number[]) {
             await ExampleAPI.deleteExample(ids);
             handleResetQuery();
         } catch (error: any) {
-            ElMessage.error(error.message);
+            console.error(error);
         } finally {
             loading.value = false;
         }
@@ -515,7 +515,6 @@ const handleUpload = async (formData: FormData, file: File) => {
     }
   } catch (error: any) {
     console.error(error);
-    ElMessage.error('上传失败：' + error);
   }
 };
 
@@ -559,7 +558,7 @@ async function handleMoreClick(status: boolean) {
                 await ExampleAPI.batchAvailableExample({ ids: selectIds.value, status });
                 handleResetQuery();
             } catch (error: any) {
-                ElMessage.error(error.message);
+                console.error(error);
             } finally {
                 loading.value = false;
             }

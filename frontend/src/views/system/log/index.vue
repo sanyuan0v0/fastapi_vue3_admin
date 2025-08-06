@@ -289,7 +289,7 @@ async function loadingData() {
     total.value = response.data.data.total;
   }
   catch (error: any) {
-    ElMessage.error(error.message);
+    console.error(error);
   }
   finally {
     loading.value = false;
@@ -354,7 +354,7 @@ async function handleDelete(ids: number[]) {
       await LogAPI.deleteLog(ids);
       handleResetQuery();
     } catch (error: any) {
-      ElMessage.error(error.message);
+      console.error(error);
     } finally {
       loading.value = false;
     }

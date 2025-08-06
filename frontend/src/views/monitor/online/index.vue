@@ -151,7 +151,7 @@ async function loadingData() {
     total.value = response.data.data.total;
   }
   catch (error: any) {
-    ElMessage.error(error.message);
+    console.error(error);
   }
   finally {
     loading.value = false;
@@ -188,7 +188,7 @@ async function handleSubmit(session_id: string) {
       await OnlineAPI.deleteOnline(session_id);
       handleResetQuery();
     } catch (error: any) {
-      ElMessage.error(error.message);
+      console.error(error);
     } finally {
       loading.value = false;
     }
@@ -209,7 +209,7 @@ async function handleClear() {
       await OnlineAPI.clearOnline();
       handleResetQuery();
     } catch (error: any) {
-      ElMessage.error(error.message);
+      console.error(error);
     } finally {
       loading.value = false;
     }

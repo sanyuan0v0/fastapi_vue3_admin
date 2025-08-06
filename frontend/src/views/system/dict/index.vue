@@ -313,7 +313,7 @@ async function loadingData() {
     total.value = response.data.data.total;
   }
   catch (error: any) {
-    ElMessage.error(error.message);
+    console.error(error);
   }
   finally {
     loading.value = false;
@@ -397,7 +397,7 @@ async function handleSubmit() {
           resetForm();
           handleResetQuery();
         } catch (error: any) {
-          ElMessage.error(error.message);
+          console.error(error);
         } finally {
           loading.value = false;
         }
@@ -408,7 +408,7 @@ async function handleSubmit() {
           resetForm();
           handleResetQuery();
         } catch (error: any) {
-          ElMessage.error(error.message);
+          console.error(error);
         } finally {
           loading.value = false;
         }
@@ -429,7 +429,7 @@ async function handleDelete(ids: number[]) {
       await DictAPI.deleteDictType(ids);
       handleResetQuery();
     } catch (error: any) {
-      ElMessage.error(error.message);
+      console.error(error);
     } finally {
       loading.value = false;
     }
@@ -492,7 +492,7 @@ async function handleMoreClick(status: boolean) {
         await DictAPI.batchAvailableDict({ ids: selectIds.value, status });
         handleResetQuery();
       } catch (error: any) {
-        ElMessage.error(error.message);
+        console.error(error);
       } finally {
         loading.value = false;
       }

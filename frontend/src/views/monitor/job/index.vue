@@ -669,7 +669,7 @@ async function loadingData() {
     pageTableData.value = response.data.data.items;
     total.value = response.data.data.total;
   } catch (error: any) {
-    ElMessage.error(error.message);
+    console.error(error);
   } finally {
     loading.value = false;
   }
@@ -801,7 +801,7 @@ async function handleDelete(ids: number[]) {
         await JobAPI.deleteJob(ids);
         handleResetQuery();
       } catch (error: any) {
-        ElMessage.error(error.message);
+        console.error(error);
       } finally {
         loading.value = false;
       }
@@ -882,7 +882,7 @@ const handleClear = () => {
         ElMessage.success("清空成功");
         handleResetQuery();
       } catch (error: any) {
-        ElMessage.error(error.message);
+        console.error(error);
       } finally {
         loading.value = false;
       }

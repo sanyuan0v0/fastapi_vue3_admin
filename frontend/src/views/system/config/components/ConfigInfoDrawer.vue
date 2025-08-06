@@ -113,9 +113,6 @@ const submitChanges = async () => {
     });
   } catch (error) {
     console.error('保存失败:', error);
-    // 提供更详细的错误信息
-    const errorMessage = error instanceof Error ? error.message : '更新配置时发生错误';
-    ElMessage.error(`保存失败：${errorMessage}`);
   }
 };
 
