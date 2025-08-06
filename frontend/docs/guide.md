@@ -1,10 +1,14 @@
+---
+outline: "deep"
+---
+
 <div align="center">
      <p align="center">
           <img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/logo.png" width="100"/> 
      </p>
      <h2 align="center">Fastapi-Vue3-Admin v2.0.0</h2>
      <h4 align="center">一套现代、开源、全栈融合的中后台快速开发平台，给个⭐️支持一下</h4>
-     <p align="center">
+     <p align="center" style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">
           <a href="https://gitee.com/tao__tao/fastapi_vue3_admin.git" target="_blank">
                <img src="https://gitee.com/tao__tao/fastapi_vue3_admin/badge/star.svg?theme=dark" alt="Gitee Stars">
           </a>
@@ -14,19 +18,14 @@
           <a href="https://gitee.com/tao__tao/fastapi_vue3_admin/blob/master/LICENSE" target="_blank">
                <img src="https://img.shields.io/badge/License-MIT-orange" alt="License">
           </a>
-          <img src="https://img.shields.io/badge/Python-≥3.10-blue"> 
-          <img src="https://img.shields.io/badge/NodeJS-≥20.0-blue"> 
-          <img src="https://img.shields.io/badge/MySQL-≥8.0-blue"> 
-          <img src="https://img.shields.io/badge/Redis-≥7.0-blue"> 
-          <img src="https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white"/> 
-          <img src="https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3"/> 
-          <img src="https://img.shields.io/badge/-JavaScript-563D7C?style=flat-square&logo=bootstrap"/> 
+          <img src="https://img.shields.io/badge/Python-≥3.10-blue" alt="Python"> 
+          <img src="https://img.shields.io/badge/NodeJS-≥20.0-blue" alt="NodeJS"> 
+          <img src="https://img.shields.io/badge/MySQL-≥8.0-blue" alt="MySQL"> 
+          <img src="https://img.shields.io/badge/Redis-≥7.0-blue" alt="Redis"> 
      </p>
 </div>
 
----
-
-## 📘 项目介绍（作者：@1014TaoTao）
+## 📘项目介绍
 
 **Fastapi-Vue3-Admin** 是一套 **完全开源、高度模块化、技术先进的现代化快速开发平台**，旨在帮助开发者高效搭建高质量的企业级中后台系统。该项目采用 **前后端分离架构**，融合 Python 后端框架 `FastAPI` 和前端主流框架 `Vue3` 实现多端统一开发，提供了一站式开箱即用的开发体验。
 
@@ -44,9 +43,7 @@ fastapi_vue3_admin
 └─ README.md      # 中文文档
 ```
 
----
-
-## ✨ 核心亮点
+## ✨核心亮点
 
 | 特性 | 描述 |
 | ---- | ---- |
@@ -60,9 +57,7 @@ fastapi_vue3_admin
 | 📄 开发友好 | 提供完善的中文文档 + 中文化界面 + 可视化工具链，降低学习成本 |
 | 🚀 快速接入 |基于 Vue3、Vite5、Pinia、Ant Design Vue 等主流前端技术栈，开箱即用。|
 
----
-
-## 🛠️ 技术栈概览
+## 🛠️技术栈概览
 
 | 类型     | 技术选型            | 描述 |
 |----------|---------------------|---------------------|
@@ -77,9 +72,7 @@ fastapi_vue3_admin
 | 文档     | Swagger / Redoc     | 自动生成 API 文档。 |
 | 部署     | Docker / Nginx / Docker Compose | 快速部署项目。 |
 
----
-
-## 📌 内置模块
+## 📌内置模块
 
 | 模块名     | 子模块名 | 描述 |
 |----------|---------------------|---------------------|
@@ -88,17 +81,13 @@ fastapi_vue3_admin
 | 监控管理  | 在线用户、服务器监控、缓存监控 |系统监控管理功能 |
 | 公共管理  | 接口管理、文档管理|项目接口文档 |
 
----
-
-## 🍪  演示环境
+## 🍪演示环境
 
 - 演示地址：<http://service.fastapiadmin.com>
 - 管理员账号：`admin` 密码：`123456`
 - 演示账号：`demo` 密码：`123456`
 
----
-
-## 👷 安装和使用
+## 👷安装和使用
 
 ### 版本说明
 
@@ -112,8 +101,6 @@ fastapi_vue3_admin
 | 数据库   | MySQL      | 8.0 （推荐使用最新版）|
 | 中间件   | Redis      | 7.0 （推荐使用最新版）|
 
----
-
 ### 获取代码  
 
 ```sh
@@ -122,8 +109,6 @@ git clone https://gitee.com/tao__tao/fastapi_vue3_admin.git
 或
 git clone https://github.com/1014TaoTao/fastapi_vue3_admin.git
 ```
-
----
 
 ### 本地后端启动
 
@@ -142,8 +127,6 @@ python3 main.py revision "初始化迁移" --env=dev(不加默认为dev)
 python3 main.py upgrade --env=dev(不加默认为dev)
 ```
 
----
-
 ### 本地前端启动
 
 ```sh
@@ -157,8 +140,6 @@ npm run dev
 npm run build
 ```
 
----
-
 ### 本地访问地址
 
 - 前端地址: <http://127.0.0.1:5180>
@@ -166,79 +147,76 @@ npm run build
 - 管理员账号：`admin` 密码：`123456`
 - 演示账号：`demo` 密码：`123456`
 
----
-
 ### docker 部署
 
 ```sh
-# 复制脚本 `fastapi_vue3_amdin/start.sh` 脚本文件到服务器, 并赋予执行权限
+# 复制脚本 `fastapi_vue3_admin/start.sh` 脚本文件到服务器, 并赋予执行权限
 chmod +x start.sh
 # 执行脚本
 ./start.sh
 # 查看镜像:
-docsker images -a
+docker images -a
 # 查看容器:
-docsker compose ps
+docker compose ps
 # 查看日志
 docker logs -f <容器名>
 # 服务停止
-docsker compose down
+docker compose down
 # 删除镜像
 docker rmi <镜像名>
 # 删除容器
 docker rm <容器名>
 # 后端配置文件目录
-fastapi_vue3_amdin/backend/env/.env.prod.py
+fastapi_vue3_admin/backend/env/.env.prod.py
 # 前端配置文件目录
-fastapi_vue3_amdin/frontend/vite.config.ts
+fastapi_vue3_admin/frontend/vite.config.ts
 和 
-fastapi_vue3_amdin/frontend/.env.production
+fastapi_vue3_admin/frontend/.env.production
 # 部署文件目录  
-fastapi_vue3_amdin/docker-compose.yaml
+fastapi_vue3_admin/docker-compose.yaml
 和 
-fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
+fastapi_vue3_admin/devops/devops/nginx/nginx.conf
 
 ```
 
----
-
-## 🔧 模块展示
+## 🔧模块展示
 
 <table>
-    <tr>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/login.png"/>登陆</td>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/dashboard.png"/>仪表盘</td>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/menu.png"/>菜单管理</td>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/dept.png"/>部门管理</td>
-   </tr>
-   <tr>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/position.png"/>岗位管理</td>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/role.png"/>角色管理</td>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/user.png"/>用户管理</td>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/log.png"/>日志管理</td>
-   </tr>
-   <tr>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/config.png"/>配置管理</td>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/online.png"/>在线用户管理</td>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/service.png"/>服务器监控</td>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/cache.png"/>缓存监控</td>
-   </tr>
-   <tr>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/job.png"/>任务管理</td>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/dict.png"/>字典管理</td>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/analysis.png"/>分析管理</td>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/docs.png"/>接口管理</td>
-   </tr>
-   </tr>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/theme.png"/>系统主题</td>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/help.png"/>在线文档</td>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/lock.png"/>系统锁屏</td>
-   </tr>
+    <tbody>
+          <tr>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/login.png"/>登陆</td>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/dashboard.png"/>仪表盘</td>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/menu.png"/>菜单管理</td>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/dept.png"/>部门管理</td>
+          </tr>
+          <tr>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/position.png"/>岗位管理</td>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/role.png"/>角色管理</td>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/user.png"/>用户管理</td>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/log.png"/>日志管理</td>
+          </tr>
+          <tr>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/config.png"/>配置管理</td>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/online.png"/>在线用户管理</td>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/service.png"/>服务器监控</td>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/cache.png"/>缓存监控</td>
+          </tr>
+          <tr>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/job.png"/>任务管理</td>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/dict.png"/>字典管理</td>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/analysis.png"/>分析管理</td>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/docs.png"/>接口管理</td>
+          </tr>
+          <tr>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/theme.png"/>系统主题</td>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/help.png"/>在线文档</td>
+               <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/lock.png"/>系统锁屏</td>
+               <td></td>
+          </tr>
+    </tbody>
 </table>
 
----
-
-## 🛠️ 二开教程
+## 🚀二开教程
 
 ### 后端部分
 
@@ -258,9 +236,7 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 1. **前端接入后端接口地址**：在 `frontend/src/api/demo/example.ts` 中配置
 2. **编写前端页面**：在 `frontend/src/views/demo/example/index.vue` 中编写
 
----
-
-## 🙏 特别鸣谢
+## 🙏特别鸣谢
 
 感谢以下项目的贡献和支持，使本项目得以顺利完成：
 
@@ -275,18 +251,6 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 - [Vue3-element-admin 项目](https://gitee.com/youlaiorg/vue3-element-admin)
 - [Vue3-element-plus-admin 项目](https://gitee.com/kailong110120130/vue-element-plus-admin)
 
-## 🎨 社区
-
-<table>
-    <tr>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/wechat.jpg"/></td>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/group.jpg"/></td>
-        <td><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/raw/master/backend/static/image/wechatPay.jpg"/></td>
-    </tr>
-</table>
-
----
-
-## ❤️ Star 支持我
+## ❤️支持我
 
    如果你喜欢这个项目，请给我一个 ⭐️ Star 支持一下吧！非常感谢！

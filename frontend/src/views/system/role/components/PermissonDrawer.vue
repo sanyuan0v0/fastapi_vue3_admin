@@ -243,13 +243,12 @@ async function handleDrawerSave () {
     };
 
     await RoleAPI.setPermission(submitData)
+    drawerVisible.value = false;
     
   } catch (error: any) {
-    console.error('保存失败:', error);
-    ElMessage.error('保存失败: ' + error.message);
+    console.error(error);
   } finally {
     loading.value = false;
-    drawerVisible.value = false;
   }
 }
 

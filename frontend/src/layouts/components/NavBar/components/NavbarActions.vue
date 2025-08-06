@@ -146,7 +146,7 @@ function handleConfigClick() {
  * 项目文档
  */
 function handleDocumentClick() {
-  window.open('/site/index.html', '_blank');
+  window.open('/docs/dist/index.html', '_blank');
 }
 
 /**

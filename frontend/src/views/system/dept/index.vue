@@ -258,7 +258,7 @@ async function handleRefresh () {
     pageTableData.value = treeData;
     total.value = response.data.data.total;
   } catch (error: any) {
-    ElMessage.error(error.message);
+    console.error(error);
   } finally {
     loading.value = false;
   }
@@ -276,7 +276,7 @@ async function loadingData() {
     deptOptions.value = formatTree(treeData);
   }
   catch (error: any) {
-    ElMessage.error(error.message);
+    console.error(error);
   }
   finally {
     loading.value = false;
@@ -378,7 +378,7 @@ async function handleSubmit() {
           resetForm();
           handleResetQuery();
         } catch (error: any) {
-          ElMessage.error(error.message);
+          console.error(error);
         } finally {
           loading.value = false;
         }
@@ -389,7 +389,7 @@ async function handleSubmit() {
           resetForm();
           handleResetQuery();
         } catch (error: any) {
-          ElMessage.error(error.message);
+          console.error(error);
         } finally {
           loading.value = false;
         }
@@ -410,7 +410,7 @@ async function handleDelete(ids: number[]) {
       await DeptAPI.deleteDept(ids);
       handleResetQuery();
     } catch (error: any) {
-      ElMessage.error(error.message);
+      console.error(error);
     } finally {
       loading.value = false;
     }
@@ -432,7 +432,7 @@ async function handleMoreClick(status: boolean) {
         await DeptAPI.batchAvailableDept({ ids: selectIds.value, status });
         handleResetQuery();
       } catch (error: any) {
-        ElMessage.error(error.message);
+        console.error(error);
       } finally {
         loading.value = false;
       }

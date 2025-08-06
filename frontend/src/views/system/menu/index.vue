@@ -576,7 +576,7 @@ async function handleRefresh () {
     pageTableData.value = treeData;
     total.value = response.data.data.total;
   } catch (error: any) {
-    ElMessage.error(error.message);
+    console.error(error);
   } finally {
     loading.value = false;
   }
@@ -604,7 +604,7 @@ async function loadingData() {
     menuOptions.value = formatTree(filterMenuTypes(treeData));
   }
   catch (error: any) {
-    ElMessage.error(error.message);
+    console.error(error);
   }
   finally {
     loading.value = false;
@@ -720,7 +720,7 @@ async function handleSubmit() {
           resetForm();
           handleResetQuery();
         } catch (error: any) {
-          ElMessage.error(error.message);
+          console.error(error);
         } finally {
           loading.value = false;
         }
@@ -731,7 +731,7 @@ async function handleSubmit() {
           resetForm();
           handleResetQuery();
         } catch (error: any) {
-          ElMessage.error(error.message);
+          console.error(error);
         } finally {
           loading.value = false;
         }
@@ -752,7 +752,7 @@ async function handleDelete(ids: number[]) {
       await MenuAPI.deleteMenu(ids);
       handleResetQuery();
     } catch (error: any) {
-      ElMessage.error(error.message);
+      console.error(error);
     } finally {
       loading.value = false;
     }
@@ -773,7 +773,7 @@ async function handleMoreClick(status: boolean) {
       await MenuAPI.batchAvailableMenu({ ids: selectIds.value, status });
       handleResetQuery();
     } catch (error: any) {
-      ElMessage.error(error.message);
+      console.error(error);
     } finally {
       loading.value = false;
     }

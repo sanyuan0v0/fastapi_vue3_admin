@@ -67,6 +67,8 @@ build_image() {
 
     cd frontend || { log "❌ 无法进入前端目录"; exit 1; }
     npm install || { log "❌ 前端依赖安装失败"; exit 1; }
+    npm run docs:build || { log "❌ 项目文档打包生成失败"; exit 1; }
+    log "✅ 项目文档打包成功"
     npm run build || { log "❌ 前端工程打包失败"; exit 1; }
     log "✅ 前端工程打包成功"
     cd .. || { log "❌ 无法返回项目根目录"; exit 1; }

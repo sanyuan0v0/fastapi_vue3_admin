@@ -461,7 +461,7 @@ async function redirectToLogin(message: string = "请重新登录"): Promise<voi
     const currentPath = router.currentRoute.value.fullPath;
     await router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
   } catch (error: any) {
-    ElMessage.error(error.message);
+    console.error(error);
   }
 }
 

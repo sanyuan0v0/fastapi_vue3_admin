@@ -3,7 +3,8 @@
   <div class="custom-date-picker">
     <el-date-picker
       :model-value="modelValue"
-      type="daterange"
+      type="datetimerange"
+      format="YYYY-MM-DD HH:mm:ss"
       range-separator="至"
       start-placeholder="开始日期"
       end-placeholder="结束日期"
