@@ -1,6 +1,6 @@
 <div align="center">
      <p align="center">
-          <img src="./backend/static/image/logo.png" width="100"/> 
+          <img src="./frontend/docs/public/logo.png" width="100"/> 
      </p>
      <h2 align="center">Fastapi-Vue3-Admin v2.0.0</h2>
      <h4 align="center">A modern, open-source, full-stack integrated rapid development platform for mid - and back - end systems. Give a ⭐️ to support!</h4>
@@ -210,33 +210,33 @@ fastapi_vue3_admin/devops/devops/nginx/nginx.conf
 
 <table>
     <tr>
-        <td><img src="./backend/static/image/login.png"/>Login</td>
-        <td><img src="./backend/static/image/dashboard.png"/>Dashboard</td>
-        <td><img src="./backend/static/image/menu.png"/>Menu Management</td>
-        <td><img src="./backend/static/image/dept.png"/>Department Management</td>
+        <td><img src="./frontend/docs/public/login.png"/>Login</td>
+        <td><img src="./frontend/docs/public/dashboard.png"/>Dashboard</td>
+        <td><img src="./frontend/docs/public/menu.png"/>Menu Management</td>
+        <td><img src="./frontend/docs/public/dept.png"/>Department Management</td>
    </tr>
    <tr>
-        <td><img src="./backend/static/image/position.png"/>Position Management</td>
-        <td><img src="./backend/static/image/role.png"/>Role Management</td>
-        <td><img src="./backend/static/image/user.png"/>User Management</td>
-        <td><img src="./backend/static/image/log.png"/>Log Management</td>
+        <td><img src="./frontend/docs/public/position.png"/>Position Management</td>
+        <td><img src="./frontend/docs/public/role.png"/>Role Management</td>
+        <td><img src="./frontend/docs/public/user.png"/>User Management</td>
+        <td><img src="./frontend/docs/public/log.png"/>Log Management</td>
    </tr>
    <tr>
-        <td><img src="./backend/static/image/config.png"/>Configuration Management</td>
-        <td><img src="./backend/static/image/online.png"/>Online User Management</td>
-        <td><img src="./backend/static/image/service.png"/>Server Monitoring</td>
-        <td><img src="./backend/static/image/cache.png"/>Cache Monitoring</td>
+        <td><img src="./frontend/docs/public/config.png"/>Configuration Management</td>
+        <td><img src="./frontend/docs/public/online.png"/>Online User Management</td>
+        <td><img src="./frontend/docs/public/service.png"/>Server Monitoring</td>
+        <td><img src="./frontend/docs/public/cache.png"/>Cache Monitoring</td>
    </tr>
    <tr>
-        <td><img src="./backend/static/image/job.png"/>Task Management</td>
-        <td><img src="./backend/static/image/docs.png"/>API Management</td>
-        <td><img src="./backend/static/image/analysis.png"/>Analysis Management</td>
-        <td><img src="./backend/static/image/dict.png"/>Dictionary Management</td>
+        <td><img src="./frontend/docs/public/job.png"/>Task Management</td>
+        <td><img src="./frontend/docs/public/docs.png"/>API Management</td>
+        <td><img src="./frontend/docs/public/analysis.png"/>Analysis Management</td>
+        <td><img src="./frontend/docs/public/dict.png"/>Dictionary Management</td>
    </tr>
    <tr>
-        <td><img src="./backend/static/image/theme.png"/>Theme Management</td>
-        <td><img src="./backend/static/image/lock.png"/>Lock Management</td>
-        <td><img src="./backend/static/image/help.png"/>Online Documentation</td>
+        <td><img src="./frontend/docs/public/theme.png"/>Theme Management</td>
+        <td><img src="./frontend/docs/public/lock.png"/>Lock Management</td>
+        <td><img src="./frontend/docs/public/help.png"/>Online Documentation</td>
    </tr>
 </table>
 
@@ -285,9 +285,9 @@ Thanks to the contributions and support of the following projects, which have en
 
 <table>
     <tr>
-        <td><img src="./backend/static/image/wechat.jpg"/></td>
-        <td><img src="./backend/static/image/group.jpg"/></td>
-        <td><img src="./backend/static/image/wechatPay.jpg"/></td>
+        <td><img src="./frontend/docs/public/wechat.jpg"/></td>
+        <td><img src="./frontend/docs/public/group.jpg"/></td>
+        <td><img src="./frontend/docs/public/wechatPay.jpg"/></td>
     </tr>
 </table>
 

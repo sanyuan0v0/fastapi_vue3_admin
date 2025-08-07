@@ -39,7 +39,7 @@
     "id": 5,
     "config_name": "登录背景",
     "config_key": "sys_login_background",
-    "config_value": "http://service.fastapiadmin.com/api/v1/static/image/background.png",
+    "config_value": "http://service.fastapiadmin.com/api/v1/static/image/background.svg",
     "config_type": true,
     "description": "登录背景",
     "creator_id": 1

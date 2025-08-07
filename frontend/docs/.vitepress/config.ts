@@ -2,14 +2,41 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base: '/docs/dist',
-  outDir: 'dist',
+  base: '/docs',
+  outDir: '../public/docs',
   lang: 'zh-CN',
   title: 'Fastapi Vue3 Admin',
   description: '现代、开源、全栈融合的中后台快速开发平台',
   head: [
-    ['link', { rel: 'icon', href: '/favicon.png' }],
+    [
+      "link",
+      {
+        rel: "apple-touch-icon",
+        sizes: "180x180",
+        href: "/favicon.png",
+      },
+    ],
+    [
+      "link",
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "32x32",
+        href: "/favicon.png",
+      },
+    ],
+    [
+      "link",
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "16x16",
+        href: "/favicon.png",
+      },
+    ],
+    ["link", { rel: "shortcut icon", href: "/favicon.png" }],
   ],
+  
   locales: {
     root: { label: '简体中文' },
     en: { label: 'English' },
@@ -18,7 +45,7 @@ export default defineConfig({
   cleanUrls: true,
   metaChunk: true,
   themeConfig: {
-    logo: '/logo.jpg',
+    logo: '/logo.png',
     siteTitle: 'Fastapi Vue3 Admin',
     nav: [
       { text: '首页', link: '/' },
@@ -73,6 +100,11 @@ export default defineConfig({
       copyright: 'Copyright © 2025-2026 service.fastapiadmin.com 版权所有 |隐私 |条款 陕ICP备2025069493号-1'
     },
 
+    docFooter: {
+      prev: "上一页",
+      next: "下一页",
+    },
+
     search: {
       provider: 'local',
       options: {
@@ -95,6 +127,24 @@ export default defineConfig({
         },
       },
     },
-    outline: 3,
+    outline: {
+      level: [2, 3],
+      label: "页面导航",
+    },
+
+    lastUpdated: {
+      text: "最后更新于",
+      formatOptions: {
+        dateStyle: "short", // full
+        timeStyle: "short", // medium
+      },
+    },
+
+    langMenuLabel: "多语言",
+    returnToTopLabel: "回到顶部",
+    sidebarMenuLabel: "菜单",
+    darkModeSwitchLabel: "主题",
+    lightModeSwitchTitle: "切换到浅色模式",
+    darkModeSwitchTitle: "切换到深色模式",
   }
 })

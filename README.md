@@ -1,6 +1,6 @@
 <div align="center">
      <p align="center">
-          <img src="./backend/static/image/logo.png" width="100"/> 
+          <img src="./frontend/docs/public/logo.png" width="100"/> 
      </p>
      <h2 align="center">Fastapi-Vue3-Admin v2.0.0</h2>
      <h4 align="center">一套现代、开源、全栈融合的中后台快速开发平台，给个⭐️支持一下</h4>
@@ -210,33 +210,33 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 
 <table>
     <tr>
-        <td><img src="./backend/static/image/login.png"/>登陆</td>
-        <td><img src="./backend/static/image/dashboard.png"/>仪表盘</td>
-        <td><img src="./backend/static/image/menu.png"/>菜单管理</td>
-        <td><img src="./backend/static/image/dept.png"/>部门管理</td>
+        <td><img src="./frontend/docs/public/login.png"/>登陆</td>
+        <td><img src="./frontend/docs/public/dashboard.png"/>仪表盘</td>
+        <td><img src="./frontend/docs/public/menu.png"/>菜单管理</td>
+        <td><img src="./frontend/docs/public/dept.png"/>部门管理</td>
    </tr>
    <tr>
-        <td><img src="./backend/static/image/position.png"/>岗位管理</td>
-        <td><img src="./backend/static/image/role.png"/>角色管理</td>
-        <td><img src="./backend/static/image/user.png"/>用户管理</td>
-        <td><img src="./backend/static/image/log.png"/>日志管理</td>
+        <td><img src="./frontend/docs/public/position.png"/>岗位管理</td>
+        <td><img src="./frontend/docs/public/role.png"/>角色管理</td>
+        <td><img src="./frontend/docs/public/user.png"/>用户管理</td>
+        <td><img src="./frontend/docs/public/log.png"/>日志管理</td>
    </tr>
    <tr>
-        <td><img src="./backend/static/image/config.png"/>配置管理</td>
-        <td><img src="./backend/static/image/online.png"/>在线用户管理</td>
-        <td><img src="./backend/static/image/service.png"/>服务器监控</td>
-        <td><img src="./backend/static/image/cache.png"/>缓存监控</td>
+        <td><img src="./frontend/docs/public/config.png"/>配置管理</td>
+        <td><img src="./frontend/docs/public/online.png"/>在线用户管理</td>
+        <td><img src="./frontend/docs/public/service.png"/>服务器监控</td>
+        <td><img src="./frontend/docs/public/cache.png"/>缓存监控</td>
    </tr>
    <tr>
-        <td><img src="./backend/static/image/job.png"/>任务管理</td>
-        <td><img src="./backend/static/image/dict.png"/>字典管理</td>
-        <td><img src="./backend/static/image/analysis.png"/>分析管理</td>
-        <td><img src="./backend/static/image/docs.png"/>接口管理</td>
+        <td><img src="./frontend/docs/public/job.png"/>任务管理</td>
+        <td><img src="./frontend/docs/public/dict.png"/>字典管理</td>
+        <td><img src="./frontend/docs/public/analysis.png"/>分析管理</td>
+        <td><img src="./frontend/docs/public/docs.png"/>接口管理</td>
    </tr>
    </tr>
-        <td><img src="./backend/static/image/theme.png"/>系统主题</td>
-        <td><img src="./backend/static/image/help.png"/>在线文档</td>
-        <td><img src="./backend/static/image/lock.png"/>系统锁屏</td>
+        <td><img src="./frontend/docs/public/theme.png"/>系统主题</td>
+        <td><img src="./frontend/docs/public/help.png"/>在线文档</td>
+        <td><img src="./frontend/docs/public/lock.png"/>系统锁屏</td>
    </tr>
 </table>
 
@@ -283,9 +283,9 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 
 <table>
     <tr>
-        <td><img src="./backend/static/image/wechat.jpg"/></td>
-        <td><img src="./backend/static/image/group.jpg"/></td>
-        <td><img src="./backend/static/image/wechatPay.jpg"/></td>
+        <td><img src="./frontend/docs/public/wechat.jpg"/></td>
+        <td><img src="./frontend/docs/public/group.jpg"/></td>
+        <td><img src="./frontend/docs/public/wechatPay.jpg"/></td>
     </tr>
 </table>
 

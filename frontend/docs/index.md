@@ -9,9 +9,8 @@ hero:
   text: "现代、开源、全栈融合的快速开发平台"
   tagline: Fastapi + Vue3 助力企业快速构建应用。
   image:
-    src: /logo.jpg
+    src: /logo.png
     alt: Fastapi Vue3 Admin
-    width: 400
     style:
       borderRadius: 50%
   actions:
