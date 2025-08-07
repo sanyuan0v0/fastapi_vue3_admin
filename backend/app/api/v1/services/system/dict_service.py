@@ -212,7 +212,7 @@ class DictDataService:
                     )
             except Exception as e:
                 logger.error(f"初始化字典数据失败: {e}")
-                raise CustomException(msg=f"初始化字典数据成功 {e}")
+                raise CustomException(msg=f"初始化字典数据失败 {e}")
     
     @classmethod
     async def get_init_dict_service(cls, redis: Redis, dict_type: str)->List[Dict]:
