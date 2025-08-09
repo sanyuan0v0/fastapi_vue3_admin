@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container">
+  <div class="login-container" :style="{ 'background-image': configStore.configData?.sys_login_background?.config_value ? `url(${configStore.configData.sys_login_background.config_value})` : '/background.svg' }">
     <!-- 右侧切换主题、语言按钮  -->
     <div class="action-bar">
       <el-tooltip :content="t('login.themeToggle')" placement="bottom">
@@ -93,17 +93,10 @@ onMounted(() => {
 }
 
 // 添加伪元素作为背景层
-.login-container::before {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  content: "";
-  background: url("/background.svg");
+.login-container {
   background-position: center center;
   background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .action-bar {

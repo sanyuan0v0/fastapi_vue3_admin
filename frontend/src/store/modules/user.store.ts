@@ -26,7 +26,7 @@ export const useUserStore = defineStore("user", {
     // 获取用户信息
     async getUserInfo() {
       const response = await UserAPI.getCurrentUserInfo();
-      const routers = response.data.data.menus;
+      const routers: MenuTable[] = response.data.data.menus || [];
       delete response.data.data.menus;
       this.setRoute(routers);
       this.basicInfo = { ...this.basicInfo, ...response.data.data };
@@ -37,7 +37,8 @@ export const useUserStore = defineStore("user", {
       this.basicInfo = info;
     },
 
-    setRoute(routers: any) {
+    // 设置路由
+    setRoute(routers: MenuTable[]) {
       this.routeList = routers;
       this.hasGetRoute = true;
     },

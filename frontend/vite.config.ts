@@ -47,7 +47,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
           target: env.VITE_API_BASE_URL, // 代理目标地址：https://后端地址
           secure: false, // 请求是否https
           changeOrigin: true, // 是否跨域
-          // rewrite: (path) => path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
+          rewrite: (path) => path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
         },
       },
     },

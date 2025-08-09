@@ -7,7 +7,7 @@ from app.api.v1.schemas.system.dept_schema import DeptOutSchema
 from app.api.v1.schemas.system.menu_schema import MenuOutSchema
 from app.core.base_schema import BaseSchema
 from app.core.validator import role_permission_request_validator
-
+from app.core.validator import DateTimeStr
 
 class RoleCreateSchema(BaseModel):
     """角色创建模型"""
@@ -41,5 +41,15 @@ class RoleOutSchema(RoleCreateSchema, BaseSchema):
     """角色信息响应模型"""
     model_config = ConfigDict(from_attributes=True)
     
+    menus: List[MenuOutSchema] = Field(default_factory=list, description='角色菜单列表')
+    depts: List[DeptOutSchema] = Field(default_factory=list, description='角色部门列表')
+
+
+class RoleOptionsOut(RoleCreateSchema):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int = Field(description="主键ID")
+    created_at: DateTimeStr = Field(description="创建时间")
+    updated_at: DateTimeStr = Field(description="更新时间")
     menus: List[MenuOutSchema] = Field(default_factory=list, description='角色菜单列表')
     depts: List[DeptOutSchema] = Field(default_factory=list, description='角色部门列表')

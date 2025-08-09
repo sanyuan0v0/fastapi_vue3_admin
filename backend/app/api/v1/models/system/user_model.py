@@ -3,7 +3,6 @@
 from datetime import datetime
 from sqlalchemy import Boolean, Column, String, Integer, DateTime, ForeignKey, Text
 from sqlalchemy.orm import relationship
-from typing import Optional, List
 
 from app.core.base_model import ModelBase
 

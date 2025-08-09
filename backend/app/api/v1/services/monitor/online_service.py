@@ -57,8 +57,8 @@ class OnlineService:
     async def clear_online_service(cls, redis: Redis) -> bool:
         """强制下线在线用户"""
         # 删除 token
-        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:*")
-        await RedisCURD(redis).delete(f"{RedisInitKeyConfig.REFRESH_TOKEN.key}:*")
+        await RedisCURD(redis).clear(f"{RedisInitKeyConfig.ACCESS_TOKEN.key}:*")
+        await RedisCURD(redis).clear(f"{RedisInitKeyConfig.REFRESH_TOKEN.key}:*")
 
         logger.info(f"清除所有在线用户会话成功")
         return True

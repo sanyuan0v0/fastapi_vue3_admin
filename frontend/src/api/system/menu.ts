@@ -103,8 +103,13 @@ export interface MenuForm {
   hidden?: boolean;
   always_show?: boolean;
   title?: string;
-  params?: { key: string; value: string; }[];
+  params?: KeyValue[];
   affix?: boolean;
   status?: boolean;
   description?: string;
+}
+
+export interface KeyValue {
+  key: string;
+  value: string;
 }

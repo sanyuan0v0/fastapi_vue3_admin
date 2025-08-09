@@ -3,8 +3,8 @@
 from typing import Optional, List
 from pydantic import BaseModel, ConfigDict, Field, EmailStr, field_validator
 
-from app.api.v1.schemas.system.position_schema import PositionOutSchema
-from app.api.v1.schemas.system.role_schema import RoleOutSchema
+from app.api.v1.schemas.system.position_schema import PositionOptionsOut
+from app.api.v1.schemas.system.role_schema import RoleOptionsOut
 from app.api.v1.schemas.system.dept_schema import DeptOutSchema
 from app.core.validator import DateTimeStr, mobile_validator
 from app.core.base_schema import BaseSchema
@@ -76,6 +76,7 @@ class UserCreateSchema(CurrentUserUpdateSchema):
 
 class UserUpdateSchema(UserCreateSchema):
     """更新"""
+    model_config = ConfigDict(from_attributes=True, exclude={"password"})
     id: int = Field(..., description="主键ID")
 
 
@@ -86,5 +87,5 @@ class UserOutSchema(UserCreateSchema, BaseSchema):
     last_login: Optional[DateTimeStr] = Field(default=None, description="最后登录时间")
     dept_name: Optional[str] = Field(default=None, description='部门名称')
     dept: Optional[DeptOutSchema] = Field(default=None, description='部门')
-    roles: List[RoleOutSchema] = Field(default=[], description='角色')
-    positions: List[PositionOutSchema] = Field(default=[], description='岗位')
+    roles: Optional[List[RoleOptionsOut]] = Field(default=[], description='角色')
+    positions: Optional[List[PositionOptionsOut]] = Field(default=[], description='岗位')

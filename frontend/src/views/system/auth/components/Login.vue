@@ -101,10 +101,10 @@
 </template>
 <script setup lang="ts">
 import type { FormInstance } from "element-plus";
-import { LocationQuery, RouteLocationRaw, useRoute } from "vue-router";
+import { LocationQuery, RouteLocationRaw, useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
+import { onActivated, onMounted, watch } from "vue";
 import AuthAPI, {type LoginFormData, type CaptchaInfo } from "@/api/system/auth";
-import router from "@/router";
 import { useAppStore, useUserStore } from "@/store";
 import CommonWrapper from "@/components/CommonWrapper/index.vue";
 
@@ -113,8 +113,26 @@ const userStore = useUserStore();
 const appStore = useAppStore();
 
 const route = useRoute();
+const router = useRouter();
 
+// 组件挂载时获取验证码
 onMounted(() => getCaptcha());
+
+// 组件激活时获取验证码（适用于KeepAlive缓存的情况）
+onActivated(() => {
+  getCaptcha();
+  // 重置登录表单
+  loginForm.captcha = '';
+});
+
+// 监听路由变化，确保每次进入登录页面都有最新验证码
+watch(
+  () => route.fullPath,
+  () => {
+    getCaptcha();
+    loginForm.captcha = '';
+  }
+);
 
 const loginFormRef = ref<FormInstance>();
 const loading = ref(false);
