@@ -1,6 +1,6 @@
 {
-  "name": "vue-uniapp-template",
-  "version": "0.0.0",
+  "name": "fastapp",
+  "version": "2.0.0",
   "scripts": {
     "dev:app": "uni -p app",
     "dev:app-android": "uni -p app-android",
