@@ -55,8 +55,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             if hasattr(self.model, "creator"):
                 sql = sql.options(selectinload(self.model.creator))
             
+            # sql = await self.__filter_permissions(sql)
+
             result: Result = await self.db.execute(sql)
             obj = result.scalars().unique().first()
+            # if not obj:
+            #     raise CustomException(msg="该信息不存在")
+
             return obj
         except Exception as e:
             raise CustomException(msg=f"获取查询失败: {str(e)}")
@@ -82,6 +87,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
                   .where(*conditions)
                   .order_by(*self.__order_by(order))
                   .distinct())
+            # 预加载creator关系
+            if hasattr(self.model, "creator"):
+                sql = sql.options(selectinload(self.model.creator))
             sql = await self.__filter_permissions(sql)
             result: Result = await self.db.execute(sql)
             return result.scalars().unique().all()
@@ -219,14 +227,18 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     async def __filter_permissions(self, sql: Select[Any]) -> Select[Any]:
         """过滤数据权限"""
-        # 1. 如果模型没有creator字段,则不需要过滤
+        # 如果不需要检查数据权限,则直接返回
+        if not self.current_user or not self.auth.check_data_scope:
+            return sql
+
+        # 1. 如果模型没有创建人creator字段,则不需要权限判断
         if not hasattr(self.model, "creator"):
             return sql
         
         sql = sql.options(selectinload(self.model.creator))
         
         # 2. 超级管理员可以查看所有数据
-        if not self.current_user or self.current_user.is_superuser:
+        if self.current_user.is_superuser:
             return sql
             
         # 3. 如果用户没有部门或角色,则只能查看自己的数据
@@ -243,24 +255,22 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         # 3: 本部门及以下数据权限
         # 4: 全部数据权限
         # 5: 自定义数据权限
-        # 5. 处理各种数据权限范围
+        
+        # 获取当前用户所绑定角色的数据权限范围
         for role in self.current_user.roles:
-            # 如果有全部数据权限,直接返回所有数据
-            if role.data_scope == 4:
-                return sql
-                
+            for dept in role.depts:
+                dept_ids.add(dept.id)
+
             data_scopes.add(role.data_scope)
-            # 如果是自定义权限,添加自定义部门
-            if role.data_scope == 5:
-                dept_ids.update({dept.id for dept in role.depts})
         
-        conditions = []
-        
-        # 5. 处理各种数据权限范围
+        if 4 in data_scopes:
+            # 4、全部数据权限
+            return sql
+
         if 1 in data_scopes:
             # 1、仅本人数据
-            conditions.append(self.model.creator_id == self.current_user.id)
-        
+            return sql.where(self.model.creator_id == self.current_user.id)
+
         if 2 in data_scopes:
             # 2、本部门数据
             dept_ids.add(self.current_user.dept_id)
@@ -270,16 +280,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             dept_objs = await CRUDBase(DeptModel, self.auth).list()
             id_map = get_child_id_map(dept_objs)
             dept_child_ids = get_child_recursion(id=self.current_user.dept_id, id_map=id_map)
-            dept_ids.update(dept_child_ids)
-        
-        if dept_ids:
-            conditions.append(self.model.creator.has(UserModel.dept_id.in_(list(dept_ids))))
-        
-        # 6. 组合所有条件
-        if conditions:
-            return sql.where(and_(*conditions))
-            
-        return sql.where(self.model.creator_id == self.current_user.id)
+            for child_id in dept_child_ids:
+                dept_ids.add(child_id)
+
+        # 5、自定义权限
+        return sql.where(self.model.creator.has(UserModel.dept_id.in_(list(dept_ids))))
 
     def __order_by(self, order_by: List[Dict[str, str]]) -> List[ColumnElement]:
         """

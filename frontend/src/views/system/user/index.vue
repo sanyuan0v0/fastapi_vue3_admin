@@ -257,7 +257,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="手机号码" prop="mobile">
+          <el-form-item label="手机号" prop="mobile">
             <el-input v-model="formData.mobile" placeholder="请输入手机号码" maxlength="11" />
           </el-form-item>
 
@@ -281,7 +281,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="密码" prop="password">
+          <el-form-item label="密码" prop="password" v-if="dialogVisible.type === 'create'">
             <el-input v-model="formData.password" placeholder="请输入密码" type="password" show-password clearable />
           </el-form-item>
 
@@ -548,6 +548,8 @@ async function handleCloseDialog() {
 // 打开弹窗
 async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: number) {
   dialogVisible.type = type;
+  // 动态设置密码验证规则
+  rules.password[0].required = type === 'create';
   if (id) {
     const response = await UserAPI.getUserDetail(id);
     if (type === 'detail') {
@@ -556,6 +558,9 @@ async function handleOpenDialog(type: 'create' | 'update' | 'detail', id?: numbe
     } else if (type === 'update') {
       dialogVisible.title = "修改用户";
       Object.assign(formData, response.data.data);
+      // 确保角色和岗位ID正确设置
+      formData.role_ids = (response.data.data.roles || []).map(item => item.id as number);
+      formData.position_ids = (response.data.data.positions || []).map(item => item.id as number);
     }
   } else {
     dialogVisible.title = "新增用户";
@@ -596,8 +601,11 @@ async function handleSubmit() {
       // 根据弹窗传入的参数(deatil\create\update)判断走什么逻辑
       const id = formData.id;
       if (id) {
-        try {
-          await UserAPI.updateUser({ id, ...formData })
+          try {
+            // 编辑用户时，不传递密码字段
+            const updateData = { id, ...formData };
+            delete updateData.password;
+            await UserAPI.updateUser(updateData)
           dialogVisible.visible = false;
           resetForm();
           handleCloseDialog();

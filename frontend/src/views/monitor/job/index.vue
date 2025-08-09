@@ -879,7 +879,6 @@ const handleClear = () => {
       try {
         loading.value = true;
         await JobAPI.clearJob();
-        ElMessage.success("清空成功");
         handleResetQuery();
       } catch (error: any) {
         console.error(error);

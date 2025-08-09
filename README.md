@@ -1,9 +1,10 @@
 <div align="center">
      <p align="center">
-          <img src="./frontend/docs/public/logo.png" width="100"/> 
+          <img src="./frontend/docs/public/logo.png" width="150" height="150" alt="logo" />  
      </p>
-     <h2 align="center">Fastapi-Vue3-Admin v2.0.0</h2>
-     <h4 align="center">一套现代、开源、全栈融合的中后台快速开发平台，给个⭐️支持一下</h4>
+     <h1>Fastapi-Vue3-Admin <sup style="background-color: #28a745; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.4em; vertical-align: super; margin-left: 5px;">v2.0.0</h1>
+     <h3>一套现代、开源、全栈融合的中后台快速开发平台</h3>
+     <p>如果你喜欢这个项目，给个 ⭐️ 支持一下吧！</p>
      <p align="center">
           <a href="https://gitee.com/tao__tao/fastapi_vue3_admin.git" target="_blank">
                <img src="https://gitee.com/tao__tao/fastapi_vue3_admin/badge/star.svg?theme=dark" alt="Gitee Stars">
@@ -208,37 +209,35 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 
 ## 🔧 模块展示
 
-<table>
-    <tr>
-        <td><img src="./frontend/docs/public/login.png"/>登陆</td>
-        <td><img src="./frontend/docs/public/dashboard.png"/>仪表盘</td>
-        <td><img src="./frontend/docs/public/menu.png"/>菜单管理</td>
-        <td><img src="./frontend/docs/public/dept.png"/>部门管理</td>
-   </tr>
-   <tr>
-        <td><img src="./frontend/docs/public/position.png"/>岗位管理</td>
-        <td><img src="./frontend/docs/public/role.png"/>角色管理</td>
-        <td><img src="./frontend/docs/public/user.png"/>用户管理</td>
-        <td><img src="./frontend/docs/public/log.png"/>日志管理</td>
-   </tr>
-   <tr>
-        <td><img src="./frontend/docs/public/config.png"/>配置管理</td>
-        <td><img src="./frontend/docs/public/online.png"/>在线用户管理</td>
-        <td><img src="./frontend/docs/public/service.png"/>服务器监控</td>
-        <td><img src="./frontend/docs/public/cache.png"/>缓存监控</td>
-   </tr>
-   <tr>
-        <td><img src="./frontend/docs/public/job.png"/>任务管理</td>
-        <td><img src="./frontend/docs/public/dict.png"/>字典管理</td>
-        <td><img src="./frontend/docs/public/analysis.png"/>分析管理</td>
-        <td><img src="./frontend/docs/public/docs.png"/>接口管理</td>
-   </tr>
-   </tr>
-        <td><img src="./frontend/docs/public/theme.png"/>系统主题</td>
-        <td><img src="./frontend/docs/public/help.png"/>在线文档</td>
-        <td><img src="./frontend/docs/public/lock.png"/>系统锁屏</td>
-   </tr>
-</table>
+### web 端
+
+| 模块名{ width="100" } | 截图 |
+|----------|------|
+| 登录      | ![登录](./frontend/docs/public/login.png) |
+| 仪表盘    | ![仪表盘](./frontend/docs/public/dashboard.png) |
+| 分析页    | ![分析页](./frontend/docs/public/analysis.png) |
+| 菜单管理  | ![菜单管理](./frontend/docs/public/menu.png) |
+| 部门管理  | ![部门管理](./frontend/docs/public/dept.png) |
+| 岗位管理  | ![岗位管理](./frontend/docs/public/position.png) |
+| 角色管理  | ![角色管理](./frontend/docs/public/role.png) |
+| 用户管理  | ![用户管理](./frontend/docs/public/user.png) |
+| 日志管理  | ![日志管理](./frontend/docs/public/log.png) |
+| 配置管理  | ![配置管理](./frontend/docs/public/config.png) |
+| 在线用户  | ![在线用户](./frontend/docs/public/online.png) |
+| 服务器监控 | ![服务器监控](./frontend/docs/public/service.png) |
+| 缓存监控  | ![缓存监控](./frontend/docs/public/cache.png) |
+| 任务管理  | ![任务管理](./frontend/docs/public/job.png) |
+| 字典管理  | ![字典管理](./frontend/docs/public/dict.png) |
+| 接口管理  | ![接口管理](./frontend/docs/public/docs.png) |
+| 系统主题  | ![系统主题](./frontend/docs/public/theme.png) |
+| 在线文档  | ![在线文档](./frontend/docs/public/help.png) |
+| 系统锁屏  | ![系统锁屏](./frontend/docs/public/lock.png) |
+
+### 移动端
+
+| 模块名{ width="100" } | 截图 |
+|----------|------|
+| 登录      | 开发中... （待完成） |
 
 ---
 
@@ -281,13 +280,9 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 
 ## 🎨 社区
 
-<table>
-    <tr>
-        <td><img src="./frontend/docs/public/wechat.jpg"/></td>
-        <td><img src="./frontend/docs/public/group.jpg"/></td>
-        <td><img src="./frontend/docs/public/wechatPay.jpg"/></td>
-    </tr>
-</table>
+| 微信二维码 | 群组二维码 | 微信支付二维码 |
+| --- | --- | --- |
+| ![微信二维码](./frontend/docs/public/wechat.jpg) | ![群组二维码](./frontend/docs/public/group.jpg) | ![微信支付二维码](./frontend/docs/public/wechatPay.jpg) |
 
 ---
 

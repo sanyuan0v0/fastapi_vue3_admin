@@ -176,7 +176,7 @@ class UserService:
             raise CustomException(msg="用户不存在")
         # 获取部门名称
         if user.dept_id:
-            dept = await DeptCRUD(auth).get_by_id_crud(id=user.dept_id)
+            dept = await DeptCRUD(auth).get_by_id_crud(id=auth.user.dept_id)
             user.dept_name = dept.name if dept else None
         user_dict = UserOutSchema.model_validate(user).model_dump()
 
@@ -189,7 +189,7 @@ class UserService:
                 MenuOutSchema.model_validate(menu).model_dump()
                 for role in auth.user.roles
                 for menu in role.menus
-                if menu.status and menu.type in [1, 2]
+                if menu.status and menu.type in [1, 2, 4]
             ]
         user_dict["menus"] = menus
         return user_dict
@@ -259,7 +259,7 @@ class UserService:
 
         # 更新密码
         new_password_hash = PwdUtil.set_password_hash(password=data.password)
-        new_user = await UserCRUD(auth).change_password_crud(id=user.id, password_hash=new_password_hash)
+        new_user = await UserCRUD(auth).change_password_crud(id=data.id, password_hash=new_password_hash)
         return UserOutSchema.model_validate(new_user).model_dump()
 
     @classmethod

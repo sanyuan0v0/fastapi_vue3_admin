@@ -242,6 +242,10 @@
             <el-input v-model="formData.name" placeholder="请输入菜单名称" />
           </el-form-item>
 
+          <el-form-item label="菜单标题" prop="title">
+            <el-input v-model="formData.title" placeholder="请输入菜单标题" />
+          </el-form-item>
+
           <el-form-item label="菜单类型" prop="type">
             <el-radio-group v-model="formData.type" @change="handleMenuTypeChange">
               <el-radio :value="MenuTypeEnum.CATALOG">目录</el-radio>
@@ -255,7 +259,7 @@
             <el-input v-model="formData.route_path" placeholder="请输入外链完整路径" />
           </el-form-item>
 
-          <el-form-item v-if="formData.type == MenuTypeEnum.MENU" prop="routeName">
+          <el-form-item  prop="routeName">
             <template #label>
               <div class="flex-y-center">
                 路由名称
@@ -464,6 +468,7 @@ defineOptions({
 });
 
 import { useAppStore } from "@/store/modules/app.store";
+import { useUserStore } from "@/store/modules/user.store";
 import { DeviceEnum } from "@/enums/settings/device.enum";
 
 import MenuAPI, { MenuPageQuery, MenuForm, MenuTable } from "@/api/system/menu";
@@ -471,6 +476,7 @@ import { MenuTypeEnum } from "@/enums/system/menu.enum";
 import { formatTree, listToTree } from "@/utils/common";
 
 const appStore = useAppStore();
+const userStore = useUserStore();
 
 const queryFormRef = ref();
 const dataFormRef = ref();
@@ -514,7 +520,7 @@ const formData = reactive<MenuForm>({
   hidden: false,
   always_show: false,
   title: '',
-  params: [] as { key: string; value: string }[],
+  params: undefined,
   affix: false,
   status: true,
   description: undefined,
@@ -716,6 +722,7 @@ async function handleSubmit() {
       if (id) {
         try {
           await MenuAPI.updateMenu(formData)
+          await userStore.getUserInfo();
           dialogVisible.visible = false;
           resetForm();
           handleResetQuery();
@@ -727,6 +734,7 @@ async function handleSubmit() {
       } else {
         try {
           await MenuAPI.createMenu(formData)
+          await userStore.getUserInfo();
           dialogVisible.visible = false;
           resetForm();
           handleResetQuery();
@@ -750,6 +758,7 @@ async function handleDelete(ids: number[]) {
     try {
       loading.value = true;
       await MenuAPI.deleteMenu(ids);
+      await userStore.getUserInfo();
       handleResetQuery();
     } catch (error: any) {
       console.error(error);

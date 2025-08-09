@@ -35,7 +35,7 @@ class ConfigModel(ModelBase):
     creator = relationship(
         "UserModel", 
         foreign_keys=creator_id, 
-        lazy="joined",
+        lazy="selectin",
         post_update=True,
         uselist=False
     )

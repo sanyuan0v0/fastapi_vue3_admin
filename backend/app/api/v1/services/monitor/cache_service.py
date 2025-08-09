@@ -116,8 +116,11 @@ class CacheService:
         :param redis: Redis对象
         :return: 操作缓存响应信息
         """
-        cache_keys = await RedisCURD(redis).get_keys
+        cache_keys = await RedisCURD(redis).get_keys()
         if cache_keys:
             await RedisCURD(redis).delete(*cache_keys)
 
         return True
+
+        # 避免清除所有的缓存，而采用上面的方式，只清除本系统内指定的所有缓存
+        # return await RedisCURD(redis).clear()

@@ -192,7 +192,7 @@ class Settings(BaseSettings):
     UPLOAD_MACHINE: str = 'A'  # 上传机器标识
     ALLOWED_EXTENSIONS: list[str] = [  # 允许的文件类型
         # 图片
-        '.bmp', '.gif', '.jpg', '.jpeg', '.png', '.ico',
+        '.bmp', '.gif', '.jpg', '.jpeg', '.png', '.ico', '.svg',
         # 文档
         '.csv', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.html', '.htm', '.txt', '.pdf',
         # 压缩包

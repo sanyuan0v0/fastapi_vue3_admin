@@ -67,7 +67,7 @@ export const UserAPI = {
   },
 
   getUserDetail(query: number) {
-    return request<ApiResponse>({
+    return request<ApiResponse<UserInfo>>({
       url: `/system/user/detail/${query}`,
       method: "get",
     });
@@ -246,9 +246,9 @@ export interface UserForm {
   dept_id?:  number;
   dept_name?: string;
   role_ids?: number[];
-  roleNames?: string;
+  roleNames?: string[];
   position_ids?: number[];
-  positionNames?: string;
+  positionNames?: string[];
   password?: string;
   gender?: number;
   email?: string;

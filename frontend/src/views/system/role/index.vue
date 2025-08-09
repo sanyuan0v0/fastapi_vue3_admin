@@ -146,8 +146,7 @@
               size="small" 
               link 
               icon="document" 
-              @click="scope.row.id === 1 ? ElMessage.warning('系统默认角色，不可操作') : handleOpenDialog('detail', scope.row.id)"
-              :disabled="scope.row.id === 1"
+              @click="handleOpenDialog('detail', scope.row.id)"
             >详情</el-button>
             <el-button 
               type="primary" 

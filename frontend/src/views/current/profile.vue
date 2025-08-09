@@ -122,18 +122,18 @@
                 <span>基本设置</span>
               </template>
               <div>
-                <el-form ref="ruleFormRef" :model="infoFormState" :rules="rules" :inline="true" label-suffix=":">
+                <el-form ref="ruleFormRef" :model="infoFormState" :rules="rules" :inline="true" label-width="80px" label-suffix=":">
                   
                   <el-form-item label="姓名" name="name">
-                    <el-input v-model="infoFormState.name" placeholder="请输入姓名" prefix-icon="User" clearable />
+                    <el-input v-model="infoFormState.name" placeholder="请输入姓名" prefix-icon="User" clearable style="width: 240px;" />
                   </el-form-item>
 
                   <el-form-item label="手机号" name="mobile">
-                    <el-input v-model="infoFormState.mobile" placeholder="请输入手机号码" prefix-icon="Phone" clearable />
+                    <el-input v-model="infoFormState.mobile" placeholder="请输入手机号码" prefix-icon="Phone" clearable style="width: 240px;" />
                   </el-form-item>
 
                   <el-form-item label="邮箱" name="email">
-                    <el-input v-model="infoFormState.email" placeholder="请输入邮箱" prefix-icon="Message" clearable />
+                    <el-input v-model="infoFormState.email" placeholder="请输入邮箱" prefix-icon="Message" clearable style="width: 240px;" />
                   </el-form-item>
 
                   <el-form-item label="性别" name="gender">
@@ -159,9 +159,9 @@
                 <span>安全设置</span>
               </template>
               <div>
-                <el-form ref="ruleFormRef" :model="passwordFormState" :rules="resetPasswordRules"  label-suffix=":">
+                <el-form ref="ruleFormRef" :model="passwordFormState" :rules="resetPasswordRules"  label-width="80px" label-suffix=":">
                   <el-form-item label="当前密码" name="old_password">
-                    <el-input v-model.trim="passwordFormState.old_password" :placeholder="t('login.password')" type="password" show-password clearable>
+                    <el-input v-model.trim="passwordFormState.old_password" :placeholder="t('login.password')" type="password" show-password clearable style="width: 240px;">
                       <template #prefix>
                         <Lock />
                       </template>
@@ -169,7 +169,7 @@
                   </el-form-item>
 
                   <el-form-item label="新密码" name="new_password">
-                    <el-input v-model.trim="passwordFormState.new_password" type="password" :placeholder="t('login.newPassword')" show-password clearable>
+                    <el-input v-model.trim="passwordFormState.new_password" type="password" :placeholder="t('login.newPassword')" show-password clearable style="width: 240px;">
                       <template #prefix>
                         <Key />
                       </template>
@@ -177,7 +177,7 @@
                   </el-form-item>
 
                   <el-form-item label="确认新密码" name="confirm_password">
-                    <el-input v-model.trim="passwordFormState.confirm_password" type="password" :placeholder="t('login.message.password.confirm')" show-password clearable>
+                    <el-input v-model.trim="passwordFormState.confirm_password" type="password" :placeholder="t('login.message.password.confirm')" show-password clearable style="width: 240px;">
                       <template #prefix>
                         <Check />
                       </template>
@@ -506,5 +506,14 @@ onMounted(async () => {
       opacity: 1 !important; /* 强制生效 */
     }
   }
+}
+
+/* 修复表单输入框清除按钮导致的宽度变化问题 */
+.el-input {
+  transition: none !important;
+}
+
+.el-input__wrapper {
+  transition: none !important;
 }
 </style>
