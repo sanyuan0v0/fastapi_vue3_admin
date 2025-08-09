@@ -22,13 +22,17 @@ export default [
     ignores: [
       "node_modules/**",
       "dist/**",
+      "auto-imports.d.ts",
       "unpackage/**",
       "public/**",
       "static/**",
       "**/u-charts/**",
       "**/qiun-**/**",
       "**/auto-imports.d.ts",
+      // unplugin-auto-import 生成的类型文件，每次提交都改变，所以加入这里吧，与 .gitignore 配合使用
       "src/types/auto-imports.d.ts",
+      // vite-plugin-uni-pages 生成的类型文件，每次切换分支都一堆不同的，所以直接 .gitignore
+      "uni-pages.d.ts",
     ],
   },
   // 检查文件的配置

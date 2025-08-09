@@ -1,5 +1,5 @@
 import vue from "@vitejs/plugin-vue";
-import { type ConfigEnv, loadEnv, defineConfig } from "vite";
+import { type ConfigEnv, type UserConfig, loadEnv, defineConfig, PluginOption } from "vite";
 
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
@@ -47,7 +47,7 @@ export default defineConfig(({ mode }: ConfigEnv) => {
           target: env.VITE_API_BASE_URL, // 代理目标地址：https://后端地址
           secure: false, // 请求是否https
           changeOrigin: true, // 是否跨域
-          rewrite: (path) => path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
+          rewrite: (path: string) => path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
         },
       },
     },

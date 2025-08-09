@@ -5,18 +5,69 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "i": "pnpm install",
     "dev": "vite",
     "prod": "vite --mode prod",
     "build": "vite build",
-    "preview": "vite preview",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "build:pro": "pnpm vite build --mode pro",
+    "build:gitee": "pnpm vite build --mode gitee",
+    "build:dev": "pnpm vite build --mode dev",
+    "build:test": "pnpm vite build --mode test",
+    "serve:pro": "pnpm vite preview --mode pro",
+    "serve:dev": "pnpm vite preview --mode dev",
+    "serve:test": "pnpm vite preview --mode test",
+    "clean": "pnpx rimraf node_modules",
+    "ts:check": "pnpm vue-tsc --noEmit --skipLibCheck",
+    "npm:check": "pnpx npm-check-updates -u",
+    "clean:cache": "pnpx rimraf node_modules/.cache",
+    "prepare": "husky install",
+    "p": "plop",
+    "icon": "esno ./scripts/icon.ts",
+    "preview": "vite preview",
+    "type-check": "vue-tsc --noEmit",
+    "lint:format": "prettier --write --loglevel warn \"src/**/*.{js,ts,json,tsx,css,less,vue,html,md}\"",
+    "lint:style": "stylelint --fix \"**/*.{vue,less,postcss,css,scss}\" --cache --cache-location node_modules/.cache/stylelint/",
+    "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.cjs",
+    "lint:eslint": "eslint --cache \"src/**/*.{vue,ts,js}\" --fix",
+    "lint:prettier": "prettier --write \"**/*.{js,cjs,ts,json,css,scss,vue,html,md}\"",
+    "lint:stylelint": "stylelint --cache \"**/*.{css,scss,vue}\" --fix",
+    "lint": "npm run lint:eslint && npm run lint:prettier && npm run lint:stylelint",
+    "preinstall": "npx only-allow pnpm",
+    "commit": "git-cz"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-git"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{cjs,json}": [
+      "prettier --write"
+    ],
+    "*.{vue,html}": [
+      "eslint --fix",
+      "prettier --write",
+      "stylelint --fix"
+    ],
+    "*.{scss,css}": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "*.md": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
     "@vueuse/core": "^13.5.0",
-    "@wangeditor-next/editor": "^5.6.38",
+    "@wangeditor-next/editor": "^5.6.42",
     "@wangeditor-next/editor-for-vue": "^5.1.14",
     "animate.css": "^4.1.1",
     "axios": "^1.10.0",
@@ -39,26 +90,51 @@
     "vue3-cron-plus": "^0.1.9"
   },
   "devDependencies": {
+    "@eslint/js": "^9.32.0",
     "@iconify/utils": "^2.3.0",
     "@types/codemirror": "^5.60.16",
     "@types/node": "^22.16.5",
     "@types/nprogress": "^0.2.3",
+    "@types/path-browserify": "^1.0.3",
     "@types/qs": "^6.14.0",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
     "@vitejs/plugin-vue": "^5.2.4",
+    "autoprefixer": "^10.4.21",
+    "commitizen": "^4.3.1",
+    "cz-git": "^1.12.0",
+    "eslint": "^9.32.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.3",
+    "eslint-plugin-vue": "^10.4.0",
+    "fs-extra": "^11.2.0",
+    "husky": "^9.1.7",
     "sass": "^1.89.2",
     "terser": "^5.43.1",
     "typescript": "^5.8.3",
+    "typescript-eslint": "^8.38.0",
     "unocss": "66.2.3",
     "unplugin-auto-import": "^19.3.0",
     "unplugin-vue-components": "^28.8.0",
     "vite": "^6.3.5",
-    "vitepress": "^1.6.4"
+    "vitepress": "^1.6.4",
+    "vue-eslint-parser": "^10.2.0",
+    "vue-tsc": "^2.2.12"
   },
+  "packageManager": "pnpm@9.15.3",
   "engines": {
     "node": ">=18.0.0",
-    "npm": ">=10.0.0"
+    "npm": ">=10.0.0",
+    "pnpm": ">=8.1.0"
   },
-  "repository": "https://gitee.com/tao__tao/fastapi_vue3_admin.git",
-  "author": "948080782@qq.com",
-  "license": "MIT"
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/tao__tao/fastapi_vue3_admin.git"
+  },
+  "bugs": {
+    "url": "https://gitee.com/tao__tao/fastapi_vue3_admin/issues"
+  },
+  "author": "fastapiadmin <502431556@qq.com>",
+  "license": "MIT",
+  "homepage": "https://gitee.com/tao__tao/fastapi_vue3_admin"
 }
