@@ -81,9 +81,10 @@ build_image() {
 start_containers() {
     log "==========🚀 第五步：启动容器...==========🗑️ "
     docker compose up -d --force-recreate || { log "❌ 容器启动失败"; exit 1; }
-    log "✅  容器启动成功"
+    docker compose ps || { log "❌ 容器状态获取失败"; exit 1; }
+    docker compose logs ||  { log "❌ 容器日志获取失败"; exit 1; }
+    log "✅ 容器启动成功"
 }
-
 
 # 清理旧镜像
 cleanup_old_images() {
