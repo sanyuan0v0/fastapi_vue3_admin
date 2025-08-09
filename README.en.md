@@ -1,9 +1,10 @@
 <div align="center">
      <p align="center">
-          <img src="./frontend/docs/public/logo.png" width="100"/> 
+          <img src="./frontend/docs/public/logo.png" width="150" height="150" alt="logo" /> 
      </p>
-     <h2 align="center">Fastapi-Vue3-Admin v2.0.0</h2>
-     <h4 align="center">A modern, open-source, full-stack integrated rapid development platform for mid - and back - end systems. Give a ⭐️ to support!</h4>
+     <h1>Fastapi-Vue3-Admin <img src="https://img.shields.io/badge/Version-v2.0.0-blue" alt="Version"></h1>
+     <h3>A modern, open-source, full-stack integrated rapid development platform for mid - and back - end systems</h3>
+     <p>If you like this project, please give it a ⭐️ to show your support!</p>
      <p align="center">
           <a href="https://gitee.com/tao__tao/fastapi_vue3_admin.git" target="_blank">
                <img src="https://gitee.com/tao__tao/fastapi_vue3_admin/badge/star.svg?theme=dark" alt="Gitee Stars">
@@ -208,37 +209,33 @@ fastapi_vue3_admin/devops/devops/nginx/nginx.conf
 
 ## 🔧 Models
 
-<table>
-    <tr>
-        <td><img src="./frontend/docs/public/login.png"/>Login</td>
-        <td><img src="./frontend/docs/public/dashboard.png"/>Dashboard</td>
-        <td><img src="./frontend/docs/public/menu.png"/>Menu Management</td>
-        <td><img src="./frontend/docs/public/dept.png"/>Department Management</td>
-   </tr>
-   <tr>
-        <td><img src="./frontend/docs/public/position.png"/>Position Management</td>
-        <td><img src="./frontend/docs/public/role.png"/>Role Management</td>
-        <td><img src="./frontend/docs/public/user.png"/>User Management</td>
-        <td><img src="./frontend/docs/public/log.png"/>Log Management</td>
-   </tr>
-   <tr>
-        <td><img src="./frontend/docs/public/config.png"/>Configuration Management</td>
-        <td><img src="./frontend/docs/public/online.png"/>Online User Management</td>
-        <td><img src="./frontend/docs/public/service.png"/>Server Monitoring</td>
-        <td><img src="./frontend/docs/public/cache.png"/>Cache Monitoring</td>
-   </tr>
-   <tr>
-        <td><img src="./frontend/docs/public/job.png"/>Task Management</td>
-        <td><img src="./frontend/docs/public/docs.png"/>API Management</td>
-        <td><img src="./frontend/docs/public/analysis.png"/>Analysis Management</td>
-        <td><img src="./frontend/docs/public/dict.png"/>Dictionary Management</td>
-   </tr>
-   <tr>
-        <td><img src="./frontend/docs/public/theme.png"/>Theme Management</td>
-        <td><img src="./frontend/docs/public/lock.png"/>Lock Management</td>
-        <td><img src="./frontend/docs/public/help.png"/>Online Documentation</td>
-   </tr>
-</table>
+| Module Name{ width="100" } | Screenshot |
+|------------|---------------------------------|
+| Login      | ![Login](./frontend/docs/public/login.png) |
+| Dashboard  | ![Dashboard](./frontend/docs/public/dashboard.png) |
+| Analysis   | ![Analysis](./frontend/docs/public/analysis.png) |
+| Menu       | ![Menu](./frontend/docs/public/menu.png) |
+| Department | ![Department](./frontend/docs/public/dept.png) |
+| Position   | ![Position](./frontend/docs/public/position.png) |
+| Role       | ![Role](./frontend/docs/public/role.png) |
+| User       | ![User](./frontend/docs/public/user.png) |
+| Log        | ![Log](./frontend/docs/public/log.png) |
+| Config     | ![Config](./frontend/docs/public/config.png) |
+| OnlineUser | ![OnlineUser](./frontend/docs/public/online.png) |
+| Server     | ![Server](./frontend/docs/public/service.png) |
+| Cache      | ![Cache](./frontend/docs/public/cache.png) |
+| Task       | ![Task](./frontend/docs/public/job.png) |
+| Dict       | ![Dict](./frontend/docs/public/dict.png) |
+| API Docs   | ![API Docs](./frontend/docs/public/docs.png) |
+| Theme      | ![Theme](./frontend/docs/public/theme.png) |
+| Document   | ![Document](./frontend/docs/public/help.png) |
+| Lock       | ![Lock](./frontend/docs/public/lock.png) |
+
+### 移动端
+
+| Module Name{ width="100" } | Screenshot |
+|----------|------|
+| Login      | Under development... (To be completed) |
 
 ---
 
@@ -283,13 +280,9 @@ Thanks to the contributions and support of the following projects, which have en
 
 ## 🎨 Community
 
-<table>
-    <tr>
-        <td><img src="./frontend/docs/public/wechat.jpg"/></td>
-        <td><img src="./frontend/docs/public/group.jpg"/></td>
-        <td><img src="./frontend/docs/public/wechatPay.jpg"/></td>
-    </tr>
-</table>
+| WeChat QR Code | Group QR Code | WeChat Pay QR Code |
+| --- | --- | --- |
+| ![WeChat QR Code](./frontend/docs/public/wechat.jpg) | ![Group QR Code](./frontend/docs/public/group.jpg) | ![WeChat Pay QR Code](./frontend/docs/public/wechatPay.jpg) |
 
 ---
 

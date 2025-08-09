@@ -4,8 +4,9 @@
 
 ```sh
 fastapi_project/frontend
+├─ docs                 # 项目文档工程
 ├─ public               # 静态资源文件
-│  └─ site              # 帮助文档模块
+│  └─ docs              # 帮助文档模块
 ├─ src                  # 源代码
 │  ├─ api               # 接口文件
 │  ├─ assets            # 静态资源文件
@@ -45,4 +46,10 @@ npm install
 npm run dev
 # 构建前端, 生成 `frontend/dist` 目录
 npm run build
+# 运行文档工程
+npm run docs:dev
+# 构建文档工程, 生成 `public/docs` 目录
+npm run docs:build
+# 运行命令，查看未用到的依赖 
+depcheck
 ```

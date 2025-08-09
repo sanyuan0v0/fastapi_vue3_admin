@@ -2,27 +2,22 @@
 outline: "deep"
 ---
 
-<div align="center">
-     <p align="center">
-          <img src="/logo.png" width="100"/> 
-     </p>
-     <h2 align="center">Fastapi-Vue3-Admin v2.0.0</h2>
-     <h4 align="center">一套现代、开源、全栈融合的中后台快速开发平台，给个⭐️支持一下</h4>
-     <p align="center" style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">
-          <a href="https://gitee.com/tao__tao/fastapi_vue3_admin.git" target="_blank">
-               <img src="https://gitee.com/tao__tao/fastapi_vue3_admin/badge/star.svg?theme=dark" alt="Gitee Stars">
-          </a>
-          <a href="https://github.com/1014TaoTao/fastapi_vue3_admin.git" target="_blank">
-               <img src="https://img.shields.io/github/stars/1014TaoTao/fastapi_vue3_admin?style=social" alt="GitHub Stars">
-          </a>
-          <a href="https://gitee.com/tao__tao/fastapi_vue3_admin/blob/master/LICENSE" target="_blank">
-               <img src="https://img.shields.io/badge/License-MIT-orange" alt="License">
-          </a>
-          <img src="https://img.shields.io/badge/Python-≥3.10-blue" alt="Python"> 
-          <img src="https://img.shields.io/badge/NodeJS-≥20.0-blue" alt="NodeJS"> 
-          <img src="https://img.shields.io/badge/MySQL-≥8.0-blue" alt="MySQL"> 
-          <img src="https://img.shields.io/badge/Redis-≥7.0-blue" alt="Redis"> 
-     </p>
+<div style="text-align: center;">
+  <div align="center">
+     <img src="/logo.png" width="150" height="150" alt="logo" />
+  </div>
+  <h1>Fastapi-Vue3-Admin <sup style="background-color: #28a745; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.4em; vertical-align: super; margin-left: 5px;">v2.0.0</sup></h1>
+  <h3>一套现代、开源、全栈融合的中后台快速开发平台</h3>
+  <p>如果你喜欢这个项目，给个 ⭐️ 支持一下吧！</p>
+  <p align="center" style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">
+    <a href="https://gitee.com/tao__tao/fastapi_vue3_admin"><img src="https://gitee.com/tao__tao/fastapi_vue3_admin/badge/star.svg?theme=dark" alt="Gitee Stars"></a>
+    <a href="https://github.com/1014TaoTao/fastapi_vue3_admin"><img src="https://img.shields.io/github/stars/1014TaoTao/fastapi_vue3_admin?style=social" alt="GitHub Stars"></a>
+    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-orange.svg" alt="License"></a>
+    <img src="https://img.shields.io/badge/Python-≥3.10-blue" alt="Python">
+    <img src="https://img.shields.io/badge/NodeJS-≥20.0-blue" alt="NodeJS">
+    <img src="https://img.shields.io/badge/MySQL-≥8.0-blue" alt="MySQL">
+    <img src="https://img.shields.io/badge/Redis-≥7.0-blue" alt="Redis">
+  </p>
 </div>
 
 ## 📘项目介绍
@@ -181,40 +176,27 @@ fastapi_vue3_admin/devops/devops/nginx/nginx.conf
 
 ## 🔧模块展示
 
-<table>
-    <tbody>
-          <tr>
-               <td><img src="/login.png"/>登陆</td>
-               <td><img src="/dashboard.png"/>仪表盘</td>
-               <td><img src="/menu.png"/>菜单管理</td>
-               <td><img src="/dept.png"/>部门管理</td>
-          </tr>
-          <tr>
-               <td><img src="/position.png"/>岗位管理</td>
-               <td><img src="/role.png"/>角色管理</td>
-               <td><img src="/user.png"/>用户管理</td>
-               <td><img src="/log.png"/>日志管理</td>
-          </tr>
-          <tr>
-               <td><img src="/config.png"/>配置管理</td>
-               <td><img src="/online.png"/>在线用户管理</td>
-               <td><img src="/service.png"/>服务器监控</td>
-               <td><img src="/cache.png"/>缓存监控</td>
-          </tr>
-          <tr>
-               <td><img src="/job.png"/>任务管理</td>
-               <td><img src="/dict.png"/>字典管理</td>
-               <td><img src="/analysis.png"/>分析管理</td>
-               <td><img src="/docs.png"/>接口管理</td>
-          </tr>
-          <tr>
-               <td><img src="/theme.png"/>系统主题</td>
-               <td><img src="/help.png"/>在线文档</td>
-               <td><img src="/lock.png"/>系统锁屏</td>
-               <td></td>
-          </tr>
-    </tbody>
-</table>
+| 模块名{ width="100" } | 截图 |
+|----------|------|
+| 登录      | ![登录](/login.png) |
+| 仪表盘    | ![仪表盘](/dashboard.png) |
+| 分析页    | ![分析页](/analysis.png) |
+| 菜单管理  | ![菜单管理](/menu.png) |
+| 部门管理  | ![部门管理](/dept.png) |
+| 岗位管理  | ![岗位管理](/position.png) |
+| 角色管理  | ![角色管理](/role.png) |
+| 用户管理  | ![用户管理](/user.png) |
+| 日志管理  | ![日志管理](/log.png) |
+| 配置管理  | ![配置管理](/config.png) |
+| 在线用户  | ![在线用户](/online.png) |
+| 服务器监控 | ![服务器监控](/service.png) |
+| 缓存监控  | ![缓存监控](/cache.png) |
+| 任务管理  | ![任务管理](/job.png) |
+| 字典管理  | ![字典管理](/dict.png) |
+| 接口管理  | ![接口管理](/docs.png) |
+| 系统主题  | ![系统主题](/theme.png) |
+| 在线文档  | ![在线文档](/help.png) |
+| 系统锁屏  | ![系统锁屏](/lock.png) |
 
 ## 🚀二开教程
 
