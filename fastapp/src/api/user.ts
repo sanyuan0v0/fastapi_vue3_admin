@@ -1,42 +1,101 @@
 import request from "@/utils/request";
 
-const USER_BASE_URL = "/api/v1/users";
+const USER_BASE_URL = "/api/v1/system/user";
 
 const UserAPI = {
   /**
-   * 获取当前登录用户信息
+   * 个人中心用户信息
    *
    * @returns 登录用户昵称、头像信息，包括角色和权限
    */
-  getUserInfo(): Promise<UserInfo> {
+  getCurrentUserInfo(): Promise<UserInfo> {
     return request<UserInfo>({
-      url: `${USER_BASE_URL}/me`,
+      url: `${USER_BASE_URL}/current/info`,
       method: "GET",
+    });
+  },
+
+  /**
+   * 当前用户头像上传
+   *
+   * @param body
+   * @returns 上传后的文件路径
+   */
+  uploadCurrentUserAvatar(body: any): Promise<UploadFilePath> {
+    return request<UploadFilePath>({
+      url: `${USER_BASE_URL}/current/avatar/upload`,
+      method: "POST",
+      data: body,
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  },
+
+  /**
+   * 修改个人中心用户信息
+   *
+   * @param body
+   * @returns 修改后的用户信息
+   */
+  updateCurrentUserInfo(body: UserProfileForm): Promise<UserInfo> {
+    return request<UserInfo>({
+      url: `${USER_BASE_URL}/current/info/update`,
+      method: "PUT",
+      data: body,
+    });
+  },
+
+  /**
+   * 修改个人中心用户密码
+   *
+   * @param body
+   * @returns 修改后的用户信息
+   */
+  changeCurrentUserPassword(body: PasswordChangeForm): Promise<ApiResponse> {
+    return request<ApiResponse>({
+      url: `${USER_BASE_URL}/current/password/change`,
+      method: "PUT",
+      data: body,
+    });
+  },
+
+  /**
+   * 注册用户
+   *
+   * @param body
+   * @returns 忘记密码结果
+   */
+  registerUser(body: RegisterForm): Promise<ApiResponse> {
+    return request<ApiResponse>({
+      url: `${USER_BASE_URL}/register`,
+      method: "POST",
+      data: body,
+    });
+  },
+
+  /**
+   * 忘记密码
+   *
+   * @param body
+   * @returns 忘记密码结果
+   */
+  forgetPassword(body: ForgetPasswordForm): Promise<ApiResponse> {
+    return request<ApiResponse>({
+      url: `${USER_BASE_URL}/forget/password`,
+      method: "POST",
+      data: body,
     });
   },
 
   /**
    * 获取用户分页列表
-   *
+   *POST
    * @param queryParams 查询参数
    */
-  getPage(queryParams: UserPageQuery) {
-    return request<PageResult<UserPageVO[]>>({
-      url: `${USER_BASE_URL}/page`,
+  getUserPage(queryParams: UserPageQuery): Promise<PageResult<UserInfo[]>> {
+    return request<PageResult<UserInfo[]>>({
+      url: `${USER_BASE_URL}/list`,
       method: "GET",
       data: queryParams,
-    });
-  },
-  /**
-   * 添加用户
-   *
-   * @param data 用户表单数据
-   */
-  add(data: UserForm) {
-    return request({
-      url: `${USER_BASE_URL}`,
-      method: "POST",
-      data: data,
     });
   },
 
@@ -46,245 +105,216 @@ const UserAPI = {
    * @param userId 用户ID
    * @returns 用户表单详情
    */
-  getFormData(userId: number) {
+  getUserDetail(userId: number): Promise<UserForm> {
     return request<UserForm>({
-      url: `${USER_BASE_URL}/${userId}/form`,
+      url: `${USER_BASE_URL}/detail/${userId}`,
       method: "GET",
+    });
+  },
+
+  /**
+   * 添加用户
+   *
+   * @param body 用户表单数据
+   */
+  addUser(body: UserForm): Promise<ApiResponse> {
+    return request<ApiResponse>({
+      url: `${USER_BASE_URL}/create`,
+      method: "POST",
+      data: body,
     });
   },
 
   /**
    * 修改用户
    *
-   * @param id 用户ID
-   * @param data 用户表单数据
+   * @param body 用户表单数据
    */
-  update(id: number, data: UserForm) {
+  updateUser(body: UserForm): Promise<ApiResponse> {
     return request({
-      url: `${USER_BASE_URL}/${id}`,
+      url: `${USER_BASE_URL}/update`,
       method: "PUT",
-      data: data,
-    });
-  },
-
-  /** 获取个人中心用户信息 */
-  getProfile() {
-    return request<UserProfileVO>({
-      url: `${USER_BASE_URL}/profile`,
-      method: "GET",
-    });
-  },
-
-  /** 修改个人中心用户信息 */
-  updateProfile(data: UserProfileForm) {
-    return request({
-      url: `${USER_BASE_URL}/profile`,
-      method: "PUT",
-      data: data,
-    });
-  },
-
-  /** 修改个人中心用户密码 */
-  changePassword(data: PasswordChangeForm) {
-    return request({
-      url: `${USER_BASE_URL}/password`,
-      method: "PUT",
-      data: data,
+      data: body,
     });
   },
 
   /**
-   *   发送手机/邮箱验证码
+   * 删除用户
    *
-   * @param contact 联系方式  手机号/邮箱
-   * @param contactType 联系方式类型 MOBILE:手机;EMAIL:邮箱
+   * @param ids 用户ID数组
    */
-  sendVerificationCode(contact: string, contactType: string) {
-    return request({
-      url: `${USER_BASE_URL}/send-verification-code?contact=${contact}&contactType=${contactType}`,
-      method: "POST",
-    });
-  },
-
-  /** 绑定个人中心用户手机 */
-  bindMobile(data: MobileBindingForm) {
-    return request({
-      url: `${USER_BASE_URL}/mobile`,
-      method: "PUT",
-      data: data,
-    });
-  },
-
-  /** 绑定个人中心用户邮箱 */
-  bindEmail(data: EmailBindingForm) {
-    return request({
-      url: `${USER_BASE_URL}/email`,
-      method: "PUT",
-      data: data,
-    });
-  },
-
-  /**
-   * 批量删除用户，多个以英文逗号(,)分割
-   *
-   * @param ids 用户ID字符串，多个以英文逗号(,)分割
-   */
-  deleteByIds(ids: string) {
-    return request({
-      url: `${USER_BASE_URL}/${ids}`,
+  deleteUser(ids: number[]): Promise<ApiResponse> {
+    return request<ApiResponse>({
+      url: `/system/user/delete`,
       method: "DELETE",
-    });
-  },
-
-  /** 获取微信手机号 */
-  getPhoneNumber(data: WechatPhoneData): Promise<PhoneNumberResult> {
-    return request<PhoneNumberResult>({
-      url: `${USER_BASE_URL}/wechat-phone`,
-      method: "POST",
-      data: data,
+      data: ids,
     });
   },
 };
+
 export default UserAPI;
 
-/** 登录用户信息 */
-export interface UserInfo {
-  /** 用户ID */
-  userId?: number;
-
-  /** 用户名 */
-  username?: string;
-
-  /** 昵称 */
-  nickname?: string;
-
-  /** 头像URL */
-  avatar?: string;
-
-  /** 角色 */
-  roles?: string[];
-
-  /** 权限 */
-  perms?: string[];
+/* 忘记密码表单 */
+export interface ForgetPasswordForm {
+  username: string;
+  new_password: string;
+  confirmPassword: string;
 }
 
-/**
- * 用户分页查询对象
- */
+/* 注册表单 */
+export interface RegisterForm {
+  username: string;
+  password: string;
+  confirmPassword: string;
+}
+
+/* 分页查询表单 */
 export interface UserPageQuery extends PageQuery {
-  /** 搜索关键字 */
-  keywords?: string;
-
-  /** 用户状态 */
-  status?: number;
-
-  /** 部门ID */
-  deptId?: number;
-
-  /** 开始时间 */
-  createTime?: [string, string] | string;
-
-  /** 排序字段 */
-  field?: string;
-
-  /** 排序方式(asc:正序,desc:倒序) */
-  direction?: string;
-}
-
-/** 用户分页对象 */
-export interface UserPageVO {
-  /** 用户头像URL */
-  avatar?: string;
-  /** 创建时间 */
-  createTime?: string;
-  /** 部门名称 */
-  deptName?: string;
-  /** 用户邮箱 */
-  email?: string;
-  /** 性别 */
-  gender?: number;
-  /** 用户ID */
-  id: number;
-  /** 手机号 */
-  mobile?: string;
-  /** 用户昵称 */
-  nickname?: string;
-  /** 角色名称，多个使用英文逗号(,)分割 */
-  roleNames?: string;
-  /** 用户状态(1:启用;0:禁用) */
-  status?: number;
-  /** 用户名 */
   username?: string;
+  name?: string;
+  status?: boolean;
+  dept_id?: number;
+  start_time?: string;
+  end_time?: string;
 }
 
-/** 个人中心用户信息 */
-export interface UserProfileVO {
-  /** 用户ID */
+/* 搜索选择器数据类型 */
+export interface searchSelectDataType {
+  name?: string;
+  status?: string;
+}
+
+/* 用户表单 */
+export interface UserForm {
   id?: number;
-
-  /** 用户名 */
   username?: string;
-
-  /** 昵称 */
-  nickname?: string;
-
-  /** 头像URL */
-  avatar?: string;
-
-  /** 性别 */
+  name?: string;
+  dept_id?: number;
+  dept_name?: string;
+  role_ids?: number[];
+  roleNames?: string[];
+  position_ids?: number[];
+  positionNames?: string[];
+  password?: string;
   gender?: number;
-
-  /** 手机号 */
-  mobile?: string;
-
-  /** 邮箱 */
   email?: string;
-
-  /** 部门名称 */
-  deptName?: string;
-
-  /** 角色名称，多个使用英文逗号(,)分割 */
-  roleNames?: string;
-
-  /** 创建时间 */
-  createTime?: string;
+  mobile?: string;
+  is_superuser?: boolean;
+  status?: boolean;
+  description?: string;
 }
 
-/** 个人中心用户信息表单 */
+/* 登录用户信息 */
+export interface UserInfo {
+  index?: number;
+  id?: number;
+  username?: string;
+  name?: string;
+  avatar?: string;
+  email?: string;
+  mobile?: string;
+  gender?: string;
+  password?: string;
+  menus?: MenuTable[];
+  dept?: deptTreeType;
+  dept_id?: deptTreeType["id"];
+  dept_name?: deptTreeType["name"];
+  roles?: roleSelectorType[];
+  roleNames?: roleSelectorType["name"][];
+  role_ids?: roleSelectorType["id"][];
+  positions?: positionSelectorType[];
+  positionNames?: positionSelectorType["name"][];
+  position_ids?: positionSelectorType["id"][];
+  is_superuser?: boolean;
+  status?: boolean;
+  description?: string;
+  last_login?: string;
+  created_at?: string;
+  updated_at?: string;
+  creator?: creatorType;
+}
+
+/* 菜单表 */
+export interface MenuTable {
+  index?: number;
+  id?: number;
+  name?: string;
+  type?: number;
+  icon?: string;
+  order?: number;
+  permission?: string;
+  route_name?: string;
+  route_path?: string;
+  component_path?: string;
+  redirect?: string;
+  parent_id?: number;
+  parent_name?: string;
+  keep_alive?: boolean;
+  hidden?: boolean;
+  always_show?: boolean;
+  title?: string;
+  params?: { key: string; value: string }[];
+  affix?: boolean;
+  status?: boolean;
+  description?: string;
+  created_at?: string;
+  updated_at?: string;
+  children?: MenuTable[];
+}
+
+/* 部门树 */
+export interface deptTreeType {
+  id?: number;
+  name?: string;
+  parent_id?: number;
+  children?: deptTreeType[];
+}
+
+/* 角色选择器 */
+export interface roleSelectorType {
+  id?: number;
+  name?: string;
+  status?: boolean;
+  description?: string;
+}
+
+/* 职位选择器 */
+export interface positionSelectorType {
+  id?: number;
+  name?: string;
+  status?: boolean;
+  description?: string;
+}
+
+/* 个人中心用户信息表单 */
 export interface UserProfileForm {
-  /** 用户ID */
   id?: number;
-
-  /** 用户名 */
-  username?: string;
-
-  /** 昵称 */
-  nickname?: string;
-
-  /** 头像URL */
-  avatar?: string;
-
-  /** 性别 */
-  gender?: number;
-
-  /** 手机号 */
-  mobile?: string;
-
-  /** 邮箱 */
-  email?: string;
+  name: string;
+  gender: number;
+  mobile: string;
+  email: string;
+  username: string;
+  dept_name: string;
+  positions: positionSelectorType[];
+  roles: roleSelectorType[];
+  avatar: string;
+  created_at: string;
 }
 
-/** 修改密码表单 */
+/* 修改密码表单 */
 export interface PasswordChangeForm {
-  /** 原密码 */
-  oldPassword?: string;
-  /** 新密码 */
-  newPassword?: string;
-  /** 确认新密码 */
-  confirmPassword?: string;
+  old_password: string;
+  new_password: string;
+  confirm_password: string;
 }
 
-/** 修改手机表单 */
+/* 重置密码表单 */
+export interface ResetPasswordForm {
+  id: number;
+  password: string;
+}
+
+/* 修改手机表单 */
 export interface MobileBindingForm {
   /** 手机号 */
   mobile?: string;
@@ -292,7 +322,7 @@ export interface MobileBindingForm {
   code?: string;
 }
 
-/** 修改邮箱表单 */
+/* 修改邮箱表单 */
 export interface EmailBindingForm {
   /** 邮箱 */
   email?: string;
@@ -300,31 +330,7 @@ export interface EmailBindingForm {
   code?: string;
 }
 
-/** 用户表单 */
-export interface UserForm {
-  /** 用户头像 */
-  avatar?: string;
-  /** 部门ID */
-  deptId?: number;
-  /** 用户邮箱 */
-  email?: string;
-  /** 性别 */
-  gender?: number;
-  /** 用户ID */
-  id?: number;
-  /** 手机号 */
-  mobile?: string;
-  /** 昵称 */
-  nickname?: string;
-  /** 角色ID集合 */
-  roleIds: number[];
-  /** 用户状态(1:正常;0:禁用) */
-  status?: number;
-  /** 用户名 */
-  username?: string;
-}
-
-/** 微信手机号授权数据 */
+/* 微信手机号授权数据 */
 export interface WechatPhoneData {
   /** 微信授权码 */
   code: string;
@@ -334,7 +340,7 @@ export interface WechatPhoneData {
   iv?: string;
 }
 
-/** 手机号获取结果 */
+/* 手机号获取结果 */
 export interface PhoneNumberResult {
   /** 手机号 */
   phoneNumber: string;

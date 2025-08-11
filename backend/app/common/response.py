@@ -2,7 +2,7 @@
 
 from typing import Any, Mapping, Optional
 from fastapi import status
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
 from starlette.background import BackgroundTask
 from pydantic import Field, BaseModel
 
@@ -94,4 +94,38 @@ class StreamResponse(StreamingResponse):
             media_type=media_type, # 文件类型
             headers=headers, # 文件名
             background=background # 文件大小
+        )
+
+
+class CustomFileResponse(FileResponse):
+    """
+    文件响应
+    """
+    def __init__(
+            self,
+            file_path: str,
+            filename: str,
+            media_type: str = "application/octet-stream",
+            headers: Optional[Dict[str, Union[str, int]]] = None,
+            background: Optional[BackgroundTask] = None,
+            status_code: int = 200
+    ):
+        """
+        初始化文件响应类
+        :param file_path: 文件路径
+        :param media_type: 文件类型
+        :param headers: 响应头
+        :param background: 后台任务
+        :param status_code: HTTP状态码
+        """
+        super().__init__(
+            path=file_path,
+            status_code=status_code,
+            headers=headers,
+            media_type=media_type,
+            background=background,
+            filename=filename,
+            stat_result=None,
+            method=None,
+            content_disposition_type="attachment"
         )

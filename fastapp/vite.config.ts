@@ -19,7 +19,7 @@ export default defineConfig(async ({ mode }: ConfigEnv): Promise<UserConfig> => 
       proxy: {
         [env.VITE_APP_BASE_API]: {
           changeOrigin: true,
-          target: env.VITE_APP_API_URL,
+          target: env.VITE_API_BASE_URL,
           rewrite: (path) => path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
         },
       },

@@ -50,6 +50,25 @@
               @click="showPassword = !showPassword"
             />
           </view>
+          <!-- 验证码输入框 -->
+          <view class="form-item">
+            <wd-icon
+              name="lock-on"
+              size="22"
+              :color="isDarkMode ? '#7AC5FF' : '#333'"
+              class="input-icon"
+            />
+            <input
+              v-model="loginFormData.captcha"
+              class="form-input input-transparent"
+              type="text"
+              placeholder="请输入验证码"
+              placeholder-class="input-placeholder"
+            />
+            <view class="captcha-img">
+              <image :src="captchaImg" class="captcha-img" />
+            </view>
+          </view>
           <view class="divider"></view>
 
           <!-- 登录按钮 -->
@@ -122,12 +141,12 @@
 
 <script lang="ts" setup>
 import { onLoad } from "@dcloudio/uni-app";
-import { type LoginData } from "@/api/auth";
 import { useUserStore } from "@/store/modules/user.store";
 import { useToast } from "wot-design-uni";
 import { useWechat } from "@/composables/useWechat";
 import { useTheme } from "@/composables/useTheme";
 import { computed, onMounted } from "vue";
+import AuthAPI, { type LoginFormData } from "@/api/auth";
 
 const loginFormRef = ref();
 const toast = useToast();
@@ -138,13 +157,18 @@ const loginType = ref<"account" | "phone">("account");
 const { authState, getLoginCode, getPhoneNumber } = useWechat();
 const { theme } = useTheme();
 
+const captchaImg = ref("");
+
 // 是否暗黑模式
 const isDarkMode = computed(() => theme.value === "dark");
 
 // 登录表单数据
-const loginFormData = ref<LoginData>({
+const loginFormData = ref<LoginFormData>({
   username: "admin",
   password: "123456",
+  captcha_key: "",
+  captcha: "",
+  remember: true,
 });
 
 // 获取重定向参数
@@ -155,6 +179,17 @@ onLoad((options) => {
   }
 });
 
+// 获取验证码
+const getLoginCaptcha = async () => {
+  try {
+    const result = await AuthAPI.getCaptcha();
+    captchaImg.value = result.captcha_key;
+    toast.success("验证码发送成功");
+  } catch (error: any) {
+    toast.error(error?.message || "验证码发送失败");
+  }
+};
+
 // 强制清除输入框背景色
 onMounted(() => {
   setTimeout(() => {
@@ -164,6 +199,8 @@ onMounted(() => {
       input.style.boxShadow = "none";
     });
   }, 100);
+
+  getLoginCaptcha();
 });
 
 // 账号密码登录处理
@@ -179,6 +216,11 @@ const handleAccountLogin = () => {
     toast.error("请输入密码");
     return;
   }
+  if (loginFormData.value.captcha_key && !loginFormData.value.captcha) {
+    toast.error("请输入验证码");
+    return;
+  }
+
 
   loading.value = true;
 

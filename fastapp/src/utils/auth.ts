@@ -132,7 +132,7 @@ export function requireLogin(): void {
   if (!accessToken || !userStore.userInfo) {
     // 清除可能存在的无效状态
     clearTokens();
-    userStore.logout();
+    userStore.logout({ token: accessToken || "" });
 
     // 跳转到登录页
     uni.reLaunch({

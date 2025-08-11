@@ -1,10 +1,22 @@
 declare global {
   /**
+   * 响应数据
+   */
+  interface ApiResponse<T = any> {
+    code: number;
+    data: T;
+    msg: string;
+    status_code: number;
+  }
+
+  /**
    * 分页查询参数
    */
   interface PageQuery {
-    pageNum: number;
-    pageSize: number;
+    /** 当前页码 */
+    page_no: number;
+    /** 每页条数 */
+    page_size: number;
   }
 
   /**
@@ -12,13 +24,16 @@ declare global {
    */
   interface PageResult<T> {
     /** 数据列表 */
-    list: T;
+    items: T;
     /** 总数 */
     total: number;
+    page_no: number;
+    page_size: number;
+    has_next: boolean;
   }
 
   /**
-   * 组件数据源
+   * 下拉选项数据类型
    */
   interface OptionType {
     /** 值 */
@@ -30,12 +45,22 @@ declare global {
   }
 
   /**
-   * 响应数据
+   * 创建人
    */
-  interface ResponseData<T = any> {
-    code: string;
-    data: T;
-    msg: string;
+  interface creatorType {
+    id?: number;
+    name?: string;
+    username?: string;
+  }
+
+  /**
+   * 上传文件返回
+   */
+  interface UploadFilePath {
+    file_path: string;
+    file_name: string;
+    origin_name: string;
+    file_url: string;
   }
 }
 export {};
