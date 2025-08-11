@@ -105,7 +105,6 @@ const submitChanges = async () => {
     });
 
     await Promise.all(updatePromises);
-    ElMessage.success('保存成功');
 
     // 清除已提交的修改标记
     keysToSubmit.forEach(key => {
