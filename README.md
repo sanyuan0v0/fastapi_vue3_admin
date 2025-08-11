@@ -235,7 +235,7 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 
 ### 移动端
 
-| 模块名{ width="100" } | 截图 |
+| 模块名 | 截图 |
 |----------|------|
 | 登录      | 开发中... （待完成） |
 

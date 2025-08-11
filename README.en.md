@@ -233,7 +233,7 @@ fastapi_vue3_admin/devops/devops/nginx/nginx.conf
 
 ### 移动端
 
-| Module Name{ width="100" } | Screenshot |
+| Module Name | Screenshot |
 |----------|------|
 | Login      | Under development... (To be completed) |
 
