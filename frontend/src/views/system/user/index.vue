@@ -524,14 +524,12 @@ function hancleResetPassword(row: UserInfo) {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
   }).then(
-    ({ value }) => {
+    async ({ value }) => {
       if (!value || value.length < 6) {
         ElMessage.warning("密码至少需要6位字符，请重新输入");
         return false;
       }
-      UserAPI.resetUserPassword({id: row.id!, password: value}).then(() => {
-        ElMessage.success("密码重置成功，新密码是：" + value);
-      });
+      await UserAPI.resetUserPassword({id: row.id!, password: value})
     },
     () => {
       ElMessageBox.close();

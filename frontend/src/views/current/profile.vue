@@ -420,7 +420,6 @@ const handleSave = async () => {
     // 确保avatar字段被正确处理
     const response = await UserAPI.updateCurrentUserInfo({...infoFormState});
     await userStore.setUserInfo(response.data.data);
-    ElMessage.success('保存成功');
   } catch (error) {
     console.error(error);
     ElMessage.error('保存失败，请重试');

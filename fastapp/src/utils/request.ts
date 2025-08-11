@@ -5,23 +5,25 @@ interface RequestOptions<T = any> {
   url: string;
   method: "GET" | "POST" | "PUT" | "DELETE";
   data?: T;
-  header?: Record<string, string>;
+  headers?: Record<string, string>;
   timeout?: number;
-  responseType?: "text" | "arraybuffer";
+  responseType?: "text" | "arraybuffer" | "blob" | "json";
   skipAuth?: boolean; // 标记是否跳过认证
 }
 
-// 请求函数
+/**
+ * 请求拦截器 - 添加 Authorization 头
+ */
 function request<T = any>(options: RequestOptions): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     // 构建请求头
-    const header = Object.assign({}, options.header || {});
+    const header = Object.assign({}, options.headers || {});
 
     // 检查是否需要添加认证令牌
     if (!options.skipAuth) {
-      const token = getAccessToken();
-      if (token) {
-        header["Authorization"] = `Bearer ${token}`;
+      const accessToken = getAccessToken();
+      if (accessToken) {
+        header["Authorization"] = `Bearer ${accessToken}`;
       } else {
         // 需要认证但没有令牌，跳转到登录页
         uni.navigateTo({
@@ -35,7 +37,7 @@ function request<T = any>(options: RequestOptions): Promise<T> {
     let requestUrl = options.url;
     // #ifdef MP-WEIXIN
     // 微信小程序环境，使用完整URL
-    requestUrl = `${import.meta.env.VITE_APP_API_URL}${options.url}`;
+    requestUrl = `${import.meta.env.VITE_API_BASE_URL}${options.url}`;
     // #endif
 
     // #ifndef MP-WEIXIN
@@ -43,13 +45,18 @@ function request<T = any>(options: RequestOptions): Promise<T> {
     requestUrl = `${import.meta.env.VITE_APP_BASE_API}${options.url}`;
     // #endif
 
+    let timeout = Number(import.meta.env.VITE_TIMEOUT);
+    if (options.timeout) {
+      timeout = options.timeout;
+    }
+
     // 统一处理请求
     uni.request({
       url: requestUrl,
       method: options.method,
       data: options.data,
-      header,
-      timeout: options.timeout || 30000,
+      header: header,
+      timeout: timeout,
       responseType: options.responseType,
       success: (res: any) => {
         // 请求成功

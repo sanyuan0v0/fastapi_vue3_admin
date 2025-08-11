@@ -381,7 +381,6 @@ async function handleSubmit() {
       } else {
         try {
           await ConfigAPI.createConfig(formData)
-          ElMessage.success("新增成功");
           dialogVisible.visible = false;
           resetForm();
           handleResetQuery();

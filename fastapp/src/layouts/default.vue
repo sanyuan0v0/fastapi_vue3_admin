@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { useTheme } from "@/composables/useTheme";
+
 const { theme, themeVars } = useTheme();
 </script>
 

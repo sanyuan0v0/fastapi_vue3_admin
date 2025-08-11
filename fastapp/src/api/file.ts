@@ -1,8 +1,8 @@
 import { getToken } from "@/utils/storage";
 import { ApiCode } from "@/enums/api-code.enum";
 
-// H5 使用 VITE_APP_BASE_API 作为代理路径，其他平台使用 VITE_APP_API_URL 作为请求路径
-let baseApi = import.meta.env.VITE_APP_API_URL;
+// H5 使用 VITE_APP_BASE_API 作为代理路径，其他平台使用 VITE_API_BASE_URL 作为请求路径
+let baseApi = import.meta.env.VITE_API_BASE_URL;
 // #ifdef H5
 baseApi = import.meta.env.VITE_APP_BASE_API;
 // #endif
@@ -11,14 +11,14 @@ const FileAPI = {
   /**
    * 文件上传地址
    */
-  uploadUrl: baseApi + "/api/v1/files",
+  uploadUrl: baseApi + "/api/v1/files/upload",
 
   /**
    * 上传文件
    *
    * @param filePath
    */
-  upload(filePath: string): Promise<FileInfo> {
+  upload(filePath: string): Promise<UploadFilePath> {
     return new Promise((resolve, reject) => {
       uni.uploadFile({
         url: this.uploadUrl,
@@ -29,7 +29,7 @@ const FileAPI = {
         },
         formData: {},
         success: (response) => {
-          const resData = JSON.parse(response.data) as ResponseData<FileInfo>;
+          const resData = JSON.parse(response.data) as ApiResponse<UploadFilePath>;
           // 业务状态码 00000 表示成功
           if (resData.code === ApiCode.SUCCESS) {
             resolve(resData.data);
@@ -63,13 +63,3 @@ const FileAPI = {
 };
 
 export default FileAPI;
-
-/**
- * 文件API类型声明
- */
-export interface FileInfo {
-  /** 文件名 */
-  name: string;
-  /** 文件路径 */
-  url: string;
-}
