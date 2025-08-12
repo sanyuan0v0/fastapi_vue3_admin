@@ -25,6 +25,24 @@ export function useTheme() {
   const currentThemeColor = ref<ThemeColorOption>(themeColorOptions[0]);
   const showThemeColorSheet = ref(false);
 
+  const colorColumns = [
+    { value: "#165DFF", label: "蓝色" },
+    { value: "#0FC6C2", label: "青绿色" },
+    { value: "#722ED1", label: "紫色" },
+    { value: "#F5222D", label: "红色" },
+    { value: "#FA8C16", label: "橙色" },
+    { value: "#FADB14", label: "黄色" },
+    { value: "#52C41A", label: "绿色" },
+    { value: "#EB2F96", label: "粉色" },
+    { value: "#13C2C2", label: "青色" },
+    { value: "#1890FF", label: "天蓝色" },
+    { value: "#CD5C5C", label: "经典红" },
+    { value: "#228B22", label: "自然绿" },
+    { value: "#FF6B6B", label: "珊瑚红" },
+    { value: "#4ECDC4", label: "薄荷绿" },
+    { value: "#FFD166", label: "黄金黄色" },
+  ];
+
   const themeVars = reactive<ConfigProviderThemeVars>({
     darkBackground: "#0f0f0f",
     darkBackground2: "#1a1a1a",
@@ -114,7 +132,6 @@ export function useTheme() {
       theme.value = systemTheme;
       if (!hasUserSet.value) {
         followSystem.value = true;
-        console.log("首次启动，使用系统主题:", theme.value);
       } else {
         console.log("跟随系统主题:", theme.value);
       }
@@ -162,6 +179,7 @@ export function useTheme() {
   return {
     theme: computed(() => theme.value),
     isDark,
+    colorColumns,
     followSystem: computed(() => followSystem.value),
     hasUserSet: computed(() => hasUserSet.value),
     currentThemeColor: computed(() => currentThemeColor.value),

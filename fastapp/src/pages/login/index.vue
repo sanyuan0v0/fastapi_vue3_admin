@@ -4,7 +4,11 @@
     <image src="/static/images/login-bg.svg" mode="aspectFill" class="login-bg" />
 
     <!-- Logo和标题区域 -->
-    <view class="header"></view>
+    <view class="header">
+      <image src="/static/logo.png" class="logo" mode="aspectFit" />
+      <text class="title">FastApp管理系统</text>
+      <text class="subtitle">欢迎使用移动端管理平台</text>
+    </view>
 
     <view class="login-card">
       <view class="form-wrap">
@@ -23,6 +27,7 @@
               class="form-input input-transparent"
               placeholder="请输入用户名"
               placeholder-class="input-placeholder"
+              @confirm="handleAccountLogin"
             />
           </view>
           <view class="divider"></view>
@@ -38,9 +43,11 @@
             <input
               v-model="loginFormData.password"
               class="form-input input-transparent"
-              :type="showPassword ? 'text' : 'password'"
+              type="text"
+              :password="showPassword ? false : true"
               placeholder="请输入密码"
               placeholder-class="input-placeholder"
+              @confirm="handleAccountLogin"
             />
             <wd-icon
               :name="showPassword ? 'eye-open' : 'eye-close'"
@@ -64,9 +71,10 @@
               type="text"
               placeholder="请输入验证码"
               placeholder-class="input-placeholder"
+              @confirm="handleAccountLogin"
             />
-            <view class="captcha-img">
-              <image :src="captchaImg" class="captcha-img" />
+            <view class="captcha-img" @click="getLoginCaptcha">
+              <image :src="captchaImg" class="captcha-img" mode="aspectFit" />
             </view>
           </view>
           <view class="divider"></view>
@@ -75,9 +83,10 @@
           <button
             class="login-btn"
             :disabled="loading"
-            :style="loading ? 'opacity: 0.7;' : ''"
+            :style="{ opacity: loading ? 0.7 : 1 }"
             @click="handleAccountLogin"
           >
+            <wd-loading v-if="loading" size="20" color="#fff" />
             {{ loading ? "登录中..." : "账号登录" }}
           </button>
 
@@ -145,7 +154,8 @@ import { useUserStore } from "@/store/modules/user.store";
 import { useToast } from "wot-design-uni";
 import { useWechat } from "@/composables/useWechat";
 import { useTheme } from "@/composables/useTheme";
-import { computed, onMounted } from "vue";
+import { debounce } from "@/utils";
+import { computed, onMounted, ref } from "vue";
 import AuthAPI, { type LoginFormData } from "@/api/auth";
 
 const loginFormRef = ref();
@@ -166,9 +176,9 @@ const isDarkMode = computed(() => theme.value === "dark");
 const loginFormData = ref<LoginFormData>({
   username: "admin",
   password: "123456",
-  captcha_key: "",
   captcha: "",
-  remember: true,
+  captcha_key: "",
+  remember: true, // 添加 remember 属性，默认值设为 false
 });
 
 // 获取重定向参数
@@ -183,10 +193,15 @@ onLoad((options) => {
 const getLoginCaptcha = async () => {
   try {
     const result = await AuthAPI.getCaptcha();
-    captchaImg.value = result.captcha_key;
-    toast.success("验证码发送成功");
+    captchaImg.value = result.img_base;
+    loginFormData.value.captcha_key = result.key;
+    // 只有在需要验证码时才清空输入框
+    if (result.enable) {
+      loginFormData.value.captcha = "";
+    }
   } catch (error: any) {
-    toast.error(error?.message || "验证码发送失败");
+    toast.error(error?.message || "验证码获取失败");
+    captchaImg.value = "";
   }
 };
 
@@ -203,12 +218,29 @@ onMounted(() => {
   getLoginCaptcha();
 });
 
-// 账号密码登录处理
-const handleAccountLogin = () => {
+// 统一的登录成功处理
+const handleLoginSuccess = async (result: any) => {
+  // 记住用户名
+  await userStore.getInfo();
+  toast.success("登录成功");
+
+  setTimeout(() => {
+    if (!userStore.isUserInfoComplete() || result.isNewUser) {
+      uni.navigateTo({
+        url: `/pages/mine/profile/complete-profile?redirect=${encodeURIComponent(redirect.value)}`,
+      });
+    } else {
+      uni.reLaunch({ url: redirect.value });
+    }
+  }, 1000);
+};
+
+// 账号密码登录处理（防抖处理）
+const handleAccountLogin = debounce(() => {
   if (loading.value) return;
 
   // 表单验证
-  if (!loginFormData.value.username) {
+  if (!loginFormData.value.username.trim()) {
     toast.error("请输入用户名");
     return;
   }
@@ -216,37 +248,28 @@ const handleAccountLogin = () => {
     toast.error("请输入密码");
     return;
   }
-  if (loginFormData.value.captcha_key && !loginFormData.value.captcha) {
+  if (loginFormData.value.captcha_key && !loginFormData.value.captcha.trim()) {
     toast.error("请输入验证码");
     return;
   }
-
 
   loading.value = true;
 
   userStore
     .login(loginFormData.value)
-    .then(() => userStore.getInfo())
-    .then(() => {
-      toast.success("登录成功");
-
-      // 账号密码登录直接跳转到重定向页面
-      setTimeout(() => {
-        uni.reLaunch({
-          url: redirect.value,
-        });
-      }, 1000);
-    })
+    .then(handleLoginSuccess)
     .catch((error) => {
       toast.error(error?.message || "登录失败");
+      // 登录失败后刷新验证码
+      getLoginCaptcha();
     })
     .finally(() => {
       loading.value = false;
     });
-};
+}, 500);
 
-// 微信一键登录（通过手机号）
-const handleWechatPhoneLogin = async (e: any) => {
+// 微信一键登录（通过手机号）- 防抖处理
+const handleWechatPhoneLogin = debounce(async (e: any) => {
   if (loading.value || authState.value.isLogining) return;
   loading.value = true;
 
@@ -257,26 +280,8 @@ const handleWechatPhoneLogin = async (e: any) => {
     // 调用登录接口
     const result: any = await userStore.loginWithWxPhone(phoneData);
 
-    // 获取用户信息
-    await userStore.getInfo();
-    toast.success("登录成功");
-
-    // 检查是否为新用户或信息不完整
-    if (result.isNewUser || !userStore.isUserInfoComplete()) {
-      // 跳转到完善信息页面
-      setTimeout(() => {
-        uni.navigateTo({
-          url: `/pages/mine/profile/complete-profile?redirect=${encodeURIComponent(redirect.value)}`,
-        });
-      }, 1000);
-    } else {
-      // 跳转到重定向页面
-      setTimeout(() => {
-        uni.reLaunch({
-          url: redirect.value,
-        });
-      }, 1000);
-    }
+    // 使用统一的成功处理
+    await handleLoginSuccess(result);
   } catch (error: any) {
     if (error.message === "用户拒绝授权") {
       toast.error("您已拒绝授权获取手机号");
@@ -287,10 +292,10 @@ const handleWechatPhoneLogin = async (e: any) => {
   } finally {
     loading.value = false;
   }
-};
+}, 500);
 
-// 微信授权登录处理
-const handleWechatLogin = async () => {
+// 微信授权登录处理 - 防抖处理
+const handleWechatLogin = debounce(async () => {
   if (loading.value) return;
   loading.value = true;
 
@@ -301,27 +306,8 @@ const handleWechatLogin = async () => {
 
     // 尝试使用微信授权登录接口
     const result: any = await userStore.loginWithWxCode(code);
-
-    // 获取用户信息
-    await userStore.getInfo();
-    toast.success("登录成功");
-
-    // 检查用户信息是否完整
-    if (result.isNewUser || !userStore.isUserInfoComplete()) {
-      // 如果信息不完整，跳转到完善信息页面
-      setTimeout(() => {
-        uni.navigateTo({
-          url: `/pages/mine/profile/complete-profile?redirect=${encodeURIComponent(redirect.value)}`,
-        });
-      }, 1000);
-    } else {
-      // 否则直接跳转到重定向页面
-      setTimeout(() => {
-        uni.reLaunch({
-          url: redirect.value,
-        });
-      }, 1000);
-    }
+    // 使用统一的成功处理
+    await handleLoginSuccess(result);
     // #endif
 
     // #ifndef MP-WEIXIN
@@ -332,7 +318,7 @@ const handleWechatLogin = async () => {
   } finally {
     loading.value = false;
   }
-};
+}, 500);
 
 // 跳转到用户协议页面
 const navigateToUserAgreement = () => {
@@ -365,10 +351,35 @@ const navigateToPrivacy = () => {
   position: absolute;
   top: 0;
   left: 0;
+  z-index: -1;
   width: 100%;
   height: 100%;
 }
 
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  align-items: center;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #fff;
+}
 .header {
   z-index: 2;
   display: flex;
@@ -478,6 +489,7 @@ input:-webkit-autofill:active {
 input.form-input,
 input.input-transparent {
   -webkit-appearance: none;
+  appearance: none;
   background: none !important;
   background-color: transparent !important;
   border: none !important;
@@ -661,6 +673,7 @@ input.input-transparent {
 @supports (-webkit-appearance: none) {
   input {
     -webkit-appearance: none;
+    appearance: none;
     background: transparent !important;
     background-color: transparent !important;
   }

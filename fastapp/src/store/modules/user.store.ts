@@ -6,7 +6,7 @@ import AuthAPI, {
   type LogoutBody,
 } from "@/api/auth";
 import UserAPI, { type UserInfo } from "@/api/user";
-import { setAccessToken, clearTokens } from "@/utils/auth";
+import { getAccessToken, setAccessToken, clearTokens } from "@/utils/auth";
 import { getUserInfo, setUserInfo } from "@/utils/storage";
 import { USER_INFO_KEY } from "@/constants";
 import { Storage } from "@/utils/storage";
@@ -76,9 +76,12 @@ export const useUserStore = defineStore("user", () => {
   };
 
   // 登出
-  const logout = async (data: LogoutBody) => {
+  const logout = async () => {
     try {
-      await AuthAPI.logout(data); // 调用后台注销接口
+      const logoutBody: LogoutBody = {
+        token: getAccessToken(),
+      };
+      await AuthAPI.logout(logoutBody); // 调用后台注销接口
     } catch (error) {
       console.error("登出失败", error);
     } finally {

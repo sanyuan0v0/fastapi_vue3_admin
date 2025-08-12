@@ -25,7 +25,7 @@
 
     <!-- 通知公告 -->
     <wd-notice-bar
-      text="vue-uniapp-template 是一个基于 Vue3 + UniApp 的前端模板项目，提供了一套完整的前端解决方案，包括登录、权限、字典、接口请求、状态管理、页面布局、组件封装等功能。"
+      text="fastapp 是一个基于 Vue3 + UniApp 的前端模板项目，提供了一套完整的前端解决方案，包括登录、权限、字典、接口请求、状态管理、页面布局、组件封装等功能。"
       color="#34D19D"
       type="info"
     >
@@ -80,7 +80,7 @@
         </view>
       </template>
 
-      <view class="w-full h-300px mb-40rpx">
+      <view class="w-full h-240px mb-40rpx">
         <qiun-data-charts type="area" :chartData="chartData" :opts="chartOpts" />
       </view>
     </wd-card>
@@ -89,6 +89,7 @@
 
 <script setup lang="ts">
 import { dayjs } from "wot-design-uni";
+import { useRouter } from "vue-router";
 
 // 定义访问统计数据类型
 interface VisitStatsVO {
@@ -140,7 +141,7 @@ const chartOpts = ref({
 // 日期范围
 const recentDaysRange = ref(7);
 
-const swiperList = ref(["https://www.youlai.tech/storage/blog/banner9.png"]);
+const swiperList = ref(["/static/images/banner.png"]);
 
 // 快捷导航列表
 const navList = reactive([
@@ -248,7 +249,6 @@ const loadVisitTrendData = () => {
 
 //  数据范围变化
 const handleDataRangeChange = ({ value }: { value: number }) => {
-  console.log("handleDataRangeChange", value);
   recentDaysRange.value = value;
   loadVisitTrendData();
 };
@@ -273,7 +273,7 @@ onShow(() => {
 
 <route lang="json">
 {
-  "name": "home",
+  "name": "index",
   "style": { "navigationStyle": "custom" },
   "layout": "tabbar"
 }

@@ -159,15 +159,15 @@ const handleSubmit = async () => {
         setTimeout(() => {
           uni.navigateBack();
         }, 1500);
-      } catch (_error) {
-        toast.error("提交失败，请重试");
+      } catch (error: any) {
+        toast.error(error?.message || "提交失败，请重试");
       } finally {
         submitting.value = false;
       }
     }
-  } catch (_error) {
+  } catch (error: any) {
     // 表单验证失败
-    console.log("表单验证失败");
+    console.log("表单验证失败", error);
   }
 };
 
