@@ -58,7 +58,7 @@
             />
           </view>
           <!-- 验证码输入框 -->
-          <view class="form-item">
+          <view v-if="captchaState.enable" class="form-item captcha-item">
             <wd-icon
               name="lock-on"
               size="22"
@@ -67,14 +67,24 @@
             />
             <input
               v-model="loginFormData.captcha"
-              class="form-input input-transparent"
+              class="form-input input-transparent captcha-input"
               type="text"
               placeholder="请输入验证码"
               placeholder-class="input-placeholder"
               @confirm="handleAccountLogin"
             />
-            <view class="captcha-img" @click="getLoginCaptcha">
-              <image :src="captchaImg" class="captcha-img" mode="aspectFit" />
+            <image
+              :src="captchaState.img_base"
+              class="captcha-image"
+              mode="aspectFit"
+              @click="getLoginCaptcha"
+            />
+            <view
+              v-if="!captchaState.img_base && captchaState.enable"
+              class="captcha-placeholder"
+              @click="getLoginCaptcha"
+            >
+              <text>点击加载</text>
             </view>
           </view>
           <view class="divider"></view>
@@ -149,14 +159,12 @@
 </template>
 
 <script lang="ts" setup>
-import { onLoad } from "@dcloudio/uni-app";
 import { useUserStore } from "@/store/modules/user.store";
 import { useToast } from "wot-design-uni";
 import { useWechat } from "@/composables/useWechat";
 import { useTheme } from "@/composables/useTheme";
-import { debounce } from "@/utils";
-import { computed, onMounted, ref } from "vue";
-import AuthAPI, { type LoginFormData } from "@/api/auth";
+import { computed, ref, reactive } from "vue";
+import AuthAPI, { type LoginFormData, type CaptchaInfo } from "@/api/auth";
 
 const loginFormRef = ref();
 const toast = useToast();
@@ -167,79 +175,57 @@ const loginType = ref<"account" | "phone">("account");
 const { authState, getLoginCode, getPhoneNumber } = useWechat();
 const { theme } = useTheme();
 
-const captchaImg = ref("");
-
-// 是否暗黑模式
-const isDarkMode = computed(() => theme.value === "dark");
-
 // 登录表单数据
 const loginFormData = ref<LoginFormData>({
   username: "admin",
   password: "123456",
   captcha: "",
   captcha_key: "",
-  remember: true, // 添加 remember 属性，默认值设为 false
+  remember: true,
 });
 
-// 获取重定向参数
-const redirect = ref("/pages/index/index");
-onLoad((options) => {
-  if (options && options.redirect) {
-    redirect.value = decodeURIComponent(options.redirect);
-  }
+// 验证码状态
+const captchaState = reactive<CaptchaInfo>({
+  enable: false, // 默认不启用，等待后端确认
+  key: "",
+  img_base: "",
 });
 
-// 获取验证码
+// 防重复请求标志
+const isCaptchaLoading = ref(false);
+
+// 获取验证码 - 添加防重复请求
 const getLoginCaptcha = async () => {
+  if (isCaptchaLoading.value) return;
+
+  isCaptchaLoading.value = true;
   try {
     const result = await AuthAPI.getCaptcha();
-    captchaImg.value = result.img_base;
-    loginFormData.value.captcha_key = result.key;
-    // 只有在需要验证码时才清空输入框
-    if (result.enable) {
-      loginFormData.value.captcha = "";
+    // 确保数据结构正确
+    if (result && typeof result === "object") {
+      captchaState.enable = Boolean(result.enable);
+      captchaState.key = result.key || "";
+      captchaState.img_base = result.img_base || result.img || "";
+      if (captchaState.enable) {
+        loginFormData.value.captcha = "";
+        loginFormData.value.captcha_key = captchaState.key;
+      }
+    } else {
+      captchaState.enable = false;
     }
   } catch (error: any) {
     toast.error(error?.message || "验证码获取失败");
-    captchaImg.value = "";
+    captchaState.img_base = "";
+    captchaState.enable = false;
+  } finally {
+    isCaptchaLoading.value = false;
   }
 };
 
-// 强制清除输入框背景色
-onMounted(() => {
-  setTimeout(() => {
-    const inputs = document.querySelectorAll("input");
-    inputs.forEach((input) => {
-      input.style.backgroundColor = "transparent";
-      input.style.boxShadow = "none";
-    });
-  }, 100);
-
-  getLoginCaptcha();
-});
-
-// 统一的登录成功处理
-const handleLoginSuccess = async (result: any) => {
-  // 记住用户名
-  await userStore.getInfo();
-  toast.success("登录成功");
-
-  setTimeout(() => {
-    if (!userStore.isUserInfoComplete() || result.isNewUser) {
-      uni.navigateTo({
-        url: `/pages/mine/profile/complete-profile?redirect=${encodeURIComponent(redirect.value)}`,
-      });
-    } else {
-      uni.reLaunch({ url: redirect.value });
-    }
-  }, 1000);
-};
-
-// 账号密码登录处理（防抖处理）
-const handleAccountLogin = debounce(() => {
+// 修复后的账号密码登录
+const handleAccountLogin = async () => {
   if (loading.value) return;
 
-  // 表单验证
   if (!loginFormData.value.username.trim()) {
     toast.error("请输入用户名");
     return;
@@ -248,66 +234,50 @@ const handleAccountLogin = debounce(() => {
     toast.error("请输入密码");
     return;
   }
-  if (loginFormData.value.captcha_key && !loginFormData.value.captcha.trim()) {
+  if (captchaState.enable && !loginFormData.value.captcha.trim()) {
     toast.error("请输入验证码");
     return;
   }
+  try {
+    loading.value = true;
+    await userStore.login(loginFormData.value);
+  } catch (error: any) {
+    toast.error(error?.message || "登录失败");
+    // 登录失败后刷新验证码
+    getLoginCaptcha();
+  } finally {
+    loading.value = false;
+  }
+};
 
-  loading.value = true;
-
-  userStore
-    .login(loginFormData.value)
-    .then(handleLoginSuccess)
-    .catch((error) => {
-      toast.error(error?.message || "登录失败");
-      // 登录失败后刷新验证码
-      getLoginCaptcha();
-    })
-    .finally(() => {
-      loading.value = false;
-    });
-}, 500);
-
-// 微信一键登录（通过手机号）- 防抖处理
-const handleWechatPhoneLogin = debounce(async (e: any) => {
+// 微信一键登录（通过手机号）
+const handleWechatPhoneLogin = async (e: any) => {
   if (loading.value || authState.value.isLogining) return;
   loading.value = true;
 
   try {
-    // 获取手机号加密数据
     const phoneData = await getPhoneNumber(e);
-
-    // 调用登录接口
-    const result: any = await userStore.loginWithWxPhone(phoneData);
-
-    // 使用统一的成功处理
-    await handleLoginSuccess(result);
+    await userStore.loginWithWxPhone(phoneData);
   } catch (error: any) {
     if (error.message === "用户拒绝授权") {
       toast.error("您已拒绝授权获取手机号");
     } else {
       toast.error(error?.message || "登录失败");
     }
-    console.error("微信手机号登录失败:", error);
   } finally {
     loading.value = false;
   }
-}, 500);
+};
 
-// 微信授权登录处理 - 防抖处理
-const handleWechatLogin = debounce(async () => {
+// 微信授权登录
+const handleWechatLogin = async () => {
   if (loading.value) return;
   loading.value = true;
 
   try {
     // #ifdef MP-WEIXIN
-    // 获取微信登录的临时 code
     const code = await getLoginCode();
-
-    // 尝试使用微信授权登录接口
-    const result: any = await userStore.loginWithWxCode(code);
-    // 使用统一的成功处理
-    await handleLoginSuccess(result);
+    await userStore.loginWithWxCode(code);
     // #endif
 
     // #ifndef MP-WEIXIN
@@ -318,21 +288,25 @@ const handleWechatLogin = debounce(async () => {
   } finally {
     loading.value = false;
   }
-}, 500);
+};
 
-// 跳转到用户协议页面
+// 是否暗黑模式
+const isDarkMode = computed(() => theme.value === "dark");
+
+// 导航函数
 const navigateToUserAgreement = () => {
-  uni.navigateTo({
-    url: "/pages/mine/settings/agreement/index",
-  });
+  uni.navigateTo({ url: "/pages/mine/settings/agreement/index" });
 };
 
-// 跳转到隐私政策页面
 const navigateToPrivacy = () => {
-  uni.navigateTo({
-    url: "/pages/mine/settings/privacy/index",
-  });
+  uni.navigateTo({ url: "/pages/mine/settings/privacy/index" });
 };
+
+// 页面加载时获取验证码 - 使用UniApp的onLoad生命周期
+onLoad(() => {
+  // 只在需要时获取验证码
+  getLoginCaptcha();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -498,6 +472,40 @@ input.input-transparent {
 .clear-icon,
 .eye-icon {
   padding: 10rpx;
+}
+
+.captcha-item {
+  display: flex;
+  gap: 20rpx;
+  align-items: center;
+}
+
+.captcha-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.captcha-image {
+  flex-shrink: 0;
+  width: 160rpx;
+  height: 60rpx;
+  cursor: pointer;
+  border-radius: 8rpx;
+}
+
+.captcha-placeholder {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 160rpx;
+  height: 60rpx;
+  font-size: 24rpx;
+  color: #666;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8rpx;
 }
 
 .divider {
