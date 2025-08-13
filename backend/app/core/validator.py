@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from datetime import datetime
+from datetime import datetime, date
 from typing import Annotated, Optional, Union
 from pydantic import AfterValidator, PlainSerializer, WithJsonSchema
 
@@ -13,6 +13,14 @@ from app.core.exceptions import CustomException
 DateTimeStr = Annotated[
     datetime,
     AfterValidator(lambda x: datetime_validator(x)),
+    PlainSerializer(lambda x: x, return_type=str),
+    WithJsonSchema({'type': 'string'}, mode='serialization')
+]
+
+# 自定义日期类型
+DateStr = Annotated[
+    date,
+    AfterValidator(lambda x: date_validator(x)),
     PlainSerializer(lambda x: x, return_type=str),
     WithJsonSchema({'type': 'string'}, mode='serialization')
 ]
@@ -51,6 +59,26 @@ def datetime_validator(value: Union[str, datetime]) -> Union[str, datetime, None
         raise CustomException(code=RET.BAD_REQUEST.code, msg="无效的日期格式")
 
     return value
+
+def date_validator(value: Union[str, date]) -> Union[str, date, None]:
+    """
+    日期格式验证器
+    
+    :param value: 日期值
+    :return: 格式化后的日期
+    :raises: CustomException 日期格式无效时抛出
+    """
+    pattern = "%Y-%m-%d"
+    try:
+        if isinstance(value, str):
+            value = date.fromisoformat(value)
+        elif isinstance(value, date):
+            value = value.strftime(pattern)
+    except Exception:
+        raise CustomException(code=RET.BAD_REQUEST.code, msg="无效的日期格式")
+
+    return value
+
 
 def email_validator(value: str) -> str:
     """

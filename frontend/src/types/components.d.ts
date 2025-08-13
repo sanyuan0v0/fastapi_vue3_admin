@@ -110,6 +110,7 @@ declare module 'vue' {
     NavBar: typeof import('./../layouts/components/NavBar/index.vue')['default']
     NavbarActions: typeof import('./../layouts/components/NavBar/components/NavbarActions.vue')['default']
     Notification: typeof import('./../components/Notification/index.vue')['default']
+    OnlyDatePicker: typeof import('./../components/OnlyDatePicker/index.vue')['default']
     OperationColumn: typeof import('./../components/OperationColumn/index.vue')['default']
     PageContent: typeof import('./../components/CURD/PageContent.vue')['default']
     PageModal: typeof import('./../components/CURD/PageModal.vue')['default']
