@@ -5,45 +5,40 @@ export const enum ApiCode {
   /**
    * 成功
    */
-  SUCCESS = "00000",
+  SUCCESS = 0,
 
   /**
    * 通用错误
    */
-  ERROR = "B0001",
+  ERROR = 1,
 
   /**
-   * 令牌无效或过期
+   * 异常
    */
-  TOKEN_INVALID = "A0230",
-
-  /**
-   * 令牌已过期
-   */
-  TOKEN_EXPIRED = "A0231",
+  EXCEPTION = -1,
 
   /**
    * 未授权访问
    */
-  UNAUTHORIZED = "A0232",
+  UNAUTHORIZED = 401,
 
   /**
-   * 禁止访问
+   * 令牌已过期
    */
-  FORBIDDEN = "A0233",
+  TOKEN_EXPIRED = 403,
 
   /**
    * 参数校验失败
    */
-  PARAM_INVALID = "A0400",
+  PARAM_INVALID = 400,
 
   /**
    * 资源不存在
    */
-  NOT_FOUND = "A0404",
+  NOT_FOUND = 404,
 
   /**
    * 服务器内部错误
    */
-  INTERNAL_ERROR = "B0500",
+  INTERNAL_ERROR = 500,
 }

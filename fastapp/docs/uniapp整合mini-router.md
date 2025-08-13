@@ -4,7 +4,7 @@
 
 uni-mini-router是一个轻量级的路由管理库，专为uni-app设计，解决了uni-app原生路由系统中没有路由拦截等关键功能的问题。它提供了类似Vue Router的API体验，使得在uni-app项目中实现更加灵活和强大的路由管理成为可能。
 
-### 主要特点：
+### 主要特点
 
 1. **Vue Router风格API**：提供与Vue Router相似的API，降低学习成本
 2. **路由拦截功能**：支持全局导航守卫，可以在路由跳转前后执行逻辑
@@ -38,7 +38,7 @@ function generateRoutes() {
     const newPath = `/${page.path}`
     return { ...page, path: newPath }
   })
-  
+
   // 处理分包路由
   if (subPackages && subPackages.length > 0) {
     subPackages.forEach((subPackage) => {
@@ -49,7 +49,7 @@ function generateRoutes() {
       routes.push(...subRoutes)
     })
   }
-  
+
   return routes
 }
 
@@ -71,10 +71,10 @@ import router from './router'
 
 export function createApp() {
   const app = createSSRApp(App)
-  
+
   // 使用路由
   app.use(router)
-  
+
   return {
     app
   }
@@ -93,7 +93,7 @@ export default defineConfig({
   plugins: [
     AutoImport({
       imports: [
-        'vue', 
+        'vue',
         {
           from: 'uni-mini-router',
           imports: ['createRouter', 'useRouter', 'useRoute']
@@ -124,15 +124,15 @@ router.push({ path: '/pages/index/index' })
 router.push({ name: 'index' })
 
 // 携带参数
-router.push({ 
-  path: '/pages/detail/index', 
-  query: { id: 10 } 
+router.push({
+  path: '/pages/detail/index',
+  query: { id: 10 }
 })
 
 // 通过名称 + 参数
-router.push({ 
-  name: 'detail', 
-  params: { id: 10 } 
+router.push({
+  name: 'detail',
+  params: { id: 10 }
 })
 
 // Tab页面导航
@@ -195,12 +195,12 @@ uni-mini-router提供了全局导航守卫功能，可以在路由跳转前后�
 // src/router/index.ts
 router.beforeEach((to, from, next) => {
   console.log('路由跳转:', from.path, '->', to.path)
-  
+
   // 检查是否需要登录
   if (to.meta && to.meta.requireAuth) {
     // 检查登录状态
     const isLoggedIn = uni.getStorageSync('token')
-    
+
     if (!isLoggedIn) {
       // 未登录，跳转到登录页
       uni.showToast({ title: '请先登录', icon: 'none' })
@@ -208,7 +208,7 @@ router.beforeEach((to, from, next) => {
       return
     }
   }
-  
+
   // 继续导航
   next()
 })
@@ -220,7 +220,7 @@ router.beforeEach((to, from, next) => {
 // src/router/index.ts
 router.afterEach((to, from) => {
   console.log('路由跳转完成:', to.path)
-  
+
   // 可以在这里做一些统计或记录
 })
 ```
@@ -266,7 +266,7 @@ router.beforeEach((to, from, next) => {
   // 检查页面是否需要登录
   if (to.meta && to.meta.requireAuth) {
     const token = uni.getStorageSync('token')
-    
+
     if (!token) {
       // 显示登录提示
       uni.showModal({
@@ -288,7 +288,7 @@ router.beforeEach((to, from, next) => {
       return
     }
   }
-  
+
   // 继续导航
   next()
 })
@@ -308,11 +308,11 @@ function handleLogin() {
   setTimeout(() => {
     // 登录成功，存储token
     uni.setStorageSync('token', 'user_token_example')
-    
+
     // 获取之前要去的页面
     const redirect = uni.getStorageSync('redirect') || '/pages/index/index'
     uni.removeStorageSync('redirect')
-    
+
     // 跳转回原来的页面
     router.replaceAll(redirect)
   }, 1000)
@@ -421,6 +421,7 @@ uni-mini-router为uni-app提供了Vue Router风格的路由解决方案，特别
 使用uni-mini-router可以让你的uni-app项目路由管理更加规范化和工程化，提升开发效率和代码质量。
 
 参考资料：
+
 - [uni-mini-router GitHub仓库](https://github.com/Moonofweisheng/uni-mini-router)
 - [uni-mini-router官方文档](https://moonofweisheng.github.io/uni-mini-router/)
 - [uni-app官方路由文档](https://uniapp.dcloud.net.cn/tutorial/page.html)

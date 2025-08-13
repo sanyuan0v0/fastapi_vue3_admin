@@ -7,6 +7,8 @@ from typing import List, Dict, Tuple
 import aiofiles
 from fastapi import UploadFile
 from pathlib import Path
+from urllib.parse import urljoin  # 添加URL拼接工具导入
+from sqlalchemy.orm.writeonly import strategies
 
 from app.config.setting import settings
 from app.core.exceptions import CustomException
@@ -94,12 +96,13 @@ class UploadUtil:
             return False
     
     @classmethod
-    async def upload_file(cls, file: UploadFile) -> Tuple[str, Path]:
+    async def upload_file(cls, file: UploadFile, base_url: str) -> Tuple[str, Path, str]:
         """
         文件上传
         :param file: 上传的文件对象
+        :param base_url: 基础URL
         :raises CustomException: 当文件类型不支持或大小超限时抛出
-        :return: (文件名, 文件路径)的元组
+        :return: (文件名, 文件路径, 文件URL)的元组
         """
         # 文件校验
         if not all([cls.check_file_extension(file), cls.check_file_size(file)]):
@@ -112,7 +115,8 @@ class UploadUtil:
             
             # 生成文件名并保存
             filename = cls.generate_file_name(file.filename)
-            filepath = dir_path / filename
+            filepath = str(dir_path.joinpath(filename)).replace('\\', '/')  # 转换为字符串后替换斜杠
+            file_url = urljoin(base_url, filepath)
             # filepath.mkdir(parents=True, exist_ok=True)
 
             # 分块写入文件
@@ -122,7 +126,7 @@ class UploadUtil:
                     await f.write(chunk)
 
             # 返回相对路径
-            return filename, filepath
+            return filename, filepath, file_url
             
         except Exception as e:
             logger.error(f"文件上传失败: {e}")
@@ -136,3 +140,14 @@ class UploadUtil:
         :return: 文件树列表
         """
         return [item for item in Path(file_path).iterdir()]
+
+    @classmethod
+    async def download_file(cls, file_path: str) -> str:
+        """
+        下载文件,生成新的文件名
+        :param file_path: 文件路径
+        :return: 文件下载信息
+        """
+        # 解析文件路径
+        filename = cls.generate_file_name(file_path)
+        return filename

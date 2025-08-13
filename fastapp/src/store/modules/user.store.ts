@@ -1,5 +1,10 @@
 import { defineStore } from "pinia";
-import AuthAPI, { type LoginData, type WxLoginData } from "@/api/auth";
+import AuthAPI, {
+  type LoginFormData,
+  type WxLoginData,
+  type LoginResult,
+  type LogoutBody,
+} from "@/api/auth";
 import UserAPI, { type UserInfo } from "@/api/user";
 import { setAccessToken, clearTokens } from "@/utils/auth";
 import { getUserInfo, setUserInfo } from "@/utils/storage";
@@ -10,11 +15,11 @@ export const useUserStore = defineStore("user", () => {
   const userInfo = ref<UserInfo | undefined>(getUserInfo());
 
   // 账号密码登录
-  const login = (data: LoginData) => {
+  const login = (data: LoginFormData) => {
     return new Promise((resolve, reject) => {
       AuthAPI.login(data)
-        .then((data) => {
-          setAccessToken(data.accessToken);
+        .then((data: LoginResult) => {
+          setAccessToken(data.access_token);
           resolve(data);
         })
         .catch((error) => {
@@ -28,8 +33,8 @@ export const useUserStore = defineStore("user", () => {
   const loginWithWxCode = (code: string) => {
     return new Promise((resolve, reject) => {
       AuthAPI.loginByWxMiniAppCode(code)
-        .then((data) => {
-          setAccessToken(data.accessToken);
+        .then((data: LoginResult) => {
+          setAccessToken(data.access_token);
           resolve(data);
         })
         .catch((error: any) => {
@@ -43,8 +48,8 @@ export const useUserStore = defineStore("user", () => {
   const loginWithWxPhone = (data: WxLoginData): Promise<any> => {
     return new Promise((resolve, reject) => {
       AuthAPI.loginByWxMiniAppPhone(data)
-        .then((result: any) => {
-          setAccessToken(result.accessToken);
+        .then((result: LoginResult) => {
+          setAccessToken(result.access_token);
           resolve(result);
         })
         .catch((error: any) => {
@@ -54,23 +59,10 @@ export const useUserStore = defineStore("user", () => {
     });
   };
 
-  // 检查会话状态
-  const checkSession = (): Promise<boolean> => {
-    return new Promise((resolve) => {
-      AuthAPI.checkSession()
-        .then((result) => {
-          resolve(result.valid);
-        })
-        .catch(() => {
-          resolve(false);
-        });
-    });
-  };
-
   // 获取用户信息
   const getInfo = () => {
     return new Promise((resolve, reject) => {
-      UserAPI.getUserInfo()
+      UserAPI.getCurrentUserInfo()
         .then((data) => {
           setUserInfo(data);
           userInfo.value = data;
@@ -84,9 +76,9 @@ export const useUserStore = defineStore("user", () => {
   };
 
   // 登出
-  const logout = async () => {
+  const logout = async (data: LogoutBody) => {
     try {
-      await AuthAPI.logout(); // 调用后台注销接口
+      await AuthAPI.logout(data); // 调用后台注销接口
     } catch (error) {
       console.error("登出失败", error);
     } finally {
@@ -105,7 +97,7 @@ export const useUserStore = defineStore("user", () => {
   const isUserInfoComplete = (): boolean => {
     if (!userInfo.value) return false;
 
-    return !!(userInfo.value.nickname && userInfo.value.avatar);
+    return !!(userInfo.value.username && userInfo.value.avatar);
   };
 
   return {
@@ -115,7 +107,6 @@ export const useUserStore = defineStore("user", () => {
     loginWithWxPhone,
     logout,
     getInfo,
-    checkSession,
     isUserInfoComplete,
   };
 });

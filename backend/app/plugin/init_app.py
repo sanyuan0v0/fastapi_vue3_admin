@@ -17,6 +17,7 @@ from app.api.v1.urls.system_url import SystemApiRouter
 from app.api.v1.urls.monitor_url import MonitorApiRouter
 from app.api.v1.urls.demo_url import DemoApiRouter
 from app.api.v1.urls.stock_url import StockApiRouter
+from app.api.v1.urls.file_url import FileApiRouter
 from app.core.ap_scheduler import SchedulerUtil
 from app.core.logger import logger
 from app.utils.common_util import import_module, import_modules_async
@@ -117,6 +118,7 @@ def register_routers(app: FastAPI) -> None:
     app.include_router(router=MonitorApiRouter)
     app.include_router(router=DemoApiRouter)
     app.include_router(router=StockApiRouter)
+    app.include_router(router=FileApiRouter)
 
 def register_files(app: FastAPI) -> None:
     """

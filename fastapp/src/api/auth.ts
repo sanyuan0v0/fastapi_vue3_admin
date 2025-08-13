@@ -1,60 +1,58 @@
 import request, { publicRequest } from "@/utils/request";
 
-const AUTH_BASE_URL = "/api/v1/auth";
-
-export interface LoginData {
-  username: string;
-  password: string;
-}
-
-export interface WxLoginData {
-  code: string;
-  encryptedData?: string;
-  iv?: string;
-  phoneCode?: string;
-}
-
-export interface LoginResult {
-  accessToken: string;
-  refreshToken?: string;
-  tokenType: string;
-  expiresIn: number;
-  isNewUser?: boolean;
-  isProfileComplete?: boolean;
-}
+const AUTH_BASE_URL = "/api/v1/system/auth";
 
 const AuthAPI = {
   /**
-   * 账号密码登录
-   * @param data 登录表单数据
+   * 登录
+   * @param body 登录表单数据
    * @returns 登录结果
    */
-  login(data: LoginData): Promise<LoginResult> {
-    const formData = {
-      username: data.username,
-      password: data.password,
-    };
-
-    return publicRequest<LoginResult>({
+  login(body: LoginFormData): Promise<LoginResult> {
+    return request<LoginResult>({
       url: `${AUTH_BASE_URL}/login`,
       method: "POST",
-      data: formData,
-      header: {
-        "Content-Type": "application/x-www-form-urlencoded",
+      headers: {
+        "Content-Type": "multipart/form-data",
       },
+      data: body,
     });
   },
 
   /**
-   * 微信小程序授权登录 (仅使用code获取OpenID)
-   * @param code 微信登录凭证
-   * @returns 登录结果
+   * 刷新令牌
+   * @param body 刷新令牌请求体
+   * @returns 新的访问令牌
    */
-  loginByWxMiniAppCode(code: string): Promise<LoginResult> {
-    return publicRequest<LoginResult>({
-      url: `${AUTH_BASE_URL}/wx/miniapp/code-login`,
+  refreshToken(body: RefreshToekenBody): Promise<any> {
+    return request<LoginResult>({
+      url: `${AUTH_BASE_URL}/token/refresh`,
       method: "POST",
-      data: { code },
+      data: body,
+    });
+  },
+
+  /**
+   * 获取验证码
+   * @returns 验证码信息
+   */
+  getCaptcha(): Promise<any> {
+    return request<CaptchaInfo>({
+      url: `${AUTH_BASE_URL}/captcha/get`,
+      method: "GET",
+    });
+  },
+
+  /**
+   * 登出
+   * @param body 登出请求体
+   * @returns 登出结果
+   */
+  logout(body: LogoutBody): Promise<any> {
+    return request<ApiResponse>({
+      url: `${AUTH_BASE_URL}/logout`,
+      method: "POST",
+      data: body,
     });
   },
 
@@ -72,39 +70,58 @@ const AuthAPI = {
   },
 
   /**
-   * 检查会话有效性
-   * @returns 会话是否有效
+   * 微信小程序授权登录 (仅使用code获取OpenID)
+   * @param code 微信登录凭证
+   * @returns 登录结果
    */
-  checkSession(): Promise<{ valid: boolean }> {
-    return request<{ valid: boolean }>({
-      url: `${AUTH_BASE_URL}/check-session`,
-      method: "GET",
-    });
-  },
-
-  /**
-   * 登出
-   * @returns 登出结果
-   */
-  logout(): Promise<any> {
-    return request<any>({
-      url: `${AUTH_BASE_URL}/logout`,
+  loginByWxMiniAppCode(code: string): Promise<LoginResult> {
+    return publicRequest<LoginResult>({
+      url: `${AUTH_BASE_URL}/wx/miniapp/code-login`,
       method: "POST",
-    });
-  },
-
-  /**
-   * 刷新令牌
-   * @param refreshToken 刷新令牌
-   * @returns 新的访问令牌
-   */
-  refreshToken(refreshToken: string): Promise<{ accessToken: string; expiresIn: number }> {
-    return publicRequest<{ accessToken: string; expiresIn: number }>({
-      url: `${AUTH_BASE_URL}/refresh-token`,
-      method: "POST",
-      data: { refreshToken },
+      data: { code },
     });
   },
 };
 
 export default AuthAPI;
+
+export interface WxLoginData {
+  code: string;
+  encryptedData?: string;
+  iv?: string;
+  phoneCode?: string;
+}
+
+/** 登录表单数据 */
+export interface LoginFormData {
+  username: string;
+  password: string;
+  captcha_key: string;
+  captcha: string;
+  remember: boolean;
+}
+
+// 刷新令牌
+export interface RefreshToekenBody {
+  refresh_token: string;
+}
+
+/** 登录响应 */
+export interface LoginResult {
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+  expires_in: number;
+}
+
+/** 验证码信息 */
+export interface CaptchaInfo {
+  enable: boolean;
+  key: string;
+  img_base: string;
+}
+
+/** 退出登录操作 */
+export interface LogoutBody {
+  token: string;
+}

@@ -151,13 +151,13 @@ class ConfigService:
         """上传文件"""
         if not file:
             raise CustomException(msg="请选择要上传的文件")
-        filename, filepath = await UploadUtil.upload_file(file=file)
-
+        filename, filepath, file_url = await UploadUtil.upload_file(file=file, base_url=base_url)
+        
         return UploadResponseSchema(
             file_path=f'{filepath}',
             file_name=filename,
             origin_name=file.filename,
-            file_url=f'{base_url}{filepath}',
+            file_url=f'{file_url}',
         ).model_dump()
 
     @classmethod

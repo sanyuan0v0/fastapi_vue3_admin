@@ -96,7 +96,7 @@ fastapi_vue3_admin
 | 数据库   | MySQL      | 8.0 （推荐使用最新版）|
 | 中间件   | Redis      | 7.0 （推荐使用最新版）|
 
-### 获取代码  
+### 获取代码
 
 ```sh
 # 克隆代码到本地
@@ -113,9 +113,9 @@ cd backend
 # 安装依赖
 pip3 install -r requirements.txt
 # 启动后端服务
-python3 main.py run 
-或 
-python3 main.py run--env=dev 
+python3 main.py run
+或
+python3 main.py run--env=dev
 # 生成迁移文件
 python3 main.py revision "初始化迁移" --env=dev(不加默认为dev)
 # 应用迁移
@@ -165,16 +165,18 @@ docker rm <容器名>
 fastapi_vue3_admin/backend/env/.env.prod.py
 # 前端配置文件目录
 fastapi_vue3_admin/frontend/vite.config.ts
-和 
+和
 fastapi_vue3_admin/frontend/.env.production
-# 部署文件目录  
+# 部署文件目录
 fastapi_vue3_admin/docker-compose.yaml
-和 
+和
 fastapi_vue3_admin/devops/devops/nginx/nginx.conf
 
 ```
 
 ## 🔧模块展示
+
+### web 端
 
 | 模块名{ width="100" } | 截图 |
 |----------|------|
@@ -197,6 +199,12 @@ fastapi_vue3_admin/devops/devops/nginx/nginx.conf
 | 系统主题  | ![系统主题](/theme.png) |
 | 在线文档  | ![在线文档](/help.png) |
 | 系统锁屏  | ![系统锁屏](/lock.png) |
+
+### 移动端
+
+| 模块名 | 截图 |
+|----------|------|
+| 登录      | 开发中... （待完成） |
 
 ## 🚀二开教程
 
