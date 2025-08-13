@@ -21,7 +21,7 @@
             />
           </view>
         </wd-cell>
-        <wd-cell title="昵称" :value="userProfile.nickname" is-link @click="handleOpenDialog()" />
+        <wd-cell title="昵称" :value="userProfile.name" is-link @click="handleOpenDialog()" />
         <wd-cell
           title="性别"
           :value="userProfile.gender === 1 ? '男' : userProfile.gender === 2 ? '女' : '未知'"
@@ -29,9 +29,9 @@
           @click="handleOpenDialog()"
         />
         <wd-cell title="用户名" :value="userProfile.username" />
-        <wd-cell title="部门" :value="userProfile.deptName" />
-        <wd-cell title="角色" :value="userProfile.roleNames" />
-        <wd-cell title="创建日期" :value="userProfile.createTime" />
+        <wd-cell title="部门" :value="userProfile.dept_name" />
+        <wd-cell title="角色" :value="userProfile.roleNames?.join(', ')" />
+        <wd-cell title="创建日期" :value="userProfile.created_at" />
       </wd-cell-group>
     </wd-card>
 
@@ -43,12 +43,12 @@
       <wd-form ref="userProfileFormRef" :model="userProfileForm" custom-class="edit-form">
         <wd-cell-group border>
           <wd-input
-            v-model="userProfileForm.nickname"
+            v-model="userProfileForm.name"
             label="昵称"
             label-width="160rpx"
             placeholder="请输入昵称"
-            prop="nickname"
-            :rules="rules.nickname"
+            prop="name"
+            :rules="rules.name"
           />
           <wd-cell title="性别" title-width="160rpx" center prop="gender" :rules="rules.gender">
             <wd-radio-group v-model="userProfileForm.gender" shape="button" class="ef-radio-group">
@@ -65,17 +65,18 @@
   </view>
 </template>
 <script setup lang="ts">
-import UserAPI, { type UserProfileVO, UserProfileForm } from "@/api/user";
-import FileAPI, { type FileInfo } from "@/api/file";
+import UserAPI, { type UserInfo } from "@/api/user";
+import FileAPI from "@/api/file";
 import { checkLogin } from "@/utils/auth";
+import type { FormRules } from "wot-design-uni/components/wd-form/types";
 
 const originalSrc = ref<string>(""); //选取的原图路径
 const avatarShow = ref<boolean>(false); //显示头像裁剪
-const userProfile = ref<UserProfileVO>(); //用户信息
+const userProfile = ref<UserInfo>(); //用户信息
 
 /** 加载用户信息 */
 const loadUserProfile = async () => {
-  userProfile.value = await UserAPI.getProfile();
+  userProfile.value = await UserAPI.getCurrentUserInfo();
 };
 
 // 头像选择
@@ -91,12 +92,21 @@ function avatarUpload() {
 // 头像裁剪完成
 function handleAvatarConfirm(event: any) {
   const { tempFilePath } = event;
-  FileAPI.upload(tempFilePath).then((fileInfo: FileInfo) => {
-    const avatarForm: UserProfileForm = {
-      avatar: fileInfo.url,
+  FileAPI.upload(tempFilePath).then((fileInfo: UploadFileResult) => {
+    const avatarForm = {
+      name: userProfile.value?.name || "",
+      gender: userProfile.value?.gender || 1,
+      mobile: userProfile.value?.mobile || "",
+      email: userProfile.value?.email || "",
+      username: userProfile.value?.username || "",
+      dept_name: userProfile.value?.dept_name || "",
+      positions: userProfile.value?.positions || [],
+      roles: userProfile.value?.roles || [],
+      avatar: fileInfo.file_url,
+      created_at: userProfile.value?.created_at || "",
     };
     // 头像路径保存至后端
-    UserAPI.updateProfile(avatarForm).then(() => {
+    UserAPI.updateCurrentUserInfo(avatarForm).then(() => {
       uni.showToast({ title: "头像上传成功", icon: "none" });
       loadUserProfile();
     });
@@ -104,16 +114,19 @@ function handleAvatarConfirm(event: any) {
 }
 
 // 本页面中所有的校验规则
-const rules = reactive({
-  nickname: [{ required: true, message: "请填写昵称" }],
+const rules: FormRules = {
+  name: [{ required: true, message: "请填写昵称" }],
   gender: [{ required: true, message: "请选择性别" }],
-});
+};
 
 const dialog = reactive({
   visible: false,
 });
 
-const userProfileForm = reactive<UserProfileForm>({});
+const userProfileForm = reactive<{
+  name?: string;
+  gender?: number;
+}>({});
 const userProfileFormRef = ref();
 
 /**
@@ -123,15 +136,26 @@ const userProfileFormRef = ref();
 const handleOpenDialog = () => {
   dialog.visible = true;
   // 初始化表单数据
-  userProfileForm.nickname = userProfile.value?.nickname;
-  userProfileForm.gender = userProfile.value?.gender;
+  userProfileForm.name = userProfile.value?.name || "";
+  userProfileForm.gender = userProfile.value?.gender || 1;
 };
 
 // 提交表单
 function handleSubmit() {
   userProfileFormRef.value.validate().then(({ valid }: { valid: boolean }) => {
     if (valid) {
-      UserAPI.updateProfile(userProfileForm).then(() => {
+      UserAPI.updateCurrentUserInfo({
+        name: userProfileForm.name,
+        gender: userProfileForm.gender,
+        mobile: userProfile.value?.mobile || "",
+        email: userProfile.value?.email || "",
+        username: userProfile.value?.username || "",
+        dept_name: userProfile.value?.dept_name || "",
+        positions: userProfile.value?.positions || [],
+        roles: userProfile.value?.roles || [],
+        avatar: userProfile.value?.avatar || "",
+        created_at: userProfile.value?.created_at || "",
+      }).then(() => {
         uni.showToast({ title: "账号资料修改成功", icon: "none" });
         dialog.visible = false;
         loadUserProfile();

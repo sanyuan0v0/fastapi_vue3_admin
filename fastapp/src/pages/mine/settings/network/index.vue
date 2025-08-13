@@ -160,6 +160,7 @@ const startTest = async () => {
     // #ifndef H5
     await request({
       url: "/api/v1/auth/captcha",
+      method: "GET",
       timeout: 5000,
     });
     // #endif

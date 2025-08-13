@@ -18,7 +18,7 @@ const FileAPI = {
    *
    * @param filePath
    */
-  upload(filePath: string): Promise<UploadFilePath> {
+  upload(filePath: string): Promise<UploadFileResult> {
     return new Promise((resolve, reject) => {
       uni.uploadFile({
         url: this.uploadUrl,
@@ -29,7 +29,7 @@ const FileAPI = {
         },
         formData: {},
         success: (response) => {
-          const resData = JSON.parse(response.data) as ApiResponse<UploadFilePath>;
+          const resData = JSON.parse(response.data) as ApiResponse<UploadFileResult>;
           // 业务状态码 00000 表示成功
           if (resData.code === ApiCode.SUCCESS) {
             resolve(resData.data);

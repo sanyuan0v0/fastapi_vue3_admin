@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-from datetime import date
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, ClassVar, Dict, List, Optional, Union
@@ -69,7 +68,7 @@ class Settings(BaseSettings):
     # ================================================= #
     CORS_ORIGIN_ENABLE: bool = True    # 是否启用跨域
     ALLOW_ORIGINS: List[str] = ["*"]   # 允许的域名列表
-    # ALLOW_ORIGINS: List[str] = ["http://localhost:5180", "http://127.0.0.1:5180", "http://0.0.0.1:5180","http://172.18.52.77:5180", "http://service.fastapiadmin.com"]   # 允许的域名列表
+    # ALLOW_ORIGINS: List[str] = ["http://localhost:5180", "http://127.0.0.1:5180"]   # 允许的域名列表
     ALLOW_METHODS: List[str] = ["*"]   # 允许的HTTP方法
     ALLOW_HEADERS: List[str] = ["*"]   # 允许的请求头
     ALLOW_CREDENTIALS: bool = True     # 是否允许携带cookie
@@ -141,20 +140,24 @@ class Settings(BaseSettings):
     # ================================================= #
     # ********************* 日志配置 ******************* #
     # ================================================= #
-    LOGGER_LEVEL: str           # 日志级别
-    LOGGER_NAME: str = date.today().strftime(r'%Y-%m-%d.log')       # 日志文件名
+    LOGGER_LEVEL: str           # 日志级别 (DEBUG, INFO, WARNING, ERROR, CRITICAL)
     LOGGER_DIR: Path = BASE_DIR.joinpath('logs')
     if not LOGGER_DIR.exists():
         LOGGER_DIR.mkdir(parents=True, exist_ok=True)
-    LOGGER_FILEPATH: Path = LOGGER_DIR.joinpath(LOGGER_NAME)  # 日志文件路径
     BACKUPCOUNT: int = 10       # 日志文件备份数
-    WHEN: str = 'MIDNIGHT'      # 日志分割时间
+    WHEN: str = 'MIDNIGHT'      # 日志分割时间 (MIDNIGHT, H, D, W0-W6)
     INTERVAL: int = 1           # 日志分割间隔
     ENCODING: str = 'utf-8'     # 日志编码
-    LOGGER_FORMAT: str = '%(asctime)s - %(levelname)s - [%(name)s:%(filename)s:%(funcName)s:%(lineno)d] %(message)s' # 日志格式
+    LOGGER_FORMAT: str = '%(asctime)s - %(levelname)8s - [%(name)s:%(filename)s:%(funcName)s:%(lineno)d] %(message)s' # 日志格式
     OPERATION_LOG_RECORD: bool = True              # 是否记录操作日志
     OPERATION_RECORD_METHOD: List[str] = ["POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"]     # 需要记录的请求方法
     IGNORE_OPERATION_FUNCTION: List[str] = ["get_captcha_for_login"]   # 忽略记录的函数
+    LOG_RETENTION_DAYS: int = 30    # 日志保留天数，超过此天数的日志文件将被自动清理
+    
+    # 日志文件说明:
+    # all.log - 包含所有级别日志（应用日志 + uvicorn日志 + uvicorn访问日志）
+    # error.log - 包含ERROR及以上级别日志（应用错误 + uvicorn错误）
+    # 轮转后文件名: info_日期.log, error_日期.log
 
     # ================================================= #
     # ******************* Gzip压缩配置 ******************* #
@@ -331,8 +334,8 @@ class Settings(BaseSettings):
                     },
                     "file": {
                         "formatter": "default",
-                        "class": "logging.handlers.TimedRotatingFileHandler",
-                        "filename": self.LOGGER_FILEPATH,
+                        "class": "app.core.logger.CustomTimedRotatingFileHandler",
+                        "filename": self.LOGGER_DIR.joinpath("all.log"),
                         "when": self.WHEN,
                         "backupCount": self.BACKUPCOUNT,
                         "encoding": self.ENCODING,

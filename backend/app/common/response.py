@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Mapping, Optional
+from typing import Any, Mapping, Optional, Dict, Union
 from fastapi import status
 from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
 from starlette.background import BackgroundTask

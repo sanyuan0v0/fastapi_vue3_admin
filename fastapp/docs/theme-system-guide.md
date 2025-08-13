@@ -158,23 +158,22 @@ const applyDarkModeBodyStyle = (isDark: boolean) => {
 
 ## 持久化存储
 
-主题设置自动保存到本地存储：
+主题设置自动保存到本地存储，无需手动调用：
 
 ```typescript
 // 存储键名
 const THEME_STORAGE_KEY = "app_theme_mode";
 const THEME_COLOR_STORAGE_KEY = "app_theme_color";
 
-// 自动监听变化并保存
-watch(
-  theme,
-  (newTheme) => {
-    saveThemeToStorage(newTheme);
-    applyDarkModeBodyStyle(newTheme === "dark");
-  },
-  { immediate: true }
-);
+// 主题设置自动持久化，在 useTheme 中已处理
+// 包含主题模式、主题色、是否跟随系统、用户设置状态
 ```
+
+主题设置会在以下情况自动保存：
+- 切换主题模式时
+- 设置主题色时
+- 重置主题时
+- 跟随系统设置改变时
 
 ## 使用示例
 

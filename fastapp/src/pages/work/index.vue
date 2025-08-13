@@ -8,7 +8,7 @@
 
 <route lang="json">
 {
-  "name": "work",
+  "name": "index",
   "style": {
     "navigationBarTitleText": "工作台"
   },
