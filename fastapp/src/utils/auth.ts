@@ -23,8 +23,8 @@ import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants";
  * 获取访问令牌
  * @returns 返回访问令牌，如果不存在则返回null
  */
-export function getAccessToken(): string | null {
-  return Storage.get<string>(ACCESS_TOKEN_KEY) || null;
+export function getAccessToken(): string {
+  return Storage.get<string>(ACCESS_TOKEN_KEY);
 }
 
 /**
@@ -132,7 +132,7 @@ export function requireLogin(): void {
   if (!accessToken || !userStore.userInfo) {
     // 清除可能存在的无效状态
     clearTokens();
-    userStore.logout({ token: accessToken || "" });
+    userStore.logout();
 
     // 跳转到登录页
     uni.reLaunch({

@@ -226,7 +226,8 @@ async function handleLoginSubmit() {
     // 登录成功后自动开启项目引导
     appStore.showGuide(true);
 
-  } catch (error) {
+  } catch (error: any) {
+    console.error(error);
     // 5. 统一错误处理
     getCaptcha(); // 刷新验证码
   } finally {

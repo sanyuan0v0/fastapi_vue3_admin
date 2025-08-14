@@ -21,8 +21,8 @@ const UserAPI = {
    * @param body
    * @returns 上传后的文件路径
    */
-  uploadCurrentUserAvatar(body: any): Promise<UploadFilePath> {
-    return request<UploadFilePath>({
+  uploadCurrentUserAvatar(body: any): Promise<UploadFileResult> {
+    return request<UploadFileResult>({
       url: `${USER_BASE_URL}/current/avatar/upload`,
       method: "POST",
       data: body,
@@ -145,7 +145,7 @@ const UserAPI = {
    */
   deleteUser(ids: number[]): Promise<ApiResponse> {
     return request<ApiResponse>({
-      url: `/system/user/delete`,
+      url: `${USER_BASE_URL}/delete`,
       method: "DELETE",
       data: ids,
     });
@@ -213,7 +213,7 @@ export interface UserInfo {
   avatar?: string;
   email?: string;
   mobile?: string;
-  gender?: string;
+  gender?: number;
   password?: string;
   menus?: MenuTable[];
   dept?: deptTreeType;
@@ -289,16 +289,16 @@ export interface positionSelectorType {
 /* 个人中心用户信息表单 */
 export interface UserProfileForm {
   id?: number;
-  name: string;
-  gender: number;
-  mobile: string;
-  email: string;
-  username: string;
-  dept_name: string;
-  positions: positionSelectorType[];
-  roles: roleSelectorType[];
-  avatar: string;
-  created_at: string;
+  name?: string;
+  gender?: number;
+  mobile?: string;
+  email?: string;
+  username?: string;
+  dept_name?: string;
+  positions?: positionSelectorType[];
+  roles?: roleSelectorType[];
+  avatar?: string;
+  created_at?: string;
 }
 
 /* 修改密码表单 */
@@ -312,40 +312,4 @@ export interface PasswordChangeForm {
 export interface ResetPasswordForm {
   id: number;
   password: string;
-}
-
-/* 修改手机表单 */
-export interface MobileBindingForm {
-  /** 手机号 */
-  mobile?: string;
-  /** 验证码 */
-  code?: string;
-}
-
-/* 修改邮箱表单 */
-export interface EmailBindingForm {
-  /** 邮箱 */
-  email?: string;
-  /** 验证码 */
-  code?: string;
-}
-
-/* 微信手机号授权数据 */
-export interface WechatPhoneData {
-  /** 微信授权码 */
-  code: string;
-  /** 加密数据 */
-  encryptedData?: string;
-  /** 初始向量 */
-  iv?: string;
-}
-
-/* 手机号获取结果 */
-export interface PhoneNumberResult {
-  /** 手机号 */
-  phoneNumber: string;
-  /** 纯手机号（去除+86） */
-  purePhoneNumber?: string;
-  /** 国家代码 */
-  countryCode?: string;
 }

@@ -56,7 +56,7 @@ declare global {
   /**
    * 上传文件返回
    */
-  interface UploadFilePath {
+  interface UploadFileResult {
     file_path: string;
     file_name: string;
     origin_name: string;

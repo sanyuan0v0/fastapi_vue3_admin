@@ -1,15 +1,9 @@
 {
-  "easycom": {
-    "autoscan": true,
-    "custom": {
-      "^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue"
-    }
-  },
   "pages": [
     {
       "path": "pages/index/index",
       "type": "home",
-      "name": "home",
+      "name": "index",
       "style": {
         "navigationStyle": "custom"
       },
@@ -31,7 +25,7 @@
     {
       "path": "pages/work/index",
       "type": "page",
-      "name": "work",
+      "name": "index",
       "style": {
         "navigationBarTitleText": "工作台"
       },

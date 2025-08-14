@@ -13,11 +13,11 @@
         </view>
         <view class="user-details">
           <block v-if="isLogin">
-            <view class="nickname">{{ userInfo!.nickname || "匿名用户" }}</view>
+            <view class="name">{{ userInfo!.name || "匿名用户" }}</view>
             <view class="user-id">ID: {{ userInfo?.username || "0000000" }}</view>
           </block>
           <block v-else>
-            <view class="login-prompt">立即登录获取更多功能</view>
+            <view class="login-prompt">立即登录</view>
             <wd-button
               custom-class="btn-login"
               size="small"
