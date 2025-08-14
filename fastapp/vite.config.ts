@@ -13,14 +13,14 @@ export default defineConfig(async ({ mode }: ConfigEnv): Promise<UserConfig> => 
 
   return {
     server: {
-      host: "0.0.0.0",
-      port: +env.VITE_APP_PORT,
+      host: true,
+      port: Number(env.VITE_APP_PORT),
       open: true,
       proxy: {
         [env.VITE_APP_BASE_API]: {
           changeOrigin: true,
           target: env.VITE_API_BASE_URL,
-          rewrite: (path) => path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
+          // rewrite: (path) => path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
         },
       },
     },

@@ -28,6 +28,7 @@ declare global {
   const defineComponent: typeof import('vue')['defineComponent']
   const defineStore: typeof import('pinia')['defineStore']
   const effectScope: typeof import('vue')['effectScope']
+  const extendedColorOptions: typeof import('../composables/useTheme')['extendedColorOptions']
   const file: typeof import('../api/file')['default']
   const getAccessToken: typeof import('../utils/auth')['getAccessToken']
   const getActivePinia: typeof import('pinia')['getActivePinia']
@@ -216,6 +217,7 @@ declare module 'vue' {
     readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
     readonly defineStore: UnwrapRef<typeof import('pinia')['defineStore']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
+    readonly extendedColorOptions: UnwrapRef<typeof import('../composables/useTheme')['extendedColorOptions']>
     readonly file: UnwrapRef<typeof import('../api/file')['default']>
     readonly getAccessToken: UnwrapRef<typeof import('../utils/auth')['getAccessToken']>
     readonly getActivePinia: UnwrapRef<typeof import('pinia')['getActivePinia']>
@@ -277,7 +279,6 @@ declare module 'vue' {
     readonly onUpdated: UnwrapRef<typeof import('vue')['onUpdated']>
     readonly onWatcherCleanup: UnwrapRef<typeof import('vue')['onWatcherCleanup']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
-    readonly publicRequest: UnwrapRef<typeof import('../utils/request')['publicRequest']>
     readonly reactive: UnwrapRef<typeof import('vue')['reactive']>
     readonly readonly: UnwrapRef<typeof import('vue')['readonly']>
     readonly ref: UnwrapRef<typeof import('vue')['ref']>

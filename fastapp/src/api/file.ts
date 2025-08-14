@@ -11,7 +11,7 @@ const FileAPI = {
   /**
    * 文件上传地址
    */
-  uploadUrl: baseApi + "/api/v1/files/upload",
+  uploadUrl: baseApi + "/files/upload",
 
   /**
    * 上传文件

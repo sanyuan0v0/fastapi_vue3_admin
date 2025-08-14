@@ -14,7 +14,7 @@
         <view class="user-details">
           <block v-if="isLogin">
             <view class="name">{{ userInfo!.name || "匿名用户" }}</view>
-            <view class="user-id">ID: {{ userInfo?.username || "0000000" }}</view>
+            <view class="user-id">账号: {{ userInfo?.username || "user" }}</view>
           </block>
           <block v-else>
             <view class="login-prompt">立即登录</view>
@@ -62,33 +62,33 @@
     <view class="card-container">
       <view class="card-header">
         <view class="card-title">
-          <wd-icon name="tools" size="18" :color="currentThemeColor" />
+          <wd-icon name="tools" size="18" :color="currentThemeColor.primary" />
           <text>常用工具</text>
         </view>
       </view>
       <view class="tools-grid">
         <view class="tool-item" @click="navigateToProfile">
           <view class="tool-icon">
-            <wd-icon name="user" size="24" :color="currentThemeColor" />
+            <wd-icon name="user" size="24" :color="currentThemeColor.primary" />
           </view>
           <view class="tool-label">个人资料</view>
         </view>
 
         <view class="tool-item" @click="navigateToFAQ">
           <view class="tool-icon">
-            <wd-icon name="help-circle" size="24" :color="currentThemeColor" />
+            <wd-icon name="help-circle" size="24" :color="currentThemeColor.primary" />
           </view>
           <view class="tool-label">常见问题</view>
         </view>
         <view class="tool-item" @click="handleQuestionFeedback">
           <view class="tool-icon">
-            <wd-icon name="check-circle" size="24" :color="currentThemeColor" />
+            <wd-icon name="check-circle" size="24" :color="currentThemeColor.primary" />
           </view>
           <view class="tool-label">问题反馈</view>
         </view>
         <view class="tool-item" @click="navigateToAbout">
           <view class="tool-icon">
-            <wd-icon name="info-circle" size="24" :color="currentThemeColor" />
+            <wd-icon name="info-circle" size="24" :color="currentThemeColor.primary" />
           </view>
           <view class="tool-label">关于我们</view>
         </view>
@@ -99,7 +99,7 @@
     <view class="card-container">
       <view class="card-header">
         <view class="card-title">
-          <wd-icon name="star" size="18" :color="currentThemeColor" />
+          <wd-icon name="star" size="18" :color="currentThemeColor.primary" />
           <text>推荐服务</text>
         </view>
       </view>
@@ -107,7 +107,7 @@
         <view class="service-item" @click="navigateToSection('services', 'vip')">
           <view class="service-left">
             <view class="service-icon">
-              <wd-icon name="dong" size="22" :color="currentThemeColor" />
+              <wd-icon name="dong" size="22" :color="currentThemeColor.primary" />
             </view>
             <view class="service-info">
               <view class="service-name">会员中心</view>
@@ -119,7 +119,7 @@
         <view class="service-item" @click="navigateToSection('services', 'coupon')">
           <view class="service-left">
             <view class="service-icon">
-              <wd-icon name="discount" size="22" :color="currentThemeColor" />
+              <wd-icon name="discount" size="22" :color="currentThemeColor.primary" />
             </view>
             <view class="service-info">
               <view class="service-name">优惠券</view>
@@ -131,7 +131,7 @@
         <view class="service-item" @click="navigateToSection('services', 'invite')">
           <view class="service-left">
             <view class="service-icon">
-              <wd-icon name="share" size="22" :color="currentThemeColor" />
+              <wd-icon name="share" size="22" :color="currentThemeColor.primary" />
             </view>
             <view class="service-info">
               <view class="service-name">邀请有礼</view>
@@ -163,7 +163,7 @@ import { onShow } from "@dcloudio/uni-app";
 import { useToast } from "wot-design-uni";
 import { useUserStore } from "@/store/modules/user.store";
 import { useTheme } from "@/composables/useTheme";
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 
 const toast = useToast();
 const userStore = useUserStore();
@@ -171,6 +171,7 @@ const { currentThemeColor } = useTheme();
 const userInfo = computed(() => userStore.userInfo);
 const isLogin = computed(() => !!userInfo.value);
 const defaultAvatar = "/static/images/default-avatar.png";
+const isLoading = ref(false);
 
 // 登录
 const navigateToLoginPage = () => {
@@ -246,7 +247,34 @@ onShow(() => {
       uni.$emit("updateTabbar", "mine");
     }
   }
+
+  // 每次显示页面时都检查并刷新用户信息
+  loadUserInfo();
 });
+
+// 加载用户信息
+const loadUserInfo = async () => {
+  if (isLogin.value) {
+    isLoading.value = true;
+    try {
+      await userStore.getInfo();
+    } catch (error) {
+      console.error("获取用户信息失败", error);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+};
+
+// 监听用户信息变化，确保数据及时更新
+watch(
+  () => userInfo.value,
+  () => {},
+  {
+    deep: true,
+    immediate: true,
+  }
+);
 </script>
 
 <route lang="json">
