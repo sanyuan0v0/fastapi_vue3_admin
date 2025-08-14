@@ -915,7 +915,7 @@ export default {
                     .exec((res) => {
                       if (res[0]) {
                         const canvas = res[0].node;
-                        const ctx = canvas.getContext("2d");
+                        const ctx = canvas.getContext("2d", { willReadFrequently: false });
                         cfu.option[cid].context = ctx;
                         cfu.option[cid].rotateLock = cfu.option[cid].rotate;
                         if (

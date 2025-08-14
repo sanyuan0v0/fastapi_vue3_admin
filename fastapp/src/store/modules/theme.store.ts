@@ -26,6 +26,7 @@ export const useThemeStore = defineStore("theme", () => {
     if (typeof document !== "undefined") {
       // H5环境
       document.documentElement.style.setProperty("--primary-color", color);
+      document.documentElement.style.setProperty("--wot-color-theme", color);
 
       // 设置简单的衍生色（不依赖外部工具函数）
       document.documentElement.style.setProperty("--primary-color-light", color + "80"); // 添加透明度

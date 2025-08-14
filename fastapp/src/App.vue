@@ -5,7 +5,6 @@ import { useTheme } from "@/composables/useTheme";
 const { initTheme } = useTheme();
 
 onLaunch(() => {
-  console.log("App Launch");
   // 初始化主题
   initTheme();
 });

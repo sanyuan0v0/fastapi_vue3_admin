@@ -13,52 +13,52 @@ import { Storage } from "@/utils/storage";
 
 export const useUserStore = defineStore("user", () => {
   const userInfo = ref<UserInfo | undefined>(getUserInfo());
+  const isLoggingIn = ref(false);
+
+  // 统一的登录处理方法
+  const handleLogin = async (loginFn: () => Promise<LoginResult>, loginType: string) => {
+    if (isLoggingIn.value) return;
+
+    isLoggingIn.value = true;
+    try {
+      const result = await loginFn();
+      setAccessToken(result.access_token);
+
+      // 登录成功后获取用户信息
+      await getInfo();
+
+      return result;
+    } catch (error: any) {
+      console.error(`${loginType}登录失败`, error);
+      throw error;
+    } finally {
+      isLoggingIn.value = false;
+    }
+  };
 
   // 账号密码登录
   const login = async (data: LoginFormData) => {
-    return new Promise((resolve, reject) => {
-      AuthAPI.login(data)
-        .then((data: LoginResult) => {
-          setAccessToken(data.access_token);
-          resolve(data);
-        })
-        .catch((error) => {
-          console.error("登录失败", error);
-          reject(error);
-        });
-    });
+    return handleLogin(() => AuthAPI.login(data), "账号密码");
   };
 
   // 微信基础授权登录
   const loginWithWxCode = async (code: string) => {
-    try {
-      const data = await AuthAPI.loginByWxMiniAppCode(code);
-      setAccessToken(data.access_token);
-      return data;
-    } catch (error: any) {
-      console.error("微信授权登录失败", error);
-      throw error;
-    }
+    return handleLogin(() => AuthAPI.loginByWxMiniAppCode(code), "微信授权");
   };
 
   // 微信手机号授权登录
-  const loginWithWxPhone = async (data: WxLoginData): Promise<any> => {
-    try {
-      const result = await AuthAPI.loginByWxMiniAppPhone(data);
-      setAccessToken(result.access_token);
-      return result;
-    } catch (error: any) {
-      console.error("微信手机号登录失败", error);
-      throw error;
-    }
+  const loginWithWxPhone = async (data: WxLoginData) => {
+    return handleLogin(() => AuthAPI.loginByWxMiniAppPhone(data), "微信手机号");
   };
 
   // 获取用户信息
   const getInfo = async () => {
     try {
-      const userInfo = await UserAPI.getCurrentUserInfo();
-      setUserInfo(userInfo);
-      return userInfo;
+      const userInfoData = await UserAPI.getCurrentUserInfo();
+      setUserInfo(userInfoData);
+      // 确保响应式数据更新
+      userInfo.value = userInfoData;
+      return userInfoData;
     } catch (error) {
       console.error("获取用户信息失败", error);
       return null;
@@ -93,6 +93,7 @@ export const useUserStore = defineStore("user", () => {
 
   return {
     userInfo,
+    isLoggingIn,
     login,
     loginWithWxCode,
     loginWithWxPhone,

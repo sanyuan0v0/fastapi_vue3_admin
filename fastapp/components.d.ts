@@ -21,6 +21,7 @@ declare module 'vue' {
     WdCard: typeof import('wot-design-uni/components/wd-card/wd-card.vue')['default']
     WdCell: typeof import('wot-design-uni/components/wd-cell/wd-cell.vue')['default']
     WdCellGroup: typeof import('wot-design-uni/components/wd-cell-group/wd-cell-group.vue')['default']
+    WdCheckbox: typeof import('wot-design-uni/components/wd-checkbox/wd-checkbox.vue')['default']
     WdCollapse: typeof import('wot-design-uni/components/wd-collapse/wd-collapse.vue')['default']
     WdCollapseItem: typeof import('wot-design-uni/components/wd-collapse-item/wd-collapse-item.vue')['default']
     WdConfigProvider: typeof import('wot-design-uni/components/wd-config-provider/wd-config-provider.vue')['default']

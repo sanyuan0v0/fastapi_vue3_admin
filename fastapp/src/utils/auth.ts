@@ -3,23 +3,6 @@ import { Storage } from "./storage";
 import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants";
 
 /**
- * 认证工具函数
- *
- * 使用示例：
- *
- * 1. 检查登录状态并自动跳转：
- *    if (!checkLogin()) return; // 未登录会自动跳转到登录页
- *
- * 2. 静默检查登录状态：
- *    if (!isLoggedIn()) {
- *      // 处理未登录逻辑，不会自动跳转
- *    }
- *
- * 3. 强制要求登录：
- *    requireLogin(); // 清除无效状态并跳转到登录页
- */
-
-/**
  * 获取访问令牌
  * @returns 返回访问令牌，如果不存在则返回null
  */
