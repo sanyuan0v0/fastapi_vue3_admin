@@ -1,0 +1,34 @@
+{
+  "name": "fastdocs",
+  "description": "Fastapi_Vue3_Admin 项目文档",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev --port 5173",
+    "build": "vitepress build",
+    "preview": "vitepress preview",
+    "docs:dev": "vitepress dev --port 5173",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vitepress": "2.0.0-alpha.11"
+  },
+  "packageManager": "npm@11.2.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=10.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/tao__tao/fastapi_vue3_admin.git"
+  },
+  "bugs": {
+    "url": "https://gitee.com/tao__tao/fastapi_vue3_admin/issues"
+  },
+  "author": "fastapiadmin <948080782@qq.com>",
+  "license": "MIT",
+  "homepage": "https://gitee.com/tao__tao/fastapi_vue3_admin"
+}

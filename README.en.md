@@ -1,6 +1,6 @@
 <div align="center">
      <p align="center">
-          <img src="./frontend/docs/public/logo.png" width="150" height="150" alt="logo" /> 
+          <img src="./fastdocs/src/public/logo.png" width="150" height="150" alt="logo" /> 
      </p>
      <h1>Fastapi-Vue3-Admin <img src="https://img.shields.io/badge/Version-v2.0.0-blue" alt="Version"></h1>
      <h3>A modern, open-source, full-stack integrated rapid development platform for mid - and back - end systems</h3>
@@ -209,27 +209,27 @@ fastapi_vue3_admin/devops/devops/nginx/nginx.conf
 
 ## 🔧 Models
 
-| Module Name{ width="100" } | Screenshot |
+| Module | Screenshot |
 |------------|---------------------------------|
-| Login      | ![Login](./frontend/docs/public/login.png) |
-| Dashboard  | ![Dashboard](./frontend/docs/public/dashboard.png) |
-| Analysis   | ![Analysis](./frontend/docs/public/analysis.png) |
-| Menu       | ![Menu](./frontend/docs/public/menu.png) |
-| Department | ![Department](./frontend/docs/public/dept.png) |
-| Position   | ![Position](./frontend/docs/public/position.png) |
-| Role       | ![Role](./frontend/docs/public/role.png) |
-| User       | ![User](./frontend/docs/public/user.png) |
-| Log        | ![Log](./frontend/docs/public/log.png) |
-| Config     | ![Config](./frontend/docs/public/config.png) |
-| OnlineUser | ![OnlineUser](./frontend/docs/public/online.png) |
-| Server     | ![Server](./frontend/docs/public/service.png) |
-| Cache      | ![Cache](./frontend/docs/public/cache.png) |
-| Task       | ![Task](./frontend/docs/public/job.png) |
-| Dict       | ![Dict](./frontend/docs/public/dict.png) |
-| API Docs   | ![API Docs](./frontend/docs/public/docs.png) |
-| Theme      | ![Theme](./frontend/docs/public/theme.png) |
-| Document   | ![Document](./frontend/docs/public/help.png) |
-| Lock       | ![Lock](./frontend/docs/public/lock.png) |
+| Login      | ![Login](./fastdocs/src/public/login.png) |
+| Dashboard  | ![Dashboard](./fastdocs/src/public/dashboard.png) |
+| Analysis   | ![Analysis](./fastdocs/src/public/analysis.png) |
+| Menu       | ![Menu](./fastdocs/src/public/menu.png) |
+| Department | ![Department](./fastdocs/src/public/dept.png) |
+| Position   | ![Position](./fastdocs/src/public/position.png) |
+| Role       | ![Role](./fastdocs/src/public/role.png) |
+| User       | ![User](./fastdocs/src/public/user.png) |
+| Log        | ![Log](./fastdocs/src/public/log.png) |
+| Config     | ![Config](./fastdocs/src/public/config.png) |
+| OnlineUser | ![OnlineUser](./fastdocs/src/public/online.png) |
+| Server     | ![Server](./fastdocs/src/public/service.png) |
+| Cache      | ![Cache](./fastdocs/src/public/cache.png) |
+| Task       | ![Task](./fastdocs/src/public/job.png) |
+| Dict       | ![Dict](./fastdocs/src/public/dict.png) |
+| API Docs   | ![API Docs](./fastdocs/src/public/docs.png) |
+| Theme      | ![Theme](./fastdocs/src/public/theme.png) |
+| Document   | ![Document](./fastdocs/src/public/help.png) |
+| Lock       | ![Lock](./fastdocs/src/public/lock.png) |
 
 ### 移动端
 
@@ -282,7 +282,7 @@ Thanks to the contributions and support of the following projects, which have en
 
 | WeChat QR Code | Group QR Code | WeChat Pay QR Code |
 | --- | --- | --- |
-| ![WeChat QR Code](./frontend/docs/public/wechat.jpg) | ![Group QR Code](./frontend/docs/public/group.jpg) | ![WeChat Pay QR Code](./frontend/docs/public/wechatPay.jpg) |
+| ![WeChat QR Code](./fastdocs/src/public/wechat.jpg) | ![Group QR Code](./fastdocs/src/public/group.jpg) | ![WeChat Pay QR Code](./fastdocs/src/public/wechatPay.jpg) |
 
 ---
 

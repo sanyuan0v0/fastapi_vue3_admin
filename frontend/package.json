@@ -117,7 +117,6 @@
     "unplugin-auto-import": "^19.3.0",
     "unplugin-vue-components": "^28.8.0",
     "vite": "^6.3.5",
-    "vitepress": "^1.6.4",
     "vue-eslint-parser": "^10.2.0",
     "vue-tsc": "^2.2.12"
   },
@@ -134,7 +133,7 @@
   "bugs": {
     "url": "https://gitee.com/tao__tao/fastapi_vue3_admin/issues"
   },
-  "author": "fastapiadmin <502431556@qq.com>",
+  "author": "fastapiadmin <948080782@qq.com>",
   "license": "MIT",
   "homepage": "https://gitee.com/tao__tao/fastapi_vue3_admin"
 }
