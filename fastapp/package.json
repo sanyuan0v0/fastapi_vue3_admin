@@ -46,9 +46,11 @@
   "resolutions": {
     "bin-wrapper": "npm:bin-wrapper-china"
   },
+  "packageManager": "pnpm@9.15.3",
   "engines": {
-    "node": ">=18",
-    "pnpm": ">=7.30"
+    "node": ">=18.0.0",
+    "npm": ">=10.0.0",
+    "pnpm": ">=8.1.0"
   },
   "scripts": {
     "dev:app": "uni -p app",
