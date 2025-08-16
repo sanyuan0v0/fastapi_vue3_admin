@@ -93,9 +93,9 @@ build_image() {
     if [ -d "frontend" ]; then
         cd frontend || { log "❌ 无法进入前端目录" "ERROR"; exit 1; }
         log "📦 安装前端依赖..." "INFO"
-        npm install || { log "❌ 前端依赖安装失败" "ERROR"; exit 1; }
+        pnpm install || { log "❌ 前端依赖安装失败" "ERROR"; exit 1; }
         log "🔨 打包前端工程..." "INFO"
-        npm run build || { log "❌ 前端工程打包失败" "ERROR"; exit 1; }
+        pnpm run build || { log "❌ 前端工程打包失败" "ERROR"; exit 1; }
         log "✅ 前端工程打包成功" "INFO"
         cd .. || { log "❌ 无法返回项目根目录" "ERROR"; exit 1; }
     fi
@@ -104,9 +104,9 @@ build_image() {
     if [ -d "fastapp" ]; then
         cd fastapp || { log "❌ 无法进入小程序目录" "ERROR"; exit 1; }
         log "📦 安装小程序依赖..." "INFO"
-        npm install || { log "❌ 小程序依赖安装失败" "ERROR"; exit 1; }
+        pnpm install || { log "❌ 小程序依赖安装失败" "ERROR"; exit 1; }
         log "🔨 打包小程序工程..." "INFO"
-        npm run build:h5 || { log "❌ 小程序工程打包失败" "ERROR"; exit 1; }
+        pnpm run build:h5 || { log "❌ 小程序工程打包失败" "ERROR"; exit 1; }
         log "✅ 小程序工程打包成功" "INFO"
         cd .. || { log "❌ 无法返回项目根目录" "ERROR"; exit 1; }
     fi
@@ -115,9 +115,9 @@ build_image() {
     if [ -d "fastdocs" ]; then
         cd fastdocs || { log "❌ 无法进入项目文档目录" "ERROR"; exit 1; }
         log "📦 安装项目文档依赖..." "INFO"
-        npm install || { log "❌ 项目文档依赖安装失败" "ERROR"; exit 1; }
+        pnpm install || { log "❌ 项目文档依赖安装失败" "ERROR"; exit 1; }
         log "🔨 打包项目文档..." "INFO"
-        npm run docs:build || { log "❌ 项目文档打包生成失败" "ERROR"; exit 1; }
+        pnpm run docs:build || { log "❌ 项目文档打包生成失败" "ERROR"; exit 1; }
         log "✅ 项目文档打包成功" "INFO"
         cd .. || { log "❌ 无法返回项目根目录" "ERROR"; exit 1; }
     fi
