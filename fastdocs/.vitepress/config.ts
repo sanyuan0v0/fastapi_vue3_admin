@@ -2,8 +2,9 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base: '/docs',
-  outDir: '../public/docs',
+  base: '/',
+  srcDir: 'src',
+  outDir: 'dist',
   lang: 'zh-CN',
   title: 'Fastapi Vue3 Admin',
   description: '现代、开源、全栈融合的中后台快速开发平台',
@@ -68,7 +69,7 @@ export default defineConfig({
           { text: 'GitCode', link: 'https://gitcode.com/qq_36002987/fastapi_vue3_admin', target: '_blank' }
         ]
       },
-      { text: '关于我们', link: '/about' },
+      { text: '关于我们', link: '../about' },
     ],
 
     sidebar: [

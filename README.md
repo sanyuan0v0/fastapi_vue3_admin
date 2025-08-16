@@ -1,6 +1,6 @@
 <div align="center">
      <p align="center">
-          <img src="./frontend/docs/public/logo.png" width="150" height="150" alt="logo" />  
+          <img src="./fastdocs/src/public/logo.png" width="150" height="150" alt="logo" />  
      </p>
      <h1>Fastapi-Vue3-Admin <sup style="background-color: #28a745; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.4em; vertical-align: super; margin-left: 5px;">v2.0.0</h1>
      <h3>一套现代、开源、全栈融合的中后台快速开发平台</h3>
@@ -39,14 +39,16 @@
 
 ```sh
 fastapi_vue3_admin
-├─ backend        # 后端工程
-├─ frontend       # 前端工程
-├─ devops         # 部署工程
-├─ docker-compose.yaml # 部署文件
-├─ start.sh       # 一键部署脚本
-├─ LICENSE        # 许可协议
-|─ README.en.md   # 英文文档
-└─ README.md      # 中文文档
+├─ backend               # 后端工程
+├─ frontend              # 前端工程
+├─ fastapp               # 小程序工程
+├─ fastdocs              # 官网文档
+├─ devops                # 部署工程
+├─ docker-compose.yaml   # 部署文件
+├─ start.sh              # 部署脚本
+├─ LICENSE               # 许可协议
+|─ README.en.md          # 英文文档
+└─ README.md             # 中文文档
 ```
 
 ---
@@ -211,27 +213,27 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 
 ### web 端
 
-| 模块名{ width="100" } | 截图 |
-|----------|------|
-| 登录      | ![登录](./frontend/docs/public/login.png) |
-| 仪表盘    | ![仪表盘](./frontend/docs/public/dashboard.png) |
-| 分析页    | ![分析页](./frontend/docs/public/analysis.png) |
-| 菜单管理  | ![菜单管理](./frontend/docs/public/menu.png) |
-| 部门管理  | ![部门管理](./frontend/docs/public/dept.png) |
-| 岗位管理  | ![岗位管理](./frontend/docs/public/position.png) |
-| 角色管理  | ![角色管理](./frontend/docs/public/role.png) |
-| 用户管理  | ![用户管理](./frontend/docs/public/user.png) |
-| 日志管理  | ![日志管理](./frontend/docs/public/log.png) |
-| 配置管理  | ![配置管理](./frontend/docs/public/config.png) |
-| 在线用户  | ![在线用户](./frontend/docs/public/online.png) |
-| 服务器监控 | ![服务器监控](./frontend/docs/public/service.png) |
-| 缓存监控  | ![缓存监控](./frontend/docs/public/cache.png) |
-| 任务管理  | ![任务管理](./frontend/docs/public/job.png) |
-| 字典管理  | ![字典管理](./frontend/docs/public/dict.png) |
-| 接口管理  | ![接口管理](./frontend/docs/public/docs.png) |
-| 系统主题  | ![系统主题](./frontend/docs/public/theme.png) |
-| 在线文档  | ![在线文档](./frontend/docs/public/help.png) |
-| 系统锁屏  | ![系统锁屏](./frontend/docs/public/lock.png) |
+| 模块名 <div style="width:60px"/> | 截图 |
+| ----- | --- |
+| 登录     | ![登录](./fastdocs/src/public/login.png) |
+| 仪表盘   | ![仪表盘](./fastdocs/src/public/dashboard.png) |
+| 分析页   | ![分析页](./fastdocs/src/public/analysis.png) |
+| 菜单管理  | ![菜单管理](./fastdocs/src/public/menu.png) |
+| 部门管理  | ![部门管理](./fastdocs/src/public/dept.png) |
+| 岗位管理  | ![岗位管理](./fastdocs/src/public/position.png) |
+| 角色管理  | ![角色管理](./fastdocs/src/public/role.png) |
+| 用户管理  | ![用户管理](./fastdocs/src/public/user.png) |
+| 日志管理  | ![日志管理](./fastdocs/src/public/log.png) |
+| 配置管理  | ![配置管理](./fastdocs/src/public/config.png) |
+| 在线用户  | ![在线用户](./fastdocs/src/public/online.png) |
+| 服务器监控 | ![服务器监控](./fastdocs/src/public/service.png) |
+| 缓存监控  | ![缓存监控](./fastdocs/src/public/cache.png) |
+| 任务管理  | ![任务管理](./fastdocs/src/public/job.png) |
+| 字典管理  | ![字典管理](./fastdocs/src/public/dict.png) |
+| 接口管理  | ![接口管理](./fastdocs/src/public/docs.png) |
+| 系统主题  | ![系统主题](./fastdocs/src/public/theme.png) |
+| 在线文档  | ![在线文档](./fastdocs/src/public/help.png) |
+| 系统锁屏  | ![系统锁屏](./fastdocs/src/public/lock.png) |
 
 ### 移动端
 
@@ -282,7 +284,7 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 
 | 微信二维码 | 群组二维码 | 微信支付二维码 |
 | --- | --- | --- |
-| ![微信二维码](./frontend/docs/public/wechat.jpg) | ![群组二维码](./frontend/docs/public/group.jpg) | ![微信支付二维码](./frontend/docs/public/wechatPay.jpg) |
+| ![微信二维码](./fastdocs/src/public/wechat.jpg) | ![群组二维码](./fastdocs/src/public/group.jpg) | ![微信支付二维码](./fastdocs/src/public/wechatPay.jpg) |
 
 ---
 
