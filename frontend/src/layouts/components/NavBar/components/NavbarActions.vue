@@ -55,6 +55,10 @@
               <el-icon><Document /></el-icon>
               {{ t("navbar.document") }}
             </el-dropdown-item>
+            <el-dropdown-item @click="handleDocumentClick">
+              <el-icon><Document /></el-icon>
+              {{ t("navbar.document") }}
+            </el-dropdown-item>
             <el-dropdown-item @click="handleGiteeClick">
               <el-icon><Reading /></el-icon>
               {{ t("navbar.gitee") }}
@@ -146,7 +150,7 @@ function handleConfigClick() {
  * 项目文档
  */
 function handleDocumentClick() {
-  window.open('/docs/index.html', '_blank');
+  window.open('http://service.fastapiadmin.com', '_blank');
 }
 
 /**

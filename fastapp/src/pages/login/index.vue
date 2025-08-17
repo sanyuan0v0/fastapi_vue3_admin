@@ -22,15 +22,19 @@
               :color="isDarkMode ? '#7AC5FF' : '#333'"
               class="input-icon"
             />
-            <input
+            <wd-input
               v-model="loginFormData.username"
+              type="text"
+              prop="username"
               class="form-input input-transparent"
               placeholder="请输入用户名"
-              placeholder-class="input-placeholder"
-              @confirm="handleAccountLogin"
+              clear-trigger="focus"
+              clearable
+              :rules="[{ required: true, message: '请输入用户名', trigger: 'blur' }]"
             />
           </view>
-          <view class="divider"></view>
+
+          <!-- <view class="divider"></view> -->
 
           <!-- 密码输入框 -->
           <view class="form-item">
@@ -40,40 +44,40 @@
               :color="isDarkMode ? '#7AC5FF' : '#333'"
               class="input-icon"
             />
-            <input
+            <wd-input
               v-model="loginFormData.password"
               class="form-input input-transparent"
               type="text"
-              :password="showPassword ? false : true"
+              prop="password"
+              show-password
               placeholder="请输入密码"
-              placeholder-class="input-placeholder"
-              @confirm="handleAccountLogin"
-            />
-            <wd-icon
-              :name="showPassword ? 'eye-open' : 'eye-close'"
-              size="18"
-              :color="isDarkMode ? '#7AC5FF' : '#9ca3af'"
-              class="eye-icon"
-              @click="showPassword = !showPassword"
+              clear-trigger="focus"
+              clearable
+              :rules="[{ required: true, message: '请输入密码', trigger: 'blur' }]"
             />
           </view>
+
+          <!-- <view class="divider"></view> -->
+
           <!-- 验证码输入框 -->
-          <view v-if="captchaState.enable" class="form-item captcha-item">
+          <view v-if="captchaState.enable" class="form-item">
             <wd-icon
               name="lock-on"
               size="22"
               :color="isDarkMode ? '#7AC5FF' : '#333'"
               class="input-icon"
             />
-            <input
+            <wd-input
               v-model="loginFormData.captcha"
               class="form-input input-transparent captcha-input"
               type="text"
+              prop="captcha"
               placeholder="请输入验证码"
-              placeholder-class="input-placeholder"
-              @confirm="handleAccountLogin"
+              clear-trigger="focus"
+              clearable
+              :rules="[{ required: true, message: '请输入验证码', trigger: 'blur' }]"
             />
-            <image
+            <wd-img
               :src="captchaState.img_base"
               class="captcha-image"
               mode="aspectFit"
@@ -87,18 +91,23 @@
               <text>点击加载</text>
             </view>
           </view>
-          <view class="divider"></view>
+          <!-- <view class="divider"></view> -->
 
           <!-- 登录按钮 -->
-          <button
-            class="login-btn"
-            :disabled="loading || !isFormValid"
-            :style="{ opacity: loading || !isFormValid ? 0.7 : 1 }"
-            @click="handleAccountLogin"
-          >
-            <wd-loading v-if="loading" size="20" color="#fff" />
-            {{ loading ? "登录中..." : "账号登录" }}
-          </button>
+          <view class="footer">
+            <wd-button
+              class="login-btn"
+              type="primary"
+              size="large"
+              :disabled="loading || !isFormValid"
+              :style="{ opacity: loading || !isFormValid ? 0.7 : 1 }"
+              block
+              @click="handleAccountLogin"
+            >
+              <wd-loading v-if="loading" size="20" color="#fff" />
+              {{ loading ? "登录中..." : "账号登录" }}
+            </wd-button>
+          </view>
 
           <!-- 切换登录方式 -->
           <view class="switch-login-type" @click="loginType = 'phone'">
@@ -169,7 +178,6 @@ import AuthAPI, { type LoginFormData, type CaptchaInfo } from "@/api/auth";
 const loginFormRef = ref();
 const toast = useToast();
 const userStore = useUserStore();
-const showPassword = ref(false);
 const loginType = ref<"account" | "phone">("account");
 const { authState, getLoginCode, getPhoneNumber } = useWechat();
 const { theme } = useTheme();
@@ -339,7 +347,7 @@ const navigateToPrivacy = () => {
 
 // 页面加载时获取验证码
 onLoad(() => {
-  uni.setNavigationBarTitle({ title: "用户登录" });
+  uni.setNavigationBarTitle({ title: "登录" });
   getLoginCaptcha();
 });
 </script>
@@ -506,12 +514,6 @@ input.input-transparent {
 .clear-icon,
 .eye-icon {
   padding: 10rpx;
-}
-
-.captcha-item {
-  display: flex;
-  gap: 20rpx;
-  align-items: center;
 }
 
 .captcha-input {

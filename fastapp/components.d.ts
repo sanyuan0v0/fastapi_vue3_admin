@@ -37,6 +37,7 @@ declare module 'vue' {
     WdNavbar: typeof import('wot-design-uni/components/wd-navbar/wd-navbar.vue')['default']
     WdNoticeBar: typeof import('wot-design-uni/components/wd-notice-bar/wd-notice-bar.vue')['default']
     WdNotify: typeof import('wot-design-uni/components/wd-notify/wd-notify.vue')['default']
+    WdPasswordInput: typeof import('wot-design-uni/components/wd-password-input/wd-password-input.vue')['default']
     WdPopup: typeof import('wot-design-uni/components/wd-popup/wd-popup.vue')['default']
     WdProgress: typeof import('wot-design-uni/components/wd-progress/wd-progress.vue')['default']
     WdRadio: typeof import('wot-design-uni/components/wd-radio/wd-radio.vue')['default']

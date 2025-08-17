@@ -41,7 +41,7 @@ check_dependencies() {
     log "==========🔍 第二步：检查系统依赖...==========" "INFO"
     local missing_deps=()
     
-    for cmd in git docker node npm; do
+    for cmd in git docker node npm pnpm; do
         if ! command -v $cmd &> /dev/null; then
             missing_deps+=($cmd)
             log "❌ $cmd 未安装" "ERROR"

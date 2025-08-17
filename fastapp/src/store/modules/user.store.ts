@@ -11,7 +11,7 @@ import { getUserInfo, setUserInfo } from "@/utils/storage";
 import { USER_INFO_KEY } from "@/constants";
 import { Storage } from "@/utils/storage";
 
-export const useUserStore = defineStore("user", () => {
+export const useUserStore = defineStore("user_info", () => {
   const userInfo = ref<UserInfo | undefined>(getUserInfo());
   const isLoggingIn = ref(false);
 

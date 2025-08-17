@@ -11,6 +11,7 @@ export default defineConfig(async ({ mode }: ConfigEnv): Promise<UserConfig> => 
   const env = loadEnv(mode, process.cwd());
 
   return {
+    base: "/app",
     server: {
       host: true,
       port: Number(env.VITE_APP_PORT),
