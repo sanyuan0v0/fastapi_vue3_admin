@@ -14,6 +14,7 @@
       <wd-cell title="主题设置" icon="setting1" is-link @click="navigateToTheme" />
       <wd-cell title="用户协议" icon="user" is-link @click="navigateToUserAgreement" />
       <wd-cell title="关于我们" icon="info-circle" is-link @click="navigateToAbout" />
+      <wd-cell title="进入官网" icon="internet" is-link @click="navigateToOfficialWebsite" />
     </wd-cell-group>
 
     <wd-cell-group custom-style="margin-top:40rpx">
@@ -86,6 +87,13 @@ const navigateToUserAgreement = () => {
 const navigateToAbout = () => {
   uni.navigateTo({
     url: "/pages/mine/about/index",
+  });
+};
+
+// 进入官网
+const navigateToOfficialWebsite = () => {
+  uni.navigateTo({
+    url: "https://service.fastapiadmin.com",
   });
 };
 

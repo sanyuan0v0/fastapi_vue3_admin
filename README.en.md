@@ -63,7 +63,7 @@ fastapi_vue3_admin
 | 📊 Permission Management | The RBAC model enables fine-grained permission control at the menu, button, and data levels. |
 | 🚀 Rapid Deployment | Supports one-click deployment with Docker/Docker Compose/Nginx. |
 | 📄 Developer-friendly | Provides comprehensive Chinese documentation, a Chinese interface, and a visual toolchain to reduce the learning curve. |
-| 🚀 Quick Access | Based on mainstream front-end technology stacks such as Vue3, Vite5, Pinia, and Ant Design Vue, it's ready to use out of the box. |
+| 🚀 Quick Access | Based on mainstream front-end technology stacks such as Vue3, Vite5, Pinia, and ElementPlus, it's ready to use out of the box. |
 
 ---
 
@@ -76,7 +76,7 @@ fastapi_vue3_admin
 | Scheduled Tasks | APScheduler         | Easily implement scheduled tasks. |
 | Authentication | PyJWT               | Implement JWT authentication. |
 | Frontend Framework | Vue3 / Vite5 / Pinia / TypeScript | Quickly develop Vue3 applications. |
-| UI Library    | Ant Design Vue | Quickly develop beautiful UI components. |
+| UI Library    | ElementPlus | Quickly develop beautiful UI components. |
 | Database   | MySQL / MongoDB     | Powerful databases. |
 | Cache     | Redis               | A powerful caching database. |
 | Documentation     | Swagger / Redoc     | Automatically generate API documentation. |
@@ -97,8 +97,10 @@ fastapi_vue3_admin
 
 ## 🍪 Demo Environment
 
-- Demo URL: <http://service.fastapiadmin.com>
-- Administrator account: `admin` Password: `123456`
+- Official website: <http://service.fastapiadmin.com>
+- Web address: <http://service.fastapiadmin.com/web>
+- App address: <http://service.fastapiadmin.com/app>
+- Admin account: `admin` Password: `123456`
 - Demo account: `demo` Password: `123456`
 
 ---
@@ -130,7 +132,7 @@ git clone https://github.com/1014TaoTao/fastapi_vue3_admin.git
 
 ---
 
-### Local Backend Startup
+### Local Backend Start
 
 ```sh
 # Enter the backend project directory
@@ -138,9 +140,9 @@ cd backend
 # Install dependencies
 pip3 install -r requirements.txt
 # Start the backend service
-python3 main.py run 
-or 
-python3 main.py run --env=dev 
+python3 main.py run
+or
+python3 main.py run --env=dev
 # Generate migration files
 python3 main.py revision "Initial migration" --env=dev (default is dev if not specified)
 # Apply migrations
@@ -149,26 +151,57 @@ python3 main.py upgrade --env=dev (default is dev if not specified)
 
 ---
 
-### Local Frontend Startup
+### Local Frontend Start
 
 ```sh
 # Enter the frontend project directory
 cd frontend
 # Install dependencies
-npm install
+pnpm install
 # Start the frontend service
-npm run dev
+pnpm run dev
 # Build the frontend and generate the `frontend/dist` directory
-npm run build
+pnpm run build
+```
+
+---
+
+### Local App H5 Start
+
+```sh
+# Enter the fastapp project directory
+cd fastapp
+# Install dependencies
+pnpm install
+# Start the fastapp service
+pnpm run dev:h5
+# Build the fastapp and generate the `fastapp/dist/build/h5` directory
+pnpm run build:h5
+```
+
+---
+
+### Local Project Website Start
+
+```sh
+# Enter the fastdocs project directory
+cd fastdocs
+# Install dependencies
+pnpm install
+# Run the documentation project
+pnpm run docs:dev
+# Build the documentation project and generate the `fastdocs/dist` directory
+pnpm run docs:build
 ```
 
 ---
 
 ### Local Access Address
 
-- Frontend address: <http://127.0.0.1:5180>
-- API address: <http://127.0.0.1:8001/api/v1/docs>
-- Administrator account: `admin` Password: `123456`
+- Project official website address: <http://localhost:5180>
+- Web frontend address: <http://localhost:5180/web>
+- App frontend address: <http://localhost:5180/app>
+- Admin account: `admin` Password: `123456`
 - Demo account: `demo` Password: `123456`
 
 ---
@@ -179,7 +212,7 @@ npm run build
 # Copy the script `fastapi_vue3_admin/start.sh` to the server and grant execution permissions
 chmod +x start.sh
 # Execute the script
-./start.sh
+./deploy.sh
 # View images:
 docker images -a
 # View containers:

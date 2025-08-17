@@ -65,7 +65,7 @@ fastapi_vue3_admin
 | 📊 权限管理 | RBAC 模型实现菜单、按钮、数据级别的细粒度权限控制 |
 | 🚀 快速部署 | 支持 Docker/Docker Compose/Nginx 一键部署 |
 | 📄 开发友好 | 提供完善的中文文档 + 中文化界面 + 可视化工具链，降低学习成本 |
-| 🚀 快速接入 |基于 Vue3、Vite5、Pinia、Ant Design Vue 等主流前端技术栈，开箱即用。|
+| 🚀 快速接入 |基于 Vue3、Vite5、Pinia、ElementPlus 等主流前端技术栈，开箱即用。|
 
 ---
 
@@ -78,7 +78,7 @@ fastapi_vue3_admin
 | 定时任务 | APScheduler         | 轻松实现定时任务。 |
 | 权限认证 | PyJWT               | 实现 JWT 认证。 |
 | 前端框架 | Vue3 / Vite5 / Pinia / TypeScript | 快速开发 Vue3 应用。 |
-| UI 库    | Ant Design Vue | 快速开发美观的 UI 组件。 |
+| UI 库    | ElementPlus | 快速开发美观的 UI 组件。 |
 | 数据库   | MySQL / MongoDB     | 强大的数据库。 |
 | 缓存     | Redis               | 强大的缓存数据库。 |
 | 文档     | Swagger / Redoc     | 自动生成 API 文档。 |
@@ -99,7 +99,9 @@ fastapi_vue3_admin
 
 ## 🍪  演示环境
 
-- 演示地址：<http://service.fastapiadmin.com>
+- 官网地址：<http://service.fastapiadmin.com>
+- 演示地址：<http://service.fastapiadmin.com/web>
+- 小程序地址：<http://service.fastapiadmin.com/app>
 - 管理员账号：`admin` 密码：`123456`
 - 演示账号：`demo` 密码：`123456`
 
@@ -157,19 +159,50 @@ python3 main.py upgrade --env=dev(不加默认为dev)
 # 进入前端工程目录
 cd frontend
 # 安装依赖
-npm install
+pnpm install
 # 启动前端服务
-npm run dev
+pnpm run dev
 # 构建前端, 生成 `frontend/dist` 目录
-npm run build
+pnpm run build
+```
+
+---
+
+### 本地小程序h5启动
+
+```sh
+# 进入前端工程目录
+cd fastapp
+# 安装依赖
+pnpm install
+# 启动前端服务
+pnpm run dev:h5
+# 构建前端, 生成 `frontend/dist/build/h5` 目录
+pnpm run build:h5
+```
+
+---
+
+### 本地项目官网启动
+
+```sh
+# 进入前端工程目录
+cd fastdocs
+# 安装依赖
+pnpm install
+# 运行文档工程
+pnpm run docs:dev
+# 构建文档工程, 生成 `fastdocs/dist` 目录
+pnpm run docs:build
 ```
 
 ---
 
 ### 本地访问地址
 
-- 前端地址: <http://127.0.0.1:5180>
-- 接口地址: <http://127.0.0.1:8001/api/v1/docs>
+- 项目官网地址: <http://localhost:5180>
+- web前端地址: <http://localhost:5180/web>
+- 小程序h5前端地址: <http://localhost:5180/app>
 - 管理员账号：`admin` 密码：`123456`
 - 演示账号：`demo` 密码：`123456`
 
@@ -181,7 +214,7 @@ npm run build
 # 复制脚本 `fastapi_vue3_amdin/start.sh` 脚本文件到服务器, 并赋予执行权限
 chmod +x start.sh
 # 执行脚本
-./start.sh
+./deploy.sh
 # 查看镜像:
 docsker images -a
 # 查看容器:
