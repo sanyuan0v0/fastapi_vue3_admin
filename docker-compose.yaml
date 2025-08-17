@@ -66,9 +66,9 @@ services:
       - "80:80"
     volumes:
       - ./devops/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./frontend/dist:/usr/share/nginx/html/frontend
-      - ./fastapp/dist/build/h5:/usr/share/nginx/html/fastapp
-      - ./fastdocs/dist:/usr/share/nginx/html/fastdocs
+      - ./frontend/dist:/usr/share/nginx/html/frontend/dist
+      - ./fastapp/dist/build/h5:/usr/share/nginx/html/fastapp/dist/build/h5
+      - ./fastdocs/dist:/usr/share/nginx/html/fastdocs/dist
     depends_on:
       - backend
     networks:

@@ -136,7 +136,7 @@ start_containers() {
     
     # 显示容器日志
     log "📋 获取容器日志..." "INFO"
-    docker compose logs --tail=20 ||  { log "❌ 容器日志获取失败" "ERROR"; exit 1; }
+    docker compose logs ||  { log "❌ 容器日志获取失败" "ERROR"; exit 1; }
     log "✅ 容器启动成功" "INFO"
 }
 
