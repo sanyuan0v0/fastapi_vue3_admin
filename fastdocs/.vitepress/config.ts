@@ -51,8 +51,8 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '指南', link: '/guide' },
-      { text: '演示环境', link: 'http://service.fastapiadmin.com/web', target: '_blank' },
-      { text: '小程序环境', link: 'http://service.fastapiadmin.com/app', target: '_blank' },
+      { text: '演示环境', link: 'https://service.fastapiadmin.com/web', target: '_blank' },
+      { text: '小程序环境', link: 'https://service.fastapiadmin.com/app', target: '_blank' },
       {
         text: '版本',
         items: [

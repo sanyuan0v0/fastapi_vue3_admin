@@ -78,9 +78,9 @@ fastapi_vue3_admin
 
 ## 🍪演示环境
 
-- 官网地址：<http://service.fastapiadmin.com>
-- 演示地址：<http://service.fastapiadmin.com/web>
-- 小程序地址：<http://service.fastapiadmin.com/app>
+- 官网地址：<https://service.fastapiadmin.com>
+- 演示地址：<https://service.fastapiadmin.com/web>
+- 小程序地址：<https://service.fastapiadmin.com/app>
 - 管理员账号：`admin` 密码：`123456`
 - 演示账号：`demo` 密码：`123456`
 
@@ -90,7 +90,7 @@ fastapi_vue3_admin
 
 | 类型     | 技术栈     | 版本       |
 |----------|------------|------------|
-| 后端     | Python     | 3.10（大于3.10的版本, 会有兼容问题, 将来升级，暂时不考虑升级）       |
+| 后端     | Python     | >=3.10       |
 | 后端     | FastAPI    | 0.109      |
 | 前端     | Node.js    | >= 20.0（推荐使用最新版）|
 | 前端     | npm        | 16.14      |

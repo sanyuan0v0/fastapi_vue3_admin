@@ -64,11 +64,13 @@ services:
       TZ: "Asia/Shanghai"
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./devops/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./frontend/dist:/usr/share/nginx/html/frontend/dist
       - ./fastapp/dist/build/h5:/usr/share/nginx/html/fastapp/dist/build/h5
       - ./fastdocs/dist:/usr/share/nginx/html/fastdocs/dist
+      - /home/fastapiadmin/ssl:/etc/nginx/ssl:ro
     depends_on:
       - backend
     networks:
