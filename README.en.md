@@ -97,9 +97,9 @@ fastapi_vue3_admin
 
 ## 🍪 Demo Environment
 
-- Official website: <http://service.fastapiadmin.com>
-- Web address: <http://service.fastapiadmin.com/web>
-- App address: <http://service.fastapiadmin.com/app>
+- Official website: <https://service.fastapiadmin.com>
+- Web address: <https://service.fastapiadmin.com/web>
+- App address: <https://service.fastapiadmin.com/app>
 - Admin account: `admin` Password: `123456`
 - Demo account: `demo` Password: `123456`
 
@@ -111,7 +111,7 @@ fastapi_vue3_admin
 
 | Type     | Technology Stack     | Version       |
 |----------|----------------------|---------------|
-| Backend  | Python               | 3.10 (Versions greater than 3.10 may have compatibility issues. Upgrades will be considered in the future, but not for now.) |
+| Backend  | Python               | >=3.10        |
 | Backend  | FastAPI              | 0.109         |
 | Frontend | Node.js              | >= 20.0 (It is recommended to use the latest version.) |
 | Frontend | npm                  | 16.14         |

@@ -150,7 +150,7 @@ function handleConfigClick() {
  * 项目文档
  */
 function handleDocumentClick() {
-  window.open('http://service.fastapiadmin.com', '_blank');
+  window.open('https://service.fastapiadmin.com', '_blank');
 }
 
 /**

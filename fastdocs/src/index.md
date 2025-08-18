@@ -19,7 +19,7 @@ hero:
       link: /docs
     - theme: alt
       text: 在线演示
-      link: http://service.fastapiadmin.com
+      link: https://service.fastapiadmin.com/web
     - theme: alt
       text: 代码仓库
       link: https://github.com/1014TaoTao/fastapi_vue3_admin
