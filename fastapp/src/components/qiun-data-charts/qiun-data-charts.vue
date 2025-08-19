@@ -916,6 +916,8 @@ export default {
                       if (res[0]) {
                         const canvas = res[0].node;
                         const ctx = canvas.getContext("2d");
+                        // 设置 willReadFrequently 属性为 true
+                        ctx.canvas.willReadFrequently = true;
                         cfu.option[cid].context = ctx;
                         cfu.option[cid].rotateLock = cfu.option[cid].rotate;
                         if (

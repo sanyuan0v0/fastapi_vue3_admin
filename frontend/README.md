@@ -3,7 +3,7 @@
 ## 项目结构
 
 ```sh
-fastapi_project/frontend
+fastapi_vue3_admin/frontend
 ├─ docs                 # 项目文档工程
 ├─ public               # 静态资源文件
 │  └─ docs              # 帮助文档模块
@@ -50,6 +50,6 @@ npm run build
 npm run docs:dev
 # 构建文档工程, 生成 `public/docs` 目录
 npm run docs:build
-# 运行命令，查看未用到的依赖 
+# 运行命令，查看未用到的依赖
 depcheck
 ```

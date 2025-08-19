@@ -1,6 +1,6 @@
 <div align="center">
      <p align="center">
-          <img src="./frontend/docs/public/logo.png" width="150" height="150" alt="logo" /> 
+          <img src="./fastdocs/src/public/logo.png" width="150" height="150" alt="logo" /> 
      </p>
      <h1>Fastapi-Vue3-Admin <img src="https://img.shields.io/badge/Version-v2.0.0-blue" alt="Version"></h1>
      <h3>A modern, open-source, full-stack integrated rapid development platform for mid - and back - end systems</h3>
@@ -63,7 +63,7 @@ fastapi_vue3_admin
 | 📊 Permission Management | The RBAC model enables fine-grained permission control at the menu, button, and data levels. |
 | 🚀 Rapid Deployment | Supports one-click deployment with Docker/Docker Compose/Nginx. |
 | 📄 Developer-friendly | Provides comprehensive Chinese documentation, a Chinese interface, and a visual toolchain to reduce the learning curve. |
-| 🚀 Quick Access | Based on mainstream front-end technology stacks such as Vue3, Vite5, Pinia, and Ant Design Vue, it's ready to use out of the box. |
+| 🚀 Quick Access | Based on mainstream front-end technology stacks such as Vue3, Vite5, Pinia, and ElementPlus, it's ready to use out of the box. |
 
 ---
 
@@ -76,7 +76,7 @@ fastapi_vue3_admin
 | Scheduled Tasks | APScheduler         | Easily implement scheduled tasks. |
 | Authentication | PyJWT               | Implement JWT authentication. |
 | Frontend Framework | Vue3 / Vite5 / Pinia / TypeScript | Quickly develop Vue3 applications. |
-| UI Library    | Ant Design Vue | Quickly develop beautiful UI components. |
+| UI Library    | ElementPlus | Quickly develop beautiful UI components. |
 | Database   | MySQL / MongoDB     | Powerful databases. |
 | Cache     | Redis               | A powerful caching database. |
 | Documentation     | Swagger / Redoc     | Automatically generate API documentation. |
@@ -97,8 +97,10 @@ fastapi_vue3_admin
 
 ## 🍪 Demo Environment
 
-- Demo URL: <http://service.fastapiadmin.com>
-- Administrator account: `admin` Password: `123456`
+- Official website: <https://service.fastapiadmin.com>
+- Web address: <https://service.fastapiadmin.com/web>
+- App address: <https://service.fastapiadmin.com/app>
+- Admin account: `admin` Password: `123456`
 - Demo account: `demo` Password: `123456`
 
 ---
@@ -109,7 +111,7 @@ fastapi_vue3_admin
 
 | Type     | Technology Stack     | Version       |
 |----------|----------------------|---------------|
-| Backend  | Python               | 3.10 (Versions greater than 3.10 may have compatibility issues. Upgrades will be considered in the future, but not for now.) |
+| Backend  | Python               | >=3.10        |
 | Backend  | FastAPI              | 0.109         |
 | Frontend | Node.js              | >= 20.0 (It is recommended to use the latest version.) |
 | Frontend | npm                  | 16.14         |
@@ -130,7 +132,7 @@ git clone https://github.com/1014TaoTao/fastapi_vue3_admin.git
 
 ---
 
-### Local Backend Startup
+### Local Backend Start
 
 ```sh
 # Enter the backend project directory
@@ -138,9 +140,9 @@ cd backend
 # Install dependencies
 pip3 install -r requirements.txt
 # Start the backend service
-python3 main.py run 
-or 
-python3 main.py run --env=dev 
+python3 main.py run
+or
+python3 main.py run --env=dev
 # Generate migration files
 python3 main.py revision "Initial migration" --env=dev (default is dev if not specified)
 # Apply migrations
@@ -149,26 +151,57 @@ python3 main.py upgrade --env=dev (default is dev if not specified)
 
 ---
 
-### Local Frontend Startup
+### Local Frontend Start
 
 ```sh
 # Enter the frontend project directory
 cd frontend
 # Install dependencies
-npm install
+pnpm install
 # Start the frontend service
-npm run dev
+pnpm run dev
 # Build the frontend and generate the `frontend/dist` directory
-npm run build
+pnpm run build
+```
+
+---
+
+### Local App H5 Start
+
+```sh
+# Enter the fastapp project directory
+cd fastapp
+# Install dependencies
+pnpm install
+# Start the fastapp service
+pnpm run dev:h5
+# Build the fastapp and generate the `fastapp/dist/build/h5` directory
+pnpm run build:h5
+```
+
+---
+
+### Local Project Website Start
+
+```sh
+# Enter the fastdocs project directory
+cd fastdocs
+# Install dependencies
+pnpm install
+# Run the documentation project
+pnpm run docs:dev
+# Build the documentation project and generate the `fastdocs/dist` directory
+pnpm run docs:build
 ```
 
 ---
 
 ### Local Access Address
 
-- Frontend address: <http://127.0.0.1:5180>
-- API address: <http://127.0.0.1:8001/api/v1/docs>
-- Administrator account: `admin` Password: `123456`
+- Project official website address: <http://localhost:5180>
+- Web frontend address: <http://localhost:5180/web>
+- App frontend address: <http://localhost:5180/app>
+- Admin account: `admin` Password: `123456`
 - Demo account: `demo` Password: `123456`
 
 ---
@@ -179,7 +212,7 @@ npm run build
 # Copy the script `fastapi_vue3_admin/start.sh` to the server and grant execution permissions
 chmod +x start.sh
 # Execute the script
-./start.sh
+./deploy.sh
 # View images:
 docker images -a
 # View containers:
@@ -209,27 +242,27 @@ fastapi_vue3_admin/devops/devops/nginx/nginx.conf
 
 ## 🔧 Models
 
-| Module Name{ width="100" } | Screenshot |
+| Module | Screenshot |
 |------------|---------------------------------|
-| Login      | ![Login](./frontend/docs/public/login.png) |
-| Dashboard  | ![Dashboard](./frontend/docs/public/dashboard.png) |
-| Analysis   | ![Analysis](./frontend/docs/public/analysis.png) |
-| Menu       | ![Menu](./frontend/docs/public/menu.png) |
-| Department | ![Department](./frontend/docs/public/dept.png) |
-| Position   | ![Position](./frontend/docs/public/position.png) |
-| Role       | ![Role](./frontend/docs/public/role.png) |
-| User       | ![User](./frontend/docs/public/user.png) |
-| Log        | ![Log](./frontend/docs/public/log.png) |
-| Config     | ![Config](./frontend/docs/public/config.png) |
-| OnlineUser | ![OnlineUser](./frontend/docs/public/online.png) |
-| Server     | ![Server](./frontend/docs/public/service.png) |
-| Cache      | ![Cache](./frontend/docs/public/cache.png) |
-| Task       | ![Task](./frontend/docs/public/job.png) |
-| Dict       | ![Dict](./frontend/docs/public/dict.png) |
-| API Docs   | ![API Docs](./frontend/docs/public/docs.png) |
-| Theme      | ![Theme](./frontend/docs/public/theme.png) |
-| Document   | ![Document](./frontend/docs/public/help.png) |
-| Lock       | ![Lock](./frontend/docs/public/lock.png) |
+| Login      | ![Login](./fastdocs/src/public/login.png) |
+| Dashboard  | ![Dashboard](./fastdocs/src/public/dashboard.png) |
+| Analysis   | ![Analysis](./fastdocs/src/public/analysis.png) |
+| Menu       | ![Menu](./fastdocs/src/public/menu.png) |
+| Department | ![Department](./fastdocs/src/public/dept.png) |
+| Position   | ![Position](./fastdocs/src/public/position.png) |
+| Role       | ![Role](./fastdocs/src/public/role.png) |
+| User       | ![User](./fastdocs/src/public/user.png) |
+| Log        | ![Log](./fastdocs/src/public/log.png) |
+| Config     | ![Config](./fastdocs/src/public/config.png) |
+| OnlineUser | ![OnlineUser](./fastdocs/src/public/online.png) |
+| Server     | ![Server](./fastdocs/src/public/service.png) |
+| Cache      | ![Cache](./fastdocs/src/public/cache.png) |
+| Task       | ![Task](./fastdocs/src/public/job.png) |
+| Dict       | ![Dict](./fastdocs/src/public/dict.png) |
+| API Docs   | ![API Docs](./fastdocs/src/public/docs.png) |
+| Theme      | ![Theme](./fastdocs/src/public/theme.png) |
+| Document   | ![Document](./fastdocs/src/public/help.png) |
+| Lock       | ![Lock](./fastdocs/src/public/lock.png) |
 
 ### 移动端
 
@@ -282,7 +315,7 @@ Thanks to the contributions and support of the following projects, which have en
 
 | WeChat QR Code | Group QR Code | WeChat Pay QR Code |
 | --- | --- | --- |
-| ![WeChat QR Code](./frontend/docs/public/wechat.jpg) | ![Group QR Code](./frontend/docs/public/group.jpg) | ![WeChat Pay QR Code](./frontend/docs/public/wechatPay.jpg) |
+| ![WeChat QR Code](./fastdocs/src/public/wechat.jpg) | ![Group QR Code](./fastdocs/src/public/group.jpg) | ![WeChat Pay QR Code](./fastdocs/src/public/wechatPay.jpg) |
 
 ---
 

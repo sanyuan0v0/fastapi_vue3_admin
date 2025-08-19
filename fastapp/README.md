@@ -24,6 +24,12 @@ h5启动
 pnpm run dev:h5
 ```
 
+构建
+
+```
+pnpm run build:h5
+```
+
 访问 [http://localhost:4096](http://localhost:4096)
 
 ## 组件结构

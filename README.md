@@ -1,6 +1,6 @@
 <div align="center">
      <p align="center">
-          <img src="./frontend/docs/public/logo.png" width="150" height="150" alt="logo" />  
+          <img src="./fastdocs/src/public/logo.png" width="150" height="150" alt="logo" />  
      </p>
      <h1>Fastapi-Vue3-Admin <sup style="background-color: #28a745; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.4em; vertical-align: super; margin-left: 5px;">v2.0.0</h1>
      <h3>一套现代、开源、全栈融合的中后台快速开发平台</h3>
@@ -39,14 +39,16 @@
 
 ```sh
 fastapi_vue3_admin
-├─ backend        # 后端工程
-├─ frontend       # 前端工程
-├─ devops         # 部署工程
-├─ docker-compose.yaml # 部署文件
-├─ start.sh       # 一键部署脚本
-├─ LICENSE        # 许可协议
-|─ README.en.md   # 英文文档
-└─ README.md      # 中文文档
+├─ backend               # 后端工程
+├─ frontend              # 前端工程
+├─ fastapp               # 小程序工程
+├─ fastdocs              # 官网文档
+├─ devops                # 部署工程
+├─ docker-compose.yaml   # 部署文件
+├─ start.sh              # 部署脚本
+├─ LICENSE               # 许可协议
+|─ README.en.md          # 英文文档
+└─ README.md             # 中文文档
 ```
 
 ---
@@ -63,7 +65,7 @@ fastapi_vue3_admin
 | 📊 权限管理 | RBAC 模型实现菜单、按钮、数据级别的细粒度权限控制 |
 | 🚀 快速部署 | 支持 Docker/Docker Compose/Nginx 一键部署 |
 | 📄 开发友好 | 提供完善的中文文档 + 中文化界面 + 可视化工具链，降低学习成本 |
-| 🚀 快速接入 |基于 Vue3、Vite5、Pinia、Ant Design Vue 等主流前端技术栈，开箱即用。|
+| 🚀 快速接入 |基于 Vue3、Vite5、Pinia、ElementPlus 等主流前端技术栈，开箱即用。|
 
 ---
 
@@ -76,7 +78,7 @@ fastapi_vue3_admin
 | 定时任务 | APScheduler         | 轻松实现定时任务。 |
 | 权限认证 | PyJWT               | 实现 JWT 认证。 |
 | 前端框架 | Vue3 / Vite5 / Pinia / TypeScript | 快速开发 Vue3 应用。 |
-| UI 库    | Ant Design Vue | 快速开发美观的 UI 组件。 |
+| UI 库    | ElementPlus | 快速开发美观的 UI 组件。 |
 | 数据库   | MySQL / MongoDB     | 强大的数据库。 |
 | 缓存     | Redis               | 强大的缓存数据库。 |
 | 文档     | Swagger / Redoc     | 自动生成 API 文档。 |
@@ -97,7 +99,9 @@ fastapi_vue3_admin
 
 ## 🍪  演示环境
 
-- 演示地址：<http://service.fastapiadmin.com>
+- 官网地址：<https://service.fastapiadmin.com>
+- 演示地址：<https://service.fastapiadmin.com/web>
+- 小程序地址：<https://service.fastapiadmin.com/app>
 - 管理员账号：`admin` 密码：`123456`
 - 演示账号：`demo` 密码：`123456`
 
@@ -109,7 +113,7 @@ fastapi_vue3_admin
 
 | 类型     | 技术栈     | 版本       |
 |----------|------------|------------|
-| 后端     | Python     | 3.10       |
+| 后端     | Python     | >=3.100       |
 | 后端     | FastAPI    | 0.109      |
 | 前端     | Node.js    | >= 20.0（推荐使用最新版）|
 | 前端     | npm        | 16.14      |
@@ -155,19 +159,50 @@ python3 main.py upgrade --env=dev(不加默认为dev)
 # 进入前端工程目录
 cd frontend
 # 安装依赖
-npm install
+pnpm install
 # 启动前端服务
-npm run dev
+pnpm run dev
 # 构建前端, 生成 `frontend/dist` 目录
-npm run build
+pnpm run build
+```
+
+---
+
+### 本地小程序h5启动
+
+```sh
+# 进入前端工程目录
+cd fastapp
+# 安装依赖
+pnpm install
+# 启动前端服务
+pnpm run dev:h5
+# 构建前端, 生成 `frontend/dist/build/h5` 目录
+pnpm run build:h5
+```
+
+---
+
+### 本地项目官网启动
+
+```sh
+# 进入前端工程目录
+cd fastdocs
+# 安装依赖
+pnpm install
+# 运行文档工程
+pnpm run docs:dev
+# 构建文档工程, 生成 `fastdocs/dist` 目录
+pnpm run docs:build
 ```
 
 ---
 
 ### 本地访问地址
 
-- 前端地址: <http://127.0.0.1:5180>
-- 接口地址: <http://127.0.0.1:8001/api/v1/docs>
+- 项目官网地址: <http://localhost:5180>
+- web前端地址: <http://localhost:5180/web>
+- 小程序h5前端地址: <http://localhost:5180/app>
 - 管理员账号：`admin` 密码：`123456`
 - 演示账号：`demo` 密码：`123456`
 
@@ -179,7 +214,7 @@ npm run build
 # 复制脚本 `fastapi_vue3_amdin/start.sh` 脚本文件到服务器, 并赋予执行权限
 chmod +x start.sh
 # 执行脚本
-./start.sh
+./deploy.sh
 # 查看镜像:
 docsker images -a
 # 查看容器:
@@ -211,27 +246,27 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 
 ### web 端
 
-| 模块名{ width="100" } | 截图 |
-|----------|------|
-| 登录      | ![登录](./frontend/docs/public/login.png) |
-| 仪表盘    | ![仪表盘](./frontend/docs/public/dashboard.png) |
-| 分析页    | ![分析页](./frontend/docs/public/analysis.png) |
-| 菜单管理  | ![菜单管理](./frontend/docs/public/menu.png) |
-| 部门管理  | ![部门管理](./frontend/docs/public/dept.png) |
-| 岗位管理  | ![岗位管理](./frontend/docs/public/position.png) |
-| 角色管理  | ![角色管理](./frontend/docs/public/role.png) |
-| 用户管理  | ![用户管理](./frontend/docs/public/user.png) |
-| 日志管理  | ![日志管理](./frontend/docs/public/log.png) |
-| 配置管理  | ![配置管理](./frontend/docs/public/config.png) |
-| 在线用户  | ![在线用户](./frontend/docs/public/online.png) |
-| 服务器监控 | ![服务器监控](./frontend/docs/public/service.png) |
-| 缓存监控  | ![缓存监控](./frontend/docs/public/cache.png) |
-| 任务管理  | ![任务管理](./frontend/docs/public/job.png) |
-| 字典管理  | ![字典管理](./frontend/docs/public/dict.png) |
-| 接口管理  | ![接口管理](./frontend/docs/public/docs.png) |
-| 系统主题  | ![系统主题](./frontend/docs/public/theme.png) |
-| 在线文档  | ![在线文档](./frontend/docs/public/help.png) |
-| 系统锁屏  | ![系统锁屏](./frontend/docs/public/lock.png) |
+| 模块名 <div style="width:60px"/> | 截图 |
+| ----- | --- |
+| 登录     | ![登录](./fastdocs/src/public/login.png) |
+| 仪表盘   | ![仪表盘](./fastdocs/src/public/dashboard.png) |
+| 分析页   | ![分析页](./fastdocs/src/public/analysis.png) |
+| 菜单管理  | ![菜单管理](./fastdocs/src/public/menu.png) |
+| 部门管理  | ![部门管理](./fastdocs/src/public/dept.png) |
+| 岗位管理  | ![岗位管理](./fastdocs/src/public/position.png) |
+| 角色管理  | ![角色管理](./fastdocs/src/public/role.png) |
+| 用户管理  | ![用户管理](./fastdocs/src/public/user.png) |
+| 日志管理  | ![日志管理](./fastdocs/src/public/log.png) |
+| 配置管理  | ![配置管理](./fastdocs/src/public/config.png) |
+| 在线用户  | ![在线用户](./fastdocs/src/public/online.png) |
+| 服务器监控 | ![服务器监控](./fastdocs/src/public/service.png) |
+| 缓存监控  | ![缓存监控](./fastdocs/src/public/cache.png) |
+| 任务管理  | ![任务管理](./fastdocs/src/public/job.png) |
+| 字典管理  | ![字典管理](./fastdocs/src/public/dict.png) |
+| 接口管理  | ![接口管理](./fastdocs/src/public/docs.png) |
+| 系统主题  | ![系统主题](./fastdocs/src/public/theme.png) |
+| 在线文档  | ![在线文档](./fastdocs/src/public/help.png) |
+| 系统锁屏  | ![系统锁屏](./fastdocs/src/public/lock.png) |
 
 ### 移动端
 
@@ -282,7 +317,7 @@ fastapi_vue3_amdin/devops/devops/nginx/nginx.conf
 
 | 微信二维码 | 群组二维码 | 微信支付二维码 |
 | --- | --- | --- |
-| ![微信二维码](./frontend/docs/public/wechat.jpg) | ![群组二维码](./frontend/docs/public/group.jpg) | ![微信支付二维码](./frontend/docs/public/wechatPay.jpg) |
+| ![微信二维码](./fastdocs/src/public/wechat.jpg) | ![群组二维码](./fastdocs/src/public/group.jpg) | ![微信支付二维码](./fastdocs/src/public/wechatPay.jpg) |
 
 ---
 

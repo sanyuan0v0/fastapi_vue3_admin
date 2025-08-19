@@ -22,15 +22,19 @@
               :color="isDarkMode ? '#7AC5FF' : '#333'"
               class="input-icon"
             />
-            <input
+            <wd-input
               v-model="loginFormData.username"
+              type="text"
+              prop="username"
               class="form-input input-transparent"
               placeholder="请输入用户名"
-              placeholder-class="input-placeholder"
-              @confirm="handleAccountLogin"
+              clear-trigger="focus"
+              clearable
+              :rules="[{ required: true, message: '请输入用户名', trigger: 'blur' }]"
             />
           </view>
-          <view class="divider"></view>
+
+          <!-- <view class="divider"></view> -->
 
           <!-- 密码输入框 -->
           <view class="form-item">
@@ -40,40 +44,40 @@
               :color="isDarkMode ? '#7AC5FF' : '#333'"
               class="input-icon"
             />
-            <input
+            <wd-input
               v-model="loginFormData.password"
               class="form-input input-transparent"
               type="text"
-              :password="showPassword ? false : true"
+              prop="password"
+              show-password
               placeholder="请输入密码"
-              placeholder-class="input-placeholder"
-              @confirm="handleAccountLogin"
-            />
-            <wd-icon
-              :name="showPassword ? 'eye-open' : 'eye-close'"
-              size="18"
-              :color="isDarkMode ? '#7AC5FF' : '#9ca3af'"
-              class="eye-icon"
-              @click="showPassword = !showPassword"
+              clear-trigger="focus"
+              clearable
+              :rules="[{ required: true, message: '请输入密码', trigger: 'blur' }]"
             />
           </view>
+
+          <!-- <view class="divider"></view> -->
+
           <!-- 验证码输入框 -->
-          <view v-if="captchaState.enable" class="form-item captcha-item">
+          <view v-if="captchaState.enable" class="form-item">
             <wd-icon
               name="lock-on"
               size="22"
               :color="isDarkMode ? '#7AC5FF' : '#333'"
               class="input-icon"
             />
-            <input
+            <wd-input
               v-model="loginFormData.captcha"
               class="form-input input-transparent captcha-input"
               type="text"
+              prop="captcha"
               placeholder="请输入验证码"
-              placeholder-class="input-placeholder"
-              @confirm="handleAccountLogin"
+              clear-trigger="focus"
+              clearable
+              :rules="[{ required: true, message: '请输入验证码', trigger: 'blur' }]"
             />
-            <image
+            <wd-img
               :src="captchaState.img_base"
               class="captcha-image"
               mode="aspectFit"
@@ -87,18 +91,23 @@
               <text>点击加载</text>
             </view>
           </view>
-          <view class="divider"></view>
+          <!-- <view class="divider"></view> -->
 
           <!-- 登录按钮 -->
-          <button
-            class="login-btn"
-            :disabled="loading"
-            :style="{ opacity: loading ? 0.7 : 1 }"
-            @click="handleAccountLogin"
-          >
-            <wd-loading v-if="loading" size="20" color="#fff" />
-            {{ loading ? "登录中..." : "账号登录" }}
-          </button>
+          <view class="footer">
+            <wd-button
+              class="login-btn"
+              type="primary"
+              size="large"
+              :disabled="loading || !isFormValid"
+              :style="{ opacity: loading || !isFormValid ? 0.7 : 1 }"
+              block
+              @click="handleAccountLogin"
+            >
+              <wd-loading v-if="loading" size="20" color="#fff" />
+              {{ loading ? "登录中..." : "账号登录" }}
+            </wd-button>
+          </view>
 
           <!-- 切换登录方式 -->
           <view class="switch-login-type" @click="loginType = 'phone'">
@@ -163,14 +172,12 @@ import { useUserStore } from "@/store/modules/user.store";
 import { useToast } from "wot-design-uni";
 import { useWechat } from "@/composables/useWechat";
 import { useTheme } from "@/composables/useTheme";
-import { computed, ref, reactive } from "vue";
+import { computed, ref, reactive, watch } from "vue";
 import AuthAPI, { type LoginFormData, type CaptchaInfo } from "@/api/auth";
 
 const loginFormRef = ref();
 const toast = useToast();
-const loading = ref(false);
 const userStore = useUserStore();
-const showPassword = ref(false);
 const loginType = ref<"account" | "phone">("account");
 const { authState, getLoginCode, getPhoneNumber } = useWechat();
 const { theme } = useTheme();
@@ -186,7 +193,7 @@ const loginFormData = ref<LoginFormData>({
 
 // 验证码状态
 const captchaState = reactive<CaptchaInfo>({
-  enable: false, // 默认不启用，等待后端确认
+  enable: false,
   key: "",
   img_base: "",
 });
@@ -194,14 +201,22 @@ const captchaState = reactive<CaptchaInfo>({
 // 防重复请求标志
 const isCaptchaLoading = ref(false);
 
-// 获取验证码 - 添加防重复请求
+// 使用store的loading状态
+const loading = computed(() => userStore.isLoggingIn || authState.value.isLogining);
+
+// 表单验证
+const isFormValid = computed(() => {
+  const { username, password, captcha } = loginFormData.value;
+  return !!(username?.trim() && password && (!captchaState.enable || (captcha && captcha.trim())));
+});
+
+// 获取验证码
 const getLoginCaptcha = async () => {
   if (isCaptchaLoading.value) return;
 
   isCaptchaLoading.value = true;
   try {
     const result = await AuthAPI.getCaptcha();
-    // 确保数据结构正确
     if (result && typeof result === "object") {
       captchaState.enable = Boolean(result.enable);
       captchaState.key = result.key || "";
@@ -222,73 +237,101 @@ const getLoginCaptcha = async () => {
   }
 };
 
-// 修复后的账号密码登录
-const handleAccountLogin = async () => {
-  if (loading.value) return;
+// 统一的错误处理
+const handleLoginError = (error: any, loginType: string) => {
+  const message = error?.message || `${loginType}登录失败`;
 
-  if (!loginFormData.value.username.trim()) {
-    toast.error("请输入用户名");
-    return;
+  // 根据错误类型显示不同提示
+  if (message.includes("验证码")) {
+    toast.error("验证码错误，请重新输入");
+    getLoginCaptcha(); // 刷新验证码
+  } else if (message.includes("用户不存在") || message.includes("密码错误")) {
+    toast.error("用户名或密码错误");
+  } else if (message.includes("拒绝授权")) {
+    toast.error("您已拒绝授权");
+  } else {
+    toast.error(message);
   }
-  if (!loginFormData.value.password) {
-    toast.error("请输入密码");
-    return;
+
+  console.error(`${loginType}登录失败:`, error);
+};
+
+// 账号密码登录
+const handleAccountLogin = async () => {
+  if (!isFormValid.value) {
+    if (!loginFormData.value.username.trim()) {
+      toast.error("请输入用户名");
+      return;
+    }
+    if (!loginFormData.value.password) {
+      toast.error("请输入密码");
+      return;
+    }
+    if (captchaState.enable && !loginFormData.value.captcha.trim()) {
+      toast.error("请输入验证码");
+      return;
+    }
   }
-  if (captchaState.enable && !loginFormData.value.captcha.trim()) {
-    toast.error("请输入验证码");
-    return;
-  }
+
   try {
-    loading.value = true;
     await userStore.login(loginFormData.value);
+    toast.success("登录成功");
+
+    // 登录成功后跳转到mine页面，确保用户信息及时更新
+    uni.switchTab({ url: "/pages/mine/index" });
   } catch (error: any) {
-    toast.error(error?.message || "登录失败");
-    // 登录失败后刷新验证码
-    getLoginCaptcha();
-  } finally {
-    loading.value = false;
+    handleLoginError(error, "账号密码");
   }
 };
 
 // 微信一键登录（通过手机号）
 const handleWechatPhoneLogin = async (e: any) => {
-  if (loading.value || authState.value.isLogining) return;
-  loading.value = true;
+  if (!e.detail?.encryptedData) {
+    toast.error("获取手机号失败");
+    return;
+  }
 
   try {
     const phoneData = await getPhoneNumber(e);
     await userStore.loginWithWxPhone(phoneData);
+    toast.success("登录成功");
+
+    // 登录成功后跳转到mine页面，确保用户信息及时更新
+    uni.switchTab({ url: "/pages/mine/index" });
   } catch (error: any) {
-    if (error.message === "用户拒绝授权") {
-      toast.error("您已拒绝授权获取手机号");
-    } else {
-      toast.error(error?.message || "登录失败");
-    }
-  } finally {
-    loading.value = false;
+    handleLoginError(error, "微信手机号");
   }
 };
 
 // 微信授权登录
 const handleWechatLogin = async () => {
-  if (loading.value) return;
-  loading.value = true;
-
   try {
     // #ifdef MP-WEIXIN
     const code = await getLoginCode();
     await userStore.loginWithWxCode(code);
+    toast.success("登录成功");
+
+    // 登录成功后跳转到mine页面，确保用户信息及时更新
+    uni.switchTab({ url: "/pages/mine/index" });
     // #endif
 
     // #ifndef MP-WEIXIN
     toast.error("当前环境不支持微信登录");
     // #endif
   } catch (error: any) {
-    toast.error(error?.message || "微信登录失败");
-  } finally {
-    loading.value = false;
+    handleLoginError(error, "微信授权");
   }
 };
+
+// 监听验证码状态变化
+watch(
+  () => captchaState.enable,
+  (newVal) => {
+    if (newVal && !captchaState.img_base) {
+      getLoginCaptcha();
+    }
+  }
+);
 
 // 是否暗黑模式
 const isDarkMode = computed(() => theme.value === "dark");
@@ -302,9 +345,9 @@ const navigateToPrivacy = () => {
   uni.navigateTo({ url: "/pages/mine/settings/privacy/index" });
 };
 
-// 页面加载时获取验证码 - 使用UniApp的onLoad生命周期
+// 页面加载时获取验证码
 onLoad(() => {
-  // 只在需要时获取验证码
+  uni.setNavigationBarTitle({ title: "登录" });
   getLoginCaptcha();
 });
 </script>
@@ -316,7 +359,6 @@ onLoad(() => {
   flex-direction: column;
   align-items: center;
   height: 100%;
-  min-height: 100vh;
   overflow: hidden;
   background-color: var(--wot-color-bg-container);
 }
@@ -359,7 +401,7 @@ onLoad(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 120rpx;
+  margin-top: 80rpx;
 }
 
 .logo {
@@ -387,7 +429,7 @@ onLoad(() => {
   z-index: 2;
   display: flex;
   flex-direction: column;
-  width: 90%;
+  width: 95%;
   margin-top: 80rpx;
   overflow: hidden;
   background-color: rgba(255, 255, 255, 0.9);
@@ -472,12 +514,6 @@ input.input-transparent {
 .clear-icon,
 .eye-icon {
   padding: 10rpx;
-}
-
-.captcha-item {
-  display: flex;
-  gap: 20rpx;
-  align-items: center;
 }
 
 .captcha-input {

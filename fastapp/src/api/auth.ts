@@ -1,6 +1,7 @@
-import request, { publicRequest } from "@/utils/request";
+import request from "@/utils/request";
+import { ApiHeader } from "@/enums/api-header.enum";
 
-const AUTH_BASE_URL = "/api/v1/system/auth";
+const AUTH_BASE_URL = "/system/auth";
 
 const AuthAPI = {
   /**
@@ -12,10 +13,9 @@ const AuthAPI = {
     return request<LoginResult>({
       url: `${AUTH_BASE_URL}/login`,
       method: "POST",
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      headers: { [ApiHeader.KEY]: ApiHeader.FORM },
       data: body,
+      skipAuth: true,
     });
   },
 
@@ -40,6 +40,7 @@ const AuthAPI = {
     return request<CaptchaInfo>({
       url: `${AUTH_BASE_URL}/captcha/get`,
       method: "GET",
+      skipAuth: true,
     });
   },
 
@@ -62,10 +63,11 @@ const AuthAPI = {
    * @returns 登录结果
    */
   loginByWxMiniAppPhone(data: WxLoginData): Promise<LoginResult> {
-    return publicRequest<LoginResult>({
+    return request<LoginResult>({
       url: `${AUTH_BASE_URL}/wx/miniapp/phone-login`,
       method: "POST",
       data,
+      skipAuth: true,
     });
   },
 
@@ -75,10 +77,11 @@ const AuthAPI = {
    * @returns 登录结果
    */
   loginByWxMiniAppCode(code: string): Promise<LoginResult> {
-    return publicRequest<LoginResult>({
+    return request<LoginResult>({
       url: `${AUTH_BASE_URL}/wx/miniapp/code-login`,
       method: "POST",
       data: { code },
+      skipAuth: true,
     });
   },
 };

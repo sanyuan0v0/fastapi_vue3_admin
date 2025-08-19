@@ -21,7 +21,7 @@
     "id": 3,
     "config_name": "网页图标",
     "config_key": "sys_web_favicon",
-    "config_value": "http://service.fastapiadmin.com/api/v1/static/image/favicon.png",
+    "config_value": "https://service.fastapiadmin.com/api/v1/static/image/favicon.png",
     "config_type": true,
     "description": "网页图标",
     "creator_id": 1
@@ -30,7 +30,7 @@
     "id": 4,
     "config_name": "网站Logo",
     "config_key": "sys_web_logo",
-    "config_value": "http://service.fastapiadmin.com/api/v1/static/image/logo.png",
+    "config_value": "https://service.fastapiadmin.com/api/v1/static/image/logo.png",
     "config_type": true,
     "description": "网站Logo",
     "creator_id": 1
@@ -39,7 +39,7 @@
     "id": 5,
     "config_name": "登录背景",
     "config_key": "sys_login_background",
-    "config_value": "http://service.fastapiadmin.com/api/v1/static/image/background.svg",
+    "config_value": "https://service.fastapiadmin.com/api/v1/static/image/background.svg",
     "config_type": true,
     "description": "登录背景",
     "creator_id": 1
@@ -66,7 +66,7 @@
     "id": 8,
     "config_name": "帮助文档",
     "config_key": "sys_help_doc",
-    "config_value": "http://service.fastapiadmin.com/site/index.html",
+    "config_value": "https://service.fastapiadmin.com/site/index.html",
     "config_type": true,
     "description": "帮助文档",
     "creator_id": 1

@@ -2,8 +2,9 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base: '/docs',
-  outDir: '../public/docs',
+  base: '/',
+  srcDir: 'src',
+  outDir: 'dist',
   lang: 'zh-CN',
   title: 'Fastapi Vue3 Admin',
   description: '现代、开源、全栈融合的中后台快速开发平台',
@@ -50,7 +51,8 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '指南', link: '/guide' },
-      { text: '演示环境', link: 'http://service.fastapiadmin.com', target: '_blank' },
+      { text: '演示环境', link: 'https://service.fastapiadmin.com/web', target: '_blank' },
+      { text: '小程序环境', link: 'https://service.fastapiadmin.com/app', target: '_blank' },
       {
         text: '版本',
         items: [

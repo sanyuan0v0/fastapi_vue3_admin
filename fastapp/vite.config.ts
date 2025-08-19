@@ -3,7 +3,6 @@ import uni from "@dcloudio/vite-plugin-uni";
 import AutoImport from "unplugin-auto-import/vite";
 import UniLayouts from "@uni-helper/vite-plugin-uni-layouts";
 import UniPages from "@uni-helper/vite-plugin-uni-pages";
-
 import Components from "@uni-helper/vite-plugin-uni-components";
 import { WotResolver } from "@uni-helper/vite-plugin-uni-components/resolvers";
 
@@ -12,15 +11,16 @@ export default defineConfig(async ({ mode }: ConfigEnv): Promise<UserConfig> => 
   const env = loadEnv(mode, process.cwd());
 
   return {
+    base: "/app",
     server: {
-      host: "0.0.0.0",
-      port: +env.VITE_APP_PORT,
+      host: true,
+      port: Number(env.VITE_APP_PORT),
       open: true,
       proxy: {
         [env.VITE_APP_BASE_API]: {
           changeOrigin: true,
           target: env.VITE_API_BASE_URL,
-          rewrite: (path) => path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
+          // rewrite: (path) => path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
         },
       },
     },

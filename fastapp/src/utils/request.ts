@@ -26,9 +26,14 @@ function request<T = any>(options: RequestOptions): Promise<T> {
         header["Authorization"] = `Bearer ${accessToken}`;
       } else {
         // 需要认证但没有令牌，跳转到登录页
-        uni.navigateTo({
-          url: "/pages/login/index",
-        });
+        // 防止循环跳转：检查当前页面是否已经是登录页
+        const currentPages = getCurrentPages();
+        const currentPage = currentPages[currentPages.length - 1];
+        if (!currentPage || !currentPage.route || !currentPage.route.includes("login")) {
+          uni.navigateTo({
+            url: "/pages/login/index",
+          });
+        }
         return reject(new Error("请先登录"));
       }
     }
@@ -65,8 +70,10 @@ function request<T = any>(options: RequestOptions): Promise<T> {
         }
         // 未授权错误
         else if (res.statusCode === 401) {
-          // 如果需要认证且未授权，跳转到登录页
-          if (!options.skipAuth) {
+          // 防止循环跳转：检查当前页面是否已经是登录页
+          const currentPages = getCurrentPages();
+          const currentPage = currentPages[currentPages.length - 1];
+          if (!currentPage || !currentPage.route || !currentPage.route.includes("login")) {
             uni.navigateTo({
               url: "/pages/login/index",
             });
@@ -83,17 +90,6 @@ function request<T = any>(options: RequestOptions): Promise<T> {
         reject(new Error(err.errMsg || "网络请求失败"));
       },
     });
-  });
-}
-
-/**
- * 无需认证的请求
- * @param options 请求配置
- */
-export function publicRequest<T = any>(options: RequestOptions): Promise<T> {
-  return request<T>({
-    ...options,
-    skipAuth: true,
   });
 }
 
