@@ -115,7 +115,7 @@
                     <el-descriptions-item 
                     :label="fieldLabels[field]"
                     >
-                    {{ formatField(field, detailFormData[field]) }}
+                    {{ formatField(detailFormData[field]) }}
                     </el-descriptions-item>
                 </template>
                 </el-descriptions>
@@ -128,7 +128,7 @@
                     <el-descriptions-item 
                     :label="fieldLabels[field]"
                     >
-                    {{ formatField(field, detailFormData[field]) }}
+                    {{ formatField(detailFormData[field]) }}
                     </el-descriptions-item>
                 </template>
                 </el-descriptions>
@@ -141,7 +141,7 @@
                     <el-descriptions-item 
                     :label="fieldLabels[field]"
                     >
-                    {{ formatField(field, detailFormData[field]) }}
+                    {{ formatField(detailFormData[field]) }}
                     </el-descriptions-item>
                 </template>
                 </el-descriptions>
@@ -154,7 +154,7 @@
                     <el-descriptions-item 
                     :label="fieldLabels[field]"
                     >
-                    {{ formatField(field, detailFormData[field]) }}
+                    {{ formatField(detailFormData[field]) }}
                     </el-descriptions-item>
                 </template>
                 </el-descriptions>
@@ -167,7 +167,7 @@
                     <el-descriptions-item 
                     :label="fieldLabels[field]"
                     >
-                    {{ formatField(field, detailFormData[field]) }}
+                    {{ formatField(detailFormData[field]) }}
                     </el-descriptions-item>
                 </template>
                 </el-descriptions>
@@ -180,7 +180,7 @@
                     <el-descriptions-item 
                     :label="fieldLabels[field]"
                     >
-                    {{ formatField(field, detailFormData[field]) }}
+                    {{ formatField(detailFormData[field]) }}
                     </el-descriptions-item>
                 </template>
                 </el-descriptions>
@@ -193,7 +193,7 @@
                     <el-descriptions-item 
                     :label="fieldLabels[field]"
                     >
-                    {{ formatField(field, detailFormData[field]) }}
+                    {{ formatField(detailFormData[field]) }}
                     </el-descriptions-item>
                 </template>
                 </el-descriptions>
@@ -206,7 +206,7 @@
                     <el-descriptions-item 
                     :label="fieldLabels[field]"
                     >
-                    {{ formatField(field, detailFormData[field]) }}
+                    {{ formatField(detailFormData[field]) }}
                     </el-descriptions-item>
                 </template>
                 </el-descriptions>
@@ -219,7 +219,7 @@
                     <el-descriptions-item 
                     :label="fieldLabels[field]"
                     >
-                    {{ formatField(field, detailFormData[field]) }}
+                    {{ formatField(detailFormData[field]) }}
                     </el-descriptions-item>
                 </template>
                 </el-descriptions>
@@ -232,7 +232,7 @@
                     <el-descriptions-item 
                     :label="fieldLabels[field]"
                     >
-                    {{ formatField(field, detailFormData[field]) }}
+                    {{ formatField(detailFormData[field]) }}
                     </el-descriptions-item>
                 </template>
                 </el-descriptions>
@@ -258,11 +258,11 @@ defineOptions({
 });
 
 import { ref, reactive, onMounted, computed } from "vue";
-import { ElMessage, TableColumnCtx} from "element-plus";
 import { ResultEnum } from "@/enums/api/result.enum";
 import ComprehensiveAPI, { ComprehensiveTable, ComprehensivePageQuery } from "@/api/stock/comprehensive";
+import TradeTimeAPI, { TradeTimeTable } from "@/api/stock/tradeTime";
 import OnlyDatePicker from "@/components/OnlyDatePicker/index.vue";
-import { formatDate, addDays } from "@/utils/tools";
+import { formatDate } from "@/utils/tools";
 
 
 const emit = defineEmits(['import-success']);
@@ -304,9 +304,11 @@ const activeTableColumns = computed(() => {
 // 详情表单
 const detailFormData = ref<ComprehensiveTable>({});
 
+// 交易日历
+const tradeTimeTableData = ref<TradeTimeTable>({});
+
 // 日期范围临时变量
-const defaultDate = addDays(new Date(), -1);
-const dateRange = ref<[Date, Date] | []>([defaultDate, defaultDate]);
+const dateRange = ref<[Date, Date] | []>([]);
 
 
 // 处理日期范围变化
@@ -327,8 +329,8 @@ const queryFormData = reactive<ComprehensivePageQuery>({
     page_size: 10,
     name: undefined,
     code: undefined,
-    start_date: formatDate(defaultDate), // 默认查询昨天数据
-    end_date: formatDate(defaultDate), // 默认查询昨天的数据
+    start_date: formatDate(new Date()),
+    end_date: formatDate(new Date()),
     order_by: undefined,
 });
 
@@ -343,6 +345,20 @@ const dialogVisible = reactive({
 async function handleRefresh() {
     await loadingData();
 };
+
+// 获取交易日历
+async function getTradeTime() {
+    try {
+        const response = await TradeTimeAPI.getTradeTime("first");
+        tradeTimeTableData.value = response.data.data;
+        dateRange.value = [tradeTimeTableData.value.trade_time, tradeTimeTableData.value.trade_time];
+        queryFormData.start_date = tradeTimeTableData.value.trade_time;
+        queryFormData.end_date = tradeTimeTableData.value.trade_time;
+    }
+    catch (error: any) {
+        console.error(error);
+    }
+}
 
 // 加载表格数据
 async function loadingData() {
@@ -362,6 +378,7 @@ async function loadingData() {
 
 // 查询（重置页码后获取数据）
 async function handleQuery() {
+    dataTableRef.value.clearSort()
     queryFormData.page_no = 1;
     queryFormData.order_by = undefined
     loadingData();
@@ -369,14 +386,11 @@ async function handleQuery() {
 
 // 重置查询
 async function handleResetQuery() {
-    const resetDate = addDays(new Date(), -1);
     queryFormRef.value.resetFields();
     dataTableRef.value.clearSort()
     queryFormData.page_no = 1;
     // 重置日期范围选择器
-    dateRange.value = [resetDate, resetDate];
-    queryFormData.start_date = formatDate(resetDate); // 默认查询昨天数据
-    queryFormData.end_date = formatDate(resetDate); // 默认查询昨天的数据
+    await getTradeTime()
     queryFormData.order_by = undefined;
     loadingData();
 }
@@ -709,7 +723,8 @@ const formatField = (value: any) => {
     return value;
 };
 
-onMounted(() => {
+onMounted(async () => {
+    await getTradeTime();
     loadingData();
 });
 </script>

@@ -21,7 +21,6 @@ declare module 'vue' {
     DatePicker: typeof import('./../components/DatePicker/index.vue')['default']
     DeptTree: typeof import('./../views/system/user/components/DeptTree.vue')['default']
     ECharts: typeof import('./../components/ECharts/index.vue')['default']
-    ElAlert: typeof import('element-plus/es')['ElAlert']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElBacktop: typeof import('element-plus/es')['ElBacktop']
@@ -87,8 +86,6 @@ declare module 'vue' {
     ElTreeSelect: typeof import('element-plus/es')['ElTreeSelect']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     ElWatermark: typeof import('element-plus/es')['ElWatermark']
-    ExampleImport: typeof import('./../views/demo/example/components/ExampleImport.vue')['default']
-    FileUpload: typeof import('./../components/Upload/FileUpload.vue')['default']
     Frame: typeof import('./../components/Frame/index.vue')['default']
     Fullscreen: typeof import('./../components/Fullscreen/index.vue')['default']
     GithubCorner: typeof import('./../components/GithubCorner/index.vue')['default']
@@ -106,7 +103,6 @@ declare module 'vue' {
     MenuItemContent: typeof import('./../layouts/components/Menu/components/MenuItemContent.vue')['default']
     MenuSearch: typeof import('./../components/MenuSearch/index.vue')['default']
     MixTopMenu: typeof import('./../layouts/components/Menu/MixTopMenu.vue')['default']
-    MultiImageUpload: typeof import('./../components/Upload/MultiImageUpload.vue')['default']
     NavBar: typeof import('./../layouts/components/NavBar/index.vue')['default']
     NavbarActions: typeof import('./../layouts/components/NavBar/components/NavbarActions.vue')['default']
     Notification: typeof import('./../components/Notification/index.vue')['default']
@@ -127,7 +123,6 @@ declare module 'vue' {
     TableSelect: typeof import('./../components/TableSelect/index.vue')['default']
     TagsView: typeof import('./../layouts/components/TagsView/index.vue')['default']
     TextScroll: typeof import('./../components/TextScroll/index.vue')['default']
-    UserImport: typeof import('./../views/system/user/components/UserImport.vue')['default']
     WangEditor: typeof import('./../components/WangEditor/index.vue')['default']
   }
   export interface GlobalDirectives {
